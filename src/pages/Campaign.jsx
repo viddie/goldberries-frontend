@@ -4,6 +4,7 @@ import {
   BasicBox,
   BasicContainerBox,
   BorderedBox,
+  CustomIconButton,
   ErrorDisplay,
   HeadTitle,
   InfoBox,
@@ -41,6 +42,8 @@ import {
   faEdit,
   faExternalLink,
   faFileExport,
+  faImagePortrait,
+  faImages,
   faInfoCircle,
   faListDots,
   faUser,
@@ -71,6 +74,7 @@ import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { ExportTopGoldenListModal } from "./TopGoldenList";
+import { CampaignGallery } from "../components/MapImage";
 
 const STYLE_CONSTS = {
   player: {
@@ -124,6 +128,7 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
   const query = useGetCampaignView(id);
 
   const editCampaignModal = useModal();
+  const imageGalleryModal = useModal();
 
   if (query.isLoading) {
     return <LoadingSpinner />;
@@ -143,6 +148,10 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
         {campaign.icon_url === null && <FontAwesomeIcon icon={faBook} size="2x" />}
         <CampaignIcon campaign={campaign} height="1.7em" />
         <Typography variant="h4">{campaign.name}</Typography>
+        <Box flexGrow={1} />
+        <CustomIconButton onClick={() => imageGalleryModal.open()} sx={{ alignSelf: "stretch" }}>
+          <FontAwesomeIcon icon={faImages} />
+        </CustomIconButton>
       </Stack>
 
       <Stack direction="row" alignItems="center" gap={1} justifyContent="space-around" sx={{ mt: 1 }}>
@@ -186,6 +195,9 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
 
       <CustomModal modalHook={editCampaignModal} options={{ hideFooter: true }}>
         <FormCampaignWrapper id={id} onSave={editCampaignModal.close} />
+      </CustomModal>
+      <CustomModal modalHook={imageGalleryModal} options={{ hideFooter: true }} maxWidth="lg">
+        <CampaignGallery campaign={campaign} />
       </CustomModal>
     </>
   );

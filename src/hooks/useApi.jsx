@@ -1029,7 +1029,8 @@ export function useGetTrafficStatsGlobalRequests(startDate, endDate) {
 //#region MISC ENDPOINTS
 export function usePostUploadFile(onSuccess) {
   return useMutation({
-    mutationFn: ({ destination, file_name, file }) => postUploadFile(destination, file_name, file),
+    mutationFn: ({ destination, file_name, file, map_id }) =>
+      postUploadFile(destination, file_name, file, map_id),
     onSuccess: (response, parameters) => {
       if (onSuccess) onSuccess(response.data);
     },

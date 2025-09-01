@@ -666,11 +666,12 @@ export function fetchTrafficStatsGlobalRequests(startDate, endDate) {
 //#endregion
 
 //#region MISC ENDPOINTS
-export function postUploadFile(destination, file_name, file) {
+export function postUploadFile(destination, file_name, file, map_id = null) {
   const data = new FormData();
   data.append("file", file);
   data.append("destination", destination);
   data.append("file_name", file_name);
+  if (map_id) data.append("map_id", map_id);
   return axios.post("/admin/upload-file", data, {
     headers: {
       "Content-Type": "multipart/form-data",

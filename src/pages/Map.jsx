@@ -45,6 +45,8 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/Stats";
 import { useTheme } from "@emotion/react";
+import { API_BASE_URL } from "../util/constants";
+import { MapImageBanner } from "../components/MapImage";
 
 export function PageMap() {
   const { id, challengeId } = useParams();
@@ -93,16 +95,17 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
       <HeadTitle title={title} />
       <GoldberriesBreadcrumbs campaign={map.campaign} map={map} />
       <Divider sx={{ my: 2 }} />
+
       <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1.5 }}>
-        <GamebananaEmbed campaign={campaign} size="large" />
+        <MapImageBanner id={map.id} />
       </Stack>
+
       {auth.hasHelperPriv && (
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 1 }}>
           <Button
             onClick={editMapModal.open}
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faEdit} />}
-            sx={{ mb: 1 }}
           >
             {t("buttons.edit")}
           </Button>

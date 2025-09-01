@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   Divider,
   Grid,
   MenuItem,
@@ -19,6 +20,8 @@ import { MuiFileInput } from "mui-file-input";
 import { usePostUploadFile } from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
+import { FullMapSelect } from "../../components/GoldberriesComponents";
+import { API_BASE_URL } from "../../util/constants";
 
 export function PageFileUpload() {
   const { t } = useTranslation(undefined, { keyPrefix: "file_upload" });
@@ -27,14 +30,25 @@ export function PageFileUpload() {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
+  const [selectedMap, setSelectedMap] = useState(null); // NEW: holds the full map object
 
   const { mutate: uploadFile } = usePostUploadFile((data) => {
     setApiResponse(data);
+    setFile(null);
   });
+
   const handleUpload = () => {
     setApiResponse(null);
     if (file) {
-      uploadFile({ file, destination, file_name: fileName });
+      const payload = {
+        file,
+        destination,
+        file_name: fileName,
+      };
+      if (destination === "map_image") {
+        payload.map_id = selectedMap?.id;
+      }
+      uploadFile(payload);
     }
   };
 
@@ -47,6 +61,9 @@ export function PageFileUpload() {
   const isImageFile = file && file.type.startsWith("image/");
   const fileExtension = file ? file.name.split(".").pop() : "";
   const title = t("title");
+
+  const uploadDisabled = !file || (destination === "map_image" && !selectedMap?.id);
+  const newNameDisabled = !file || destination === "map_image";
 
   return (
     <BasicContainerBox maxWidth="md">
@@ -70,13 +87,42 @@ export function PageFileUpload() {
             <MenuItem value="badge" disabled={!auth.hasHelperPriv}>
               {t("destination.badge")}
             </MenuItem>
+            <MenuItem value="map_image" disabled={!auth.hasHelperPriv}>
+              {t("destination.map_image")}
+            </MenuItem>
           </Select>
         </Grid>
+
+        {/* Show the map selector only for map_image; controlled via value/setValue */}
+        {destination === "map_image" && (
+          <Grid item xs={12}>
+            <>
+              <Divider sx={{ mb: 2 }}>
+                <Chip size="small" label={"Select map to upload for"} />
+              </Divider>
+              <FullMapSelect value={selectedMap} setValue={setSelectedMap} />
+              {selectedMap && (
+                <>
+                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                    Current map image:
+                  </Typography>
+                  <img
+                    src={API_BASE_URL + "/img/map/" + selectedMap.id}
+                    alt="Map Image"
+                    style={{ maxWidth: "100%", alignSelf: "flex-start" }}
+                  />
+                </>
+              )}
+              <Divider sx={{ mt: 2 }} />
+            </>
+          </Grid>
+        )}
+
         <Grid item xs={12} sm="auto" display="flex" alignItems="center">
           <Typography variant="body1">{t("file_input_description")}</Typography>
         </Grid>
         <Grid item xs={12} sm>
-          <MuiFileInput fullWidth plsaceholder={t("file_input")} value={file} onChange={setFile} />
+          <MuiFileInput fullWidth placeholder={t("file_input")} value={file} onChange={setFile} />
         </Grid>
         <Box sx={{ width: "100%" }} />
         <Grid item xs>
@@ -85,6 +131,7 @@ export function PageFileUpload() {
             label={t("file_name")}
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+            disabled={newNameDisabled}
           />
         </Grid>
         {fileExtension && (
@@ -114,7 +161,7 @@ export function PageFileUpload() {
             variant="contained"
             startIcon={<FontAwesomeIcon icon={faFileUpload} size="sm" />}
             onClick={handleUpload}
-            disabled={!file}
+            disabled={uploadDisabled} // require a map with an id
           >
             Upload as {t("destination." + destination)}
           </Button>

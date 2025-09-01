@@ -93,6 +93,7 @@ import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { useTheme } from "@emotion/react";
+import { MapImageBanner } from "../components/MapImage";
 
 const displayNoneOnMobile = {
   display: {
@@ -135,7 +136,7 @@ export function ChallengeDisplay({ id }) {
       <GoldberriesBreadcrumbs campaign={campaign} map={map} challenge={challenge} />
       <Divider sx={{ my: 2 }} />
       <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1.5 }}>
-        <GamebananaEmbed campaign={campaign} size="large" />
+        {map ? <MapImageBanner id={map.id} /> : <GamebananaEmbed campaign={campaign} size="large" />}
       </Stack>
       {auth.hasPlayerClaimed && (
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>

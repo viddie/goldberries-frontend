@@ -1829,7 +1829,8 @@
       "icon": "Icon",
       "campaign_icon": "Campaign Icon",
       "post": "Post Image",
-      "badge": "Badge Image"
+      "badge": "Badge Image",
+      "map_image": "Map Image"
     },
     "feedback": {
       "success": "File uploaded successfully",
