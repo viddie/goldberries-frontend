@@ -1,8 +1,9 @@
-import { Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { API_BASE_URL } from "../util/constants";
 import { StyledLink } from "./BasicComponents";
 import { getMapName } from "../util/data_util";
+import { PlaceholderImage } from "./PlaceholderImage";
 
 const COMMON_STYLE = {
   width: "100%",
@@ -11,18 +12,18 @@ const COMMON_STYLE = {
   borderRadius: "4px",
 };
 
-export function MapImageBanner({ id, style = {} }) {
+export function MapImageBanner({ id, alt, style = {} }) {
   const modalHook = useModal(id);
   return (
     <>
-      <img
+      <PlaceholderImage
         src={API_BASE_URL + "/img/map/" + id + "&scale=2"}
-        alt="Map Image"
+        alt={alt}
         loading="lazy"
         style={{
           ...COMMON_STYLE,
-          height: "100px",
           objectFit: "cover",
+          aspectRatio: "6 / 1",
           ...style,
         }}
         onClick={() => modalHook.open(id)}
@@ -34,17 +35,17 @@ export function MapImageBanner({ id, style = {} }) {
   );
 }
 
-export function MapImageFull({ id, onClick, width = "100%", scale = 6, linkToMap = false, style = {} }) {
+export function MapImageFull({ id, alt, onClick, width = "100%", scale = 6, linkToMap = false, style = {} }) {
   const imageElement = (
-    <img
+    <PlaceholderImage
       src={API_BASE_URL + "/img/map/" + id + "&scale=" + scale}
-      alt="Map Full Image"
+      alt={alt}
       loading="lazy"
       style={{
         ...COMMON_STYLE,
         width: width,
-        height: "auto",
         objectFit: "contain",
+        aspectRatio: "16 / 9",
         ...style,
       }}
       onClick={onClick}
@@ -56,7 +57,7 @@ export function MapImageFull({ id, onClick, width = "100%", scale = 6, linkToMap
   }
 
   return (
-    <StyledLink to={"/map/" + id} style={{ lineHeight: "0" }}>
+    <StyledLink to={"/map/" + id} style={{ lineHeight: "0", display: "block" }}>
       {imageElement}
     </StyledLink>
   );
@@ -95,21 +96,23 @@ function CampaignGalleryImages({ campaign, maps, ...props }) {
   );
 }
 function CampaignGallerySingleImage({ campaign, map }) {
+  const theme = useTheme();
+
   const hasMinorSort = campaign.sort_minor_name !== null;
-  const minorColor = hasMinorSort ? campaign.sort_minor_colors[map.sort_minor] || "#ffffff" : null;
+  let borderColor = hasMinorSort ? campaign.sort_minor_colors[map.sort_minor] || "#ffffff" : null;
+  if (!borderColor) {
+    borderColor = theme.palette.mode === "dark" ? "#cccccc" : "#333333";
+  }
+  const mapName = getMapName(map, campaign, false);
+
   return (
     <Grid item xs={6} sm={4} md={3} lg={2} key={map.id}>
       <Stack direction="column" gap={0}>
-        <MapImageFull
-          id={map.id}
-          linkToMap
-          scale={1}
-          style={{
-            border: minorColor ? "3px solid " + minorColor : undefined,
-          }}
-        />
+        <Box sx={{ border: "3px solid " + borderColor, borderRadius: "4px" }}>
+          <MapImageFull id={map.id} alt={mapName} linkToMap scale={1} style={{ borderRadius: undefined }} />
+        </Box>
         <Typography variant="caption" align="center" noWrap>
-          {getMapName(map)}
+          {mapName}
         </Typography>
       </Stack>
     </Grid>

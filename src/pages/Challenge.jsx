@@ -134,9 +134,12 @@ export function ChallengeDisplay({ id }) {
     <>
       <HeadTitle title={title} />
       <GoldberriesBreadcrumbs campaign={campaign} map={map} challenge={challenge} />
-      <Divider sx={{ my: 2 }} />
-      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1.5 }}>
-        {map ? <MapImageBanner id={map.id} /> : <GamebananaEmbed campaign={campaign} size="large" />}
+      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mb: 0, mt: 1 }}>
+        {map ? (
+          <MapImageBanner id={map.id} alt={getMapName(map, campaign, false)} />
+        ) : (
+          <GamebananaEmbed campaign={campaign} size="large" />
+        )}
       </Stack>
       {auth.hasPlayerClaimed && (
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>

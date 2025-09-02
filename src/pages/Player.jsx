@@ -86,6 +86,7 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import { BadgeDisplay } from "../components/Badge";
+import { PlaceholderImage } from "../components/PlaceholderImage";
 
 export function PagePlayer() {
   const { id, tab } = useParams();
@@ -830,7 +831,11 @@ function TimelineSubmissionPreviewImage({ submission }) {
 
   return (
     <StyledExternalLink href={submission.proof_url}>
-      <img src={url} alt={campaign.name} style={{ maxWidth: "200px", borderRadius: "5px" }} />
+      <PlaceholderImage
+        src={url}
+        alt={campaign.name}
+        style={{ maxWidth: "200px", borderRadius: "5px", aspectRatio: "16 / 9" }}
+      />
     </StyledExternalLink>
   );
 }

@@ -77,6 +77,7 @@ import dayjs from "dayjs";
 import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { isAdmin, isHelper, isNewsWriter, isVerifier } from "../hooks/AuthProvider";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import { PlaceholderImage } from "./PlaceholderImage";
 
 export function CampaignSelect({
   selected,
@@ -1190,15 +1191,15 @@ export function JournalIcon({ height = "1em", alt = "Generic Campaign Icon", sty
 export function SubmissionEmbed({ submission, noBorderRadius = false, style = {}, ...props }) {
   const { t } = useTranslation();
   const url = API_BASE_URL + "/embed/img/submission.php?id=" + submission.id;
-  const imgStyle = {
-    borderRadius: noBorderRadius ? 0 : "10px",
-  };
   return (
-    <img
+    <PlaceholderImage
       src={url}
       alt={t("general.submission", { count: 1 })}
-      loading="lazy"
-      style={{ ...imgStyle, ...style }}
+      style={{
+        borderRadius: noBorderRadius ? 0 : "10px",
+        aspectRatio: "1024 / 500",
+        ...style,
+      }}
       {...props}
     />
   );
@@ -1212,7 +1213,11 @@ export function GamebananaEmbed({ campaign, size = "medium", ...props }) {
 
   return (
     <Link to={campaign.url} target="_blank" {...props}>
-      <img src={embedUrl} alt={t("components.gamebanana_embed.alt")} style={{ borderRadius: "5px" }} />
+      <PlaceholderImage
+        src={embedUrl}
+        alt={t("components.gamebanana_embed.alt")}
+        style={{ borderRadius: "5px", aspectRatio: "350 / 75", maxWidth: "350px" }}
+      />
     </Link>
   );
 }

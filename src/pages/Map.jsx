@@ -94,10 +94,9 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
     <>
       <HeadTitle title={title} />
       <GoldberriesBreadcrumbs campaign={map.campaign} map={map} />
-      <Divider sx={{ my: 2 }} />
 
-      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1.5 }}>
-        <MapImageBanner id={map.id} />
+      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ my: 1 }}>
+        <MapImageBanner id={map.id} alt={getMapName(map, campaign, false)} />
       </Stack>
 
       {auth.hasHelperPriv && (
