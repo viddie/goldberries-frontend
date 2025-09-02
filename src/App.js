@@ -757,7 +757,7 @@ export function Layout() {
         searchOpenRef.current(true);
       },
       icon: <FontAwesomeIcon icon={faSearch} />,
-      key: "S",
+      key: "s",
     },
     other: {
       name: t("other_menu.name"),
