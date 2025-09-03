@@ -22,6 +22,8 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
 import { FullMapSelect } from "../../components/GoldberriesComponents";
 import { API_BASE_URL } from "../../util/constants";
+import { MapImageBanner } from "../../components/MapImage";
+import { getMapName } from "../../util/data_util";
 
 export function PageFileUpload() {
   const { t } = useTranslation(undefined, { keyPrefix: "file_upload" });
@@ -106,9 +108,9 @@ export function PageFileUpload() {
                   <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
                     Current map image:
                   </Typography>
-                  <img
-                    src={API_BASE_URL + "/img/map/" + selectedMap.id}
-                    alt="Map Image"
+                  <MapImageBanner
+                    id={selectedMap.id}
+                    alt={selectedMap.name}
                     style={{ maxWidth: "100%", alignSelf: "flex-start" }}
                   />
                 </>

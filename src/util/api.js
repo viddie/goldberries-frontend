@@ -373,6 +373,13 @@ export function fetchModInfo(url) {
   });
 }
 
+export function fetchModDirectDownloadLink(url) {
+  const params = { url };
+  return axios.get("/util/get-everest-dl-link", {
+    params: params,
+  });
+}
+
 export function fetchServerSettings() {
   return axios.get("/server-settings");
 }

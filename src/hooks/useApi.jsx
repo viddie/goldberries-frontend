@@ -91,6 +91,7 @@ import {
   deleteBadge,
   postBadgePlayer,
   deleteBadgePlayer,
+  fetchModDirectDownloadLink,
 } from "../util/api";
 import { errorToast } from "../util/util";
 import { toast } from "react-toastify";
@@ -455,6 +456,16 @@ export function useGetStatsMisc() {
 export function useGetModInfo(onSuccess, onError) {
   return useMutation({
     mutationFn: (url) => fetchModInfo(url),
+    onSuccess: (response, url) => {
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: onError ?? errorToast,
+  });
+}
+
+export function useGetModDirectDownloadLink(onSuccess, onError) {
+  return useMutation({
+    mutationFn: (url) => fetchModDirectDownloadLink(url),
     onSuccess: (response, url) => {
       if (onSuccess) onSuccess(response.data);
     },

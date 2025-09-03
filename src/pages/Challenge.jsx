@@ -3,6 +3,7 @@ import {
   Chip,
   Divider,
   Grid,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -59,10 +61,12 @@ import {
   faCircleExclamation,
   faClock,
   faComment,
+  faDownload,
   faEdit,
   faExclamationTriangle,
   faExternalLink,
   faExternalLinkAlt,
+  faFileDownload,
   faFlagCheckered,
   faInfoCircle,
   faPlus,
@@ -78,6 +82,7 @@ import {
   getQueryData,
   useGetChallenge,
   useGetMap,
+  useGetModDirectDownloadLink,
   usePostChallenge,
   usePostMap,
   usePostSubmission,
@@ -88,7 +93,7 @@ import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";
 import { toast } from "react-toastify";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
@@ -352,7 +357,7 @@ export function MapCampaignUrlInfoBox({ campaign, map = null }) {
           <>
             <InfoBoxIconTextLine
               key={index + "-1"}
-              text={<StyledExternalLink href={item[0]}>{item[0]}</StyledExternalLink>}
+              text={<MapCampaignUrlInfoBoxUrl url={item[0]} />}
               isSecondary
             />
             <InfoBoxIconTextLine
@@ -381,6 +386,49 @@ export function MapCampaignUrlInfoBox({ campaign, map = null }) {
         </>
       )}
     </InfoBox>
+  );
+}
+function MapCampaignUrlInfoBoxUrl({ url }) {
+  const theme = useTheme();
+  const isMdScreen = useMediaQuery((theme) => theme.breakpoints.up("md"));
+  const modalHook = useModal();
+  const { mutate: getLink } = useGetModDirectDownloadLink((data) => {
+    setLink(data.download_url);
+  });
+  const [link, setLink] = useState(null);
+  const isGamebananaUrl = url.indexOf("gamebanana.com") !== 0;
+
+  // Use effect to fetch the link when the modal is opened
+  useEffect(() => {
+    if (modalHook.isVisible && isGamebananaUrl && link === null) {
+      getLink(url);
+    }
+  }, [modalHook.isVisible]);
+
+  return (
+    <Stack direction="row" gap={0.25} alignItems="center">
+      <StyledExternalLink href={url}>{isGamebananaUrl ? "GameBanana" : url}</StyledExternalLink>
+      {isGamebananaUrl && isMdScreen && (
+        <IconButton onClick={modalHook.open}>
+          <FontAwesomeIcon icon={faDownload} size="2xs" fixedWidth />
+        </IconButton>
+      )}
+      <CustomModal maxWidth="xs" modalHook={modalHook} options={{ hideFooter: true }}>
+        <Stack direction="row" justifyContent="space-around">
+          {!link ? (
+            <Stack direction="row" alignItems="center" gap={2}>
+              <Typography variant="body1">Fetching link from GameBanana</Typography>
+              <Typography variant="body1">-</Typography>
+              <LoadingSpinner size="small" />
+            </Stack>
+          ) : (
+            <StyledExternalLink href={link} style={{ fontWeight: "bold", fontSize: "120%" }}>
+              Download via Olympus
+            </StyledExternalLink>
+          )}
+        </Stack>
+      </CustomModal>
+    </Stack>
   );
 }
 
