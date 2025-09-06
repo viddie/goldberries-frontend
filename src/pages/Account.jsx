@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import {
   BasicContainerBox,
+  CopyToClipboardButton,
   CountrySelect,
   CustomIconButton,
   ErrorDisplay,
@@ -30,10 +31,13 @@ import { useAuth } from "../hooks/AuthProvider";
 import {
   getQueryData,
   useDeleteOwnAccount,
+  useGetApiKey,
   useGetShowcaseSubmissions,
   usePostAccount,
   usePostPlayerSelf,
   usePostShowcase,
+  useRerollApiKey,
+  useRevokeApiKey,
 } from "../hooks/useApi";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
@@ -953,7 +957,71 @@ export function UserAccountRenameForm() {
 }
 
 export function UserAccountDangerZoneForm() {
-  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone" });
+  return (
+    <>
+      <UserAccountApiKeyForm />
+      <Divider sx={{ my: 2 }} />
+      <UserAccountDangerZoneDeleteAccount />
+    </>
+  );
+}
+
+export function UserAccountApiKeyForm() {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.api_key" });
+  const query = useGetApiKey();
+  const { mutate: rerollApiKey, isLoading: isRerolling } = useRerollApiKey();
+  const { mutate: revokeApiKey, isLoading: isRevoking } = useRevokeApiKey(() => {});
+
+  const data = getQueryData(query);
+  const api_key = data?.api_key;
+
+  return (
+    <>
+      <Typography variant="h6">{t("label")}</Typography>
+      <Typography variant="body2" gutterBottom>
+        {t("description")}
+      </Typography>
+
+      {query.isLoading ? (
+        <LoadingSpinner size="small" />
+      ) : !api_key ? (
+        <Stack direction="column" gap={1}>
+          <Typography variant="body2">{t("description_not_set")}</Typography>
+          <Button variant="contained" onClick={() => rerollApiKey()} disabled={isRerolling}>
+            {t("buttons.create")}
+          </Button>
+        </Stack>
+      ) : (
+        <>
+          <Grid container spacing={1} sx={{ mb: 1 }}>
+            <Grid item xs>
+              <TextField type="password" value={api_key} fullWidth InputProps={{ readOnly: true }} />
+            </Grid>
+            <Grid item xs="auto" display="flex" alignItems="stretch">
+              <CopyToClipboardButton text={api_key} />
+            </Grid>
+          </Grid>
+          <Stack direction="row" gap={2}>
+            <Button variant="contained" onClick={() => rerollApiKey()} disabled={isRerolling || isRevoking}>
+              {t("buttons.reroll")}
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => revokeApiKey()}
+              disabled={isRevoking || isRerolling}
+            >
+              {t("buttons.revoke")}
+            </Button>
+          </Stack>
+        </>
+      )}
+    </>
+  );
+}
+
+export function UserAccountDangerZoneDeleteAccount() {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.delete_account" });
   const auth = useAuth();
   const navigate = useNavigate();
   const { mutate: deleteAccount } = useDeleteOwnAccount(() => {

@@ -92,6 +92,9 @@ import {
   postBadgePlayer,
   deleteBadgePlayer,
   fetchModDirectDownloadLink,
+  fetchApiKey,
+  rerollApiKey,
+  revokeApiKey,
 } from "../util/api";
 import { errorToast } from "../util/util";
 import { toast } from "react-toastify";
@@ -1093,6 +1096,39 @@ export function useDeletePost(onSuccess) {
       queryClient.invalidateQueries(["posts_paginated"]);
       if (onSuccess) onSuccess(response, id);
       else toast.success("Post deleted");
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /auth/api-key
+export function useGetApiKey() {
+  return useQuery({
+    queryKey: ["api_key"],
+    queryFn: () => fetchApiKey(),
+    onError: errorToast,
+  });
+}
+export function useRerollApiKey(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => rerollApiKey(),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries(["api_key"]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useRevokeApiKey(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => revokeApiKey(),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries(["api_key"]);
+      if (onSuccess) onSuccess(response);
+      else toast.success("API Key revoked");
     },
     onError: errorToast,
   });

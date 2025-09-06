@@ -713,3 +713,15 @@ export function deletePost(id) {
   return axios.delete("/post", { params: { id: id } });
 }
 //#endregion
+
+//#region /auth/api-key
+export function fetchApiKey() {
+  return axios.get("/auth/api-key");
+}
+export function rerollApiKey() {
+  return axios.post("/auth/api-key");
+}
+export function revokeApiKey() {
+  return axios.delete("/auth/api-key");
+}
+//#endregion

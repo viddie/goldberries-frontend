@@ -126,6 +126,9 @@
       "copy_link": "Copy Link",
       "copied": "Copied!"
     },
+    "copy_to_clipboard_button": {
+      "copy": "Copy"
+    },
     "recent_submissions": {
       "title": "Recent Submissions",
       "show": "Show:",
@@ -904,10 +907,24 @@
       },
       "danger_zone": {
         "label": "Danger Zone",
-        "description": "Permanently delete your account.",
-        "note": "Please note that this does not delete your associated player! Any submissions will remain unchanged, and your 'player' will become unclaimed again. If you want to remove your name from this website or mass delete your own submissions, contact a team member!",
-        "confirm": "Type 'DELETE' to confirm",
-        "button": "Delete Account"
+        "api_key": {
+          "label": "API Key",
+          "description": "Your API Key can be used to access the goldberries.net API in your name. Keep it secret!",
+          "description_not_set": "You don't have an API key set yet.",
+          "buttons": {
+            "copy": "Copy",
+            "reroll": "Change Key",
+            "create": "Create",
+            "revoke": "Revoke"
+          }
+        },
+        "delete_account": {
+          "label": "Danger Zone",
+          "description": "Permanently delete your account.",
+          "note": "Please note that this does not delete your associated player! Any submissions will remain unchanged, and your 'player' will become unclaimed again. If you want to remove your name from this website or mass delete your own submissions, contact a team member!",
+          "confirm": "Type 'DELETE' to confirm",
+          "button": "Delete Account"
+        }
       }
     }
   },
