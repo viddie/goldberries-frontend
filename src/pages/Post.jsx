@@ -692,7 +692,6 @@ function pluginEmojis() {
       parent.children = parent.children.concat(definition);
       parent.children = parent.children.concat(last);
     });
-    // console.log("tree after emoji pass:", JSON.stringify(tree, null, 2));
   };
 }
 
@@ -732,7 +731,6 @@ function pluginEmojis() {
 //       // Replace the original node with the new definition
 //       parent.children.splice(position, 1, ...definition);
 //     });
-//     console.log("tree after emoji pass:", JSON.stringify(tree, null, 2));
 //   };
 // }
 //#endregion

@@ -132,7 +132,6 @@ export function FormCampaign({ campaign, onSave, ...props }) {
   });
   const errors = form.formState.errors;
   const onUpdateSubmit = form.handleSubmit((data) => {
-    console.log("Submitting campaign", data);
     //Unset maps field to save data
     data.maps = undefined;
     postCampaign(data);
@@ -149,7 +148,6 @@ export function FormCampaign({ campaign, onSave, ...props }) {
         return;
       }
       setModFetchState(2);
-      console.log("Mod info", response);
       //Set the form values
       form.setValue("name", response.name, { shouldDirty: true, shouldTouch: true });
       form.setValue("author_gb_id", response.authorId);

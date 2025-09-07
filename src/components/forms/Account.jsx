@@ -116,7 +116,6 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
   }, [account]);
 
   const formAccount = form.watch();
-  console.log(formAccount.role);
 
   return (
     <form {...props}>

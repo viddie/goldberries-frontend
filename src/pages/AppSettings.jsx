@@ -684,7 +684,6 @@ function AppSettingsDifficultyColorsForm() {
   };
   const importFromClipboard = () => {
     navigator.clipboard.readText().then((text) => {
-      console.log("Read from clipboard:", text);
       try {
         const data = JSON.parse(text);
         form.setValue("difficultyColors", data);

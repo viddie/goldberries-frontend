@@ -106,7 +106,6 @@ export function FormPost({ post, setStoredPost, onSave, ...props }) {
 
   const formPost = form.watch();
   const contentDebounced = useDebounce(formPost.content, 500);
-  console.log("contentDebounced", contentDebounced);
 
   useEffect(() => {
     if (newPost) {

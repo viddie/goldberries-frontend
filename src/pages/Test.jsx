@@ -74,7 +74,6 @@ function NewColorsTab({}) {
   const [saturation, setSaturation] = useState(100);
   const [gap, setGap] = useState(false);
 
-  console.log(difficulties);
   const getColor = (difficulty) => {
     const color = new Color({
       h: getDifficultyHue(difficulty, hueStart, huePerStep),

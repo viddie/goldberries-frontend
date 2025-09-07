@@ -120,8 +120,6 @@ function RejectedChallengesTableResults({ challenges }) {
   }, {});
   const keys = Object.keys(groupedChallenges);
 
-  console.log("groupedChallenges", groupedChallenges, "keys", keys);
-
   return (
     <TableContainer component={Paper}>
       <Table size="small">

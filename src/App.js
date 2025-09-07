@@ -753,7 +753,6 @@ export function Layout() {
     search: {
       name: t("search"),
       action: () => {
-        console.log("Clicked search");
         searchOpenRef.current(true);
       },
       icon: <FontAwesomeIcon icon={faSearch} />,

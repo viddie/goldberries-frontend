@@ -154,7 +154,6 @@ function ClaimPlayerCreateNewPlayer({ onGoBack }) {
   });
   const errors = form.formState.errors;
   const onSubmit = form.handleSubmit((data) => {
-    console.log(data);
     createPlayer({
       name: data.name,
     });

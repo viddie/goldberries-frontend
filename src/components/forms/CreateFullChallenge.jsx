@@ -128,7 +128,6 @@ export function FormCreateFullChallenge({ data, onSuccess, ...props }) {
   const { mutate: getModInfo } = useGetModInfo(
     (response) => {
       setModFetchState(2);
-      console.log("Mod info", response);
       //Set the form values
       form.setValue("campaign_name", response.name);
       form.setValue("campaign_author_gb_id", response.authorId);

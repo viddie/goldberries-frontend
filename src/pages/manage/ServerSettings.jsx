@@ -65,8 +65,6 @@ function ServerSettingsForm({ serverSettings }) {
     toast.success(t("feedback.updated"));
   });
 
-  // console.log(serverSettings);
-
   return (
     <Grid container>
       <Grid item xs={12}>

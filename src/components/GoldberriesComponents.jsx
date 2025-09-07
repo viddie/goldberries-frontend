@@ -426,7 +426,6 @@ export function DifficultySelectControlled({
   };
 
   const onChangeDifficulty = (id) => {
-    console.log("onChangeDifficulty", id);
     const difficulty = getQueryData(query).find((d) => d.id === id);
     if (!difficulty) {
       if (setDifficulty) setDifficulty(null);

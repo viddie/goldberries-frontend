@@ -893,8 +893,6 @@ export function UserAccountRenameForm() {
     return `${hours}h ${minutes}m`;
   };
 
-  console.log(errors);
-
   return (
     <>
       {auth.user.player === null && (

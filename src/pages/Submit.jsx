@@ -1401,8 +1401,6 @@ const MemoMultiUserSubmissionMapRow = memo(MultiUserSubmissionMapRow, (prevProps
     prevProps.mapData.time_taken === newProps.mapData.time_taken &&
     prevProps.multiVideo === newProps.multiVideo &&
     prevProps.index === newProps.index;
-
-  // console.log("ListItem propsEqual:", propsEqual);
   return propsEqual;
 });
 
@@ -1462,6 +1460,5 @@ function validateUrl(url, required = true) {
 }
 
 function validateUrlNotRequired(url) {
-  console.log("validateUrlNotRequired", url);
   return validateUrl(url, false);
 }

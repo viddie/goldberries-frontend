@@ -298,7 +298,6 @@ function DynamicRenderCampaignList({ index, campaignsGroup, type, lastCampaign, 
     );
   }
 
-  // console.log("--- Actually rendering DynamicRenderCampaignList", index);
   let previousCampaign = lastCampaign;
 
   return (
