@@ -1089,7 +1089,13 @@ export const EMOTES = [
   },
 ];
 // new emotes: destareline, catplush, catbucket and catbus (uncommon), frontstare (rare), catnodwashingmachine and Cat (ultra rare)
-export function WebsiteIcon({ height = "1em", style = {}, preventFunny = false, countLoad = false }) {
+export function WebsiteIcon({
+  height = "1em",
+  style = {},
+  preventFunny = false,
+  hideTooltip = false,
+  countLoad = false,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation.icon_tooltip" });
   const [loaded, setLoaded] = useLocalStorage("website_icon_loaded", 0);
 
@@ -1158,18 +1164,20 @@ export function WebsiteIcon({ height = "1em", style = {}, preventFunny = false, 
   );
   let styleToDisplay = useMemo(() => style, []);
 
-  return (
-    <TooltipLineBreaks title={text}>
-      <img
-        src={"/emotes/" + iconToDisplay.img}
-        alt={iconToDisplay.alt}
-        style={{
-          height: height,
-          ...styleToDisplay,
-        }}
-      />
-    </TooltipLineBreaks>
+  const imageElement = (
+    <img
+      src={"/emotes/" + iconToDisplay.img}
+      alt={iconToDisplay.alt}
+      style={{
+        height: height,
+        ...styleToDisplay,
+      }}
+    />
   );
+
+  if (hideTooltip) return imageElement;
+
+  return <TooltipLineBreaks title={text}>{imageElement}</TooltipLineBreaks>;
 }
 export const MemoWebsiteIcon = memo(WebsiteIcon);
 

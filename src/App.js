@@ -909,7 +909,7 @@ export function Layout() {
             <Typography variant="h6" noWrap component="div">
               <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
                 <Stack direction="row" gap={0.5} alignItems="center">
-                  <WebsiteIcon />
+                  <MemoWebsiteIcon />
                   <span>goldberries.net</span>
                 </Stack>
               </Link>
@@ -1016,7 +1016,7 @@ function MobileDrawer({ leftMenu, rightMenu, userMenu, closeDrawer }) {
         <Typography variant="h5" noWrap letterSpacing={0.6} component="div">
           <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
             <Stack direction="row" gap={0.5} alignItems="center">
-              <WebsiteIcon />
+              <MemoWebsiteIcon hideTooltip />
               <span>goldberries.net</span>
             </Stack>
           </Link>
