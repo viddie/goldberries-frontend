@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const StyledBigButton = styled(Paper)(({ theme, selected }) => ({
@@ -6,9 +6,9 @@ const StyledBigButton = styled(Paper)(({ theme, selected }) => ({
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
   border: selected ? `2px solid ${theme.palette.primary.main}` : "2px solid transparent",
-  backgroundColor: selected ? theme.palette.primary.light : theme.palette.background.paper,
+  backgroundColor: selected ? theme.palette.action.selected : theme.palette.background.paper,
   "&:hover": {
-    backgroundColor: selected ? theme.palette.primary.light : theme.palette.action.hover,
+    backgroundColor: selected ? theme.palette.action.selected : theme.palette.action.hover,
     transform: "translateY(-2px)",
     boxShadow: theme.shadows[4],
   },
