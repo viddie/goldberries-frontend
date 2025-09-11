@@ -95,6 +95,7 @@ import {
   fetchApiKey,
   rerollApiKey,
   revokeApiKey,
+  postReport,
 } from "../util/api";
 import { errorToast } from "../util/util";
 import { toast } from "react-toastify";
@@ -825,6 +826,16 @@ export function usePostBadgePlayer(onSuccess) {
     onSuccess: (response, data) => {
       queryClient.invalidateQueries(["badge_players", data.badge_id]);
       queryClient.invalidateQueries(["player"]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+
+export function usePostReport(onSuccess) {
+  return useMutation({
+    mutationFn: (data) => postReport(data),
+    onSuccess: (response, data) => {
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,

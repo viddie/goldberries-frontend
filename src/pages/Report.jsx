@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { useState } from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +18,7 @@ import {
   BasicContainerBox,
   HeadTitle,
 } from "../components/BasicComponents";
-import { postReport } from "../util/api";
+import { usePostReport } from "../hooks/useApi";
 
 // Topic structure with sub-topics
 const TOPICS = {
@@ -42,7 +41,10 @@ const TOPICS = {
 };
 
 export function PageReport() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const postReportMutation = usePostReport((response) => {
+    toast.success("Report submitted successfully!");
+    form.reset();
+  });
 
   const form = useForm({
     defaultValues: {
@@ -64,29 +66,18 @@ export function PageReport() {
     form.setValue("subTopic", "");
   };
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    setIsSubmitting(true);
-    try {
-      // Prepare the final topic string
-      let finalTopic = data.topic;
-      if (data.subTopic) {
-        finalTopic = `${data.topic} - ${data.subTopic}`;
-      }
-
-      await postReport({
-        topic: finalTopic,
-        message: data.message,
-        url: data.url || undefined,
-      });
-
-      toast.success("Report submitted successfully!");
-      form.reset();
-    } catch (error) {
-      console.error("Error submitting report:", error);
-      toast.error("Failed to submit report. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+  const onSubmit = form.handleSubmit((data) => {
+    // Prepare the final topic string
+    let finalTopic = data.topic;
+    if (data.subTopic) {
+      finalTopic = `${data.topic} - ${data.subTopic}`;
     }
+
+    postReportMutation.mutate({
+      topic: finalTopic,
+      message: data.message,
+      url: data.url || undefined,
+    });
   });
 
   return (
@@ -217,10 +208,10 @@ export function PageReport() {
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={isSubmitting}
+                disabled={postReportMutation.isLoading}
                 sx={{ alignSelf: "flex-start" }}
               >
-                {isSubmitting ? (
+                {postReportMutation.isLoading ? (
                   <>
                     <FontAwesomeIcon icon={faSpinner} spin style={{ marginRight: 8 }} />
                     Submitting...
