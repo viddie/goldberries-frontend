@@ -136,6 +136,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/en-gb";
 import { PageCredits } from "./pages/Credits";
+import { PageReport } from "./pages/Report";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";
 import { PageManageServerSettings } from "./pages/manage/ServerSettings";
 import { PageTest } from "./pages/Test";
@@ -306,6 +307,7 @@ const router = createBrowserRouter([
       { path: "server-costs/:status?", element: <PageServerCosts /> },
       { path: "api-docs", element: <ApiDocPage /> },
       { path: "legal-notice", element: <LegalNoticePage /> },
+      { path: "report", element: <PageReport /> },
       { path: "credits", element: <PageCredits /> },
 
       { path: "test/:tab?", element: <PageTest /> },
