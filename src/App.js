@@ -307,7 +307,7 @@ const router = createBrowserRouter([
       { path: "server-costs/:status?", element: <PageServerCosts /> },
       { path: "api-docs", element: <ApiDocPage /> },
       { path: "legal-notice", element: <LegalNoticePage /> },
-      { path: "report", element: <PageReport /> },
+      { path: "report/:topic?/:subtopic?", element: <PageReport /> },
       { path: "credits", element: <PageCredits /> },
 
       { path: "test/:tab?", element: <PageTest /> },
