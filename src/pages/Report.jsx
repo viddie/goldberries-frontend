@@ -14,11 +14,10 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import {
-  BasicContainerBox,
-  HeadTitle,
-} from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
 import { usePostReport } from "../hooks/useApi";
+import { FormOptions } from "../util/constants";
+import { useTranslation } from "react-i18next";
 
 // Topic structure with sub-topics
 const TOPICS = {
@@ -26,22 +25,24 @@ const TOPICS = {
     requiresUrl: true,
     subTopics: [],
   },
-  "Player": {
+  Player: {
     requiresUrl: true,
-    subTopics: ["Name", "About Me", "Links"],
+    subTopics: ["Name", "About Me", "Links", "Other"],
   },
-  "Submission": {
+  Submission: {
     requiresUrl: true,
-    subTopics: ["Unavailable video", "Inappropriate video", "Unreasonable difficulty opinion"],
+    subTopics: ["Unavailable video", "Inappropriate video", "Unreasonable difficulty opinion", "Other"],
   },
-  "Other": {
+  Other: {
     requiresUrl: false,
     subTopics: [],
   },
 };
 
 export function PageReport() {
-  const postReportMutation = usePostReport((response) => {
+  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
+
+  const { mutate: postReport, isLoading } = usePostReport((response) => {
     toast.success("Report submitted successfully!");
     form.reset();
   });
@@ -56,6 +57,7 @@ export function PageReport() {
   });
 
   const selectedTopic = form.watch("topic");
+  const selectedSubTopic = form.watch("subTopic");
   const topicConfig = TOPICS[selectedTopic];
   const requiresUrl = topicConfig?.requiresUrl || false;
   const hasSubTopics = topicConfig?.subTopics?.length > 0;
@@ -73,12 +75,14 @@ export function PageReport() {
       finalTopic = `${data.topic} - ${data.subTopic}`;
     }
 
-    postReportMutation.mutate({
+    postReport({
       topic: finalTopic,
       message: data.message,
       url: data.url || undefined,
     });
   });
+
+  const canSubmit = !!selectedTopic && (!hasSubTopics || !!selectedSubTopic) && !!form.getValues("message");
 
   return (
     <>
@@ -88,14 +92,14 @@ export function PageReport() {
           <Typography variant="h4" component="h1">
             Report
           </Typography>
-          
+
           <Typography variant="body1" color="text.secondary">
-            Use this form to report issues, problems with players or submissions, or provide feedback.
-            Please provide as much detail as possible to help us address your concern.
+            Use this form to report issues, problems with players or submissions, or provide feedback. Please
+            provide as much detail as possible to help us address your concern.
           </Typography>
 
           <form onSubmit={onSubmit}>
-            <Stack spacing={3}>
+            <Stack gap={2}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={hasSubTopics ? 6 : 12}>
                   <Controller
@@ -116,9 +120,7 @@ export function PageReport() {
                             </MenuItem>
                           ))}
                         </Select>
-                        {fieldState.error && (
-                          <FormHelperText>{fieldState.error.message}</FormHelperText>
-                        )}
+                        {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
                       </FormControl>
                     )}
                   />
@@ -140,9 +142,7 @@ export function PageReport() {
                               </MenuItem>
                             ))}
                           </Select>
-                          {fieldState.error && (
-                            <FormHelperText>{fieldState.error.message}</FormHelperText>
-                          )}
+                          {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
                         </FormControl>
                       )}
                     />
@@ -153,13 +153,7 @@ export function PageReport() {
               <Controller
                 name="url"
                 control={form.control}
-                rules={{
-                  required: requiresUrl ? "URL is required for this topic" : false,
-                  pattern: {
-                    value: /^https?:\/\/.+/,
-                    message: "Please enter a valid URL starting with http:// or https://",
-                  },
-                }}
+                rules={requiresUrl ? FormOptions.UrlRequired(t_ff) : undefined}
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
@@ -208,10 +202,10 @@ export function PageReport() {
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={postReportMutation.isLoading}
+                disabled={isLoading || !canSubmit}
                 sx={{ alignSelf: "flex-start" }}
               >
-                {postReportMutation.isLoading ? (
+                {isLoading ? (
                   <>
                     <FontAwesomeIcon icon={faSpinner} spin style={{ marginRight: 8 }} />
                     Submitting...
