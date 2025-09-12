@@ -1,10 +1,4 @@
-import {
-  Button,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Button, Stack, TextField, Typography, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,140 +11,6 @@ import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-// Stage Components
-function TopicSelectionStage({ topics, selectedTopic, onTopicSelect }) {
-  return (
-    <Box>
-      <Typography variant="h5" gutterBottom>
-        What would you like to report?
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Choose the main category that best describes your report
-      </Typography>
-      <BigButtonGrid
-        options={Object.keys(topics).map((topicId) => ({
-          value: topicId,
-          label: topics[topicId].name,
-          description: topics[topicId].description,
-        }))}
-        selectedValue={selectedTopic}
-        onSelect={onTopicSelect}
-        columns={2}
-      />
-    </Box>
-  );
-}
-
-function SubtopicSelectionStage({ topicConfig, selectedSubTopic, onSubtopicSelect, onBack }) {
-  return (
-    <Box>
-      <Typography variant="h5" gutterBottom>
-        Select a specific area
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Choose the specific aspect of "{topicConfig.name}" you want to report
-      </Typography>
-      <BigButtonGrid
-        options={topicConfig.subTopics.map(sub => ({
-          value: sub.id,
-          label: sub.name,
-        }))}
-        selectedValue={selectedSubTopic}
-        onSelect={onSubtopicSelect}
-        columns={2}
-      />
-      <Box sx={{ mt: 3 }}>
-        <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
-          Back to Topics
-        </Button>
-      </Box>
-    </Box>
-  );
-}
-
-function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onSubmit, onBack, isLoading, canSubmit, t_ff }) {
-  return (
-    <Box>
-      <Typography variant="h5" gutterBottom>
-        Provide details
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Selected: {topicConfig?.name || selectedTopic}
-        {selectedSubTopic && topicConfig?.subTopics?.find(sub => sub.id === selectedSubTopic)?.name && 
-          ` → ${topicConfig.subTopics.find(sub => sub.id === selectedSubTopic).name}`}
-      </Typography>
-
-      <form onSubmit={onSubmit}>
-        <Stack gap={3}>
-          <Controller
-            name="url"
-            control={form.control}
-            rules={topicConfig?.requiresUrl ? FormOptions.UrlRequired(t_ff) : undefined}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                label={topicConfig?.requiresUrl ? "URL *" : "URL (optional)"}
-                placeholder="https://example.com"
-                fullWidth
-                error={!!fieldState.error}
-                helperText={
-                  fieldState.error?.message ||
-                  (topicConfig?.requiresUrl
-                    ? "Please provide a URL related to your report"
-                    : "Optionally provide a relevant URL")
-                }
-              />
-            )}
-          />
-
-          <Controller
-            name="message"
-            control={form.control}
-            rules={{
-              required: "Please provide a detailed message",
-              minLength: {
-                value: 10,
-                message: "Message must be at least 10 characters long",
-              },
-            }}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                label="Message *"
-                placeholder="Please describe your report in detail..."
-                multiline
-                rows={6}
-                fullWidth
-                error={!!fieldState.error}
-                helperText={
-                  fieldState.error?.message ||
-                  "Provide as much detail as possible to help us understand and address your concern"
-                }
-              />
-            )}
-          />
-
-          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-            <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
-              Back
-            </Button>
-
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={isLoading || !canSubmit}
-              endIcon={isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faArrowRight} />}
-            >
-              {isLoading ? "Submitting..." : "Submit Report"}
-            </Button>
-          </Stack>
-        </Stack>
-      </form>
-    </Box>
-  );
-}
-
 // Topic structure with sub-topics
 const TOPICS = {
   "bug-report": {
@@ -159,29 +19,29 @@ const TOPICS = {
     subTopics: [],
     description: "Report technical issues or bugs you've encountered",
   },
-  "player": {
+  player: {
     name: "Player",
     requiresUrl: true,
     subTopics: [
-      { id: "name", name: "Name" },
-      { id: "about-me", name: "About Me" },
-      { id: "links", name: "Links" },
+      { id: "name", name: "Inappropriate Name" },
+      { id: "about-me", name: "Inappropriate 'About Me'" },
+      { id: "links", name: "Inappropriate Links" },
       { id: "other", name: "Other" },
     ],
     description: "Issues related to player profiles or information",
   },
-  "submission": {
+  submission: {
     name: "Submission",
     requiresUrl: true,
     subTopics: [
-      { id: "unavailable-video", name: "Unavailable video" },
-      { id: "inappropriate-video", name: "Inappropriate video" },
+      { id: "unavailable-video", name: "Unavailable Video" },
+      { id: "inappropriate-video", name: "Inappropriate Video" },
       { id: "unreasonable-difficulty-opinion", name: "Unreasonable difficulty opinion" },
       { id: "other", name: "Other" },
     ],
     description: "Problems with submitted content or videos",
   },
-  "other": {
+  other: {
     name: "Other",
     requiresUrl: false,
     subTopics: [],
@@ -190,10 +50,9 @@ const TOPICS = {
 };
 
 export function PageReport() {
-  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
   const { topic: urlTopic, subtopic: urlSubtopic } = useParams();
   const navigate = useNavigate();
-  
+
   // Decode URL parameters
   const decodedTopic = urlTopic ? decodeURIComponent(urlTopic) : "";
   const decodedSubtopic = urlSubtopic ? decodeURIComponent(urlSubtopic) : "";
@@ -226,7 +85,7 @@ export function PageReport() {
       const topicConfig = TOPICS[decodedTopic];
       if (topicConfig.subTopics.length > 0 && decodedSubtopic) {
         // Check if subtopic exists
-        const subtopicExists = topicConfig.subTopics.some(sub => sub.id === decodedSubtopic);
+        const subtopicExists = topicConfig.subTopics.some((sub) => sub.id === decodedSubtopic);
         if (subtopicExists) {
           setCurrentStage(3);
         } else {
@@ -248,7 +107,7 @@ export function PageReport() {
   const handleTopicSelect = (topicId) => {
     form.setValue("topic", topicId);
     form.setValue("subTopic", "");
-    
+
     const topicConfig = TOPICS[topicId];
     if (topicConfig?.subTopics?.length > 0) {
       setCurrentStage(2);
@@ -270,7 +129,7 @@ export function PageReport() {
   const handleBack = () => {
     const topicConfig = TOPICS[selectedTopic];
     const hasSubTopics = topicConfig?.subTopics?.length > 0;
-    
+
     if (currentStage === 3 && hasSubTopics) {
       setCurrentStage(2);
       navigate(`/report/${encodeURIComponent(selectedTopic)}`);
@@ -286,9 +145,9 @@ export function PageReport() {
     // Prepare the final topic string using display names
     const topicConfig = TOPICS[data.topic];
     let finalTopic = topicConfig?.name || data.topic;
-    
+
     if (data.subTopic) {
-      const subtopicConfig = topicConfig?.subTopics?.find(sub => sub.id === data.subTopic);
+      const subtopicConfig = topicConfig?.subTopics?.find((sub) => sub.id === data.subTopic);
       const subtopicName = subtopicConfig?.name || data.subTopic;
       finalTopic = `${finalTopic} - ${subtopicName}`;
     }
@@ -300,7 +159,8 @@ export function PageReport() {
     });
   });
 
-  const canSubmit = !!selectedTopic && (!topicConfig?.subTopics?.length || !!selectedSubTopic) && !!form.getValues("message");
+  const canSubmit =
+    !!selectedTopic && (!topicConfig?.subTopics?.length || !!selectedSubTopic) && !!form.getValues("message");
 
   return (
     <>
@@ -346,11 +206,170 @@ export function PageReport() {
               onBack={handleBack}
               isLoading={isLoading}
               canSubmit={canSubmit}
-              t_ff={t_ff}
             />
           )}
         </Stack>
       </BasicContainerBox>
     </>
+  );
+}
+
+// Stage Components
+function TopicSelectionStage({ topics, selectedTopic, onTopicSelect }) {
+  return (
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        What would you like to report?
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Choose the main category that best describes your report
+      </Typography>
+      <BigButtonGrid
+        options={Object.keys(topics).map((topicId) => ({
+          value: topicId,
+          label: topics[topicId].name,
+          description: topics[topicId].description,
+        }))}
+        selectedValue={selectedTopic}
+        onSelect={onTopicSelect}
+        columns={2}
+      />
+    </Box>
+  );
+}
+
+function SubtopicSelectionStage({ topicConfig, selectedSubTopic, onSubtopicSelect, onBack }) {
+  return (
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        Select a specific area
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Choose the specific aspect of "{topicConfig.name}" you want to report
+      </Typography>
+      <BigButtonGrid
+        options={topicConfig.subTopics.map((sub) => ({
+          value: sub.id,
+          label: sub.name,
+        }))}
+        selectedValue={selectedSubTopic}
+        onSelect={onSubtopicSelect}
+        columns={2}
+      />
+      <Box sx={{ mt: 3 }}>
+        <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
+          Back to Topics
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
+function DetailsStage({
+  form,
+  topicConfig,
+  selectedTopic,
+  selectedSubTopic,
+  onSubmit,
+  onBack,
+  isLoading,
+  canSubmit,
+}) {
+  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
+
+  return (
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        Provide details
+      </Typography>
+      <Stack direction="row" gap={1} sx={{ mb: 3 }} alignItems="center">
+        <Typography variant="body2" color="text.secondary">
+          Selected: {topicConfig?.name || selectedTopic}
+        </Typography>
+        {selectedSubTopic && (
+          <>
+            <FontAwesomeIcon icon={faArrowRight} />
+            <Typography variant="body2" color="text.secondary">
+              {topicConfig?.subTopics?.find((sub) => sub.id === selectedSubTopic)?.name &&
+                topicConfig.subTopics.find((sub) => sub.id === selectedSubTopic).name}
+            </Typography>
+          </>
+        )}
+      </Stack>
+
+      <form onSubmit={onSubmit}>
+        <Stack gap={3}>
+          <Controller
+            name="url"
+            control={form.control}
+            rules={topicConfig?.requiresUrl ? FormOptions.UrlRequired(t_ff) : undefined}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label={topicConfig?.requiresUrl ? "URL *" : "URL (optional)"}
+                placeholder="https://example.com"
+                fullWidth
+                error={!!fieldState.error}
+                helperText={
+                  fieldState.error?.message ||
+                  (topicConfig?.requiresUrl
+                    ? "Please provide a URL related to your report"
+                    : "Optionally provide a relevant URL")
+                }
+              />
+            )}
+          />
+
+          <Controller
+            name="message"
+            control={form.control}
+            rules={{
+              required: "Please provide a detailed message",
+              minLength: {
+                value: 3,
+                message: "Message must be at least 10 characters long",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Message *"
+                placeholder="Please describe your report in detail..."
+                multiline
+                rows={6}
+                fullWidth
+                error={!!fieldState.error}
+                helperText={
+                  fieldState.error?.message ||
+                  "Provide as much detail as possible to help us understand and address your concern"
+                }
+              />
+            )}
+          />
+
+          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
+            <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
+              Back
+            </Button>
+
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={isLoading || !canSubmit}
+              endIcon={
+                isLoading ? (
+                  <FontAwesomeIcon icon={faSpinner} spin />
+                ) : (
+                  <FontAwesomeIcon icon={faArrowRight} />
+                )
+              }
+            >
+              {isLoading ? "Submitting..." : "Submit Report"}
+            </Button>
+          </Stack>
+        </Stack>
+      </form>
+    </Box>
   );
 }
