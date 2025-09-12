@@ -8,7 +8,7 @@ import { BigButtonGrid } from "../components/BigButtonGrid";
 import { usePostReport } from "../hooks/useApi";
 import { FormOptions } from "../util/constants";
 import { useTranslation, Trans } from "react-i18next";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/AuthProvider";
 
@@ -39,6 +39,7 @@ const TOPICS = {
 
 export function PageReport() {
   const { topic: urlTopic, subtopic: urlSubtopic } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(undefined, { keyPrefix: "report" });
   const auth = useAuth();
@@ -72,7 +73,7 @@ export function PageReport() {
       setCurrentStage(1);
       // If they tried to access a specific topic/subtopic, redirect to base report page
       if (decodedTopic || decodedSubtopic) {
-        navigate("/report");
+        navigate("/report", { replace: true });
       }
       return;
     }
@@ -92,12 +93,14 @@ export function PageReport() {
       } else {
         setCurrentStage(3);
       }
+    } else if (!decodedTopic) {
+      setCurrentStage(1);
     } else if (decodedTopic) {
       // Invalid topic in URL, reset to stage 1
-      navigate("/report");
+      navigate("/report", { replace: true });
       setCurrentStage(1);
     }
-  }, [decodedTopic, decodedSubtopic, navigate, canSubmitReport]);
+  }, [decodedTopic, decodedSubtopic, navigate, canSubmitReport, location]);
 
   // Handle topic selection
   const handleTopicSelect = (topicId) => {
