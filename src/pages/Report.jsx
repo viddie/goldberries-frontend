@@ -40,7 +40,6 @@ export function PageReport() {
   const { topic: urlTopic, subtopic: urlSubtopic } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(undefined, { keyPrefix: "report" });
-  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
 
   // Decode URL parameters
   const decodedTopic = urlTopic ? decodeURIComponent(urlTopic) : "";

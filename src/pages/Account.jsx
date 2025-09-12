@@ -122,7 +122,7 @@ export function PageAccount() {
         {t("title")}
       </Typography>
 
-      {auth.user.player === null && auth.user.claimed_player === null ? (
+      {!auth.hasPlayerClaimed && auth.user.claimed_player === null ? (
         <>
           <Typography>
             <Trans
@@ -895,7 +895,7 @@ export function UserAccountRenameForm() {
 
   return (
     <>
-      {auth.user.player === null && (
+      {!auth.hasPlayerClaimed && (
         <>
           <Typography variant="body1" gutterBottom>
             {t("no_player_claimed")}
@@ -922,7 +922,7 @@ export function UserAccountRenameForm() {
           <TextField
             label={t("new_name")}
             fullWidth
-            disabled={auth.user.player === null}
+            disabled={!auth.hasPlayerClaimed}
             {...form.register("name", FormOptions.PlayerName(t_ff))}
             error={!!errors.name}
             helperText={errors.name?.message}
@@ -942,7 +942,7 @@ export function UserAccountRenameForm() {
           <Button
             variant="contained"
             color="primary"
-            disabled={auth.user.player === null || !form.formState.isValid || !canRename}
+            disabled={!auth.hasPlayerClaimed || !form.formState.isValid || !canRename}
             onClick={onSubmit}
             startIcon={<FontAwesomeIcon icon={faEdit} />}
           >
