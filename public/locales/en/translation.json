@@ -523,7 +523,8 @@
       "rules": "Rules",
       "faq": "FAQ",
       "news": "News",
-      "changelog": "Changelog"
+      "changelog": "Changelog",
+      "report": "Report an Issue"
     },
     "internal_menu": {
       "name": "Internal",
@@ -1864,11 +1865,11 @@
       },
       "subtopic_selection": {
         "title": "Select a specific area",
-        "description": "Choose the specific aspect of \"{topic}\" you want to report"
+        "description": "Choose the specific aspect of \"{{topic}}\" you want to report"
       },
       "details": {
         "title": "Provide details",
-        "selected_label": "Selected: {topic}",
+        "selected_label": "Selected: {{topic}}",
         "url_label": "URL *",
         "url_label_optional": "URL (optional)",
         "url_required_help": "Please provide a URL related to your report",
@@ -1879,7 +1880,7 @@
       }
     },
     "topics": {
-      "bug-report": {
+      "bug": {
         "name": "Bug Report",
         "description": "Report technical issues or bugs you've encountered"
       },
@@ -1911,7 +1912,7 @@
           "inappropriate-video": {
             "name": "Inappropriate Video"
           },
-          "unreasonable-difficulty-opinion": {
+          "unreasonable-opinion": {
             "name": "Unreasonable difficulty opinion"
           },
           "other": {
@@ -1932,7 +1933,7 @@
     },
     "validation": {
       "message_required": "Please provide a detailed message",
-      "message_min_length": "Message must be at least 10 characters long"
+      "message_min_length": "Message must be at least 3 characters long"
     },
     "feedback": {
       "success": "Report submitted successfully!"

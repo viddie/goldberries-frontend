@@ -13,25 +13,20 @@ import { useEffect, useState } from "react";
 
 // Topic structure with sub-topics
 const TOPICS = {
-  "bug-report": {
+  bug: {
     requiresUrl: true,
     subTopics: [],
   },
   player: {
     requiresUrl: true,
-    subTopics: [
-      { id: "name" },
-      { id: "about-me" },
-      { id: "links" },
-      { id: "other" },
-    ],
+    subTopics: [{ id: "name" }, { id: "about-me" }, { id: "links" }, { id: "other" }],
   },
   submission: {
     requiresUrl: true,
     subTopics: [
       { id: "unavailable-video" },
       { id: "inappropriate-video" },
-      { id: "unreasonable-difficulty-opinion" },
+      { id: "unreasonable-opinion" },
       { id: "other" },
     ],
   },
@@ -201,8 +196,6 @@ export function PageReport() {
               onBack={handleBack}
               isLoading={isLoading}
               canSubmit={canSubmit}
-              t={t}
-              t_ff={t_ff}
             />
           )}
         </Stack>
@@ -235,9 +228,16 @@ function TopicSelectionStage({ topics, selectedTopic, onTopicSelect, t }) {
   );
 }
 
-function SubtopicSelectionStage({ topicConfig, selectedTopic, selectedSubTopic, onSubtopicSelect, onBack, t }) {
+function SubtopicSelectionStage({
+  topicConfig,
+  selectedTopic,
+  selectedSubTopic,
+  onSubtopicSelect,
+  onBack,
+  t,
+}) {
   const topicName = t(`topics.${selectedTopic}.name`);
-  
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
@@ -273,25 +273,28 @@ function DetailsStage({
   onBack,
   isLoading,
   canSubmit,
-  t,
-  t_ff,
 }) {
-  const topicName = t(`topics.${selectedTopic}.name`);
-  
+  const { t } = useTranslation(undefined, { keyPrefix: "report.stages.details" });
+  const { t: t_r } = useTranslation(undefined, { keyPrefix: "report" });
+  const { t: t_rb } = useTranslation(undefined, { keyPrefix: "report.buttons" });
+  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
+
+  const topicName = t_r(`topics.${selectedTopic}.name`);
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        {t("stages.details.title")}
+        {t("title")}
       </Typography>
       <Stack direction="row" gap={1} sx={{ mb: 3 }} alignItems="center">
         <Typography variant="body2" color="text.secondary">
-          {t("stages.details.selected_label", { topic: topicName })}
+          {t("selected_label", { topic: topicName })}
         </Typography>
         {selectedSubTopic && (
           <>
             <FontAwesomeIcon icon={faArrowRight} />
             <Typography variant="body2" color="text.secondary">
-              {t(`topics.${selectedTopic}.subtopics.${selectedSubTopic}.name`)}
+              {t_r(`topics.${selectedTopic}.subtopics.${selectedSubTopic}.name`)}
             </Typography>
           </>
         )}
@@ -306,15 +309,12 @@ function DetailsStage({
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                label={topicConfig?.requiresUrl ? t("stages.details.url_label") : t("stages.details.url_label_optional")}
-                placeholder="https://example.com"
+                label={topicConfig?.requiresUrl ? t("url_label") : t("url_label_optional")}
                 fullWidth
                 error={!!fieldState.error}
                 helperText={
                   fieldState.error?.message ||
-                  (topicConfig?.requiresUrl
-                    ? t("stages.details.url_required_help")
-                    : t("stages.details.url_optional_help"))
+                  (topicConfig?.requiresUrl ? t("url_required_help") : t("url_optional_help"))
                 }
               />
             )}
@@ -326,30 +326,27 @@ function DetailsStage({
             rules={{
               required: t("validation.message_required"),
               minLength: {
-                value: 10,
+                value: 3,
                 message: t("validation.message_min_length"),
               },
             }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                label={t("stages.details.message_label")}
-                placeholder={t("stages.details.message_placeholder")}
+                label={t("message_label")}
+                placeholder={t("message_placeholder")}
                 multiline
                 rows={6}
                 fullWidth
                 error={!!fieldState.error}
-                helperText={
-                  fieldState.error?.message ||
-                  t("stages.details.message_help")
-                }
+                helperText={fieldState.error?.message || t("message_help")}
               />
             )}
           />
 
           <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
             <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
-              {t("buttons.back")}
+              {t_rb("back")}
             </Button>
 
             <Button
@@ -365,7 +362,7 @@ function DetailsStage({
                 )
               }
             >
-              {isLoading ? t("buttons.submitting") : t("buttons.submit")}
+              {isLoading ? t_rb("submitting") : t_rb("submit")}
             </Button>
           </Stack>
         </Stack>

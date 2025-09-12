@@ -1,31 +1,70 @@
-import "./App.css";
 import { Outlet } from "react-router";
 import {
-  createBrowserRouter,
   Link,
-  RouterProvider,
   Navigate,
+  RouterProvider,
+  createBrowserRouter,
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import "./App.css";
 import { PageIndex } from "./pages/Index";
 
+import axios from "axios";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PageForgotPassword, PageLogin, PageRegister, PageVerifyEmail } from "./pages/Login";
 import { AuthProvider, useAuth } from "./hooks/AuthProvider";
-import axios from "axios";
-import { API_URL, CURRENT_VERSION } from "./util/constants";
-import { PageLogs } from "./pages/manage/Logs";
-import { PagePostOAuthLogin } from "./pages/PostOAuthLogin";
 import { Page403, Page404, PageNoPlayerClaimed } from "./pages/ErrorPages";
+import { PageForgotPassword, PageLogin, PageRegister, PageVerifyEmail } from "./pages/Login";
+import { PagePostOAuthLogin } from "./pages/PostOAuthLogin";
+import { PageLogs } from "./pages/manage/Logs";
+import { API_URL, CURRENT_VERSION } from "./util/constants";
 
+import { useTheme } from "@emotion/react";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import {
+  faBalanceScale,
+  faBan,
+  faBars,
+  faBug,
+  faChartBar,
+  faCheckToSlot,
+  faChevronDown,
+  faChevronLeft,
+  faCircleQuestion,
+  faCog,
+  faCogs,
+  faDatabase,
+  faEdit,
+  faFileUpload,
+  faHammer,
+  faHome,
+  faInbox,
+  faMailBulk,
+  faMoon,
+  faNewspaper,
+  faNoteSticky,
+  faPlayCircle,
+  faQuestion,
+  faRibbon,
+  faSearch,
+  faServer,
+  faSignIn,
+  faSignOut,
+  faSquarePollHorizontal,
+  faSun,
+  faTable,
+  faUser,
+  faUserAlt,
+  faUserEdit,
+  faUserNinja,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   AppBar,
   Box,
@@ -50,103 +89,58 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBalanceScale,
-  faBan,
-  faBandage,
-  faBars,
-  faChartBar,
-  faCheckCircle,
-  faCheckToSlot,
-  faChevronDown,
-  faChevronLeft,
-  faCircleQuestion,
-  faCog,
-  faCogs,
-  faDatabase,
-  faEdit,
-  faExclamationCircle,
-  faExclamationTriangle,
-  faFileUpload,
-  faHammer,
-  faHome,
-  faInbox,
-  faInfoCircle,
-  faMailBulk,
-  faMoon,
-  faNewspaper,
-  faNoteSticky,
-  faPlayCircle,
-  faPooStorm,
-  faQuestion,
-  faRibbon,
-  faSearch,
-  faServer,
-  faSignIn,
-  faSignOut,
-  faSquarePollHorizontal,
-  faSun,
-  faTable,
-  faUser,
-  faUserAlt,
-  faUserEdit,
-  faUserNinja,
-} from "@fortawesome/free-solid-svg-icons";
-import { createRef, useEffect, useState } from "react";
-import { PageGoldenList } from "./pages/GoldenList";
-import HoverMenu from "material-ui-popup-state/HoverMenu";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/en-gb";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
-import { PageSubmit } from "./pages/Submit";
-import { PageSubmission } from "./pages/Submission";
-import { PageChallenge } from "./pages/Challenge";
-import { PageMap } from "./pages/Map";
-import { PageClaimPlayer } from "./pages/ClaimPlayer";
-import { PageTopGoldenList } from "./pages/TopGoldenList";
-import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
-import { PageManageChallenges } from "./pages/manage/Challenges";
-import { PageManageAccounts } from "./pages/manage/Accounts";
-import { getQueryData, useGetServerSettings, useGetStatsVerifierTools } from "./hooks/useApi";
-import { PagePlayer } from "./pages/Player";
-import { PageCampaign } from "./pages/Campaign";
-import { PageAccount } from "./pages/Account";
-import { PageSearch } from "./pages/Search";
-import { PageRejectedMaps } from "./pages/RejectedMaps";
-import { getPlayerNameColorStyle } from "./util/data_util";
-import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
-import { PageAppSettings } from "./pages/AppSettings";
-import { PageSuggestions } from "./pages/Suggestions";
+import HoverMenu from "material-ui-popup-state/HoverMenu";
+import { createRef, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { GlobalNoticesIcon } from "./components/GlobalNotices";
 import {
   CampaignIcon,
   JournalIcon,
   MemoWebsiteIcon,
   ObjectiveIcon,
-  WebsiteIcon,
 } from "./components/GoldberriesComponents";
-import { PageMonthlyRecap } from "./pages/MonthlyRecap";
-import { PageServerCosts } from "./pages/ServerCosts";
-import { useTranslation } from "react-i18next";
-import { PageRules } from "./pages/Rules";
-import { PageFAQ } from "./pages/FAQ";
-import { PageStats } from "./pages/Stats";
-import { ApiDocPage } from "./pages/ApiDoc";
-import { useTheme } from "@emotion/react";
-import { LegalNoticePage } from "./pages/LegalNotice";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import "dayjs/locale/en-gb";
-import { PageCredits } from "./pages/Credits";
-import { PageReport } from "./pages/Report";
-import { GlobalNoticesIcon } from "./components/GlobalNotices";
-import { PageManageServerSettings } from "./pages/manage/ServerSettings";
-import { PageTest } from "./pages/Test";
-import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { PageFileUpload } from "./pages/manage/FileUpload";
-import { PagePostList } from "./pages/Post";
-import { PageManagePosts } from "./pages/manage/Posts";
-import { PageManageBadges } from "./pages/manage/Badges";
+import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
+import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
 import { useKeyboardShortcut } from "./hooks/useKeyboardShortcut";
+import { PageAccount } from "./pages/Account";
+import { ApiDocPage } from "./pages/ApiDoc";
+import { PageAppSettings } from "./pages/AppSettings";
+import { PageCampaign } from "./pages/Campaign";
+import { PageChallenge } from "./pages/Challenge";
+import { PageClaimPlayer } from "./pages/ClaimPlayer";
+import { PageCredits } from "./pages/Credits";
+import { PageFAQ } from "./pages/FAQ";
+import { PageGoldenList } from "./pages/GoldenList";
+import { LegalNoticePage } from "./pages/LegalNotice";
+import { PageMap } from "./pages/Map";
+import { PageMonthlyRecap } from "./pages/MonthlyRecap";
+import { PagePlayer } from "./pages/Player";
+import { PagePostList } from "./pages/Post";
+import { PageRejectedMaps } from "./pages/RejectedMaps";
+import { PageReport } from "./pages/Report";
+import { PageRules } from "./pages/Rules";
+import { PageSearch } from "./pages/Search";
+import { PageServerCosts } from "./pages/ServerCosts";
+import { PageStats } from "./pages/Stats";
+import { PageSubmission } from "./pages/Submission";
+import { PageSubmit } from "./pages/Submit";
+import { PageSuggestions } from "./pages/Suggestions";
+import { PageTest } from "./pages/Test";
+import { PageTopGoldenList } from "./pages/TopGoldenList";
+import { PageManageAccounts } from "./pages/manage/Accounts";
+import { PageManageBadges } from "./pages/manage/Badges";
+import { PageManageChallenges } from "./pages/manage/Challenges";
+import { PageFileUpload } from "./pages/manage/FileUpload";
+import { PageManagePosts } from "./pages/manage/Posts";
+import { PageManageServerSettings } from "./pages/manage/ServerSettings";
+import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
+import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
+import { getPlayerNameColorStyle } from "./util/data_util";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_URL;
@@ -799,9 +793,14 @@ export function Layout() {
           path: "/changelog",
           icon: <FontAwesomeIcon icon={faNoteSticky} />,
         },
+        { divider: true },
+        {
+          name: t("other_menu.report"),
+          path: "/report",
+          icon: <FontAwesomeIcon icon={faBug} />,
+        },
       ],
     },
-    suggestions: {},
   };
 
   if (auth.hasPlayerClaimed === true) {
