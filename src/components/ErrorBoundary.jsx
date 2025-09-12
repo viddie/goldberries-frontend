@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { CodeBlock } from "../pages/Rules";
 import { useTheme } from "@emotion/react";
+import { StyledExternalLink } from "./BasicComponents";
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -32,8 +33,9 @@ function ErrorComponent({ message }) {
         Something went wrong!
       </Typography>
       <Typography variant="body1" color="error">
-        Try refreshing your browser's cache (Ctrl + F5 in Firefox, Shift + F5 in Chrome) or ask in #gb-report
-        if the problem persists.
+        Try refreshing your browser's cache (Ctrl + F5 in Firefox, Shift + F5 in Chrome). If the problem
+        persists, send a report via <StyledExternalLink href="/report/bug">this form</StyledExternalLink> or
+        through #gb-report in the Discord server
       </Typography>
       {message && (
         <Typography variant="body1" color="error">

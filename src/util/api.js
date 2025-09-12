@@ -521,6 +521,10 @@ export function postBadge(data) {
 export function postBadgePlayer(data) {
   return axios.post("/badge/player", formatDataForApi(data));
 }
+
+export function postReport(data) {
+  return axios.post("/util/post-report", formatDataForApi(data));
+}
 //#endregion
 
 //#region == DELETE ==

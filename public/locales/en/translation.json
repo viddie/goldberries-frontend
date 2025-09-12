@@ -523,7 +523,8 @@
       "rules": "Rules",
       "faq": "FAQ",
       "news": "News",
-      "changelog": "Changelog"
+      "changelog": "Changelog",
+      "report": "Report an Issue"
     },
     "internal_menu": {
       "name": "Internal",
@@ -1852,6 +1853,91 @@
     "feedback": {
       "success": "File uploaded successfully",
       "copy_success": "Path copied to clipboard"
+    }
+  },
+  "report": {
+    "title": "Report",
+    "description": "Use this form to report issues, problems with players or submissions, or provide feedback. Please provide as much detail as possible. Your reports will be privately sent to the moderation team.",
+    "need_player": "You need to have <CustomLink to=\"/claim-player\">claimed a player</CustomLink> to submit a report.",
+    "stages": {
+      "topic_selection": {
+        "title": "What would you like to report?",
+        "description": "Choose the main category that best describes your report"
+      },
+      "subtopic_selection": {
+        "title": "Select a specific area",
+        "description": "Choose the specific aspect of \"{{topic}}\" you want to report"
+      },
+      "details": {
+        "title": "Provide details",
+        "selected_label": "Selected: {{topic}}",
+        "url_label": "URL *",
+        "url_label_optional": "URL (optional)",
+        "url_required_help": "Please provide a URL related to your report",
+        "url_optional_help": "Optionally provide a relevant URL",
+        "message_label": "Message *",
+        "message_placeholder": "Please describe your report in detail...",
+        "message_help": "Provide as much detail as possible to help us understand and address your concern"
+      }
+    },
+    "topics": {
+      "bug": {
+        "name": "Bug Report",
+        "description": "Report technical issues or bugs you've encountered"
+      },
+      "player": {
+        "name": "Player",
+        "description": "Issues related to player profiles or information",
+        "subtopics": {
+          "name": {
+            "name": "Inappropriate Name"
+          },
+          "about-me": {
+            "name": "Inappropriate 'About Me'"
+          },
+          "links": {
+            "name": "Inappropriate Links"
+          },
+          "other": {
+            "name": "Other"
+          }
+        }
+      },
+      "submission": {
+        "name": "Submission",
+        "description": "Problems with submitted content or videos",
+        "subtopics": {
+          "unavailable-video": {
+            "name": "Unavailable Video"
+          },
+          "inappropriate-video": {
+            "name": "Inappropriate Video"
+          },
+          "difficulty-opinion": {
+            "name": "Unreasonable difficulty opinion"
+          },
+          "other": {
+            "name": "Other"
+          }
+        }
+      },
+      "other": {
+        "name": "Other",
+        "description": "General feedback or other inquiries"
+      }
+    },
+    "buttons": {
+      "back": "Back",
+      "back_to_topics": "Back to Topics",
+      "submit": "Submit Report",
+      "submitting": "Submitting..."
+    },
+    "validation": {
+      "message_required": "Please provide a detailed message",
+      "message_min_length": "Message must be at least 3 characters long"
+    },
+    "feedback": {
+      "success": "Report submitted successfully!"
     }
   },
   "post": {
