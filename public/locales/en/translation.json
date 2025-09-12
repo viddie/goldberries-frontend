@@ -1857,7 +1857,8 @@
   },
   "report": {
     "title": "Report",
-    "description": "Use this form to report issues, problems with players or submissions, or provide feedback. Please provide as much detail as possible to help us address your concern.",
+    "description": "Use this form to report issues, problems with players or submissions, or provide feedback. Please provide as much detail as possible. Your reports will be privately sent to the moderation team.",
+    "need_player": "You need to have <CustomLink to=\"/player/claim\">claimed a player</CustomLink> to submit a report..",
     "stages": {
       "topic_selection": {
         "title": "What would you like to report?",
@@ -1912,7 +1913,7 @@
           "inappropriate-video": {
             "name": "Inappropriate Video"
           },
-          "unreasonable-opinion": {
+          "difficulty-opinion": {
             "name": "Unreasonable difficulty opinion"
           },
           "other": {

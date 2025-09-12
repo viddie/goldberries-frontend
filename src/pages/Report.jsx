@@ -26,7 +26,7 @@ const TOPICS = {
     subTopics: [
       { id: "unavailable-video" },
       { id: "inappropriate-video" },
-      { id: "unreasonable-opinion" },
+      { id: "difficulty-opinion" },
       { id: "other" },
     ],
   },
@@ -45,13 +45,6 @@ export function PageReport() {
   // Decode URL parameters
   const decodedTopic = urlTopic ? decodeURIComponent(urlTopic) : "";
   const decodedSubtopic = urlSubtopic ? decodeURIComponent(urlSubtopic) : "";
-
-  const { mutate: postReport, isLoading } = usePostReport((response) => {
-    toast.success(t("feedback.success"));
-    form.reset();
-    setCurrentStage(1);
-    navigate("/report");
-  });
 
   const form = useForm({
     defaultValues: {
@@ -130,25 +123,17 @@ export function PageReport() {
     }
   };
 
-  const onSubmit = form.handleSubmit((data) => {
-    // Prepare the final topic string using display names
-    const topicName = t(`topics.${data.topic}.name`);
-    let finalTopic = topicName;
-
-    if (data.subTopic) {
-      const subtopicName = t(`topics.${data.topic}.subtopics.${data.subTopic}.name`);
-      finalTopic = `${finalTopic} - ${subtopicName}`;
-    }
-
-    postReport({
-      topic: finalTopic,
-      message: data.message,
-      url: data.url || undefined,
+  // Handle form reset
+  const handleResetForm = () => {
+    form.reset({
+      topic: "",
+      subTopic: "",
+      message: "",
+      url: "",
     });
-  });
-
-  const canSubmit =
-    !!selectedTopic && (!topicConfig?.subTopics?.length || !!selectedSubTopic) && !!form.getValues("message");
+    setCurrentStage(1);
+    navigate("/report");
+  };
 
   return (
     <>
@@ -192,10 +177,8 @@ export function PageReport() {
               topicConfig={topicConfig}
               selectedTopic={selectedTopic}
               selectedSubTopic={selectedSubTopic}
-              onSubmit={onSubmit}
               onBack={handleBack}
-              isLoading={isLoading}
-              canSubmit={canSubmit}
+              onResetForm={handleResetForm}
             />
           )}
         </Stack>
@@ -264,22 +247,43 @@ function SubtopicSelectionStage({
   );
 }
 
-function DetailsStage({
-  form,
-  topicConfig,
-  selectedTopic,
-  selectedSubTopic,
-  onSubmit,
-  onBack,
-  isLoading,
-  canSubmit,
-}) {
+function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBack, onResetForm }) {
   const { t } = useTranslation(undefined, { keyPrefix: "report.stages.details" });
   const { t: t_r } = useTranslation(undefined, { keyPrefix: "report" });
   const { t: t_rb } = useTranslation(undefined, { keyPrefix: "report.buttons" });
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
 
   const topicName = t_r(`topics.${selectedTopic}.name`);
+
+  const { mutate: postReport, isLoading } = usePostReport((response) => {
+    toast.success(t("feedback.success"));
+    onResetForm();
+  });
+
+  const onSubmit = form.handleSubmit((data) => {
+    // Prepare the final topic string using display names
+    const topicName = t(`topics.${data.topic}.name`);
+    let finalTopic = topicName;
+
+    if (data.subTopic) {
+      const subtopicName = t(`topics.${data.topic}.subtopics.${data.subTopic}.name`);
+      finalTopic = `${finalTopic} - ${subtopicName}`;
+    }
+
+    postReport({
+      topic: finalTopic,
+      message: data.message,
+      url: data.url || undefined,
+    });
+  });
+
+  const message = form.watch("message");
+  const url = form.watch("url");
+  const canSubmit =
+    !!selectedTopic &&
+    (!topicConfig?.subTopics?.length || !!selectedSubTopic) &&
+    !!message &&
+    message.length >= 3;
 
   return (
     <Box>

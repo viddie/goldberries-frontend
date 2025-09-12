@@ -6,6 +6,7 @@ const StyledBigButton = styled(Paper)(({ theme, selected }) => ({
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
   border: selected ? `2px solid ${theme.palette.primary.main}` : "2px solid transparent",
+  userSelect: "none",
   backgroundColor: selected ? theme.palette.action.selected : theme.palette.background.paper,
   "&:hover": {
     backgroundColor: selected ? theme.palette.action.selected : theme.palette.action.hover,
