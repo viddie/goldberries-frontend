@@ -164,11 +164,8 @@ export function PageReport() {
 
           {/* Show message if user cannot submit reports */}
           {!canSubmitReport && (
-            <Typography variant="body1" color="text.secondary">
-              <Trans
-                i18nKey="report.need_player"
-                components={{ CustomLink: <StyledLink to="/player/claim" /> }}
-              />
+            <Typography variant="body1" color="error">
+              <Trans i18nKey="report.need_player" components={{ CustomLink: <StyledLink /> }} />
             </Typography>
           )}
 
