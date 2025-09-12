@@ -14,51 +14,45 @@ import { useEffect, useState } from "react";
 // Topic structure with sub-topics
 const TOPICS = {
   "bug-report": {
-    name: "Bug Report",
     requiresUrl: true,
     subTopics: [],
-    description: "Report technical issues or bugs you've encountered",
   },
   player: {
-    name: "Player",
     requiresUrl: true,
     subTopics: [
-      { id: "name", name: "Inappropriate Name" },
-      { id: "about-me", name: "Inappropriate 'About Me'" },
-      { id: "links", name: "Inappropriate Links" },
-      { id: "other", name: "Other" },
+      { id: "name" },
+      { id: "about-me" },
+      { id: "links" },
+      { id: "other" },
     ],
-    description: "Issues related to player profiles or information",
   },
   submission: {
-    name: "Submission",
     requiresUrl: true,
     subTopics: [
-      { id: "unavailable-video", name: "Unavailable Video" },
-      { id: "inappropriate-video", name: "Inappropriate Video" },
-      { id: "unreasonable-difficulty-opinion", name: "Unreasonable difficulty opinion" },
-      { id: "other", name: "Other" },
+      { id: "unavailable-video" },
+      { id: "inappropriate-video" },
+      { id: "unreasonable-difficulty-opinion" },
+      { id: "other" },
     ],
-    description: "Problems with submitted content or videos",
   },
   other: {
-    name: "Other",
     requiresUrl: false,
     subTopics: [],
-    description: "General feedback or other inquiries",
   },
 };
 
 export function PageReport() {
   const { topic: urlTopic, subtopic: urlSubtopic } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(undefined, { keyPrefix: "report" });
+  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
 
   // Decode URL parameters
   const decodedTopic = urlTopic ? decodeURIComponent(urlTopic) : "";
   const decodedSubtopic = urlSubtopic ? decodeURIComponent(urlSubtopic) : "";
 
   const { mutate: postReport, isLoading } = usePostReport((response) => {
-    toast.success("Report submitted successfully!");
+    toast.success(t("feedback.success"));
     form.reset();
     setCurrentStage(1);
     navigate("/report");
@@ -143,12 +137,11 @@ export function PageReport() {
 
   const onSubmit = form.handleSubmit((data) => {
     // Prepare the final topic string using display names
-    const topicConfig = TOPICS[data.topic];
-    let finalTopic = topicConfig?.name || data.topic;
+    const topicName = t(`topics.${data.topic}.name`);
+    let finalTopic = topicName;
 
     if (data.subTopic) {
-      const subtopicConfig = topicConfig?.subTopics?.find((sub) => sub.id === data.subTopic);
-      const subtopicName = subtopicConfig?.name || data.subTopic;
+      const subtopicName = t(`topics.${data.topic}.subtopics.${data.subTopic}.name`);
       finalTopic = `${finalTopic} - ${subtopicName}`;
     }
 
@@ -164,16 +157,15 @@ export function PageReport() {
 
   return (
     <>
-      <HeadTitle title="Report" />
+      <HeadTitle title={t("title")} />
       <BasicContainerBox maxWidth="md">
         <Stack gap={4}>
           <Typography variant="h4" component="h1">
-            Report
+            {t("title")}
           </Typography>
 
           <Typography variant="body1" color="text.secondary">
-            Use this form to report issues, problems with players or submissions, or provide feedback. Please
-            provide as much detail as possible to help us address your concern.
+            {t("description")}
           </Typography>
 
           {/* Stage 1: Topic Selection */}
@@ -182,6 +174,7 @@ export function PageReport() {
               topics={TOPICS}
               selectedTopic={selectedTopic}
               onTopicSelect={handleTopicSelect}
+              t={t}
             />
           )}
 
@@ -189,9 +182,11 @@ export function PageReport() {
           {currentStage === 2 && topicConfig?.subTopics?.length > 0 && (
             <SubtopicSelectionStage
               topicConfig={topicConfig}
+              selectedTopic={selectedTopic}
               selectedSubTopic={selectedSubTopic}
               onSubtopicSelect={handleSubTopicSelect}
               onBack={handleBack}
+              t={t}
             />
           )}
 
@@ -206,6 +201,8 @@ export function PageReport() {
               onBack={handleBack}
               isLoading={isLoading}
               canSubmit={canSubmit}
+              t={t}
+              t_ff={t_ff}
             />
           )}
         </Stack>
@@ -215,20 +212,20 @@ export function PageReport() {
 }
 
 // Stage Components
-function TopicSelectionStage({ topics, selectedTopic, onTopicSelect }) {
+function TopicSelectionStage({ topics, selectedTopic, onTopicSelect, t }) {
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        What would you like to report?
+        {t("stages.topic_selection.title")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Choose the main category that best describes your report
+        {t("stages.topic_selection.description")}
       </Typography>
       <BigButtonGrid
         options={Object.keys(topics).map((topicId) => ({
           value: topicId,
-          label: topics[topicId].name,
-          description: topics[topicId].description,
+          label: t(`topics.${topicId}.name`),
+          description: t(`topics.${topicId}.description`),
         }))}
         selectedValue={selectedTopic}
         onSelect={onTopicSelect}
@@ -238,19 +235,21 @@ function TopicSelectionStage({ topics, selectedTopic, onTopicSelect }) {
   );
 }
 
-function SubtopicSelectionStage({ topicConfig, selectedSubTopic, onSubtopicSelect, onBack }) {
+function SubtopicSelectionStage({ topicConfig, selectedTopic, selectedSubTopic, onSubtopicSelect, onBack, t }) {
+  const topicName = t(`topics.${selectedTopic}.name`);
+  
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        Select a specific area
+        {t("stages.subtopic_selection.title")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Choose the specific aspect of "{topicConfig.name}" you want to report
+        {t("stages.subtopic_selection.description", { topic: topicName })}
       </Typography>
       <BigButtonGrid
         options={topicConfig.subTopics.map((sub) => ({
           value: sub.id,
-          label: sub.name,
+          label: t(`topics.${selectedTopic}.subtopics.${sub.id}.name`),
         }))}
         selectedValue={selectedSubTopic}
         onSelect={onSubtopicSelect}
@@ -258,7 +257,7 @@ function SubtopicSelectionStage({ topicConfig, selectedSubTopic, onSubtopicSelec
       />
       <Box sx={{ mt: 3 }}>
         <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
-          Back to Topics
+          {t("buttons.back_to_topics")}
         </Button>
       </Box>
     </Box>
@@ -274,24 +273,25 @@ function DetailsStage({
   onBack,
   isLoading,
   canSubmit,
+  t,
+  t_ff,
 }) {
-  const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
-
+  const topicName = t(`topics.${selectedTopic}.name`);
+  
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        Provide details
+        {t("stages.details.title")}
       </Typography>
       <Stack direction="row" gap={1} sx={{ mb: 3 }} alignItems="center">
         <Typography variant="body2" color="text.secondary">
-          Selected: {topicConfig?.name || selectedTopic}
+          {t("stages.details.selected_label", { topic: topicName })}
         </Typography>
         {selectedSubTopic && (
           <>
             <FontAwesomeIcon icon={faArrowRight} />
             <Typography variant="body2" color="text.secondary">
-              {topicConfig?.subTopics?.find((sub) => sub.id === selectedSubTopic)?.name &&
-                topicConfig.subTopics.find((sub) => sub.id === selectedSubTopic).name}
+              {t(`topics.${selectedTopic}.subtopics.${selectedSubTopic}.name`)}
             </Typography>
           </>
         )}
@@ -306,15 +306,15 @@ function DetailsStage({
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                label={topicConfig?.requiresUrl ? "URL *" : "URL (optional)"}
+                label={topicConfig?.requiresUrl ? t("stages.details.url_label") : t("stages.details.url_label_optional")}
                 placeholder="https://example.com"
                 fullWidth
                 error={!!fieldState.error}
                 helperText={
                   fieldState.error?.message ||
                   (topicConfig?.requiresUrl
-                    ? "Please provide a URL related to your report"
-                    : "Optionally provide a relevant URL")
+                    ? t("stages.details.url_required_help")
+                    : t("stages.details.url_optional_help"))
                 }
               />
             )}
@@ -324,24 +324,24 @@ function DetailsStage({
             name="message"
             control={form.control}
             rules={{
-              required: "Please provide a detailed message",
+              required: t("validation.message_required"),
               minLength: {
-                value: 3,
-                message: "Message must be at least 10 characters long",
+                value: 10,
+                message: t("validation.message_min_length"),
               },
             }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                label="Message *"
-                placeholder="Please describe your report in detail..."
+                label={t("stages.details.message_label")}
+                placeholder={t("stages.details.message_placeholder")}
                 multiline
                 rows={6}
                 fullWidth
                 error={!!fieldState.error}
                 helperText={
                   fieldState.error?.message ||
-                  "Provide as much detail as possible to help us understand and address your concern"
+                  t("stages.details.message_help")
                 }
               />
             )}
@@ -349,7 +349,7 @@ function DetailsStage({
 
           <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
             <Button startIcon={<FontAwesomeIcon icon={faArrowLeft} />} onClick={onBack}>
-              Back
+              {t("buttons.back")}
             </Button>
 
             <Button
@@ -365,7 +365,7 @@ function DetailsStage({
                 )
               }
             >
-              {isLoading ? "Submitting..." : "Submit Report"}
+              {isLoading ? t("buttons.submitting") : t("buttons.submit")}
             </Button>
           </Stack>
         </Stack>
