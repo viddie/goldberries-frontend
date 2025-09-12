@@ -1,21 +1,22 @@
 import { Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const StyledBigButton = styled(Paper)(({ theme, selected }) => ({
+const StyledBigButton = styled(Paper)(({ theme, selected, disabled }) => ({
   padding: theme.spacing(3),
-  cursor: "pointer",
+  cursor: disabled ? "not-allowed" : "pointer",
   transition: "all 0.2s ease-in-out",
   border: selected ? `2px solid ${theme.palette.primary.main}` : "2px solid transparent",
   userSelect: "none",
   backgroundColor: selected ? theme.palette.action.selected : theme.palette.background.paper,
-  "&:hover": {
+  opacity: disabled ? 0.6 : 1,
+  "&:hover": disabled ? {} : {
     backgroundColor: selected ? theme.palette.action.selected : theme.palette.action.hover,
     transform: "translateY(-2px)",
     boxShadow: theme.shadows[4],
   },
 }));
 
-export function BigButtonGrid({ options, selectedValue, onSelect, columns = 2 }) {
+export function BigButtonGrid({ options, selectedValue, onSelect, columns = 2, disabled = false }) {
   return (
     <Grid container spacing={2}>
       {options.map((option) => (
@@ -23,7 +24,8 @@ export function BigButtonGrid({ options, selectedValue, onSelect, columns = 2 })
           <StyledBigButton
             elevation={selectedValue === (option.value || option) ? 3 : 1}
             selected={selectedValue === (option.value || option)}
-            onClick={() => onSelect(option.value || option)}
+            disabled={disabled}
+            onClick={disabled ? undefined : () => onSelect(option.value || option)}
           >
             <Typography
               variant="h6"

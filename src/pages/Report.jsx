@@ -67,6 +67,16 @@ export function PageReport() {
 
   // Update stage based on URL parameters and selections
   useEffect(() => {
+    // If user cannot submit reports, always show stage 1
+    if (!canSubmitReport) {
+      setCurrentStage(1);
+      // If they tried to access a specific topic/subtopic, redirect to base report page
+      if (decodedTopic || decodedSubtopic) {
+        navigate("/report");
+      }
+      return;
+    }
+
     if (decodedTopic && TOPICS[decodedTopic]) {
       const topicConfig = TOPICS[decodedTopic];
       if (topicConfig.subTopics.length > 0 && decodedSubtopic) {
@@ -87,7 +97,7 @@ export function PageReport() {
       navigate("/report");
       setCurrentStage(1);
     }
-  }, [decodedTopic, decodedSubtopic, navigate]);
+  }, [decodedTopic, decodedSubtopic, navigate, canSubmitReport]);
 
   // Handle topic selection
   const handleTopicSelect = (topicId) => {
@@ -162,19 +172,20 @@ export function PageReport() {
             </Typography>
           )}
 
-          {/* Only show stages if user can submit reports */}
+          {/* Stage 1: Topic Selection - always show when unauthenticated or at stage 1 */}
+          {(!canSubmitReport || currentStage === 1) && (
+            <TopicSelectionStage
+              topics={TOPICS}
+              selectedTopic={selectedTopic}
+              onTopicSelect={handleTopicSelect}
+              disabled={!canSubmitReport}
+              t={t}
+            />
+          )}
+
+          {/* Only show stages 2 and 3 if user can submit reports */}
           {canSubmitReport && (
             <>
-              {/* Stage 1: Topic Selection */}
-              {currentStage === 1 && (
-                <TopicSelectionStage
-                  topics={TOPICS}
-                  selectedTopic={selectedTopic}
-                  onTopicSelect={handleTopicSelect}
-                  t={t}
-                />
-              )}
-
               {/* Stage 2: Subtopic Selection */}
               {currentStage === 2 && topicConfig?.subTopics?.length > 0 && (
                 <SubtopicSelectionStage
@@ -207,7 +218,7 @@ export function PageReport() {
 }
 
 // Stage Components
-function TopicSelectionStage({ topics, selectedTopic, onTopicSelect, t }) {
+function TopicSelectionStage({ topics, selectedTopic, onTopicSelect, disabled = false, t }) {
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
@@ -225,6 +236,7 @@ function TopicSelectionStage({ topics, selectedTopic, onTopicSelect, t }) {
         selectedValue={selectedTopic}
         onSelect={onTopicSelect}
         columns={2}
+        disabled={disabled}
       />
     </Box>
   );
