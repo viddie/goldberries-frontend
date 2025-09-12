@@ -3,13 +3,14 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/BasicComponents";
 import { BigButtonGrid } from "../components/BigButtonGrid";
 import { usePostReport } from "../hooks/useApi";
 import { FormOptions } from "../util/constants";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../hooks/AuthProvider";
 
 // Topic structure with sub-topics
 const TOPICS = {
@@ -40,6 +41,10 @@ export function PageReport() {
   const { topic: urlTopic, subtopic: urlSubtopic } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(undefined, { keyPrefix: "report" });
+  const auth = useAuth();
+
+  // Check if user is logged in and has a player claimed
+  const canSubmitReport = auth.isLoggedIn && auth.hasPlayerClaimed;
 
   // Decode URL parameters
   const decodedTopic = urlTopic ? decodeURIComponent(urlTopic) : "";
@@ -147,38 +152,53 @@ export function PageReport() {
             {t("description")}
           </Typography>
 
-          {/* Stage 1: Topic Selection */}
-          {currentStage === 1 && (
-            <TopicSelectionStage
-              topics={TOPICS}
-              selectedTopic={selectedTopic}
-              onTopicSelect={handleTopicSelect}
-              t={t}
-            />
+          {/* Show message if user cannot submit reports */}
+          {!canSubmitReport && (
+            <Typography variant="body1" color="text.secondary">
+              <Trans
+                i18nKey="report.need_player"
+                components={{ CustomLink: <StyledLink to="/player/claim" /> }}
+              />
+            </Typography>
           )}
 
-          {/* Stage 2: Subtopic Selection */}
-          {currentStage === 2 && topicConfig?.subTopics?.length > 0 && (
-            <SubtopicSelectionStage
-              topicConfig={topicConfig}
-              selectedTopic={selectedTopic}
-              selectedSubTopic={selectedSubTopic}
-              onSubtopicSelect={handleSubTopicSelect}
-              onBack={handleBack}
-              t={t}
-            />
-          )}
+          {/* Only show stages if user can submit reports */}
+          {canSubmitReport && (
+            <>
+              {/* Stage 1: Topic Selection */}
+              {currentStage === 1 && (
+                <TopicSelectionStage
+                  topics={TOPICS}
+                  selectedTopic={selectedTopic}
+                  onTopicSelect={handleTopicSelect}
+                  t={t}
+                />
+              )}
 
-          {/* Stage 3: Details Form */}
-          {currentStage === 3 && (
-            <DetailsStage
-              form={form}
-              topicConfig={topicConfig}
-              selectedTopic={selectedTopic}
-              selectedSubTopic={selectedSubTopic}
-              onBack={handleBack}
-              onResetForm={handleResetForm}
-            />
+              {/* Stage 2: Subtopic Selection */}
+              {currentStage === 2 && topicConfig?.subTopics?.length > 0 && (
+                <SubtopicSelectionStage
+                  topicConfig={topicConfig}
+                  selectedTopic={selectedTopic}
+                  selectedSubTopic={selectedSubTopic}
+                  onSubtopicSelect={handleSubTopicSelect}
+                  onBack={handleBack}
+                  t={t}
+                />
+              )}
+
+              {/* Stage 3: Details Form */}
+              {currentStage === 3 && (
+                <DetailsStage
+                  form={form}
+                  topicConfig={topicConfig}
+                  selectedTopic={selectedTopic}
+                  selectedSubTopic={selectedSubTopic}
+                  onBack={handleBack}
+                  onResetForm={handleResetForm}
+                />
+              )}
+            </>
           )}
         </Stack>
       </BasicContainerBox>
