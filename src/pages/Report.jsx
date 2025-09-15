@@ -287,17 +287,17 @@ function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBa
   const topicName = t_r(`topics.${selectedTopic}.name`);
 
   const { mutate: postReport, isLoading } = usePostReport((response) => {
-    toast.success(t("feedback.success"));
+    toast.success(t_r("feedback.success"));
     onResetForm();
   });
 
   const onSubmit = form.handleSubmit((data) => {
     // Prepare the final topic string using display names
-    const topicName = t(`topics.${data.topic}.name`);
+    const topicName = t_r(`topics.${data.topic}.name`);
     let finalTopic = topicName;
 
     if (data.subTopic) {
-      const subtopicName = t(`topics.${data.topic}.subtopics.${data.subTopic}.name`);
+      const subtopicName = t_r(`topics.${data.topic}.subtopics.${data.subTopic}.name`);
       finalTopic = `${finalTopic} - ${subtopicName}`;
     }
 
