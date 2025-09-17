@@ -313,7 +313,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
               </Typography>
             </Grid>
             <Grid item xs={12} sm>
-              <Typography variant="body2" sx={{ mt: 0.25 }}>
+              <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
                 <FontAwesomeIcon icon={faComment} /> {suggestion.comment ?? "-"}
               </Typography>
             </Grid>
@@ -753,7 +753,7 @@ function ViewSuggestionModal({ id }) {
               </Typography>
             </Grid>
             <Grid item xs={12} sm>
-              <Typography variant="body2" sx={{ mt: 0.25 }}>
+              <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
                 <FontAwesomeIcon icon={faComment} /> {suggestion.comment ?? "-"}
               </Typography>
             </Grid>
