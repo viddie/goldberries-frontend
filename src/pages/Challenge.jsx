@@ -396,7 +396,7 @@ function MapCampaignUrlInfoBoxUrl({ url }) {
     setLink(data.download_url);
   });
   const [link, setLink] = useState(null);
-  const isGamebananaUrl = url.indexOf("gamebanana.com") !== 0;
+  const isGamebananaUrl = url.indexOf("gamebanana.com") !== -1;
 
   // Use effect to fetch the link when the modal is opened
   useEffect(() => {
