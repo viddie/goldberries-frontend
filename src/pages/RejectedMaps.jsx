@@ -167,7 +167,7 @@ function RejectedChallengesTableResults({ challenges }) {
                           {getChallengeNameShort(challenge, true, true, false)}
                         </StyledLink>
                       </TableCell>
-                      <TableCell>{challenge.description}</TableCell>
+                      <TableCell>{challenge.reject_note}</TableCell>
                       <TableCell align="center">
                         {hasSubmission ? <ProofExternalLinkButton url={firstSubmission.proof_url} /> : "-"}
                       </TableCell>
