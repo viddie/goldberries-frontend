@@ -58,6 +58,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
 import { CharsCountLabel } from "../../pages/Suggestions";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
+import { inputBaseClasses } from "@mui/material/InputBase";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -338,8 +339,14 @@ export function FormSubmission({ submission, onSave, ...props }) {
           multiline
           rows={2}
           fullWidth
-          sx={{ mt: 2 }}
           InputLabelProps={{ shrink: true }}
+          sx={{
+            mt: 2,
+            [`& .${inputBaseClasses.input}`]: {
+              resize: "vertical",
+              overflow: "auto",
+            },
+          }}
         />
         <CharsCountLabel text={form.watch("player_notes")} maxChars={5000} />
 
@@ -463,7 +470,13 @@ export function FormSubmission({ submission, onSave, ...props }) {
             multiline
             rows={1}
             fullWidth
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              [`& .${inputBaseClasses.input}`]: {
+                resize: "vertical",
+                overflow: "auto",
+              },
+            }}
             InputLabelProps={{ shrink: true }}
           />
         ) : null}
