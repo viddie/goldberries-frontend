@@ -3,70 +3,73 @@ import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
 
 const AppSettingsContext = createContext();
 
+export const getDefaultSettings = (prefersDarkMode = true) => {
+  return {
+    general: {
+      //language: "en",
+      alwaysShowGoldenChanges: false,
+      showOldTierNames: false,
+      showFractionalTiers: true,
+      settingsVersion: 1,
+    },
+    visual: {
+      darkmode: prefersDarkMode,
+      topGoldenList: {
+        showCampaignIcons: true,
+        useTextFcIcons: false,
+        darkenTierColors: 55,
+        switchMapAndChallenge: false,
+        hideEmptyTiers: false,
+        hideTimeTakenColumn: false,
+        showFractionalTiers: false,
+        unstackTiers: true,
+      },
+      background: {
+        dark: "", //Indicates default, solid color background. Otherwise this is the image name
+        darkCustom: "",
+        light: "", //Same
+        lightCustom: "",
+        blur: 5,
+      },
+      playerNames: {
+        showColors: true,
+        preferSingleOverGradientColor: false,
+        showOutline: true,
+      },
+      difficultyColors: {
+        24: "",
+        2: "",
+        3: "",
+        23: "",
+        4: "",
+        5: "",
+        6: "",
+        7: "",
+        8: "",
+        9: "",
+        10: "",
+        11: "",
+        12: "",
+        14: "",
+        15: "",
+        16: "",
+        17: "",
+        22: "",
+        18: "",
+        21: "",
+        20: "",
+        19: "",
+      },
+    },
+    dev: {
+      roleOverride: null,
+    },
+  };
+};
+
 export function AppSettingsProvider({ children }) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const getDefaultSettings = () => {
-    return {
-      general: {
-        //language: "en",
-        alwaysShowGoldenChanges: false,
-        showOldTierNames: false,
-        showFractionalTiers: true,
-        settingsVersion: 1,
-      },
-      visual: {
-        darkmode: prefersDarkMode ?? true,
-        topGoldenList: {
-          showCampaignIcons: true,
-          useTextFcIcons: false,
-          darkenTierColors: 55,
-          switchMapAndChallenge: false,
-          hideEmptyTiers: false,
-          hideTimeTakenColumn: false,
-          showFractionalTiers: false,
-          unstackTiers: true,
-        },
-        background: {
-          dark: "", //Indicates default, solid color background. Otherwise this is the image name
-          darkCustom: "",
-          light: "", //Same
-          lightCustom: "",
-          blur: 5,
-        },
-        playerNames: {
-          showColors: true,
-          preferSingleOverGradientColor: false,
-          showOutline: true,
-        },
-        difficultyColors: {
-          24: "",
-          2: "",
-          3: "",
-          23: "",
-          4: "",
-          5: "",
-          6: "",
-          7: "",
-          8: "",
-          9: "",
-          10: "",
-          11: "",
-          12: "",
-          14: "",
-          15: "",
-          16: "",
-          17: "",
-          22: "",
-          18: "",
-          21: "",
-          20: "",
-          19: "",
-        },
-      },
-    };
-  };
-
-  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings());
+  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings(prefersDarkMode));
 
   const deepCompareSettings = (defaultSettings, settings) => {
     let hadChange = false;

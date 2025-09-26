@@ -24,9 +24,10 @@ import { useNavigate } from "react-router-dom";
 import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { MuiColorInput } from "mui-color-input";
-import { DIFFICULTIES, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
+import { DIFFICULTIES, IS_DEBUG, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
 import i18n, { LANGUAGES } from "../i18n/config";
 import { useTranslation } from "react-i18next";
+import { ROLES } from "../hooks/AuthProvider";
 
 export function PageAppSettings({ isModal = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "app_settings" });
@@ -67,11 +68,13 @@ export function PageAppSettings({ isModal = false }) {
         <Tab label={t("tabs.visual.label")} value="visual" />
         <Tab label={t("tabs.top_golden_list.label")} value="top-golden-list" />
         <Tab label={t("tabs.difficulty_colors.label")} value="difficulty-colors" />
+        {IS_DEBUG && <Tab label={t("tabs.dev.label")} value="dev" />}
       </Tabs>
       {selectedTab === "general" && <AppSettingsGeneralForm />}
       {selectedTab === "visual" && <AppSettingsVisualForm />}
       {selectedTab === "top-golden-list" && <AppSettingsTopGoldenListForm />}
       {selectedTab === "difficulty-colors" && <AppSettingsDifficultyColorsForm />}
+      {IS_DEBUG && selectedTab === "dev" && <AppSettingsDevForm />}
     </BasicContainerBox>
   );
 }
@@ -758,9 +761,9 @@ function AppSettingsDifficultyColorsForm() {
     </form>
   );
 }
+
 function SettingsColorPicker({ id, value, onChange }) {
   const { settings } = useAppSettings();
-
   const difficultyColors = getNewDifficultyColors(settings, id);
 
   return (
@@ -775,6 +778,65 @@ function SettingsColorPicker({ id, value, onChange }) {
         boxShadow: value !== "" ? "0 0 0 2px #ffff8e" : "none",
       }}
     />
+  );
+}
+
+export function AppSettingsDevForm() {
+  const { t } = useTranslation(undefined, { keyPrefix: "app_settings.tabs.dev" });
+  const { settings, setSettings } = useAppSettings();
+
+  const form = useForm({
+    defaultValues: {
+      ...settings.dev,
+      roleOverride: settings.dev.roleOverride === null ? -1 : settings.dev.roleOverride,
+    },
+  });
+  const doSubmit = (data) => {
+    let roleOverride = data.roleOverride === -1 ? null : data.roleOverride;
+    setSettings({
+      ...settings,
+      dev: {
+        ...data,
+        roleOverride,
+      },
+    });
+  };
+
+  useEffect(() => {
+    const subscription = form.watch(form.handleSubmit(doSubmit));
+    return () => subscription.unsubscribe();
+  }, [form.handleSubmit, form.watch]);
+
+  const ROLE_OVERRIDES = [
+    { value: ROLES.USER, name: "User" },
+    { value: ROLES.NEWS_WRITER, name: "News Writer" },
+    { value: ROLES.HELPER, name: "Helper" },
+    { value: ROLES.VERIFIER, name: "Verifier" },
+    { value: ROLES.ADMIN, name: "Admin" },
+  ];
+
+  return (
+    <form>
+      <SettingsEntry note={t("role_override.note")} title={t("role_override.label")}>
+        <Controller
+          name="roleOverride"
+          control={form.control}
+          render={({ field }) => (
+            <Select fullWidth value={field.value} onChange={field.onChange}>
+              <MenuItem key={-1} value={-1}>
+                <em>None</em>
+              </MenuItem>
+              {ROLE_OVERRIDES.map((role) => (
+                <MenuItem key={role.value} value={role.value}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+      </SettingsEntry>
+      <Footnote />
+    </form>
   );
 }
 

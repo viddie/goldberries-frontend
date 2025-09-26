@@ -2,10 +2,12 @@ import { createContext, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { APP_URL, DISCORD_AUTH_URL } from "../util/constants";
+import { APP_URL, DISCORD_AUTH_URL, IS_DEBUG } from "../util/constants";
 import { getErrorMessage } from "../components/BasicComponents";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import { useMediaQuery } from "@mui/material";
+import { getDefaultSettings } from "./AppSettingsProvider";
 
 const AuthContext = createContext();
 export const ROLES = {
@@ -35,6 +37,13 @@ export function isAdmin(account) {
 export function AuthProvider({ children }) {
   const { t } = useTranslation(undefined, { keyPrefix: "hooks.auth" });
   const [user, setUser] = useLocalStorage("user", null);
+
+  //For role override during dev settings
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings(prefersDarkMode));
+  const roleOverride = settings.dev.roleOverride;
+  console.log("Role override:", roleOverride);
+
   const navigate = useNavigate();
 
   const loginWithEmail = async (email, password, redirect) => {
@@ -103,17 +112,22 @@ export function AuthProvider({ children }) {
 
   const isLoggedIn = user !== null;
 
-  const isNewsWriter = user !== null && user.role === ROLES.NEWS_WRITER;
-  const isHelper = user !== null && user.role === ROLES.HELPER;
-  const isVerifier = user !== null && user.role === ROLES.VERIFIER;
-  const isAdmin = user !== null && user.role === ROLES.ADMIN;
+  let checkRole = isLoggedIn ? user.role : null;
+  if (IS_DEBUG && isLoggedIn && roleOverride !== null) {
+    checkRole = roleOverride;
+  }
+
+  const isNewsWriter = isLoggedIn && checkRole === ROLES.NEWS_WRITER;
+  const isHelper = isLoggedIn && checkRole === ROLES.HELPER;
+  const isVerifier = isLoggedIn && checkRole === ROLES.VERIFIER;
+  const isAdmin = isLoggedIn && checkRole === ROLES.ADMIN;
 
   const hasNewsWriterPriv = isNewsWriter || isHelper || isVerifier || isAdmin;
   const hasHelperPriv = isHelper || isVerifier || isAdmin;
   const hasVerifierPriv = isVerifier || isAdmin;
   const hasAdminPriv = isAdmin;
 
-  const hasPlayerClaimed = user !== null && user.player_id !== null;
+  const hasPlayerClaimed = isLoggedIn && user.player_id !== null;
   const isPlayerWithId = (id) => hasPlayerClaimed && user.player_id === id;
 
   return (

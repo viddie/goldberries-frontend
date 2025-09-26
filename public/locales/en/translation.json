@@ -1028,6 +1028,13 @@
           "export_success": "Copied To Clipboard",
           "import": "Import From Clipboard"
         }
+      },
+      "dev": {
+        "label": "Dev",
+        "role_override": {
+          "label": "Role Override",
+          "note": "To view the website through the perspective of a different role."
+        }
       }
     }
   },

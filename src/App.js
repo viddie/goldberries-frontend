@@ -222,7 +222,7 @@ const router = createBrowserRouter([
           {
             path: "file-upload",
             element: (
-              <ProtectedRoute needsHelper redirect="manage/file-upload">
+              <ProtectedRoute needsNewsWriter redirect="manage/file-upload">
                 <PageFileUpload />
               </ProtectedRoute>
             ),
@@ -230,7 +230,7 @@ const router = createBrowserRouter([
           {
             path: "posts/:id?",
             element: (
-              <ProtectedRoute needsHelper redirect="manage/posts">
+              <ProtectedRoute needsNewsWriter redirect="manage/posts">
                 <PageManagePosts />
               </ProtectedRoute>
             ),
@@ -503,7 +503,15 @@ export function DateLibraryWrapper({ children }) {
   );
 }
 
-function ProtectedRoute({ needsPlayerClaimed, needsHelper, needsVerifier, needsAdmin, redirect, children }) {
+function ProtectedRoute({
+  needsPlayerClaimed,
+  needsNewsWriter,
+  needsHelper,
+  needsVerifier,
+  needsAdmin,
+  redirect,
+  children,
+}) {
   const auth = useAuth();
   if (auth.user === null) {
     return <Navigate to={"/login/" + encodeURIComponent(redirect)} replace />;
@@ -511,7 +519,10 @@ function ProtectedRoute({ needsPlayerClaimed, needsHelper, needsVerifier, needsA
   if (needsPlayerClaimed && auth.user.player === null) {
     return <PageNoPlayerClaimed />;
   }
-  if (needsVerifier && !auth.hasHelperPriv) {
+  if (needsNewsWriter && !auth.hasNewsWriterPriv) {
+    return <Page403 message="Only helpers can access this page!" />;
+  }
+  if (needsHelper && !auth.hasHelperPriv) {
     return <Page403 message="Only helpers can access this page!" />;
   }
   if (needsVerifier && !auth.hasVerifierPriv) {
