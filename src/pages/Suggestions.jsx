@@ -690,6 +690,16 @@ function ViewSuggestionModal({ id }) {
     });
   }
 
+  let relatedChallenges = [];
+  if (suggestion.challenge_id !== null) {
+    const challenge = suggestion.challenge;
+    if (challenge.map_id !== null) {
+      relatedChallenges = challenge.map.challenges;
+    } else if (challenge.campaign_id !== null) {
+      relatedChallenges = challenge.campaign.challenges;
+    }
+  }
+
   return (
     <>
       <Grid container rowSpacing={1.5} columnSpacing={1}>
@@ -916,14 +926,14 @@ function ViewSuggestionModal({ id }) {
             <Grid item xs={12}>
               <ChallengeSubmissionTable challenge={suggestion.challenge} onlyShowFirstFew />
             </Grid>
-            {suggestion.challenge.map_id !== null && suggestion.challenge.map.challenges.length > 0 && (
+            {relatedChallenges.length > 0 && (
               <>
                 <Grid item xs={12}>
                   <Divider>
                     <Chip label={t("related_challenges", { count: 30 })} size="small" />
                   </Divider>
                 </Grid>
-                {suggestion.challenge.map.challenges.map((challenge) => (
+                {relatedChallenges.map((challenge) => (
                   <>
                     <Grid item xs={12}>
                       <Typography variant="body1">
