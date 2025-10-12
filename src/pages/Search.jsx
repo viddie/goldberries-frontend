@@ -7,7 +7,7 @@ import {
   LoadingSpinner,
 } from "../components/BasicComponents";
 import { getQueryData, useSearch } from "../hooks/useApi";
-import { Stack, TextField, Typography } from "@mui/material";
+import { Box, Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import { PlayerChip } from "../components/GoldberriesComponents";
@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { getCampaignName, getMapLobbyInfo, getMapName, getMapNameClean } from "../util/data_util";
 import { useTranslation } from "react-i18next";
+import { CampaignGallerySingleImage } from "../components/MapImage";
 
 export function PageSearch({ isDirectSearch = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
@@ -52,15 +53,20 @@ export function PageSearch({ isDirectSearch = false }) {
       ignoreNewMargins={isDirectSearch}
     >
       <HeadTitle title={title} />
-      <Typography variant="h4">{t("header")}</Typography>
-      <Typography variant="body1" color="gray" gutterBottom>
-        {t("info")}
-      </Typography>
+      {!search && (
+        <>
+          <Typography variant="h4">{t("header")}</Typography>
+          <Typography variant="body1" color="gray" gutterBottom>
+            {t("info")}
+          </Typography>
+        </>
+      )}
       <DebouncedTextField
         value={search}
         setValue={updateSearch}
         label={t("search_label")}
         isDirectSearch={isDirectSearch}
+        sx={{ mb: 0 }}
       />
       {search && search.length < 3 && search.length > 0 && (
         <Typography variant="body1" color="gray">
@@ -104,9 +110,10 @@ export function SearchDisplay({ search }) {
   return (
     <Stack direction="column" gap={2}>
       {data.players && <SearchResultsPlayers players={data.players} />}
-      {data.campaigns && <SearchResultsCampaigns campaigns={data.campaigns} />}
+      {/* {data.campaigns && <SearchResultsCampaigns campaigns={data.campaigns} />}
       {data.maps && <SearchResultsMaps maps={data.maps} />}
-      {data.authors && <SearchResultsAuthors authors={data.authors} />}
+      {data.authors && <SearchResultsAuthors authors={data.authors} />} */}
+      <SearchResultTabs maps={data.maps} campaigns={data.campaigns} authors={data.authors} />
     </Stack>
   );
 }
@@ -174,21 +181,43 @@ function SearchResultsCampaigns({ campaigns, heading = "h5", filterStandalone = 
   );
 }
 
-function SearchResultsMaps({ maps, heading = "h5" }) {
+function SearchResultsMaps({ maps, isInAuthors = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+
+  const numMaps = 9;
+  const firstFewMaps = maps.slice(0, numMaps);
+  const remainingMaps = maps.slice(numMaps);
+
   return (
     maps.length > 0 && (
       <Stack direction="column" gap={1}>
-        <Typography variant={heading}>
-          {t_g("map", { count: 30 })} - {maps.length}
-        </Typography>
+        {isInAuthors && (
+          <Typography variant="body1">
+            {t_g("map", { count: 30 })} - {maps.length}
+          </Typography>
+        )}
         {maps.length === 0 && (
           <Typography variant="body1" color="gray">
             {t("no_maps")}
           </Typography>
         )}
-        {maps.map((map) => {
+        {maps.length > 0 && (
+          <Grid container rowSpacing={2.5} columnSpacing={1.5} sx={{}}>
+            {firstFewMaps.map((map) => {
+              return <CampaignGallerySingleImage campaign={map.campaign} map={map} xs={6} lg={4} isSearch />;
+            })}
+          </Grid>
+        )}
+        {remainingMaps.length > 0 && (
+          <>
+            <Divider sx={{ my: 1 }} />
+            <Typography variant="body1" color="gray">
+              {t("and_more_maps", { count: remainingMaps.length })}
+            </Typography>
+          </>
+        )}
+        {remainingMaps.map((map) => {
           const isSameName = map.campaign.name === map.name;
           return (
             <Stack direction="column" gap={1}>
@@ -260,7 +289,7 @@ function SearchResultsAuthors({ authors }) {
                   filterStandalone={false}
                 />
               )}
-              {author.maps.length > 0 && <SearchResultsMaps maps={author.maps} heading="body1" />}
+              {author.maps.length > 0 && <SearchResultsMaps maps={author.maps} isInAuthors />}
             </Stack>
           </BasicBox>
         ))}
@@ -269,7 +298,47 @@ function SearchResultsAuthors({ authors }) {
   );
 }
 
-function DebouncedTextField({ value, setValue, label, clearOnFocus = false, isDirectSearch }) {
+function SearchResultTabs({ maps, campaigns, authors }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "search" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const [tab, setTab] = useState("maps");
+
+  const filteredCampaigns = campaigns
+    ? campaigns.filter(
+        (campaign) =>
+          campaign.maps.length !== 0 && (campaign.maps.length > 1 || campaign.maps[0].name !== campaign.name)
+      )
+    : [];
+
+  return (
+    <>
+      <Tabs
+        value={tab}
+        onChange={(e, newValue) => setTab(newValue)}
+        variant="fullWidth"
+        sx={{
+          mt: 0,
+          mb: 1,
+          borderBottom: 1,
+          borderColor: "divider",
+          position: "sticky",
+          top: 0,
+          backgroundColor: "background.paperContainer",
+          zIndex: 1,
+        }}
+      >
+        <Tab label={`${t_g("map", { count: 5 })} (${maps.length})`} value="maps" />
+        <Tab label={`${t_g("campaign", { count: 5 })} (${filteredCampaigns.length})`} value="campaigns" />
+        <Tab label={`${t("authors")} (${authors.length})`} value="authors" />
+      </Tabs>
+      {tab === "maps" && <SearchResultsMaps maps={maps} />}
+      {tab === "campaigns" && <SearchResultsCampaigns campaigns={campaigns} />}
+      {tab === "authors" && <SearchResultsAuthors authors={authors} />}
+    </>
+  );
+}
+
+function DebouncedTextField({ value, setValue, label, clearOnFocus = false, isDirectSearch, sx = {} }) {
   const [valueInternal, setValueInternal] = useState(value);
   const setValueDebounced = useDebouncedCallback(setValue, 250);
   const navigate = useNavigate();
@@ -293,7 +362,7 @@ function DebouncedTextField({ value, setValue, label, clearOnFocus = false, isDi
         setValueDebounced(event.target.value);
       }}
       onKeyDown={onKeyDown}
-      sx={{ mb: 2, mt: { xs: 2, sm: 0 } }}
+      sx={{ mb: 2, mt: { xs: 2, sm: 0 }, ...sx }}
       fullWidth
       onFocus={(e) => {
         if (clearOnFocus) {

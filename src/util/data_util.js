@@ -183,11 +183,7 @@ export function getMapName(
     return campaign.name;
   }
 
-  const mapName =
-    (map.name === "A-Side" || map.name === "B-Side" || map.name === "C-Side" || map.name === "D-Side") &&
-    includeMapWithSide
-      ? campaign.name + " " + map.name
-      : map.name;
+  const mapName = mapIsSide(map) && includeMapWithSide ? campaign.name + " " + map.name : map.name;
 
   const isOld = map.is_archived ?? false;
   const oldPrefix = isOld && includeOld ? "[Old] " : "";
@@ -228,6 +224,9 @@ export function getChallengeNameClean(challenge, t) {
   const campaign = getChallengeCampaign(challenge);
   return getMapNameClean(map, campaign, t) + challengeSuffix;
 }
+export function mapIsSide(map) {
+  return map.name.endsWith("-Side") && map.name.length <= 8;
+}
 export function getMapNameClean(map, campaign, t, noAuthor = false) {
   const isFullGame = map === null;
   const authorName =
@@ -237,7 +236,7 @@ export function getMapNameClean(map, campaign, t, noAuthor = false) {
   }
 
   // const isSameName = map.name === campaign.name;
-  const isSide = map.name.endsWith("-Side") && map.name.length <= 8;
+  const isSide = mapIsSide(map);
   if (isSide) {
     return campaign.name + " [" + map.name + "]";
   }

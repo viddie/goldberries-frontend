@@ -1237,7 +1237,9 @@
     "no_maps": "No maps found",
     "no_players": "No players found",
     "authors": "Authors",
-    "no_authors": "No authors found"
+    "no_authors": "No authors found",
+    "and_more_maps": "and {{count}} more maps...",
+    "and_more_campaigns": "and {{count}} more campaigns..."
   },
   "monthly_recap": {
     "title": "Monthly Recap '{{month}}'",
