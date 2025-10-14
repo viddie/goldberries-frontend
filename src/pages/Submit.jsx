@@ -43,6 +43,7 @@ import {
 } from "../components/BasicComponents";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRight,
   faChevronDown,
   faChevronLeft,
   faInfoCircle,
@@ -172,7 +173,7 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
       proof_url: "",
       raw_session_url: "",
       player_notes: "",
-      is_fc: false,
+      is_fc: null,
       suggested_difficulty_id: null,
       frac: 50,
       is_personal: false,
@@ -181,6 +182,12 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
     },
   });
   const onSubmit = form.handleSubmit((data) => {
+    // Check if is_fc has been filled out
+    if (data.is_fc === null) {
+      toast.error(t("feedback.select_is_fc"));
+      return;
+    }
+
     submitRun({
       challenge_id: challenge.id,
       player_id: selectedPlayer.id,
@@ -195,34 +202,41 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
   const sameUrl = proof_url === raw_session_url && raw_session_url !== "";
   const needsRawSession =
     challenge !== null && challenge.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT;
+  const is_fc = form.watch("is_fc");
 
   const onCampaignSelect = (campaign) => {
     setCampaign(campaign);
     if (campaign !== null && campaign.maps.length === 1) {
       setMap(campaign.maps[0]);
       if (campaign.maps[0].challenges.length === 1) {
-        setChallenge(campaign.maps[0].challenges[0]);
+        onChallengeSelect(campaign.maps[0].challenges[0]);
       } else {
-        setChallenge(null);
+        onChallengeSelect(null);
       }
     } else {
       setMap(null);
-      setChallenge(null);
+      onChallengeSelect(null);
     }
   };
   const onMapSelect = (map) => {
     setMap(map);
     if (map !== null && map.challenges.length === 1) {
-      setChallenge(map.challenges[0]);
+      onChallengeSelect(map.challenges[0]);
     } else {
-      setChallenge(null);
+      onChallengeSelect(null);
     }
   };
 
   const onChallengeSelect = (challenge) => {
     setChallenge(challenge);
     if (challenge !== null) {
-      form.setValue("is_fc", challenge.requires_fc);
+      if (challenge.has_fc) {
+        form.setValue("is_fc", null);
+      } else {
+        form.setValue("is_fc", challenge.requires_fc);
+      }
+    } else {
+      form.setValue("is_fc", null);
     }
   };
 
@@ -275,47 +289,62 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
         </>
       )}
       <Divider sx={{ my: 3 }} />
-      <h4>{t("your_run")}</h4>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1 }}>
+            <Typography variant="h6">{t("your_run")}</Typography>
+            {!auth.hasHelperPriv && (
+              <>
+                <Typography variant="h6">
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </Typography>
+                <PlayerChip player={selectedPlayer} />
+              </>
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
       <form>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            {auth.hasHelperPriv ? (
-              <PlayerSelect
-                type="all"
-                label={t("verifier.player_select")}
-                value={selectedPlayer}
-                onChange={(e, v) => setSelectedPlayer(v)}
-              />
-            ) : (
-              <PlayerChip player={selectedPlayer} />
-            )}
-          </Grid>
           {auth.hasHelperPriv && (
-            <Grid item xs={12} sm={6}>
-              <Stack direction="row" gap={1} alignItems="center" sx={{ height: "100%" }}>
-                {isAddingPlayer && (
-                  <TextField
-                    label={t("verifier.new_player_name")}
-                    fullWidth
-                    value={newPlayerName}
-                    onChange={(e) => setNewPlayerName(e.target.value)}
-                  />
-                )}
-                <Button
-                  variant={isAddingPlayer ? "contained" : "outlined"}
-                  color={isAddingPlayer && newPlayerName.length < 3 ? "error" : "primary"}
-                  onClick={addPlayer}
-                  sx={{ whiteSpace: "nowrap" }}
-                >
-                  {t(
-                    isAddingPlayer && newPlayerName.length < 3
-                      ? "verifier.buttons.cancel"
-                      : "verifier.buttons.add_player"
+            <>
+              <Grid item xs={12} sm={6}>
+                <PlayerSelect
+                  type="all"
+                  label={t("verifier.player_select")}
+                  value={selectedPlayer}
+                  onChange={(e, v) => setSelectedPlayer(v)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Stack direction="row" gap={1} alignItems="center" sx={{ height: "100%" }}>
+                  {isAddingPlayer && (
+                    <TextField
+                      label={t("verifier.new_player_name")}
+                      fullWidth
+                      value={newPlayerName}
+                      onChange={(e) => setNewPlayerName(e.target.value)}
+                    />
                   )}
-                </Button>
-              </Stack>
-            </Grid>
+                  <Button
+                    variant={isAddingPlayer ? "contained" : "outlined"}
+                    color={isAddingPlayer && newPlayerName.length < 3 ? "error" : "primary"}
+                    onClick={addPlayer}
+                    sx={{ whiteSpace: "nowrap" }}
+                  >
+                    {t(
+                      isAddingPlayer && newPlayerName.length < 3
+                        ? "verifier.buttons.cancel"
+                        : "verifier.buttons.add_player"
+                    )}
+                  </Button>
+                </Stack>
+              </Grid>
+            </>
           )}
+          <Grid item xs={12}>
+            <CFCSelector value={is_fc} onChange={(v) => form.setValue("is_fc", v)} challenge={challenge} />
+          </Grid>
           <Grid item xs>
             <TextField
               label={t_fs("proof_url") + " *"}
@@ -387,21 +416,6 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
               {...form.register("player_notes")}
             />
             <CharsCountLabel text={form.watch("player_notes")} maxChars={5000} />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <Controller
-              name="is_fc"
-              control={form.control}
-              render={({ field }) => (
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label={t("is_fc")}
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  disabled={challenge === null || challenge.requires_fc || !challenge.has_fc}
-                />
-              )}
-            />
           </Grid>
           <Grid item xs={12} sm>
             <Controller
@@ -905,7 +919,7 @@ export function NewChallengeUserSubmission({}) {
       proof_url: "",
       raw_session_url: "",
       player_notes: "",
-      is_fc: false,
+      is_fc: null,
       suggested_difficulty_id: null,
       frac: 50,
       is_personal: false,
@@ -928,6 +942,7 @@ export function NewChallengeUserSubmission({}) {
     suggested_difficulty_id !== null &&
     difficultyIdToSort(suggested_difficulty_id) >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT;
   const sameUrl = proof_url === raw_session_url && raw_session_url !== "";
+  const is_fc = form.watch("is_fc");
 
   return (
     <>
@@ -1001,21 +1016,39 @@ export function NewChallengeUserSubmission({}) {
           />
         </Stack>
         <Divider sx={{ my: 3 }} />
-        <h4>{t_ts("your_run")}</h4>
+
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            {auth.hasHelperPriv ? (
-              <PlayerSelect
-                type="all"
-                label={t_ts("verifier.player_select")}
-                value={selectedPlayer}
-                onChange={(e, v) => setSelectedPlayer(v)}
-              />
-            ) : (
-              <PlayerChip player={selectedPlayer} />
-            )}
+          <Grid item xs={12}>
+            <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1 }}>
+              <Typography variant="h6">{t_ts("your_run")}</Typography>
+              {!auth.hasHelperPriv && (
+                <>
+                  <Typography variant="h6">
+                    <FontAwesomeIcon icon={faArrowRight} />
+                  </Typography>
+                  <PlayerChip player={selectedPlayer} />
+                </>
+              )}
+            </Stack>
           </Grid>
-          <Grid item xs={12} sm={6}></Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          {auth.hasHelperPriv && (
+            <>
+              <Grid item xs={12} sm={6}>
+                <PlayerSelect
+                  type="all"
+                  label={t_ts("verifier.player_select")}
+                  value={selectedPlayer}
+                  onChange={(e, v) => setSelectedPlayer(v)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}></Grid>
+            </>
+          )}
+          <Grid item xs={12}>
+            <CFCSelector value={is_fc} onChange={(v) => form.setValue("is_fc", v)} challenge={null} enabled />
+          </Grid>
           <Grid item xs>
             <TextField
               label={t_fs("proof_url") + " *"}
@@ -1087,9 +1120,6 @@ export function NewChallengeUserSubmission({}) {
               {...form.register("player_notes")}
             />
             <CharsCountLabel text={form.watch("player_notes")} maxChars={5000} />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <FormControlLabel control={<Checkbox />} {...form.register("is_fc")} label={t_ts("is_fc")} />
           </Grid>
           <Grid item xs={12} sm>
             <Controller
@@ -1422,6 +1452,48 @@ function NotificationNotice({}) {
         </Grid>
       )}
     </>
+  );
+}
+
+// Renders two big buttons next to each other: Regular Clear and Full Clear
+// If a button is clicked, it should be shown as actively selected through a border and/or background change
+// If the challenge has requires_fc, Full Clear is pre-selected and Regular Clear is disabled (grayed out)
+// Same for the opposite case
+function CFCSelector({ value, onChange, challenge, enabled }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "submit.tabs.single.cfc_selector" });
+  const requiresFc = challenge?.requires_fc ?? false;
+  const hasFc = challenge?.has_fc ?? false;
+  const isDisabledRegular = !enabled && (challenge === null || requiresFc);
+  const isDisabledFull = !enabled && (challenge === null || (!hasFc && !requiresFc));
+  const color = "success";
+  const sx = {
+    fontSize: "0.9rem",
+    py: 1.5,
+  };
+
+  return (
+    <Stack direction="row" spacing={2} alignItems="center">
+      <Button
+        variant={value === false ? "contained" : "outlined"}
+        onClick={() => onChange(false)}
+        disabled={isDisabledRegular}
+        color={color}
+        fullWidth
+        sx={sx}
+      >
+        {t("regular_clear")}
+      </Button>
+      <Button
+        variant={value === true ? "contained" : "outlined"}
+        onClick={() => onChange(true)}
+        disabled={isDisabledFull}
+        color={color}
+        fullWidth
+        sx={sx}
+      >
+        {t("full_clear")}
+      </Button>
+    </Stack>
   );
 }
 
