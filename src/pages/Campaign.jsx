@@ -298,11 +298,7 @@ export function AuthorInfoBoxLine({ author_gb_id, author_gb_name }) {
   } else {
     return (
       <InfoBoxIconTextLine
-        text={
-          <StyledExternalLink href={"https://gamebanana.com/members/" + author_gb_id}>
-            {author_gb_name}
-          </StyledExternalLink>
-        }
+        text={<StyledLink to={"/author/" + encodeURIComponent(author_gb_name)}>{author_gb_name}</StyledLink>}
         isSecondary
       />
     );

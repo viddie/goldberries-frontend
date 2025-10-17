@@ -5,6 +5,7 @@ import {
   ErrorDisplay,
   HeadTitle,
   LoadingSpinner,
+  StyledLink,
 } from "../components/BasicComponents";
 import { getQueryData, useSearch } from "../hooks/useApi";
 import { Box, Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
@@ -130,28 +131,42 @@ export function SearchDisplay({ search }) {
   );
 }
 
-function SearchResultsCampaigns({ campaigns, isInAuthors = false, filterStandalone = true }) {
+export function SearchResultsCampaigns({
+  campaigns,
+  isInAuthors = false,
+  isExplicitAuthor = false,
+  filterStandalone = true,
+  explanationText = null,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const showCampaign = (campaign) =>
     campaign.maps.length !== 0 && (campaign.maps.length > 1 || campaign.maps[0].name !== campaign.name);
   const filteredCampaigns = filterStandalone ? campaigns.filter(showCampaign) : campaigns;
 
+  const showTitle = isInAuthors || isExplicitAuthor;
+  const titleVariant = isExplicitAuthor ? "h5" : "body1";
+
   return (
-    filteredCampaigns.length > 0 && (
-      <Stack direction="column" gap={1}>
-        {isInAuthors && (
-          <Typography variant="body1">
+    (filteredCampaigns.length > 0 || isExplicitAuthor) && (
+      <Stack direction="column" gap={0}>
+        {showTitle && (
+          <Typography variant={titleVariant}>
             {t_g("campaign", { count: 30 })} - {filteredCampaigns.length}
           </Typography>
         )}
+        {explanationText && (
+          <Typography variant="body2" color="gray">
+            {explanationText}
+          </Typography>
+        )}
         {filteredCampaigns.length === 0 && (
-          <Typography variant="body1" color="gray">
+          <Typography variant="body1" color="gray" sx={{ mt: 1 }}>
             {t("no_campaigns")}
           </Typography>
         )}
         {filteredCampaigns.map((campaign) => (
-          <Stack direction="column">
+          <Stack direction="column" sx={{ mt: 1 }}>
             <Stack direction="row" gap={2} alignItems="center">
               <Link to={"/campaign/" + campaign.id} style={{ color: "var(--toastify-color-info)" }}>
                 <Typography variant="h6">{getCampaignName(campaign, t_g)}</Typography>
@@ -164,7 +179,6 @@ function SearchResultsCampaigns({ campaigns, isInAuthors = false, filterStandalo
               <Grid item xs={12} sm={8}>
                 <Stack direction="column" rowGap={2}>
                   {groupMapsByMajor(campaign).map((group) => {
-                    console.log("Rendering group:", group);
                     return (
                       <Stack
                         direction="row"
@@ -213,7 +227,12 @@ function SearchResultsCampaigns({ campaigns, isInAuthors = false, filterStandalo
   );
 }
 
-function SearchResultsMaps({ maps, isInAuthors = false }) {
+export function SearchResultsMaps({
+  maps,
+  isInAuthors = false,
+  isExplicitAuthor = false,
+  explanationText = null,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
@@ -221,21 +240,29 @@ function SearchResultsMaps({ maps, isInAuthors = false }) {
   const firstFewMaps = maps.slice(0, numMaps);
   const remainingMaps = maps.slice(numMaps);
 
+  const showTitle = isInAuthors || isExplicitAuthor;
+  const titleVariant = isExplicitAuthor ? "h5" : "body1";
+
   return (
-    maps.length > 0 && (
-      <Stack direction="column" gap={1}>
-        {isInAuthors && (
-          <Typography variant="body1">
+    (maps.length > 0 || isExplicitAuthor) && (
+      <Stack direction="column" gap={0}>
+        {showTitle && (
+          <Typography variant={titleVariant}>
             {t_g("map", { count: 30 })} - {maps.length}
           </Typography>
         )}
+        {explanationText && (
+          <Typography variant="body2" color="gray">
+            {explanationText}
+          </Typography>
+        )}
         {maps.length === 0 && (
-          <Typography variant="body1" color="gray">
+          <Typography variant="body1" color="gray" sx={{ mt: 1 }}>
             {t("no_maps")}
           </Typography>
         )}
         {maps.length > 0 && (
-          <Grid container rowSpacing={2.5} columnSpacing={1.5} sx={{}}>
+          <Grid container rowSpacing={2.5} columnSpacing={1.5} sx={{ mt: 0 }}>
             {firstFewMaps.map((map) => {
               return <CampaignGallerySingleImage campaign={map.campaign} map={map} xs={6} lg={4} isSearch />;
             })}
@@ -311,18 +338,26 @@ function SearchResultsAuthors({ authors }) {
           </Typography>
         )}
         {authors.map((author) => (
-          <BasicBox key={author.id} sx={{ width: "100%", px: 2 }}>
-            <Stack direction="column" gap={1}>
-              <Typography variant="h6">{author.name}</Typography>
-              {author.campaigns.length > 0 && (
-                <SearchResultsCampaigns campaigns={author.campaigns} isInAuthors filterStandalone={false} />
-              )}
-              {author.maps.length > 0 && <SearchResultsMaps maps={author.maps} isInAuthors />}
-            </Stack>
-          </BasicBox>
+          <SearchResultsSingleAuthor key={author.id} author={author} />
         ))}
       </Stack>
     )
+  );
+}
+
+function SearchResultsSingleAuthor({ author }) {
+  return (
+    <BasicBox key={author.id} sx={{ width: "100%", px: 2 }}>
+      <Stack direction="column" gap={1}>
+        <Typography variant="h6">
+          <StyledLink to={"/author/" + encodeURIComponent(author.name)}>{author.name}</StyledLink>
+        </Typography>
+        {author.maps.length > 0 && <SearchResultsMaps maps={author.maps} isInAuthors />}
+        {author.campaigns.length > 0 && (
+          <SearchResultsCampaigns campaigns={author.campaigns} isInAuthors filterStandalone={false} />
+        )}
+      </Stack>
+    </BasicBox>
   );
 }
 

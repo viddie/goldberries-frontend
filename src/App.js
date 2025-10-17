@@ -141,6 +141,7 @@ import { PageManageServerSettings } from "./pages/manage/ServerSettings";
 import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
+import { PageAuthor } from "./pages/Author";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_URL;
@@ -287,6 +288,7 @@ const router = createBrowserRouter([
       { path: "challenge/:id", element: <PageChallenge /> },
       { path: "map/:id/:challengeId?", element: <PageMap /> },
       { path: "campaign/:id/:tab?", element: <PageCampaign /> },
+      { path: "author/:name", element: <PageAuthor /> },
 
       { path: "search/:q?", element: <PageSearch /> },
       { path: "suggestions/:id?", element: <PageSuggestions /> },

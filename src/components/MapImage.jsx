@@ -148,7 +148,6 @@ export function CampaignGallerySingleImage({ campaign, map, isSearch = false, ..
   }
   const mapName = getMapName(map, campaign, isSearch);
 
-  console.log("Rendering CampaignGallerySingleImage for map:", map);
   const showCampaign = isSearch && !isMapSameNameAsCampaign(map, campaign) && !mapIsSide(map);
 
   return (
