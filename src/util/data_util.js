@@ -253,6 +253,46 @@ export function getCampaignName(campaign, t, noAuthor = false) {
   return campaign.name + " (" + t("by") + " " + authorName + ")";
 }
 
+export function groupMapsByMajor(campaign) {
+  if (campaign.sort_major_name === null) {
+    return [
+      {
+        index: null,
+        name: "All Maps",
+        color: "#ffffff",
+        maps: campaign.maps,
+      },
+    ];
+  }
+
+  const groups = {}; // Flatten after building to return an array later
+  // map.major_sort is the index into this array. each entry has: {major: {name, label, color}, maps: []}
+  // Put a separate group for maps with no major sort (major index is null/undefined)
+  campaign.maps.forEach((map) => {
+    const majorIndex = map.sort_major;
+    const majorName =
+      majorIndex !== null && majorIndex !== undefined
+        ? campaign.sort_major_labels[majorIndex]
+        : "No " + campaign.sort_major_name;
+    const majorColor =
+      majorIndex !== null && majorIndex !== undefined
+        ? campaign.sort_major_colors[majorIndex] || "#ffffff"
+        : "#ffffff";
+
+    if (groups[majorName] === undefined) {
+      groups[majorName] = {
+        index: majorIndex,
+        name: majorName,
+        color: majorColor,
+        maps: [],
+      };
+    }
+
+    groups[majorName].maps.push(map);
+  });
+  return Object.values(groups);
+}
+
 export function getAccountName(account) {
   let prefix = `(${account.id})`;
 

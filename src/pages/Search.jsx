@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BasicBox,
   BasicContainerBox,
@@ -13,15 +13,27 @@ import { useDebouncedCallback } from "use-debounce";
 import { PlayerChip } from "../components/GoldberriesComponents";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
-import { getCampaignName, getMapLobbyInfo, getMapName, getMapNameClean } from "../util/data_util";
+import {
+  getCampaignName,
+  getMapLobbyInfo,
+  getMapName,
+  getMapNameClean,
+  groupMapsByMajor,
+} from "../util/data_util";
 import { useTranslation } from "react-i18next";
-import { CampaignGallerySingleImage } from "../components/MapImage";
+import { CampaignGallerySingleImage, CampaignImageFull } from "../components/MapImage";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function PageSearch({ isDirectSearch = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { q } = useParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState(q || "");
+  const [tab, setTab] = useLocalStorage("search_selected_tab", "maps");
+
+  useEffect(() => {
+    setTab("maps"); // Reset to maps tab once per opening the search
+  }, []);
 
   const updateSearch = (newSearch) => {
     setSearch(newSearch);
@@ -118,7 +130,7 @@ export function SearchDisplay({ search }) {
   );
 }
 
-function SearchResultsCampaigns({ campaigns, heading = "h5", filterStandalone = true }) {
+function SearchResultsCampaigns({ campaigns, isInAuthors = false, filterStandalone = true }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const showCampaign = (campaign) =>
@@ -128,9 +140,11 @@ function SearchResultsCampaigns({ campaigns, heading = "h5", filterStandalone = 
   return (
     filteredCampaigns.length > 0 && (
       <Stack direction="column" gap={1}>
-        <Typography variant={heading}>
-          {t_g("campaign", { count: 30 })} - {filteredCampaigns.length}
-        </Typography>
+        {isInAuthors && (
+          <Typography variant="body1">
+            {t_g("campaign", { count: 30 })} - {filteredCampaigns.length}
+          </Typography>
+        )}
         {filteredCampaigns.length === 0 && (
           <Typography variant="body1" color="gray">
             {t("no_campaigns")}
@@ -143,37 +157,55 @@ function SearchResultsCampaigns({ campaigns, heading = "h5", filterStandalone = 
                 <Typography variant="h6">{getCampaignName(campaign, t_g)}</Typography>
               </Link>
             </Stack>
-            {showCampaign(campaign) && (
-              <Stack direction="column" gap={1}>
-                {campaign.maps.map((map) => {
-                  const lobbyInfo = getMapLobbyInfo(map, campaign);
-                  const borderColor = lobbyInfo.major ? lobbyInfo.major.color : "transparent";
-                  const textColor = lobbyInfo.minor ? lobbyInfo.minor.color : "var(--toastify-color-info)";
-                  const textShadow = lobbyInfo.minor
-                    ? "0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, " +
-                      "0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black"
-                    : "none";
-                  return (
-                    <Typography
-                      key={map.id}
-                      variant="body2"
-                      sx={{ pl: 2, borderLeft: "3px solid " + borderColor }}
-                    >
-                      <Link
-                        to={"/map/" + map.id}
-                        style={{
-                          textDecoration: "none",
-                          color: textColor,
-                          textShadow: textShadow,
+            <Grid container rowSpacing={0} columnSpacing={1.5} sx={{ my: 1 }}>
+              <Grid item xs={12} sm={4} sx={{ mb: 2 }}>
+                <CampaignImageFull id={campaign.id} alt={campaign.name} doLink scale={1} style={{}} />
+              </Grid>
+              <Grid item xs={12} sm={8}>
+                <Stack direction="column" rowGap={2}>
+                  {groupMapsByMajor(campaign).map((group) => {
+                    console.log("Rendering group:", group);
+                    return (
+                      <Stack
+                        direction="row"
+                        rowGap={0.5}
+                        columnGap={2}
+                        flexWrap="wrap"
+                        sx={{
+                          borderLeft: "5px solid " + (group.color || "#ffffff"),
+                          paddingLeft: "8px",
                         }}
                       >
-                        {getMapName(map, campaign, false)}
-                      </Link>
-                    </Typography>
-                  );
-                })}
-              </Stack>
-            )}
+                        {group.maps.map((map) => {
+                          const lobbyInfo = getMapLobbyInfo(map, campaign);
+                          const textColor = lobbyInfo.minor
+                            ? lobbyInfo.minor.color
+                            : "var(--toastify-color-info)";
+                          const textShadow = lobbyInfo.minor
+                            ? "0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, " +
+                              "0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black"
+                            : "none";
+                          return (
+                            <Typography key={map.id} variant="body2" sx={{ pl: 0.75 }}>
+                              <Link
+                                to={"/map/" + map.id}
+                                style={{
+                                  textDecoration: "none",
+                                  color: textColor,
+                                  textShadow: textShadow,
+                                }}
+                              >
+                                {getMapName(map, campaign, false)}
+                              </Link>
+                            </Typography>
+                          );
+                        })}
+                      </Stack>
+                    );
+                  })}
+                </Stack>
+              </Grid>
+            </Grid>
           </Stack>
         ))}
       </Stack>
@@ -245,7 +277,7 @@ function SearchResultsPlayers({ players }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   return (
     players.length > 0 && (
-      <Stack direction="column" gap={1}>
+      <Stack direction="column" gap={1} sx={{ mt: 1 }}>
         <Typography variant="h5">
           {t_g("player", { count: 30 })} - {players.length}
         </Typography>
@@ -283,11 +315,7 @@ function SearchResultsAuthors({ authors }) {
             <Stack direction="column" gap={1}>
               <Typography variant="h6">{author.name}</Typography>
               {author.campaigns.length > 0 && (
-                <SearchResultsCampaigns
-                  campaigns={author.campaigns}
-                  heading="body1"
-                  filterStandalone={false}
-                />
+                <SearchResultsCampaigns campaigns={author.campaigns} isInAuthors filterStandalone={false} />
               )}
               {author.maps.length > 0 && <SearchResultsMaps maps={author.maps} isInAuthors />}
             </Stack>
@@ -301,7 +329,7 @@ function SearchResultsAuthors({ authors }) {
 function SearchResultTabs({ maps, campaigns, authors }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const [tab, setTab] = useState("maps");
+  const [tab, setTab] = useLocalStorage("search_selected_tab", "maps");
 
   const filteredCampaigns = campaigns
     ? campaigns.filter(
