@@ -1373,14 +1373,15 @@
     "header": "Suggestion Box",
     "intro": "In the suggestion box you can suggest changes to challenge placements, general changes to a challenge or general changes to the website itself. It is meant to make it easier to collect opinions from the community. However, it is <strong>not</strong> meant for discussion of changes, for which you should still use the Modded Golden Team Discord server.",
     "language_info": "Please keep the suggestion box in English!",
-    "filter_by_type": "Filter by type",
-    "active": "Active Suggestions",
-    "undecided": "Undecided Suggestions",
-    "expired": "Decided Suggestions",
+    "filter_by_type": "Type",
+    "filter_by_state": "State",
+    "active": "Ongoing",
+    "undecided": "Undecided",
+    "expired": "Decided",
     "showing_one": "Showing {{from}}-{{to}} of {{count}} total suggestion",
     "showing_other": "Showing {{from}}-{{to}} of {{count}} total suggestions",
     "buttons": {
-      "create": "Create"
+      "create": "New"
     },
     "display": {
       "deleted_player": "(deleted player)",
@@ -1458,9 +1459,9 @@
       }
     },
     "filter": {
-      "all": "All Suggestions",
-      "general": "General Suggestions",
-      "challenge": "Challenge Suggestions",
+      "all": "All",
+      "general": "General",
+      "challenge": "Challenge",
       "challenge_own": "Own Completed Challenges"
     }
   },

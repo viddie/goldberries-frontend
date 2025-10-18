@@ -28,12 +28,16 @@ import {
   Dialog,
   DialogContent,
   Divider,
+  FormControl,
   FormControlLabel,
   FormHelperText,
+  FormLabel,
   Grid,
   IconButton,
   MenuItem,
   Pagination,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   Tab,
@@ -52,11 +56,13 @@ import {
   getSortedSuggestedDifficulties,
 } from "../util/data_util";
 import {
+  AdminIcon,
   ChallengeFcIcon,
   DifficultyChip,
   DifficultySelectControlled,
   FullChallengeSelect,
   ObjectiveIcon,
+  OtherIcon,
   PlayerChip,
 } from "../components/GoldberriesComponents";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/Stats";
@@ -65,12 +71,14 @@ import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
 import {
   faArrowRight,
   faCheck,
+  faCheckCircle,
   faCircleCheck,
   faCircleXmark,
   faComment,
   faEquals,
   faEyeSlash,
   faHorse,
+  faHorseHead,
   faInfoCircle,
   faPlus,
   faQuestionCircle,
@@ -79,6 +87,7 @@ import {
   faThumbsUp,
   faTrash,
   faXmark,
+  faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
@@ -87,14 +96,18 @@ import { ChallengeSubmissionTable } from "./Challenge";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
+import { VotesBar } from "../components/VotesBar";
+import Color from "color";
+import { ClearIcon } from "@mui/x-date-pickers";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function PageSuggestions({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const auth = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [type, setType] = useState("all");
-  const [tab, setTab] = useState("active");
+  const [type, setType] = useLocalStorage("search_filter_type", "all");
+  const [tab, setTab] = useLocalStorage("search_filter_tab", "active");
 
   const newSuggestion = () => {
     modalRefs.create.current.open();
@@ -114,6 +127,19 @@ export function PageSuggestions({}) {
   };
   modalRefs.view.current = openSuggestion;
 
+  const filterOptions = [
+    { value: "all", label: t("filter.all") },
+    { value: "general", label: t("filter.general") },
+    { value: "challenge", label: t("filter.challenge") },
+    { value: "challenge_own", label: t("filter.challenge_own") },
+  ];
+  const stateOptions = [
+    { value: "active", label: t("active") },
+    { value: "undecided", label: t("undecided") },
+    { value: "expired", label: t("expired") },
+  ];
+  const tabExpiredValue = tab === "expired" ? true : tab === "undecided" ? null : false;
+
   return (
     <BasicContainerBox maxWidth="md">
       <HeadTitle title={t("title")} />
@@ -129,39 +155,32 @@ export function PageSuggestions({}) {
           )}
         </Grid>
       </Grid>
-      <Typography variant="body1">
+      {/* <Typography variant="body1">
         <Trans t={t} i18nKey="intro" />
-      </Typography>
+      </Typography> */}
       <Typography variant="body2" sx={{ mb: 1 }}>
         {t("language_info")}
       </Typography>
-      <Typography variant="h6" gutterBottom>
-        {t("filter_by_type")}
-      </Typography>
-      <Select value={type} onChange={(e) => setType(e.target.value)} MenuProps={{ disableScrollLock: true }}>
-        <MenuItem value="all">{t("filter.all")}</MenuItem>
-        <MenuItem value="general">{t("filter.general")}</MenuItem>
-        <MenuItem value="challenge">{t("filter.challenge")}</MenuItem>
-        {auth.hasPlayerClaimed && <MenuItem value="challenge_own">{t("filter.challenge_own")}</MenuItem>}
-      </Select>
-      <Divider sx={{ mt: 2 }} />
 
-      <Tabs variant="fullWidth" value={tab} onChange={(event, newTab) => setTab(newTab)} sx={{ mt: 0 }}>
-        <Tab label={t("active")} value="active" />
-        <Tab label={t("undecided")} value="undecided" />
-        <Tab label={t("expired")} value="expired" />
-      </Tabs>
-      <Divider sx={{ my: 0 }} />
-
-      {tab === "active" && (
-        <SuggestionsList expired={false} defaultPerPage={30} modalRefs={modalRefs} filterType={type} />
-      )}
-      {tab === "undecided" && (
-        <SuggestionsList expired={null} defaultPerPage={30} modalRefs={modalRefs} filterType={type} />
-      )}
-      {tab === "expired" && (
-        <SuggestionsList expired={true} defaultPerPage={30} modalRefs={modalRefs} filterType={type} />
-      )}
+      <RadioButtonsGroup
+        title={t("filter_by_type")}
+        options={filterOptions}
+        value={type}
+        onChange={(v) => setType(v)}
+      />
+      <RadioButtonsGroup
+        title={t("filter_by_state")}
+        options={stateOptions}
+        value={tab}
+        onChange={(v) => setTab(v)}
+      />
+      <SuggestionsList
+        expired={tabExpiredValue}
+        defaultPerPage={25}
+        modalRefs={modalRefs}
+        filterType={type}
+        tab={tab}
+      />
 
       <SuggestionsModalContainer modalRefs={modalRefs} suggestionId={id} closeModal={onCloseSuggestion} />
     </BasicContainerBox>
@@ -169,12 +188,16 @@ export function PageSuggestions({}) {
 }
 
 //#region == Suggestions List ==
-function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType }) {
+function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType, tab = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(defaultPerPage);
 
   const query = useGetSuggestions(page, perPage, expired, null, filterType);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filterType, tab]);
 
   if (query.isLoading) {
     return <LoadingSpinner sx={{ mt: 1 }} />;
@@ -188,16 +211,20 @@ function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType }) {
   return (
     <Stack direction="column" gap={2}>
       {expired === false && <HeadTitle title={t("title")} />}
-      <Stack direction="row" gap={2} alignItems="center" sx={{ mt: 2 }}>
-        <Typography variant="body2">
-          {t("showing", {
-            from: max_count === 0 ? 0 : (page - 1) * perPage + 1,
-            to: (page - 1) * perPage + suggestions.length,
-            count: max_count,
-          })}
-        </Typography>
-        <Pagination count={max_page} page={page} onChange={(e, value) => setPage(value)} />
-      </Stack>
+      <Grid container alignItems="center" sx={{ mt: 1 }}>
+        <Grid item xs={12} sm="auto">
+          <Typography variant="body2" color="text.secondary">
+            {t("showing", {
+              from: max_count === 0 ? 0 : (page - 1) * perPage + 1,
+              to: (page - 1) * perPage + suggestions.length,
+              count: max_count,
+            })}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm>
+          <Pagination count={max_page} page={page} onChange={(e, value) => setPage(value)} />
+        </Grid>
+      </Grid>
       {suggestions.map((suggestion) => (
         <SuggestionDisplay
           key={suggestion.id}
@@ -212,6 +239,7 @@ function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType }) {
 
 function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
+  const { t: t_sv } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
   const theme = useTheme();
   const auth = useAuth();
 
@@ -234,7 +262,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const votesNoSubmission = suggestion.votes.filter((vote) => vote.submission === null);
   let acceptedColor =
     suggestion.is_accepted === null
-      ? theme.palette.box.border
+      ? new Color(theme.palette.box.border).alpha(0.25).string()
       : suggestion.is_accepted
       ? theme.palette.success.main
       : theme.palette.error.main;
@@ -244,6 +272,9 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const difficultiesSorted =
     suggestion.challenge_id !== null ? getSortedSuggestedDifficulties(suggestion.challenge) : [];
   const difficultiesCountTotal = difficultiesSorted ? difficultiesSorted.reduce((a, b) => a + b.value, 0) : 0;
+
+  const didChallengeTooltip = t_sv("did_challenge");
+  const othersTooltip = t_sv("others");
 
   return (
     <BasicBox
@@ -260,7 +291,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
       }}
       onClick={viewSuggestion}
     >
-      <Grid container sx={{ mb: 1 }}>
+      <Grid container sx={{ mb: 0 }}>
         <Grid item xs={12} sm>
           <SuggestionName suggestion={suggestion} expired={expired} />
         </Grid>
@@ -279,7 +310,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
           gap={1}
           alignItems="center"
           flexWrap={{ xs: "wrap", sm: "unset" }}
-          sx={{ mb: 1.5 }}
+          sx={{ mb: 0.5 }}
         >
           <DifficultyMoveDisplay from={suggestion.current_difficulty} to={suggestion.suggested_difficulty} />
           {difficultiesSorted.length > 0 && (
@@ -301,58 +332,75 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
       )}
 
       <Grid container sx={{ mb: 1 }}>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={12}>
           <Grid container columnSpacing={0.5}>
-            <Grid item xs={12} sm="auto">
-              <Typography variant="body2">
-                {suggestion.author_id === null ? (
-                  t("deleted_player")
-                ) : (
-                  <PlayerChip player={suggestion.author} size="small" />
-                )}
-              </Typography>
-            </Grid>
             <Grid item xs={12} sm>
               <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
-                <FontAwesomeIcon icon={faComment} /> {suggestion.comment ?? "-"}
+                {suggestion.comment ?? "-"}
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          textAlign={{
-            xs: "left",
-            sm: "right",
-          }}
-        >
-          <Typography variant="body2">
-            <Tooltip
-              title={jsonDateToJsDate(suggestion.date_created).toLocaleString(navigator.language)}
-              arrow
-              placement="top"
-            >
-              <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created))}</span>
-            </Tooltip>
-          </Typography>
+        <Grid item xs={12} sm={12}>
+          <Stack
+            direction="row"
+            gap={1}
+            alignItems="center"
+            sx={{ mt: 0.5, color: theme.palette.text.secondary }}
+          >
+            <Typography variant="body2">
+              {suggestion.author_id === null ? (
+                t("deleted_player")
+              ) : (
+                <PlayerChip player={suggestion.author} size="small" />
+              )}
+            </Typography>
+            <Typography variant="body2">&middot;</Typography>
+            <Typography variant="body2">
+              <Tooltip
+                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(navigator.language)}
+                arrow
+                placement="top"
+              >
+                <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created))}</span>
+              </Tooltip>
+            </Typography>
+          </Stack>
         </Grid>
       </Grid>
 
-      <Divider sx={{ my: 1 }} />
+      {/* <Divider sx={{ my: 1 }} /> */}
       {suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
       ) : (
         <Grid container columnSpacing={1} rowSpacing={0.5}>
           {!isGeneral && (
-            <Grid item xs={12} sm={6} display="flex" justifyContent="space-between">
-              <VotesDisplay votes={votesSubmission} hasSubmission={true} isGeneral={isGeneral} />
-              <Divider sx={{ display: { xs: "none", sm: "block" } }} orientation="vertical" />
-            </Grid>
+            <>
+              <Grid item xs={12} sm={12}>
+                <Stack direction="row" gap={0.5} alignItems="center">
+                  <OtherIcon
+                    url={"/icons/golden-icon.png"}
+                    title={didChallengeTooltip}
+                    hideOutline
+                    style={{ filter: "brightness(100%)" }}
+                  />
+                  <VotesDisplay votes={votesSubmission} hasSubmission={true} />
+                </Stack>
+              </Grid>
+            </>
           )}
-          <Grid item xs={12} sm={isGeneral ? 12 : 6}>
-            <VotesDisplay votes={votesNoSubmission} hasSubmission={false} isGeneral={isGeneral} />
+          <Grid item xs={12} sm={isGeneral ? 12 : 12}>
+            <Stack direction="row" gap={0.5} alignItems="center">
+              {!isGeneral && (
+                <OtherIcon
+                  url={"/icons/golden-icon-slashed.png"}
+                  title={othersTooltip}
+                  hideOutline
+                  style={{ filter: "brightness(100%)" }}
+                />
+              )}
+              <VotesDisplay votes={votesNoSubmission} hasSubmission={false} />
+            </Stack>
           </Grid>
         </Grid>
       )}
@@ -438,8 +486,9 @@ function SuggestionName({ suggestion, expired }) {
   );
 }
 
-function VotesDisplay({ votes, hasSubmission, isGeneral }) {
+function VotesDisplay({ votes, hasSubmission }) {
   const auth = useAuth();
+
   const countFor = votes.filter((vote) => vote.vote === "+").length;
   const votedFor =
     auth.hasPlayerClaimed &&
@@ -452,38 +501,17 @@ function VotesDisplay({ votes, hasSubmission, isGeneral }) {
   const votedIndifferent =
     auth.hasPlayerClaimed &&
     votes.some((vote) => vote.vote === "i" && vote.player_id === auth.user.player_id);
-  const hideEmpty = false;
+
+  const ownVoteType = votedFor ? "for" : votedAgainst ? "against" : votedIndifferent ? "indifferent" : null;
 
   return (
-    <Stack direction="row" gap={2}>
-      {(!hideEmpty || countFor > 0) && (
-        <VoteDisplay
-          type="+"
-          count={countFor}
-          selfVoted={votedFor}
-          hasSubmission={hasSubmission}
-          isGeneral={isGeneral}
-        />
-      )}
-      {(!hideEmpty || countAgainst > 0) && (
-        <VoteDisplay
-          type="-"
-          count={countAgainst}
-          selfVoted={votedAgainst}
-          hasSubmission={hasSubmission}
-          isGeneral={isGeneral}
-        />
-      )}
-      {(!hideEmpty || countIndifferent > 0) && (
-        <VoteDisplay
-          type="i"
-          count={countIndifferent}
-          selfVoted={votedIndifferent}
-          hasSubmission={hasSubmission}
-          isGeneral={isGeneral}
-        />
-      )}
-    </Stack>
+    <VotesBar
+      size="small"
+      votesFor={countFor}
+      votesAgainst={countAgainst}
+      votesIndifferent={countIndifferent}
+      ownVoteType={ownVoteType}
+    />
   );
 }
 
@@ -1244,5 +1272,26 @@ function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
         <Typography variant="body1">{t("info")}</Typography>
       </CustomModal>
     </>
+  );
+}
+
+function RadioButtonsGroup({ title, options, value, onChange, color = "primary", sx = {}, ...props }) {
+  const variantUnselected = "outlined";
+  const variantSelected = "contained";
+  return (
+    <Stack direction="column" gap={0} sx={{ mb: 0, ...sx }} {...props}>
+      <Typography variant="h6">{title}</Typography>
+      <Stack direction="row" gap={2} alignItems="center" sx={{ mb: 1 }} flexWrap="wrap">
+        {options.map((option) => (
+          <Button
+            variant={value === option.value ? variantSelected : variantUnselected}
+            color={color}
+            onClick={() => onChange(option.value)}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </Stack>
+    </Stack>
   );
 }
