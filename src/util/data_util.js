@@ -9,6 +9,10 @@ export function getChallengeCampaign(challenge) {
   return challenge.map?.campaign ?? challenge.campaign;
 }
 
+export function getSubmissionFcShort(submission, noC = false) {
+  if (submission.is_fc) return "[FC]";
+  else return noC ? "" : "[C]";
+}
 export function getChallengeFcShort(challenge, noC = false) {
   if (challenge.requires_fc) return "[FC]";
   else if (challenge.has_fc) return "[C/FC]";

@@ -75,6 +75,7 @@ import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { ExportTopGoldenListModal } from "./TopGoldenList";
 import { CampaignGallery } from "../components/MapImage";
+import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
 
 const STYLE_CONSTS = {
   player: {
@@ -101,6 +102,11 @@ const STYLE_CONSTS = {
 export function PageCampaign() {
   const { id, tab } = useParams();
   const navigate = useNavigate();
+  const { settings } = useAppSettings();
+
+  if (settings.visual.topGoldenList.useExperimental && tab === "top-golden-list") {
+    return <PageTopGoldenListAlt defaultType="campaign" defaultId={id} />;
+  }
 
   const setTab = (newTab) => {
     if (newTab === "players") {

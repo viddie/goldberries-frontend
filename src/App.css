@@ -115,3 +115,52 @@
   font-size: 18px;
   padding: 0 4px;
 }
+
+
+
+.video-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Image wrapper ensures proper layout */
+.video-link .image-wrapper img {
+  transition: transform 0.15s ease, opacity 0.3s ease !important;
+}
+
+/* Overlay positioned over entire link */
+.video-link .overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+  pointer-events: none;
+  /* So clicks go through to the <a> */
+}
+
+/* Play button */
+.video-link .play-button {
+  font-size: 3rem;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Hover effects */
+.video-link:hover .image-wrapper img {
+  transform: scale(1.05);
+}
+
+.video-link:hover .overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.video-link:hover .play-button {
+  opacity: 1;
+}

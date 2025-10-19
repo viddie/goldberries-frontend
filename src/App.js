@@ -142,6 +142,7 @@ import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
+import { PageTopGoldenListAlt } from "./pages/TopGoldenListAlt";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_URL;
@@ -279,6 +280,7 @@ const router = createBrowserRouter([
       },
 
       { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenList /> },
+      { path: "top-golden-list-alt/:type?/:id?", element: <PageTopGoldenListAlt /> },
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
 
       { path: "rejected-maps", element: <PageRejectedMaps /> },

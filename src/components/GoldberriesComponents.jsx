@@ -12,6 +12,7 @@ import {
   getGamebananaEmbedUrl,
   getObjectiveName,
   getPlayerNameColorStyle,
+  getSubmissionFcShort,
 } from "../util/data_util";
 import { Autocomplete, Chip, Divider, Grid, MenuItem, Stack, TextField, Tooltip } from "@mui/material";
 import {
@@ -781,7 +782,7 @@ export function SuspendedIcon({ reason }) {
   );
 }
 
-export function CampaignIcon({ campaign, height = "1.3em", doLink = false }) {
+export function CampaignIcon({ campaign, height = "1.3em", doLink = false, style = {} }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const iconUrl = campaign.icon_url;
   if (iconUrl === null) return null;
@@ -794,6 +795,7 @@ export function CampaignIcon({ campaign, height = "1.3em", doLink = false }) {
         className="outlined"
         style={{
           height: height,
+          ...style,
         }}
         loading="lazy"
       />
@@ -930,7 +932,7 @@ export function ChallengeFcIcon({
   return (
     <Tooltip title={alt} arrow placement="top">
       {allowTextIcons && settings.visual.topGoldenList.useTextFcIcons ? (
-        <span style={{ whiteSpace: "nowrap" }}>{shortAlt}</span>
+        <span style={{ whiteSpace: "nowrap", ...style }}>{shortAlt}</span>
       ) : (
         <img
           src={"/icons/" + icon}
@@ -947,24 +949,42 @@ export function ChallengeFcIcon({
     </Tooltip>
   );
 }
-export function SubmissionFcIcon({ submission, height = "1em", disableTooltip = false, style, ...props }) {
-  if (!submission.is_fc) return null;
-  const icon = "fullclear.png";
-  const alt = "Full Clear";
+export function SubmissionFcIcon({
+  submission,
+  height = "1em",
+  disableTooltip = false,
+  showClear = false,
+  allowTextIcons = false,
+  style,
+  ...props
+}) {
+  const { settings } = useAppSettings();
 
-  const comp = (
-    <img
-      src={"/icons/" + icon}
-      alt={alt}
-      className="outlined"
-      style={{
-        height: height,
-        ...style,
-      }}
-      {...props}
-      loading="lazy"
-    />
-  );
+  if (!submission.is_fc && !showClear) return null;
+  const isFc = submission.is_fc;
+
+  const icon = isFc ? "fullclear.png" : "clear.png";
+  const alt = isFc ? "Full Clear" : "Regular Clear";
+  const shortAlt = getSubmissionFcShort(submission, !showClear);
+
+  let comp = null;
+  if (allowTextIcons && settings.visual.topGoldenList.useTextFcIcons) {
+    comp = <span style={{ whiteSpace: "nowrap" }}>{shortAlt}</span>;
+  } else {
+    comp = (
+      <img
+        src={"/icons/" + icon}
+        alt={alt}
+        className="outlined"
+        style={{
+          height: height,
+          ...style,
+        }}
+        {...props}
+        loading="lazy"
+      />
+    );
+  }
 
   if (disableTooltip) return comp;
 
@@ -1007,7 +1027,7 @@ export function ArbitraryIcon({ height = "1em" }) {
   );
 }
 
-export function ObjectiveIcon({ objective, challenge = null, height = "1em" }) {
+export function ObjectiveIcon({ objective, challenge = null, height = "1em", style = {} }) {
   const description = objective.description;
   let icon_url = null;
   if (challenge) {
@@ -1019,7 +1039,7 @@ export function ObjectiveIcon({ objective, challenge = null, height = "1em" }) {
   if (icon_url === null || icon_url === undefined)
     return (
       <Tooltip title={description} arrow placement="top">
-        <FontAwesomeIcon icon={faInfoCircle} height={height} />
+        <FontAwesomeIcon icon={faInfoCircle} height={height} style={style} />
       </Tooltip>
     );
 
@@ -1031,6 +1051,7 @@ export function ObjectiveIcon({ objective, challenge = null, height = "1em" }) {
         className="outlined"
         style={{
           height: height,
+          ...style,
         }}
         loading="lazy"
       />

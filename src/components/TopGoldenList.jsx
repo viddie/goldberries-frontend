@@ -291,7 +291,7 @@ function TopGoldenListComponent({ type, id, filter, isOverallList = false, useSu
           );
         })}
       </Stack>
-      <ModalContainer modalRefs={modalRefs} />
+      <TglModalContainer modalRefs={modalRefs} />
     </Stack>
   );
 }
@@ -907,7 +907,7 @@ function TopGoldenListRow({
   );
 }
 
-function ModalContainer({ modalRefs }) {
+export function TglModalContainer({ modalRefs }) {
   const showMapModal = useModal();
   const editChallengeModal = useModal();
   const editSubmissionModal = useModal();

@@ -20,9 +20,11 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
         darkenTierColors: 55,
         switchMapAndChallenge: false,
         hideEmptyTiers: false,
-        hideTimeTakenColumn: false,
-        showFractionalTiers: false,
+        hideTimeTaken: false,
+        sortByFractionalTiers: true,
         unstackTiers: true,
+        useExperimental: false,
+        preferMapImages: false,
       },
       background: {
         dark: "", //Indicates default, solid color background. Otherwise this is the image name

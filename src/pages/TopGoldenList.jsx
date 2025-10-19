@@ -27,16 +27,22 @@ import {
 } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useEffect } from "react";
+import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
 
 export function PageTopGoldenList({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
   const { type, id } = useParams();
+  const { settings } = useAppSettings();
   const theme = useTheme();
 
   const defaultFilter = getDefaultFilter(true);
   const [filter, setFilter] = useLocalStorage("top_golden_list_filter", defaultFilter);
 
   const exportModal = useModal();
+
+  if (settings.visual.topGoldenList.useExperimental) {
+    return <PageTopGoldenListAlt />;
+  }
 
   const title = t("title");
 

@@ -995,17 +995,25 @@
           "note": "Switches from 'Map Name [Challenge Name]' to 'Challenge Name [Map Name]' format"
         },
         "hide_empty_tiers": "Hide Empty Tiers",
-        "hide_time_taken_column": {
-          "label": "Hide Total Grind Time Column",
-          "note": "Hides the 'Total Grind Time' column in the personal Top Golden List of players"
+        "hide_time_taken": {
+          "label": "Hide Total Grind Time",
+          "note": "Hides the 'Total Grind Time' field in the personal Top Golden List of players"
         },
-        "show_fractional_tiers": {
-          "label": "Show Fractional Tiers",
-          "note": "Shows fractional tier values and sorts the overall Top Golden List accordingly. Does NOT impact personal Top Golden Lists."
+        "sort_by_fractional_tiers": {
+          "label": "Sort by Fractional Tiers",
+          "note": "Sorts the Top Golden List by fractional tier values."
         },
         "unstack_tiers": {
           "label": "Unstack Tiers",
           "note": "This will put every tier in its own column, instead of stacking them vertically."
+        },
+        "use_experimental": {
+          "label": "Use Experimental Layout",
+          "note": "A new layout for the Top Golden List that is still being tested. Highly likely to lag a ton when loading!"
+        },
+        "prefer_map_images": {
+          "label": "Prefer Map Images",
+          "note": "By default, if the first clear is a video on youtube, it's thumbnail is shown, if not the map image is shown instead. Enable this to always prefer the map image."
         }
       },
       "difficulty_colors": {

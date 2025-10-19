@@ -87,10 +87,13 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import { BadgeDisplay } from "../components/Badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
 
 export function PagePlayer() {
+  const { settings } = useAppSettings();
   const { id, tab } = useParams();
   const [selectedTab, setSelectedTab] = useState(tab || "info");
+
   useEffect(() => {
     if (tab && tab !== selectedTab) {
       setSelectedTab(tab);
@@ -98,6 +101,10 @@ export function PagePlayer() {
       setSelectedTab("info");
     }
   }, [tab]);
+
+  if (settings.visual.topGoldenList.useExperimental && tab === "top-golden-list") {
+    return <PageTopGoldenListAlt defaultType="player" defaultId={id} />;
+  }
 
   if (selectedTab === "top-golden-list") {
     return <PagePlayerTopGoldenList id={id} />;
@@ -813,10 +820,17 @@ function TimelineCampaignMultiSubmissions({ campaign, submissions }) {
   );
 }
 
-function TimelineSubmissionPreviewImage({ submission }) {
-  const challenge = submission.challenge;
-  const map = challenge.map;
-  const campaign = getChallengeCampaign(challenge);
+export function TimelineSubmissionPreviewImage({
+  submission,
+  challenge = null,
+  campaign = null,
+  maxWidth = "200px",
+  width = null,
+  dontLink = false,
+  style = {},
+  linkStyle = {},
+}) {
+  const _campaign = campaign ?? getChallengeCampaign(challenge ?? submission.challenge);
 
   let url = null;
 
@@ -826,16 +840,24 @@ function TimelineSubmissionPreviewImage({ submission }) {
   }
 
   if (url === null) {
-    url = API_BASE_URL + "/embed/img/campaign_image.php?id=" + campaign.id;
+    url = API_BASE_URL + "/embed/img/campaign_image.php?id=" + _campaign.id;
+  }
+
+  const image = (
+    <PlaceholderImage
+      src={url}
+      alt={_campaign.name}
+      style={{ maxWidth, width: width ?? undefined, borderRadius: "5px", aspectRatio: "16 / 9", ...style }}
+    />
+  );
+
+  if (dontLink) {
+    return image;
   }
 
   return (
-    <StyledExternalLink href={submission.proof_url}>
-      <PlaceholderImage
-        src={url}
-        alt={campaign.name}
-        style={{ maxWidth: "200px", borderRadius: "5px", aspectRatio: "16 / 9" }}
-      />
+    <StyledExternalLink href={submission.proof_url} style={linkStyle}>
+      {image}
     </StyledExternalLink>
   );
 }

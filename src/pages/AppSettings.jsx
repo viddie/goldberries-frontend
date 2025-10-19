@@ -597,31 +597,31 @@ function AppSettingsTopGoldenListForm() {
         />
       </SettingsEntry>
 
-      <SettingsEntry note={t("hide_time_taken_column.note")}>
+      <SettingsEntry note={t("hide_time_taken.note")}>
         <Controller
-          name="topGoldenList.hideTimeTakenColumn"
+          name="topGoldenList.hideTimeTaken"
           control={form.control}
           render={({ field }) => (
             <FormControlLabel
               checked={field.value}
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
-              label={t("hide_time_taken_column.label")}
+              label={t("hide_time_taken.label")}
             />
           )}
         />
       </SettingsEntry>
 
-      <SettingsEntry note={t("show_fractional_tiers.note")}>
+      <SettingsEntry note={t("sort_by_fractional_tiers.note")}>
         <Controller
-          name="topGoldenList.showFractionalTiers"
+          name="topGoldenList.sortByFractionalTiers"
           control={form.control}
           render={({ field }) => (
             <FormControlLabel
               checked={field.value}
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
-              label={t("show_fractional_tiers.label")}
+              label={t("sort_by_fractional_tiers.label")}
             />
           )}
         />
@@ -637,6 +637,36 @@ function AppSettingsTopGoldenListForm() {
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
               label={t("unstack_tiers.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
+      <SettingsEntry note={t("use_experimental.note")}>
+        <Controller
+          name="topGoldenList.useExperimental"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("use_experimental.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
+      <SettingsEntry note={t("prefer_map_images.note")}>
+        <Controller
+          name="topGoldenList.preferMapImages"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("prefer_map_images.label")}
             />
           )}
         />
