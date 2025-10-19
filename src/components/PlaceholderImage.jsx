@@ -36,6 +36,7 @@ export const PlaceholderImage = ({ src, alt = "", style, className, ...props }) 
       <img
         src={src}
         alt={alt}
+        loading="lazy"
         onLoad={() => setLoaded(true)}
         style={{
           width: "100%",

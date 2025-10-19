@@ -999,6 +999,10 @@
           "label": "Hide Total Grind Time",
           "note": "Hides the 'Total Grind Time' field in the personal Top Golden List of players"
         },
+        "show_fractional_tiers": {
+          "label": "Show Fractional Tiers",
+          "note": "Shows fractional tier values and sorts the overall Top Golden List accordingly. Does NOT impact personal Top Golden Lists."
+        },
         "sort_by_fractional_tiers": {
           "label": "Sort by Fractional Tiers",
           "note": "Sorts the Top Golden List by fractional tier values."

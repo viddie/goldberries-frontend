@@ -8,6 +8,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { sortChallengesForTGL, TglModalContainer } from "../components/TopGoldenList";
 import { Link, useParams } from "react-router-dom";
@@ -53,6 +54,7 @@ import { CampaignImageFull, MapImageFull } from "../components/MapImage";
 import Color from "color";
 import { TimelineSubmissionPreviewImage } from "./Player";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+import { useAuth } from "../hooks/AuthProvider";
 
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
@@ -115,7 +117,7 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
     >
       <HeadTitle title={title} />
       <Stack direction="column" gap={1} sx={{ mb: 1 }}>
-        <Stack direction="row" gap={1} alignItems="center" sx={{ mb: 1 }}>
+        <Stack direction="row" gap={1} alignItems="center" sx={{ mb: 0 }}>
           {/* <BorderedBox sx={{ p: 1 }}>
             <Typography variant="h6" sx={{ mr: 1 }}>
               {title}
@@ -129,7 +131,14 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
             defaultFilter={defaultFilter}
           />
         </Stack>
-        <TopGoldenList type={actualType} id={actualId} filter={filter} isOverallList showMap={showMap} />
+        <TopGoldenList
+          type={actualType}
+          id={actualId}
+          filter={filter}
+          isOverallList
+          showMap={showMap}
+          editSubmission={openEditSubmission}
+        />
       </Stack>
 
       <TglModalContainer modalRefs={modalRefs} />
@@ -137,7 +146,7 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   );
 }
 
-function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
+function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmission }) {
   const { settings } = useAppSettings();
   const query = useGetTopGoldenList(type, id, filter);
   const data = getQueryData(query);
@@ -208,6 +217,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
                     map={map}
                     campaign={campaign}
                     showMap={showMap}
+                    editSubmission={editSubmission}
                   />
                 );
               })}
@@ -241,10 +251,12 @@ function TierInfoBox({ tier }) {
   );
 }
 
-function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
+function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editSubmission }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const { settings } = useAppSettings();
+  const auth = useAuth();
   const theme = useTheme();
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const { settings } = useAppSettings();
   const darkmode = theme.palette.mode === "dark";
   const colors = getNewDifficultyColors(settings, tier.id);
 
@@ -270,7 +282,18 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
   const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
   const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
 
-  return (
+  const handleClick = (e) => {
+    if (!isPlayer) {
+      showMap(map?.id, challenge.id, !map);
+    } else {
+      if (e.altKey && (auth.hasHelperPriv || auth.isPlayerWithId(firstSubmission.player_id))) {
+        editSubmission(firstSubmission.id);
+        e.preventDefault();
+      }
+    }
+  };
+
+  const element = (
     <Box
       sx={{
         p: 1.5,
@@ -286,17 +309,17 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
           backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
         },
       }}
-      onClick={() => showMap(map?.id, challenge.id, !map)}
+      onClick={handleClick}
     >
       <Stack direction="row" gap={2}>
         <ChallengePreviewImageLink
           challenge={challenge}
           map={map}
           campaign={campaign}
-          width="150px"
+          width="122px"
           style={{ flexShrink: "0" }}
         />
-        <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" } }}>
+        <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
           <Stack direction="row" gap={0.5} alignItems="center">
             <CampaignIcon campaign={campaign} height="0.85rem" style={{ marginRight: "2px" }} />
             <Typography
@@ -332,13 +355,13 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
               showClear
             />
           </Stack>
-          <Grid container spacing={1} sx={{ mt: "auto" }}>
+          <Grid container columnSpacing={1} sx={{ mt: "auto" }}>
             {isPlayer && (
               <Grid item xs={columnWidth} display="flex" alignItems="center" justifyContent="flex-start">
                 <SubmissionFcIcon
                   submission={firstSubmission}
                   allowTextIcons
-                  style={{ fontSize: "1.2rem" }}
+                  style={{ fontSize: "1.0rem" }}
                 />
               </Grid>
             )}
@@ -376,6 +399,20 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
         </Stack>
       </Stack>
     </Box>
+  );
+
+  if (!isPlayer) {
+    return element;
+  }
+
+  return (
+    <a
+      href={"/submission/" + firstSubmission.id}
+      target="_blank"
+      style={{ textDecoration: "none", color: "inherit", lineHeight: "0" }}
+    >
+      {element}
+    </a>
   );
 }
 
