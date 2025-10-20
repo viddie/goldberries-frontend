@@ -307,37 +307,63 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     }
   };
 
+  // Common style objects
+  const boxBaseStyles = {
+    borderStyle: "solid",
+    borderRadius: "4px",
+    backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
+    cursor: "pointer",
+    transition: "all 0.2s",
+    "&:hover": {
+      borderColor: new Color(colors.color).alpha(1).string(),
+      backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
+    },
+  };
+
+  const textEllipsisStyles = {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
+  const campaignIconProps = {
+    campaign: campaign,
+    height: "0.85rem",
+  };
+
+  const fcIconStyle = {
+    fontSize: "0.85rem",
+    color: theme.palette.text.secondary,
+  };
+
+  const difficultyNumberProps = {
+    difficulty: diff,
+    diffNumber: diffNumber,
+    isPersonal: isPersonal,
+    isUnset: isUnset,
+  };
+
   // Compact mode layout: single line with map name, challenge label (if exists), FC icon, difficulty
   let element = null;
   if (compactMode) {
     element = (
       <Box
         sx={{
+          ...boxBaseStyles,
           px: 1.5,
           py: 0.75,
           borderWidth: "2px",
-          borderStyle: "solid",
           borderColor: new Color(colors.color).alpha(0.5).string(),
-          backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
-          borderRadius: "4px",
-          cursor: "pointer",
-          transition: "all 0.2s",
-          "&:hover": {
-            borderColor: new Color(colors.color).alpha(1).string(),
-            backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
-          },
         }}
         onClick={() => showMap(map?.id, challenge.id, !map)}
       >
         <Stack direction="row" gap={1} alignItems="center">
-          <CampaignIcon campaign={campaign} height="0.85rem" />
+          <CampaignIcon {...campaignIconProps} />
           <Typography
             variant="body2"
             sx={{
+              ...textEllipsisStyles,
               fontWeight: "bold",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
               maxWidth: "200px",
               flexShrink: 1,
             }}
@@ -349,9 +375,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
               variant="body2"
               color="text.secondary"
               sx={{
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                ...textEllipsisStyles,
                 maxWidth: "150px",
                 flexShrink: 1,
               }}
@@ -359,24 +383,14 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
               [{challengeSuffix}]
             </Typography>
           )}
-          <ChallengeFcIcon
-            challenge={challenge}
-            style={{ fontSize: "0.85rem", color: theme.palette.text.secondary }}
-            allowTextIcons
-            showClear={false}
-          />
+          <ChallengeFcIcon challenge={challenge} style={fcIconStyle} allowTextIcons showClear={false} />
           <Box sx={{ flexGrow: 1 }} />
           {isPlayer && !hideGrindTime && hasGrindTime && (
             <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
               {grindTime}
             </Typography>
           )}
-          <DifficultyNumber
-            difficulty={diff}
-            diffNumber={diffNumber}
-            isPersonal={isPersonal}
-            isUnset={isUnset}
-          />
+          <DifficultyNumber {...difficultyNumberProps} />
           {!isPlayer && (
             <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
               <Typography
@@ -386,10 +400,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
               >
                 {challenge.data.submission_count}
               </Typography>
-              <FontAwesomeIcon
-                icon={faUsers}
-                style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }}
-              />
+              <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
             </Stack>
           )}
         </Stack>
@@ -400,18 +411,10 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     element = (
       <Box
         sx={{
+          ...boxBaseStyles,
           p: 1.5,
           borderWidth: boxBorderWidth,
-          borderStyle: "solid",
           borderColor: new Color(colors.color).alpha(0.6).string(),
-          backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
-          borderRadius: "4px",
-          cursor: "pointer",
-          transition: "all 0.2s",
-          "&:hover": {
-            borderColor: new Color(colors.color).alpha(1).string(),
-            backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
-          },
         }}
         onClick={handleClick}
       >
@@ -427,13 +430,11 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
           )}
           <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
             <Stack direction="row" gap={0.5} alignItems="center">
-              <CampaignIcon campaign={campaign} height="0.85rem" style={{ marginRight: "2px" }} />
+              <CampaignIcon {...campaignIconProps} style={{ marginRight: "2px" }} />
               <Typography
                 variant="body1"
                 sx={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  ...textEllipsisStyles,
                   fontWeight: "bold",
                   fontSize: "0.98rem",
                 }}
@@ -447,16 +448,12 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
                 challenge={challenge}
                 style={{ fontSize: ".85rem" }}
               />
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-              >
+              <Typography variant="caption" color="text.secondary" sx={textEllipsisStyles}>
                 {challengeLabel}
               </Typography>
               <ChallengeFcIcon
                 challenge={challenge}
-                style={{ fontSize: "0.85rem", marginLeft: "2px", color: theme.palette.text.secondary }}
+                style={{ ...fcIconStyle, marginLeft: "2px" }}
                 allowTextIcons
                 showClear
               />
@@ -497,12 +494,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
                 </Grid>
               )}
               <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-                <DifficultyNumber
-                  difficulty={diff}
-                  diffNumber={diffNumber}
-                  isPersonal={isPersonal}
-                  isUnset={isUnset}
-                />
+                <DifficultyNumber {...difficultyNumberProps} />
               </Grid>
             </Grid>
           </Stack>
