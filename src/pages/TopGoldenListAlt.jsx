@@ -332,11 +332,16 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
           <Box sx={{ flexGrow: 1 }} />
           {!isPlayer && (
             <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
-              <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
               <Typography variant="caption" color="text.secondary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
                 {challenge.data.submission_count}
               </Typography>
+              <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
             </Stack>
+          )}
+          {isPlayer && !hideGrindTime && hasGrindTime && (
+            <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+              {grindTime}
+            </Typography>
           )}
           <Typography variant="body2" color={diffNumberColor} sx={{ fontWeight: "bold", flexShrink: 0 }}>
             {diffNumberStr}
