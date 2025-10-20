@@ -329,6 +329,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
             allowTextIcons
             showClear={false}
           />
+          <Box sx={{ flexGrow: 1 }} />
           {!isPlayer && (
             <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
               <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
@@ -337,7 +338,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
               </Typography>
             </Stack>
           )}
-          <Typography variant="body2" color={diffNumberColor} sx={{ ml: "auto", fontWeight: "bold", flexShrink: 0 }}>
+          <Typography variant="body2" color={diffNumberColor} sx={{ fontWeight: "bold", flexShrink: 0 }}>
             {diffNumberStr}
           </Typography>
         </Stack>
