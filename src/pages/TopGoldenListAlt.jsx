@@ -173,6 +173,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
   }
 
   const hideEmptyTiers = settings.visual.topGoldenList.hideEmptyTiers;
+  const compactMode = settings.visual.topGoldenList.compactMode;
 
   return (
     <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: 1, sm: 2 }}>
@@ -195,7 +196,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
                 }}
               />
             </Stack>
-            <Stack direction="column" gap={1} width="100%">
+            <Stack direction="column" gap={compactMode ? 0.25 : 1} width="100%">
               {tierChallenges.map((challenge) => {
                 const map = maps[challenge.map_id];
                 const campaign = campaigns[map ? map.campaign_id : challenge.campaign_id];
@@ -332,10 +333,17 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
           <Box sx={{ flexGrow: 1 }} />
           {!isPlayer && (
             <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ minWidth: "1.5em", textAlign: "right" }}
+              >
                 {challenge.data.submission_count}
               </Typography>
-              <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
+              <FontAwesomeIcon
+                icon={faUsers}
+                style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }}
+              />
             </Stack>
           )}
           {isPlayer && !hideGrindTime && hasGrindTime && (
