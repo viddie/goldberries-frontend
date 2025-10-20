@@ -247,8 +247,10 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
   const theme = useTheme();
   const darkmode = theme.palette.mode === "dark";
   const colors = getNewDifficultyColors(settings, tier.id);
+  const compactMode = settings.visual.topGoldenList.compactMode;
 
   const challengeLabel = getChallengeName(challenge, false);
+  const challengeSuffix = getChallengeSuffix(challenge);
   const name = map ? getMapName(map, campaign) : getCampaignName(campaign, t_g, true);
   const campaignAuthor = campaign.author_gb_name || "Unknown";
 
@@ -270,6 +272,68 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
   const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
   const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
 
+  // Compact mode layout: single line with map name, challenge label (if exists), FC icon, difficulty
+  if (compactMode) {
+    return (
+      <Box
+        sx={{
+          px: 1.5,
+          py: 0.75,
+          borderWidth: "2px",
+          borderStyle: "solid",
+          borderColor: new Color(colors.color).alpha(0.5).string(),
+          backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
+          borderRadius: "4px",
+          cursor: "pointer",
+          transition: "all 0.2s",
+          "&:hover": {
+            borderColor: new Color(colors.color).alpha(1).string(),
+            backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
+          },
+        }}
+        onClick={() => showMap(map?.id, challenge.id, !map)}
+      >
+        <Stack direction="row" gap={1} alignItems="center">
+          <CampaignIcon campaign={campaign} height="0.85rem" />
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: "bold",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {name}
+          </Typography>
+          {challengeSuffix && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              [{challengeSuffix}]
+            </Typography>
+          )}
+          <ChallengeFcIcon
+            challenge={challenge}
+            style={{ fontSize: "0.85rem", color: theme.palette.text.secondary }}
+            allowTextIcons
+            showClear={false}
+          />
+          <Typography variant="body2" color={diffNumberColor} sx={{ ml: "auto", fontWeight: "bold" }}>
+            {diffNumberStr}
+          </Typography>
+        </Stack>
+      </Box>
+    );
+  }
+
+  // Standard layout (original)
   return (
     <Box
       sx={{

@@ -1014,6 +1014,10 @@
         "prefer_map_images": {
           "label": "Prefer Map Images",
           "note": "By default, if the first clear is a video on youtube, it's thumbnail is shown, if not the map image is shown instead. Enable this to always prefer the map image."
+        },
+        "compact_mode": {
+          "label": "Compact Mode",
+          "note": "Shows challenges in a compact layout without images, keeping all information on a single line."
         }
       },
       "difficulty_colors": {
