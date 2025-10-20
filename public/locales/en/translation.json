@@ -1018,6 +1018,10 @@
         "prefer_map_images": {
           "label": "Prefer Map Images",
           "note": "By default, if the first clear is a video on youtube, it's thumbnail is shown, if not the map image is shown instead. Enable this to always prefer the map image."
+        },
+        "hide_images": {
+          "label": "Hide Images",
+          "note": "Hides images on the Top Golden List alltogether. Will improve performance."
         }
       },
       "difficulty_colors": {

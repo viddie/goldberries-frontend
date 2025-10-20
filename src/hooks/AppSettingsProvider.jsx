@@ -26,6 +26,7 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
         preferMapImages: false,
         hideTimeTaken: false,
         sortByFractionalTiers: true,
+        hideImages: false,
       },
       background: {
         dark: "", //Indicates default, solid color background. Otherwise this is the image name

@@ -677,6 +677,21 @@ function AppSettingsTopGoldenListForm() {
         />
       </SettingsEntry>
 
+      <SettingsEntry note={t("hide_images.note")}>
+        <Controller
+          name="topGoldenList.hideImages"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("hide_images.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
       <SettingsEntry note={t("sort_by_fractional_tiers.note")}>
         <Controller
           name="topGoldenList.sortByFractionalTiers"
