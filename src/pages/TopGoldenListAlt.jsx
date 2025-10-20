@@ -34,7 +34,7 @@ import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faFileExport, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
 import {
   getCampaignName,
@@ -302,6 +302,8 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              maxWidth: "200px",
+              flexShrink: 1,
             }}
           >
             {name}
@@ -314,6 +316,8 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                maxWidth: "150px",
+                flexShrink: 1,
               }}
             >
               [{challengeSuffix}]
@@ -325,7 +329,15 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
             allowTextIcons
             showClear={false}
           />
-          <Typography variant="body2" color={diffNumberColor} sx={{ ml: "auto", fontWeight: "bold" }}>
+          {!isPlayer && (
+            <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
+              <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }} />
+              <Typography variant="caption" color="text.secondary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
+                {challenge.data.submission_count}
+              </Typography>
+            </Stack>
+          )}
+          <Typography variant="body2" color={diffNumberColor} sx={{ ml: "auto", fontWeight: "bold", flexShrink: 0 }}>
             {diffNumberStr}
           </Typography>
         </Stack>
