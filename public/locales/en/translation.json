@@ -166,6 +166,8 @@
       "placement_difficulty": "Placement Difficulty:",
       "export_button_tooltip": "Export Top Golden List",
       "stats_button_tooltip": "View Total Grind Time Distribution",
+      "clear_one": "clear",
+      "clear_other": "clears",
       "export": {
         "feedback": {
           "copied": "Copied to clipboard",
