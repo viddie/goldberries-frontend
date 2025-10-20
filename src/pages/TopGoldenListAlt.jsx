@@ -8,6 +8,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { sortChallengesForTGL, TglModalContainer } from "../components/TopGoldenList";
 import { Link, useParams } from "react-router-dom";
@@ -53,6 +54,9 @@ import { CampaignImageFull, MapImageFull } from "../components/MapImage";
 import Color from "color";
 import { TimelineSubmissionPreviewImage } from "./Player";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+import { useAuth } from "../hooks/AuthProvider";
+
+const boxBorderWidth = "3px";
 
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
@@ -115,7 +119,7 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
     >
       <HeadTitle title={title} />
       <Stack direction="column" gap={1} sx={{ mb: 1 }}>
-        <Stack direction="row" gap={1} alignItems="center" sx={{ mb: 1 }}>
+        <Stack direction="row" gap={1} alignItems="center" sx={{ mb: 0 }}>
           {/* <BorderedBox sx={{ p: 1 }}>
             <Typography variant="h6" sx={{ mr: 1 }}>
               {title}
@@ -129,7 +133,14 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
             defaultFilter={defaultFilter}
           />
         </Stack>
-        <TopGoldenList type={actualType} id={actualId} filter={filter} isOverallList showMap={showMap} />
+        <TopGoldenList
+          type={actualType}
+          id={actualId}
+          filter={filter}
+          isOverallList
+          showMap={showMap}
+          editSubmission={openEditSubmission}
+        />
       </Stack>
 
       <TglModalContainer modalRefs={modalRefs} />
@@ -137,7 +148,7 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   );
 }
 
-function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
+function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmission }) {
   const { settings } = useAppSettings();
   const query = useGetTopGoldenList(type, id, filter);
   const data = getQueryData(query);
@@ -186,12 +197,18 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
 
         return (
           <Stack direction="column" gap={1} key={tier.id} alignItems="flex-start">
-            <Stack direction="row" gap={1} alignItems="center" alignSelf="stretch">
+            <Stack
+              direction="row"
+              gap={1}
+              alignItems="center"
+              alignSelf="stretch"
+              // sx={{ position: "sticky", top: 50, zIndex: 9999 }}
+            >
               <TierInfoBox tier={tier} />
               <Divider
                 sx={{
                   flexGrow: 1,
-                  height: "2px",
+                  height: boxBorderWidth,
                   backgroundColor: new Color(tierColors.color).alpha(0.5).string(),
                 }}
               />
@@ -209,6 +226,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap }) {
                     map={map}
                     campaign={campaign}
                     showMap={showMap}
+                    editSubmission={editSubmission}
                   />
                 );
               })}
@@ -229,7 +247,7 @@ function TierInfoBox({ tier }) {
       sx={{
         py: 0.5,
         px: 2,
-        border: `2px solid ${colors.color}`,
+        border: `${boxBorderWidth} solid ${colors.color}`,
         borderRadius: "4px",
         backgroundColor: new Color(colors.color).alpha(0.3).string(),
         fontWeight: "bold",
@@ -242,10 +260,12 @@ function TierInfoBox({ tier }) {
   );
 }
 
-function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
+function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editSubmission }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const { settings } = useAppSettings();
+  const auth = useAuth();
   const theme = useTheme();
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const { settings } = useAppSettings();
   const darkmode = theme.palette.mode === "dark";
   const colors = getNewDifficultyColors(settings, tier.id);
   const compactMode = settings.visual.topGoldenList.compactMode;
@@ -260,18 +280,22 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
     firstSubmission.proof_url.includes("youtube.com") || firstSubmission.proof_url.includes("youtu.be");
 
   const isPlayer = type === "player";
+  const isPersonal = isPlayer && firstSubmission.is_personal;
+
   let diff = challenge.difficulty;
   if (isPlayer && firstSubmission.suggested_difficulty) diff = firstSubmission.suggested_difficulty;
   const challengeFrac = challenge.data.frac ? challenge.data.frac : 0.5;
   const diffNumber = diff.sort + (isPlayer ? (firstSubmission.frac ?? 50) / 100 : challengeFrac);
   const diffNumberStr = diff.sort === -1 ? "-" : diffNumber.toFixed(2);
-  const isPersonal = isPlayer && firstSubmission.is_personal;
   let diffNumberColor = theme.palette.text.secondary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.5).string();
+
   const hasGrindTime = isPlayer && firstSubmission.time_taken !== null;
   const grindTime = isPlayer && hasGrindTime && secondsToDuration(firstSubmission.time_taken);
   const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
   const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
+
+  const hideImage = settings.visual.topGoldenList.hideImages;
 
   // Compact mode layout: single line with map name, challenge label (if exists), FC icon, difficulty
   if (compactMode) {
@@ -364,9 +388,9 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
     <Box
       sx={{
         p: 1.5,
-        borderWidth: "2px",
+        borderWidth: boxBorderWidth,
         borderStyle: "solid",
-        borderColor: new Color(colors.color).alpha(0.5).string(),
+        borderColor: new Color(colors.color).alpha(0.6).string(),
         backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
         borderRadius: "4px",
         cursor: "pointer",
@@ -376,17 +400,19 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
           backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
         },
       }}
-      onClick={() => showMap(map?.id, challenge.id, !map)}
+      onClick={handleClick}
     >
       <Stack direction="row" gap={2}>
-        <ChallengePreviewImageLink
-          challenge={challenge}
-          map={map}
-          campaign={campaign}
-          width="150px"
-          style={{ flexShrink: "0" }}
-        />
-        <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" } }}>
+        {!hideImage && (
+          <ChallengePreviewImageLink
+            challenge={challenge}
+            map={map}
+            campaign={campaign}
+            width="122px"
+            style={{ flexShrink: "0" }}
+          />
+        )}
+        <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
           <Stack direction="row" gap={0.5} alignItems="center">
             <CampaignIcon campaign={campaign} height="0.85rem" style={{ marginRight: "2px" }} />
             <Typography
@@ -422,13 +448,13 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
               showClear
             />
           </Stack>
-          <Grid container spacing={1} sx={{ mt: "auto" }}>
+          <Grid container columnSpacing={1} sx={{ mt: "auto" }}>
             {isPlayer && (
               <Grid item xs={columnWidth} display="flex" alignItems="center" justifyContent="flex-start">
                 <SubmissionFcIcon
                   submission={firstSubmission}
                   allowTextIcons
-                  style={{ fontSize: "1.2rem" }}
+                  style={{ fontSize: "1.0rem" }}
                 />
               </Grid>
             )}
@@ -458,14 +484,26 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap }) {
               </Grid>
             )}
             <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-              <Typography variant="caption" color={diffNumberColor}>
-                {diffNumberStr}
-              </Typography>
+              <DifficultyNumber difficulty={diff} diffNumber={diffNumber} isPersonal={isPersonal} />
             </Grid>
           </Grid>
         </Stack>
       </Stack>
     </Box>
+  );
+
+  if (!isPlayer) {
+    return element;
+  }
+
+  return (
+    <a
+      href={"/submission/" + firstSubmission.id}
+      target="_blank"
+      style={{ textDecoration: "none", color: "inherit", lineHeight: "0" }}
+    >
+      {element}
+    </a>
   );
 }
 
@@ -507,11 +545,46 @@ export function ChallengePreviewImageLink({
       <PlaceholderImage
         src={embedUrl}
         className="image-wrapper"
+        lazy
         style={{ width: width ?? undefined, borderRadius: "5px", aspectRatio: "16 / 9", ...imageStyle }}
       />
       <div class="overlay">
         <div class="play-button">▶</div>
       </div>
     </a>
+  );
+}
+
+function DifficultyNumber({ difficulty, diffNumber, isPersonal = false }) {
+  const { settings } = useAppSettings();
+  const theme = useTheme();
+  const colors = getNewDifficultyColors(settings, difficulty.id);
+  const diffNumberStr = difficulty.sort === -1 ? "-" : diffNumber.toFixed(2);
+  let diffNumberColor = theme.palette.text.primary;
+  if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.6).string();
+  return (
+    // <Box>
+    <Typography
+      variant="caption"
+      color={diffNumberColor}
+      sx={{
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: "-1px",
+          left: "-5px",
+          right: "-5px",
+          bottom: "-1px",
+          border: "1px solid " + colors.color,
+          borderRadius: "3px",
+          background: new Color(colors.color).alpha(0.1).string(),
+          pointerEvents: "none",
+        },
+      }}
+    >
+      {diffNumberStr}
+    </Typography>
+    // </Box>
   );
 }

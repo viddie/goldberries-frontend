@@ -612,16 +612,16 @@ function AppSettingsTopGoldenListForm() {
         />
       </SettingsEntry>
 
-      <SettingsEntry note={t("sort_by_fractional_tiers.note")}>
+      <SettingsEntry note={t("show_fractional_tiers.note")}>
         <Controller
-          name="topGoldenList.sortByFractionalTiers"
+          name="topGoldenList.showFractionalTiers"
           control={form.control}
           render={({ field }) => (
             <FormControlLabel
               checked={field.value}
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
-              label={t("sort_by_fractional_tiers.label")}
+              label={t("show_fractional_tiers.label")}
             />
           )}
         />
@@ -641,6 +641,11 @@ function AppSettingsTopGoldenListForm() {
           )}
         />
       </SettingsEntry>
+
+      <Typography variant="h6">--- EXPERIMENTAL SETTINGS ---</Typography>
+      <Typography variant="body2" color={(theme) => theme.palette.text.secondary}>
+        The following settings only apply to the experimental layout of the Top Golden List.
+      </Typography>
 
       <SettingsEntry note={t("use_experimental.note")}>
         <Controller
@@ -667,6 +672,36 @@ function AppSettingsTopGoldenListForm() {
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
               label={t("prefer_map_images.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
+      <SettingsEntry note={t("hide_images.note")}>
+        <Controller
+          name="topGoldenList.hideImages"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("hide_images.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
+      <SettingsEntry note={t("sort_by_fractional_tiers.note")}>
+        <Controller
+          name="topGoldenList.sortByFractionalTiers"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("sort_by_fractional_tiers.label")}
             />
           )}
         />

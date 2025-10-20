@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
 
-export const PlaceholderImage = ({ src, alt = "", style, className, ...props }) => {
+export const PlaceholderImage = ({ src, alt = "", lazy = false, style, className, ...props }) => {
   const theme = useTheme();
   const [loaded, setLoaded] = useState(false);
 
@@ -36,6 +36,7 @@ export const PlaceholderImage = ({ src, alt = "", style, className, ...props }) 
       <img
         src={src}
         alt={alt}
+        loading={lazy ? "lazy" : "eager"}
         onLoad={() => setLoaded(true)}
         style={{
           width: "100%",

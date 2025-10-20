@@ -108,7 +108,7 @@ function TopGoldenListComponent({ type, id, filter, isOverallList = false, useSu
     settings.visual.topGoldenList.useTextFcIcons +
     settings.visual.topGoldenList.switchMapAndChallenge +
     settings.visual.topGoldenList.hideEmptyTiers +
-    settings.visual.topGoldenList.hideTimeTakenColumn +
+    settings.visual.topGoldenList.hideTimeTaken +
     settings.visual.topGoldenList.showFractionalTiers +
     settings.general.showFractionalTiers +
     settings.visual.topGoldenList.unstackTiers;
@@ -139,7 +139,7 @@ function TopGoldenListComponent({ type, id, filter, isOverallList = false, useSu
     settings.visual.topGoldenList.useTextFcIcons,
     settings.visual.topGoldenList.switchMapAndChallenge,
     settings.visual.topGoldenList.hideEmptyTiers,
-    settings.visual.topGoldenList.hideTimeTakenColumn,
+    settings.visual.topGoldenList.hideTimeTaken,
     settings.visual.topGoldenList.showFractionalTiers,
     settings.general.showFractionalTiers,
     settings.visual.topGoldenList.unstackTiers,
@@ -413,7 +413,7 @@ function TopGoldenListTier({
     (settings.general.showFractionalTiers && isPlayer);
   sortChallengesForTGL(challengesInTier, maps, campaigns, sortByFractionalTiers, isPlayer);
 
-  const showTimeTakenColumn = isPlayer && !settings.visual.topGoldenList.hideTimeTakenColumn;
+  const showTimeTakenColumn = isPlayer && !settings.visual.topGoldenList.hideTimeTaken;
   const showOldTierNames = settings.general.showOldTierNames && false;
 
   const cellStyle = {
@@ -608,7 +608,7 @@ function TopGoldenListRow({
   const colors = getNewDifficultyColors(settings, tier.id, true);
   const isReference = challenge.data.is_stable;
 
-  const showTimeTakenColumn = isPlayer && !settings.visual.topGoldenList.hideTimeTakenColumn;
+  const showTimeTakenColumn = isPlayer && !settings.visual.topGoldenList.hideTimeTaken;
 
   const rowStyle = {
     backgroundColor: colors.color,

@@ -999,6 +999,10 @@
           "label": "Hide Total Grind Time",
           "note": "Hides the 'Total Grind Time' field in the personal Top Golden List of players"
         },
+        "show_fractional_tiers": {
+          "label": "Show Fractional Tiers",
+          "note": "Shows fractional tier values and sorts the overall Top Golden List accordingly. Does NOT impact personal Top Golden Lists."
+        },
         "sort_by_fractional_tiers": {
           "label": "Sort by Fractional Tiers",
           "note": "Sorts the Top Golden List by fractional tier values."
@@ -1014,6 +1018,10 @@
         "prefer_map_images": {
           "label": "Prefer Map Images",
           "note": "By default, if the first clear is a video on youtube, it's thumbnail is shown, if not the map image is shown instead. Enable this to always prefer the map image."
+        },
+        "hide_images": {
+          "label": "Hide Images",
+          "note": "Hides images on the Top Golden List alltogether. Will improve performance."
         },
         "compact_mode": {
           "label": "Compact Mode",
