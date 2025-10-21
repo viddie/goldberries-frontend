@@ -27,6 +27,7 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
         hideTimeTaken: false,
         sortByFractionalTiers: true,
         hideImages: false,
+        compactMode: false,
       },
       background: {
         dark: "", //Indicates default, solid color background. Otherwise this is the image name

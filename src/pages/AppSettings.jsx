@@ -707,6 +707,21 @@ function AppSettingsTopGoldenListForm() {
         />
       </SettingsEntry>
 
+      <SettingsEntry note={t("compact_mode.note")}>
+        <Controller
+          name="topGoldenList.compactMode"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("compact_mode.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
       <Footnote />
     </form>
   );

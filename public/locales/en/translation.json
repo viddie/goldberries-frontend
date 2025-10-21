@@ -166,6 +166,8 @@
       "placement_difficulty": "Placement Difficulty:",
       "export_button_tooltip": "Export Top Golden List",
       "stats_button_tooltip": "View Total Grind Time Distribution",
+      "clear_one": "clear",
+      "clear_other": "clears",
       "export": {
         "feedback": {
           "copied": "Copied to clipboard",
@@ -1022,6 +1024,10 @@
         "hide_images": {
           "label": "Hide Images",
           "note": "Hides images on the Top Golden List alltogether. Will improve performance."
+        },
+        "compact_mode": {
+          "label": "Compact Mode",
+          "note": "Shows challenges in a compact layout without images, keeping all information on a single line."
         }
       },
       "difficulty_colors": {

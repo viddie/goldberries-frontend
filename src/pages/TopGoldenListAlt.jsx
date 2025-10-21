@@ -35,7 +35,7 @@ import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faFileExport, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
 import {
   getCampaignName,
@@ -184,6 +184,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
   }
 
   const hideEmptyTiers = settings.visual.topGoldenList.hideEmptyTiers;
+  const compactMode = settings.visual.topGoldenList.compactMode;
 
   return (
     <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: 1, sm: 2 }}>
@@ -212,7 +213,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
                 }}
               />
             </Stack>
-            <Stack direction="column" gap={1} width="100%">
+            <Stack direction="column" gap={compactMode ? 0.25 : 1} width="100%">
               {tierChallenges.map((challenge) => {
                 const map = maps[challenge.map_id];
                 const campaign = campaigns[map ? map.campaign_id : challenge.campaign_id];
@@ -263,19 +264,16 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const auth = useAuth();
   const theme = useTheme();
-  const isMd = useMediaQuery(theme.breakpoints.up("md"));
   const { settings } = useAppSettings();
   const darkmode = theme.palette.mode === "dark";
   const colors = getNewDifficultyColors(settings, tier.id);
+  const compactMode = settings.visual.topGoldenList.compactMode;
 
   const challengeLabel = getChallengeName(challenge, false);
+  const challengeSuffix = getChallengeSuffix(challenge);
   const name = map ? getMapName(map, campaign) : getCampaignName(campaign, t_g, true);
-  const campaignAuthor = campaign.author_gb_name || "Unknown";
 
   const firstSubmission = challenge.submissions[0];
-  const isYoutube =
-    firstSubmission.proof_url.includes("youtube.com") || firstSubmission.proof_url.includes("youtu.be");
-
   const isPlayer = type === "player";
   const isPersonal = isPlayer && firstSubmission.is_personal;
 
@@ -283,17 +281,16 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
   if (isPlayer && firstSubmission.suggested_difficulty) diff = firstSubmission.suggested_difficulty;
   const challengeFrac = challenge.data.frac ? challenge.data.frac : 0.5;
   const diffNumber = diff.sort + (isPlayer ? (firstSubmission.frac ?? 50) / 100 : challengeFrac);
-  const diffNumberStr = diff.sort === -1 ? "-" : diffNumber.toFixed(2);
   let diffNumberColor = theme.palette.text.secondary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.5).string();
+  const isUnset = !isPlayer || firstSubmission.suggested_difficulty === null;
 
   const hasGrindTime = isPlayer && firstSubmission.time_taken !== null;
-  const grindTime = isPlayer && hasGrindTime && secondsToDuration(firstSubmission.time_taken);
+  const timeTaken = isPlayer && hasGrindTime && firstSubmission.time_taken;
   const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
   const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
 
   const hideImage = settings.visual.topGoldenList.hideImages;
-
   const handleClick = (e) => {
     if (!isPlayer) {
       showMap(map?.id, challenge.id, !map);
@@ -305,113 +302,139 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     }
   };
 
-  const element = (
-    <Box
-      sx={{
-        p: 1.5,
-        borderWidth: boxBorderWidth,
-        borderStyle: "solid",
-        borderColor: new Color(colors.color).alpha(0.6).string(),
-        backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
-        borderRadius: "4px",
-        cursor: "pointer",
-        transition: "all 0.2s",
-        "&:hover": {
-          borderColor: new Color(colors.color).alpha(1).string(),
-          backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
-        },
-      }}
-      onClick={handleClick}
-    >
-      <Stack direction="row" gap={2}>
-        {!hideImage && (
-          <ChallengePreviewImageLink
-            challenge={challenge}
-            map={map}
-            campaign={campaign}
-            width="122px"
-            style={{ flexShrink: "0" }}
-          />
-        )}
-        <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
-          <Stack direction="row" gap={0.5} alignItems="center">
-            <CampaignIcon campaign={campaign} height="0.85rem" style={{ marginRight: "2px" }} />
+  //#region Common style objects
+  const boxBaseStyles = {
+    borderWidth: boxBorderWidth,
+    borderStyle: "solid",
+    borderRadius: "4px",
+    borderColor: new Color(colors.color).alpha(0.6).string(),
+    backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
+    cursor: "pointer",
+    transition: "all 0.2s",
+    "&:hover": {
+      borderColor: new Color(colors.color).alpha(1).string(),
+      backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
+    },
+  };
+
+  const textEllipsisStyles = {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
+  const campaignIconProps = {
+    campaign: campaign,
+    height: "0.85rem",
+  };
+
+  const fcIconStyle = {
+    fontSize: "0.85rem",
+    color: theme.palette.text.secondary,
+  };
+
+  const difficultyNumberProps = { difficulty: diff, diffNumber, isPersonal, isUnset, isPlayer };
+  //#endregion
+
+  // Layout: single line with map name, challenge label (if exists), FC icon, difficulty
+  let element = null;
+  if (compactMode) {
+    element = (
+      <Box sx={{ ...boxBaseStyles, px: 1.5, py: 0.75 }} onClick={() => showMap(map?.id, challenge.id, !map)}>
+        <Stack direction="row" gap={1} alignItems="center">
+          <CampaignIcon {...campaignIconProps} />
+          <Typography
+            variant="body2"
+            sx={{ ...textEllipsisStyles, fontWeight: "bold", maxWidth: "180px", flexShrink: 1 }}
+          >
+            {name}
+          </Typography>
+          {challengeSuffix && (
             <Typography
-              variant="body1"
-              sx={{
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                fontWeight: "bold",
-                fontSize: "0.98rem",
-              }}
-            >
-              {name}
-            </Typography>
-          </Stack>
-          <Stack direction="row" gap={0.5} alignItems="center">
-            <ObjectiveIcon
-              objective={challenge.objective}
-              challenge={challenge}
-              style={{ fontSize: ".85rem" }}
-            />
-            <Typography
-              variant="caption"
+              variant="body2"
               color="text.secondary"
-              sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+              sx={{ ...textEllipsisStyles, maxWidth: "120px", flexShrink: 1 }}
             >
-              {challengeLabel}
+              [{challengeSuffix}]
             </Typography>
-            <ChallengeFcIcon
-              challenge={challenge}
-              style={{ fontSize: "0.85rem", marginLeft: "2px", color: theme.palette.text.secondary }}
-              allowTextIcons
-              showClear
-            />
-          </Stack>
-          <Grid container columnSpacing={1} sx={{ mt: "auto" }}>
-            {isPlayer && (
-              <Grid item xs={columnWidth} display="flex" alignItems="center" justifyContent="flex-start">
-                <SubmissionFcIcon
-                  submission={firstSubmission}
-                  allowTextIcons
-                  style={{ fontSize: "1.0rem" }}
-                />
-              </Grid>
-            )}
-            {(!isPlayer || !hideGrindTime) && (
-              <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="center">
-                {!isPlayer && (
-                  <Stack direction="row" gap={0.5} sx={{ width: "100%", height: "100%" }}>
-                    <Typography
-                      variant="body1"
-                      color="text.primary"
-                      fontWeight="bold"
-                      fontSize="1.05em"
-                      alignSelf="baseline"
-                    >
-                      {challenge.data.submission_count}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" alignSelf="baseline">
-                      {challenge.data.submission_count === 1 ? "clear" : "clears"}
-                    </Typography>
-                  </Stack>
-                )}
-                {isPlayer && hasGrindTime && (
-                  <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                    {grindTime}
-                  </Typography>
-                )}
-              </Grid>
-            )}
-            <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-              <DifficultyNumber difficulty={diff} diffNumber={diffNumber} isPersonal={isPersonal} />
-            </Grid>
-          </Grid>
+          )}
+          <ChallengeFcIcon challenge={challenge} style={fcIconStyle} allowTextIcons showClear={false} />
+          <Box sx={{ flexGrow: 1 }} />
+          {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
+          <DifficultyNumber {...difficultyNumberProps} />
+          {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} isCompact />}
         </Stack>
-      </Stack>
-    </Box>
-  );
+      </Box>
+    );
+  } else {
+    // Standard layout (original)
+    element = (
+      <Box sx={{ ...boxBaseStyles, p: 1.5 }} onClick={handleClick}>
+        <Stack direction="row" gap={2}>
+          {!hideImage && (
+            <ChallengePreviewImageLink
+              challenge={challenge}
+              map={map}
+              campaign={campaign}
+              width="122px"
+              style={{ flexShrink: "0" }}
+            />
+          )}
+          <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
+            <Stack direction="row" gap={0.5} alignItems="center">
+              <CampaignIcon {...campaignIconProps} style={{ marginRight: "2px" }} />
+              <Typography
+                variant="body1"
+                sx={{
+                  ...textEllipsisStyles,
+                  fontWeight: "bold",
+                  fontSize: "0.98rem",
+                }}
+              >
+                {name}
+              </Typography>
+            </Stack>
+            <Stack direction="row" gap={0.5} alignItems="center">
+              <ObjectiveIcon
+                objective={challenge.objective}
+                challenge={challenge}
+                style={{ fontSize: ".85rem" }}
+              />
+              <Typography variant="caption" color="text.secondary" sx={textEllipsisStyles}>
+                {challengeLabel}
+              </Typography>
+              <ChallengeFcIcon
+                challenge={challenge}
+                style={{ ...fcIconStyle, marginLeft: "2px" }}
+                allowTextIcons
+                showClear
+              />
+            </Stack>
+            <Grid container columnSpacing={1} sx={{ mt: "auto" }}>
+              {isPlayer && (
+                <Grid item xs={columnWidth} display="flex" alignItems="center" justifyContent="flex-start">
+                  <SubmissionFcIcon
+                    submission={firstSubmission}
+                    allowTextIcons
+                    style={{ fontSize: "1.0rem" }}
+                  />
+                </Grid>
+              )}
+              {(!isPlayer || !hideGrindTime) && (
+                <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="center">
+                  {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} />}
+                  {isPlayer && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
+                </Grid>
+              )}
+              <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
+                <DifficultyNumber {...difficultyNumberProps} />
+              </Grid>
+            </Grid>
+          </Stack>
+        </Stack>
+      </Box>
+    );
+  }
 
   if (!isPlayer) {
     return element;
@@ -425,6 +448,60 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     >
       {element}
     </a>
+  );
+}
+
+function GrindTimeLabel({ timeTaken, isCompact = false }) {
+  const durationStr = secondsToDuration(timeTaken);
+
+  if (isCompact) {
+    return (
+      <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+        {durationStr}
+      </Typography>
+    );
+  }
+
+  return (
+    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+      {durationStr}
+    </Typography>
+  );
+}
+
+function ClearCountLabel({ number, isCompact = false }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "components.top_golden_list" });
+  const theme = useTheme();
+
+  if (isCompact) {
+    return (
+      <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
+          {number}
+        </Typography>
+        <FontAwesomeIcon
+          icon={faUsers}
+          style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }}
+        />
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack direction="row" gap={0.5} sx={{ width: "100%", height: "100%" }}>
+      <Typography
+        variant="body1"
+        color="text.primary"
+        fontWeight="bold"
+        fontSize="1.05em"
+        alignSelf="baseline"
+      >
+        {number}
+      </Typography>
+      <Typography variant="caption" color="text.secondary" alignSelf="baseline">
+        {t("clear", { count: number })}
+      </Typography>
+    </Stack>
   );
 }
 
@@ -476,36 +553,41 @@ export function ChallengePreviewImageLink({
   );
 }
 
-function DifficultyNumber({ difficulty, diffNumber, isPersonal = false }) {
+function DifficultyNumber({ difficulty, diffNumber, isPersonal = false, isUnset = false, isPlayer = false }) {
   const { settings } = useAppSettings();
   const theme = useTheme();
   const colors = getNewDifficultyColors(settings, difficulty.id);
-  const diffNumberStr = difficulty.sort === -1 ? "-" : diffNumber.toFixed(2);
+  let diffNumberStr = difficulty.sort === -1 ? "-" : diffNumber.toFixed(2);
   let diffNumberColor = theme.palette.text.primary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.6).string();
+  if (isUnset && isPlayer) diffNumberColor = "transparent";
+
+  let beforeStyle = {};
+  if (isPlayer) {
+    beforeStyle = {
+      content: '""',
+      position: "absolute",
+      top: "-1px",
+      left: "-4px",
+      right: "-4px",
+      bottom: "-1px",
+      border: "1px solid " + colors.color,
+      borderRadius: "3px",
+      background: new Color(colors.color).alpha(0.1).string(),
+      pointerEvents: "none",
+    };
+  }
+
   return (
-    // <Box>
     <Typography
       variant="caption"
       color={diffNumberColor}
       sx={{
         position: "relative",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: "-1px",
-          left: "-5px",
-          right: "-5px",
-          bottom: "-1px",
-          border: "1px solid " + colors.color,
-          borderRadius: "3px",
-          background: new Color(colors.color).alpha(0.1).string(),
-          pointerEvents: "none",
-        },
+        "&::before": beforeStyle,
       }}
     >
       {diffNumberStr}
     </Typography>
-    // </Box>
   );
 }
