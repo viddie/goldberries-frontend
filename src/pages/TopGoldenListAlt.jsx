@@ -286,7 +286,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
   const isUnset = !isPlayer || firstSubmission.suggested_difficulty === null;
 
   const hasGrindTime = isPlayer && firstSubmission.time_taken !== null;
-  const grindTime = isPlayer && hasGrindTime && secondsToDuration(firstSubmission.time_taken);
+  const timeTaken = isPlayer && hasGrindTime && firstSubmission.time_taken;
   const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
   const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
 
@@ -345,12 +345,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
           <CampaignIcon {...campaignIconProps} />
           <Typography
             variant="body2"
-            sx={{
-              ...textEllipsisStyles,
-              fontWeight: "bold",
-              maxWidth: "180px",
-              flexShrink: 1,
-            }}
+            sx={{ ...textEllipsisStyles, fontWeight: "bold", maxWidth: "180px", flexShrink: 1 }}
           >
             {name}
           </Typography>
@@ -358,18 +353,14 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{
-                ...textEllipsisStyles,
-                maxWidth: "120px",
-                flexShrink: 1,
-              }}
+              sx={{ ...textEllipsisStyles, maxWidth: "120px", flexShrink: 1 }}
             >
               [{challengeSuffix}]
             </Typography>
           )}
           <ChallengeFcIcon challenge={challenge} style={fcIconStyle} allowTextIcons showClear={false} />
           <Box sx={{ flexGrow: 1 }} />
-          {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={grindTime} isCompact />}
+          {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
           <DifficultyNumber {...difficultyNumberProps} />
           {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} isCompact />}
         </Stack>
@@ -432,7 +423,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
               {(!isPlayer || !hideGrindTime) && (
                 <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="center">
                   {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} />}
-                  {isPlayer && hasGrindTime && <GrindTimeLabel timeTaken={grindTime} isCompact />}
+                  {isPlayer && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
                 </Grid>
               )}
               <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
@@ -588,7 +579,6 @@ function DifficultyNumber({ difficulty, diffNumber, isPersonal = false, isUnset 
   }
 
   return (
-    // <Box>
     <Typography
       variant="caption"
       color={diffNumberColor}
@@ -599,6 +589,5 @@ function DifficultyNumber({ difficulty, diffNumber, isPersonal = false, isUnset 
     >
       {diffNumberStr}
     </Typography>
-    // </Box>
   );
 }
