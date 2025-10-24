@@ -1,21 +1,8 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
-import { sortChallengesForTGL, TglModalContainer } from "../components/TopGoldenList";
+import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import { TglModalContainer } from "../components/TopGoldenList";
 import { Link, useParams } from "react-router-dom";
 import {
-  BasicBox,
   BorderedBox,
-  CustomIconButton,
   ErrorDisplay,
   getErrorFromMultiple,
   HeadTitle,
@@ -31,28 +18,21 @@ import {
 import { useTranslation } from "react-i18next";
 import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
-import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard, faFileExport, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
 import {
   getCampaignName,
-  getChallengeFcShort,
   getChallengeName,
-  getChallengeNameClean,
   getChallengeSuffix,
-  getDifficultyName,
   getMapName,
   secondsToDuration,
 } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { API_BASE_URL, getNewDifficultyColors } from "../util/constants";
-import { CampaignImageFull, MapImageFull } from "../components/MapImage";
 import Color from "color";
-import { TimelineSubmissionPreviewImage } from "./Player";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { useAuth } from "../hooks/AuthProvider";
 import { useOverflowX } from "../hooks/useOverflowX";
@@ -141,16 +121,14 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
               </Typography>
             </Grid>
             <Grid item xs={12} sm="auto">
-              <Typography variant="h6" sx={{ mr: 1 }}>
-                <SubmissionFilter
-                  type={actualType}
-                  id={actualId}
-                  filter={filter}
-                  setFilter={setFilter}
-                  defaultFilter={defaultFilter}
-                  variant="outlined"
-                />
-              </Typography>
+              <SubmissionFilter
+                type={actualType}
+                id={actualId}
+                filter={filter}
+                setFilter={setFilter}
+                defaultFilter={defaultFilter}
+                variant="outlined"
+              />
             </Grid>
             <Grid item xs={12} sm="auto">
               <TglMoreButton
@@ -417,7 +395,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
           </Stack>
           <Box sx={{ flexGrow: 1 }} />
           {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
-          {showFractionalTiers && <DifficultyNumber {...difficultyNumberProps} />}
+          {showFractionalTiers && <DifficultyNumber {...difficultyNumberProps} isCompact />}
           {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} isCompact />}
         </Stack>
       </Box>
@@ -537,13 +515,10 @@ function ClearCountLabel({ number, isCompact = false }) {
   if (isCompact) {
     return (
       <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
-        <Typography variant="caption" color="text.secondary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
+        <Typography variant="caption" color="text.primary" sx={{ minWidth: "1.5em", textAlign: "right" }}>
           {number}
         </Typography>
-        <FontAwesomeIcon
-          icon={faUsers}
-          style={{ fontSize: "0.75rem", color: theme.palette.text.secondary }}
-        />
+        <FontAwesomeIcon icon={faUsers} style={{ fontSize: "0.75rem", color: theme.palette.text.primary }} />
       </Stack>
     );
   }
@@ -621,6 +596,7 @@ function DifficultyNumber({
   isPersonal = false,
   isUnset = false,
   isPlayer = false,
+  isCompact = false,
 }) {
   const { settings } = useAppSettings();
   const theme = useTheme();
@@ -631,7 +607,7 @@ function DifficultyNumber({
     difficulty.sort + (isPlayer ? (firstSubFrac === null ? 50 : firstSubFrac) / 100 : challengeFrac);
 
   let diffNumberStr = difficulty.sort === -1 ? "-" : diffNumber.toFixed(2);
-  let diffNumberColor = theme.palette.text.primary;
+  let diffNumberColor = isCompact ? theme.palette.text.secondary : theme.palette.text.primary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.6).string();
   if (isUnset && isPlayer) diffNumberColor = "transparent";
 

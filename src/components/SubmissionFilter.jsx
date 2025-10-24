@@ -132,10 +132,10 @@ export function SubmissionFilter({
   const error = isError ? getErrorFromMultiple(queryObjectives, queryObjectiveSubmissionCount) : null;
 
   const disabledFilters = [];
-  if (!localFilter.archived) disabledFilters.push("Archived Maps");
-  if (!localFilter.arbitrary) disabledFilters.push("Arbitrary Challenges");
+  if (!filter.archived) disabledFilters.push("Archived Maps");
+  if (!filter.arbitrary) disabledFilters.push("Arbitrary Challenges");
   sortedObjectives.forEach((objective) => {
-    if (localFilter.hide_objectives.includes(objective.id)) disabledFilters.push(objective.name);
+    if (filter.hide_objectives.includes(objective.id)) disabledFilters.push(objective.name);
   });
 
   const changedTierSlider = (newSort) => {
@@ -369,17 +369,15 @@ export function SubmissionFilter({
         )}
       </Popover>
 
-      <Stack direction="column" gap={0} alignItems="flex-start">
-        {disabledFilters.length > 0 && (
-          <Stack direction="row" gap={0.5} alignItems="center">
-            <FontAwesomeIcon icon={faEyeSlash} color={theme.palette.text.secondary} size="xs" />
-            <Typography variant="caption" color="text.secondary">
-              {disabledFilters.length}
-              {/* {t("categories_hidden", { count: disabledFilters.length })} */}
-            </Typography>
-          </Stack>
-        )}
-      </Stack>
+      {disabledFilters.length > 0 && (
+        <Stack direction="row" gap={0.5} alignItems="center">
+          <FontAwesomeIcon icon={faEyeSlash} color={theme.palette.text.secondary} size="xs" />
+          <Typography variant="caption" color="text.secondary">
+            {disabledFilters.length}
+            {/* {t("categories_hidden", { count: disabledFilters.length })} */}
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   );
 }
