@@ -55,30 +55,43 @@ import Color from "color";
 import { TimelineSubmissionPreviewImage } from "./Player";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { useAuth } from "../hooks/AuthProvider";
+import { useOverflowX } from "../hooks/useOverflowX";
+import { getDefaultOptions, TglMoreButton } from "../components/TglDisplayOptions";
 
-const boxBorderWidth = "3px";
+export function getTglOptionsKey(type) {
+  if (type === "player") {
+    return "top_golden_list_options_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_options_campaign";
+  }
+  return "top_golden_list_options";
+}
+
+export function getTglFilterKey(type) {
+  if (type === "player") {
+    return "top_golden_list_filter_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_filter_campaign";
+  }
+  return "top_golden_list_filter";
+}
 
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
-  const theme = useTheme();
 
   const { type, id } = useParams();
   const actualType = type || defaultType;
   const actualId = id || defaultId;
 
   const defaultFilter = getDefaultFilter(true);
-  const filterKeySuffix = actualType === "player" ? "_player" : actualType === "campaign" ? "_campaign" : "";
-  const [filter, setFilter] = useLocalStorage("top_golden_list_filter" + filterKeySuffix, defaultFilter);
+  const [filter, setFilter] = useLocalStorage(getTglFilterKey(actualType), defaultFilter);
+  const [options, setOptions] = useLocalStorage(getTglOptionsKey(actualType), getDefaultOptions());
 
-  // Set horizontal overflow only for this page
-  useEffect(() => {
-    document.body.parentElement.style.overflowX = "auto";
-    return () => {
-      document.body.parentElement.style.overflowX = "hidden";
-    };
-  }, []);
+  const compactMode = options.compactMode;
 
-  // REFS
+  useOverflowX();
+
+  //#region REFS
   const modalRefs = {
     map: {
       show: useRef(),
@@ -104,9 +117,10 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const openEditSubmission = useCallback((id) => {
     modalRefs.submission.edit.current.open({ id });
   });
-  // =======================
+  //#endregion
 
   const title = t("title");
+  const header = t("type." + (actualType ? actualType : "overall"));
 
   return (
     <Box
@@ -118,25 +132,43 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
       }}
     >
       <HeadTitle title={title} />
-      <Stack direction="column" gap={1} sx={{ mb: 1 }}>
-        <Stack direction="row" gap={1} alignItems="center" sx={{ mb: 0 }}>
-          {/* <BorderedBox sx={{ p: 1 }}>
-            <Typography variant="h6" sx={{ mr: 1 }}>
-              {title}
-            </Typography>
-          </BorderedBox> */}
-          <SubmissionFilter
-            type={actualType}
-            id={actualId}
-            filter={filter}
-            setFilter={setFilter}
-            defaultFilter={defaultFilter}
-          />
-        </Stack>
+      <Stack direction="column" gap={compactMode ? 0.5 : 1} sx={{ mb: 1 }}>
+        <BorderedBox sx={{ p: 1, minWidth: 0, flexShrink: 1, width: "fit-content" }}>
+          <Grid container alignItems="center" columnSpacing={1} rowSpacing={1}>
+            <Grid item xs={12} sm="auto">
+              <Typography variant="h6" sx={{ mr: 1 }}>
+                {header}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm="auto">
+              <Typography variant="h6" sx={{ mr: 1 }}>
+                <SubmissionFilter
+                  type={actualType}
+                  id={actualId}
+                  filter={filter}
+                  setFilter={setFilter}
+                  defaultFilter={defaultFilter}
+                  variant="outlined"
+                />
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm="auto">
+              <TglMoreButton
+                type={actualType}
+                id={actualId}
+                options={options}
+                setOptions={setOptions}
+                defaultOptions={getDefaultOptions()}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
+        </BorderedBox>
         <TopGoldenList
           type={actualType}
           id={actualId}
           filter={filter}
+          options={options}
           isOverallList
           showMap={showMap}
           editSubmission={openEditSubmission}
@@ -148,7 +180,7 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   );
 }
 
-function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmission }) {
+function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
   const { settings } = useAppSettings();
   const query = useGetTopGoldenList(type, id, filter);
   const data = getQueryData(query);
@@ -174,20 +206,24 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
 
   // Sort challenges through the function used in the original TGL
   for (const tierId in challengesByTier) {
-    challengesByTier[tierId] = sortChallengesForTGL(
+    challengesByTier[tierId] = sortChallengesForTGLNew(
       challengesByTier[tierId],
       maps,
       campaigns,
-      settings.visual.topGoldenList.sortByFractionalTiers,
+      options.sort,
+      options.sortOrder,
       type === "player"
     );
   }
 
-  const hideEmptyTiers = settings.visual.topGoldenList.hideEmptyTiers;
-  const compactMode = settings.visual.topGoldenList.compactMode;
+  const hideEmptyTiers = options.hideEmptyTiers;
+  const compactMode = options.compactMode;
 
   return (
-    <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: 1, sm: 2 }}>
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      gap={{ xs: compactMode ? 0.5 : 1, sm: compactMode ? 1 : 2 }}
+    >
       {tiers.map((tier) => {
         const tierChallenges = challengesByTier[tier.id] || [];
         const tierColors = getNewDifficultyColors(settings, tier.id);
@@ -196,19 +232,13 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
         }
 
         return (
-          <Stack direction="column" gap={1} key={tier.id} alignItems="flex-start">
-            <Stack
-              direction="row"
-              gap={1}
-              alignItems="center"
-              alignSelf="stretch"
-              // sx={{ position: "sticky", top: 50, zIndex: 9999 }}
-            >
-              <TierInfoBox tier={tier} />
+          <Stack direction="column" gap={compactMode ? 0.5 : 1} key={tier.id} alignItems="flex-start">
+            <Stack direction="row" gap={1} alignItems="center" alignSelf="stretch">
+              <TierInfoBox tier={tier} options={options} />
               <Divider
                 sx={{
                   flexGrow: 1,
-                  height: boxBorderWidth,
+                  height: compactMode ? "1px" : "3px",
                   backgroundColor: new Color(tierColors.color).alpha(0.5).string(),
                 }}
               />
@@ -227,6 +257,7 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
                     campaign={campaign}
                     showMap={showMap}
                     editSubmission={editSubmission}
+                    options={options}
                   />
                 );
               })}
@@ -238,18 +269,23 @@ function TopGoldenList({ type, id, filter, isOverallList, showMap, editSubmissio
   );
 }
 
-function TierInfoBox({ tier }) {
+function TierInfoBox({ tier, options }) {
   const { settings } = useAppSettings();
+  const compactMode = options.compactMode;
   const colors = getNewDifficultyColors(settings, tier.id);
+  const borderWidth = compactMode ? "1px" : "3px";
   return (
     <Typography
       variant="h6"
       sx={{
         py: 0.5,
         px: 2,
-        border: `${boxBorderWidth} solid ${colors.color}`,
+        border: `${borderWidth} solid ${colors.color}`,
         borderRadius: "4px",
-        backgroundColor: new Color(colors.color).alpha(0.3).string(),
+        backgroundColor: new Color(colors.color)
+          .darken(options.darkenTierColors / 100)
+          .alpha(0.75)
+          .string(),
         fontWeight: "bold",
         cursor: "default",
         whiteSpace: "nowrap",
@@ -260,14 +296,14 @@ function TierInfoBox({ tier }) {
   );
 }
 
-function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editSubmission }) {
+function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editSubmission, options }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const auth = useAuth();
   const theme = useTheme();
   const { settings } = useAppSettings();
-  const darkmode = theme.palette.mode === "dark";
+  const compactMode = options.compactMode;
+  const showFractionalTiers = !options.hideFractionalTiers;
   const colors = getNewDifficultyColors(settings, tier.id);
-  const compactMode = settings.visual.topGoldenList.compactMode;
 
   const challengeLabel = getChallengeName(challenge, false);
   const challengeSuffix = getChallengeSuffix(challenge);
@@ -279,18 +315,17 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
 
   let diff = challenge.difficulty;
   if (isPlayer && firstSubmission.suggested_difficulty) diff = firstSubmission.suggested_difficulty;
-  const challengeFrac = challenge.data.frac ? challenge.data.frac : 0.5;
-  const diffNumber = diff.sort + (isPlayer ? (firstSubmission.frac ?? 50) / 100 : challengeFrac);
-  let diffNumberColor = theme.palette.text.secondary;
-  if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.5).string();
   const isUnset = !isPlayer || firstSubmission.suggested_difficulty === null;
 
   const hasGrindTime = isPlayer && firstSubmission.time_taken !== null;
   const timeTaken = isPlayer && hasGrindTime && firstSubmission.time_taken;
-  const hideGrindTime = isPlayer && settings.visual.topGoldenList.hideTimeTaken;
-  const columnWidth = hideGrindTime || !isPlayer ? 6 : 4;
+  const hideGrindTime = isPlayer && options.hideTimeTaken;
+  let columnCount = 3;
+  if (hideGrindTime || !isPlayer) columnCount--;
+  if (!showFractionalTiers) columnCount--;
+  const columnWidth = 12 / columnCount;
 
-  const hideImage = settings.visual.topGoldenList.hideImages;
+  const hideImage = options.hideImages;
   const handleClick = (e) => {
     if (!isPlayer) {
       showMap(map?.id, challenge.id, !map);
@@ -304,16 +339,23 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
 
   //#region Common style objects
   const boxBaseStyles = {
-    borderWidth: boxBorderWidth,
+    borderWidth: compactMode ? "1px" : "3px",
     borderStyle: "solid",
     borderRadius: "4px",
     borderColor: new Color(colors.color).alpha(0.6).string(),
-    backgroundColor: darkmode ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.3)",
+    backgroundColor: new Color(colors.color)
+      .darken(options.darkenTierColors / 100)
+      .alpha(0.75)
+      .string(),
+
     cursor: "pointer",
     transition: "all 0.2s",
     "&:hover": {
       borderColor: new Color(colors.color).alpha(1).string(),
-      backgroundColor: darkmode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.6)",
+      backgroundColor: new Color(colors.color)
+        .darken(options.darkenTierColors / 100 + 0.05)
+        .alpha(0.85)
+        .string(),
     },
   };
 
@@ -333,35 +375,49 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     color: theme.palette.text.secondary,
   };
 
-  const difficultyNumberProps = { difficulty: diff, diffNumber, isPersonal, isUnset, isPlayer };
+  const difficultyNumberProps = {
+    difficulty: diff,
+    challengeFrac: challenge.data.frac,
+    firstSubFrac: firstSubmission.frac,
+    isPersonal,
+    isUnset,
+    isPlayer,
+  };
   //#endregion
 
   // Layout: single line with map name, challenge label (if exists), FC icon, difficulty
   let element = null;
   if (compactMode) {
     element = (
-      <Box sx={{ ...boxBaseStyles, px: 1.5, py: 0.75 }} onClick={() => showMap(map?.id, challenge.id, !map)}>
+      <Box sx={{ ...boxBaseStyles, px: 1, py: 0.25 }} onClick={handleClick}>
         <Stack direction="row" gap={1} alignItems="center">
           <CampaignIcon {...campaignIconProps} />
-          <Typography
-            variant="body2"
-            sx={{ ...textEllipsisStyles, fontWeight: "bold", maxWidth: "180px", flexShrink: 1 }}
+          <Stack
+            direction="row"
+            gap={0.5}
+            sx={{ flexGrow: 1, minWidth: 0, maxWidth: { xs: "100%", sm: "220px" } }}
+            alignItems="center"
           >
-            {name}
-          </Typography>
-          {challengeSuffix && (
             <Typography
               variant="body2"
-              color="text.secondary"
-              sx={{ ...textEllipsisStyles, maxWidth: "120px", flexShrink: 1 }}
+              sx={{ ...textEllipsisStyles, fontWeight: "bold", flexShrink: 30, minWidth: 0 }}
             >
-              [{challengeSuffix}]
+              {name}
             </Typography>
-          )}
-          <ChallengeFcIcon challenge={challenge} style={fcIconStyle} allowTextIcons showClear={false} />
+            {challengeSuffix && (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ ...textEllipsisStyles, flexShrink: 70, minWidth: 0 }}
+              >
+                [{challengeSuffix}]
+              </Typography>
+            )}
+            <ChallengeFcIcon challenge={challenge} style={fcIconStyle} allowTextIcons showClear={false} />
+          </Stack>
           <Box sx={{ flexGrow: 1 }} />
           {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
-          <DifficultyNumber {...difficultyNumberProps} />
+          {showFractionalTiers && <DifficultyNumber {...difficultyNumberProps} />}
           {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} isCompact />}
         </Stack>
       </Box>
@@ -378,6 +434,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
               campaign={campaign}
               width="122px"
               style={{ flexShrink: "0" }}
+              preferMapImages={options.preferMapImages}
             />
           )}
           <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
@@ -421,14 +478,22 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
                 </Grid>
               )}
               {(!isPlayer || !hideGrindTime) && (
-                <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="center">
+                <Grid
+                  item
+                  xs={columnWidth}
+                  display="flex"
+                  justifyContent={columnCount === 2 ? "flex-end" : "center"}
+                  alignItems="center"
+                >
                   {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} />}
                   {isPlayer && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
                 </Grid>
               )}
-              <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-                <DifficultyNumber {...difficultyNumberProps} />
-              </Grid>
+              {showFractionalTiers && (
+                <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
+                  <DifficultyNumber {...difficultyNumberProps} />
+                </Grid>
+              )}
             </Grid>
           </Stack>
         </Stack>
@@ -441,22 +506,18 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
   }
 
   return (
-    <a
-      href={"/submission/" + firstSubmission.id}
-      target="_blank"
-      style={{ textDecoration: "none", color: "inherit", lineHeight: "0" }}
-    >
+    <Link to={"/submission/" + firstSubmission.id} style={{ textDecoration: "none", color: "inherit" }}>
       {element}
-    </a>
+    </Link>
   );
 }
 
 function GrindTimeLabel({ timeTaken, isCompact = false }) {
-  const durationStr = secondsToDuration(timeTaken);
+  const durationStr = secondsToDuration(timeTaken, true);
 
   if (isCompact) {
     return (
-      <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+      <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0, mr: 0.5 }}>
         {durationStr}
       </Typography>
     );
@@ -513,8 +574,8 @@ export function ChallengePreviewImageLink({
   scale = 1,
   style = {},
   imageStyle = {},
+  preferMapImages = false,
 }) {
-  const { settings } = useAppSettings();
   const url = challenge.submissions[0].proof_url; //Has to exist
   let embedUrl = null;
 
@@ -523,7 +584,7 @@ export function ChallengePreviewImageLink({
   // For campaign challenges, use the campaign image instead
 
   const youtubeData = parseYouTubeUrl(url);
-  if (youtubeData !== null && !settings.visual.topGoldenList.preferMapImages) {
+  if (youtubeData !== null && !preferMapImages) {
     embedUrl = "https://img.youtube.com/vi/" + youtubeData.videoId + "/mqdefault.jpg";
   } else if (map) {
     embedUrl = API_BASE_URL + "/img/map/" + map.id + "&scale=" + scale;
@@ -553,10 +614,22 @@ export function ChallengePreviewImageLink({
   );
 }
 
-function DifficultyNumber({ difficulty, diffNumber, isPersonal = false, isUnset = false, isPlayer = false }) {
+function DifficultyNumber({
+  difficulty,
+  challengeFrac,
+  firstSubFrac,
+  isPersonal = false,
+  isUnset = false,
+  isPlayer = false,
+}) {
   const { settings } = useAppSettings();
   const theme = useTheme();
   const colors = getNewDifficultyColors(settings, difficulty.id);
+
+  challengeFrac = challengeFrac === null || challengeFrac === false ? 0.5 : challengeFrac;
+  const diffNumber =
+    difficulty.sort + (isPlayer ? (firstSubFrac === null ? 50 : firstSubFrac) / 100 : challengeFrac);
+
   let diffNumberStr = difficulty.sort === -1 ? "-" : diffNumber.toFixed(2);
   let diffNumberColor = theme.palette.text.primary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.6).string();
@@ -590,4 +663,72 @@ function DifficultyNumber({ difficulty, diffNumber, isPersonal = false, isUnset 
       {diffNumberStr}
     </Typography>
   );
+}
+
+export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sortOrder, isPlayer = false) {
+  const ascending = sortOrder === "asc";
+  const sortChallenges = (a, b) => {
+    switch (sortBy) {
+      case "fractional-tiers":
+        return sortByFractionalTier(a, b, isPlayer, ascending);
+      case "clear-count":
+        return sortByClearCount(a, b, ascending);
+      case "first-clear-date":
+        return sortByFirstClearDate(a, b, ascending);
+      case "alphabetical":
+      default:
+        break;
+    }
+    return sortByAlphabetical(a, b, maps, campaigns, ascending);
+  };
+  challenges.sort(sortChallenges);
+  return challenges;
+}
+
+function sortByFractionalTier(a, b, isPlayer, ascending) {
+  //If fraction is available, use that for sorting first. if no frac is available, treat it as 0.5
+  let fracA = 0.5;
+  let fracB = 0.5;
+  if (isPlayer) {
+    //First sort for the suggested difficulty, if it exists
+    const diffSortA = a.submissions[0].suggested_difficulty?.sort ?? a.difficulty.sort;
+    const diffSortB = b.submissions[0].suggested_difficulty?.sort ?? b.difficulty.sort;
+    if (diffSortA !== diffSortB) {
+      return ascending ? diffSortA - diffSortB : diffSortB - diffSortA;
+    }
+    fracA = a.submissions[0].frac ?? 50;
+    fracB = b.submissions[0].frac ?? 50;
+  } else {
+    fracA = a.data.frac !== false && a.data.frac !== undefined ? a.data.frac : 0.5;
+    fracB = b.data.frac !== false && b.data.frac !== undefined ? b.data.frac : 0.5;
+  }
+  if (fracA !== fracB) {
+    return ascending ? fracA - fracB : fracB - fracA;
+  }
+  return 0;
+}
+function sortByClearCount(a, b, ascending) {
+  const countA = a.data.submission_count;
+  const countB = b.data.submission_count;
+  if (countA !== countB) {
+    return ascending ? countA - countB : countB - countA;
+  }
+  return 0;
+}
+function sortByFirstClearDate(a, b, ascending) {
+  const dateA = new Date(a.submissions[0].date_achieved);
+  const dateB = new Date(b.submissions[0].date_achieved);
+  if (dateA !== dateB) {
+    return ascending ? dateA - dateB : dateB - dateA;
+  }
+  return 0;
+}
+function sortByAlphabetical(a, b, maps, campaigns, ascending) {
+  const mapA = maps[a.map_id];
+  const mapB = maps[b.map_id];
+  const campaignA = mapA === undefined ? campaigns[a.campaign_id] : campaigns[mapA.campaign_id];
+  const campaignB = mapB === undefined ? campaigns[b.campaign_id] : campaigns[mapB.campaign_id];
+  const mapNameA = getMapName(mapA, campaignA, true, false);
+  const mapNameB = getMapName(mapB, campaignB, true, false);
+  return ascending ? mapNameA.localeCompare(mapNameB) : mapNameB.localeCompare(mapNameA);
 }

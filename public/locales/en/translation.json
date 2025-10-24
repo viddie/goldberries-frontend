@@ -249,6 +249,56 @@
       "challenge_inline": {
         "error": "<Challenge not found: {{id}}>"
       }
+    },
+    "tgl_more_button": {
+      "label": "Display Options",
+      "type": {
+        "overall": "Options: Overall View",
+        "player": "Options: Player View",
+        "campaign": "Options: Campaign View"
+      },
+      "options": {
+        "unstack_tiers": {
+          "label": "Unstack Tiers"
+        },
+        "prefer_map_images": {
+          "label": "Prefer Map Images",
+          "note": "By default, the first clearer's youtube thumbnail is shown. Enable this to prefer showing the map image."
+        },
+        "hide_images": {
+          "label": "Hide Images",
+          "note": "Hides images on the Top Golden List alltogether. Will improve performance."
+        },
+        "compact_mode": {
+          "label": "Compact Mode",
+          "note": "A compact layout closer to the original layout of the Top Golden List."
+        },
+        "sort": {
+          "label": "Sort By",
+          "alphabetical": "Alphabetical",
+          "fractional_tier": "Fractional Tier",
+          "clear_count": "Clear Count",
+          "first_clear_date": "First Clear Date"
+        },
+        "sort_order": {
+          "label": "Order",
+          "ascending": "Ascending",
+          "descending": "Descending"
+        },
+        "hide_time_taken": {
+          "label": "Hide Total Grind Time"
+        },
+        "hide_fractional_tiers": {
+          "label": "Hide Fractional Tiers"
+        },
+        "hide_empty_tiers": {
+          "label": "Hide Empty Tiers"
+        },
+        "darken_tier_colors": {
+          "label": "Darken Tier Colors",
+          "note": "Darken the tier color. 0% = original color, 100% = black."
+        }
+      }
     }
   },
   "forms": {
@@ -1016,18 +1066,6 @@
         "use_experimental": {
           "label": "Use Experimental Layout",
           "note": "A new layout for the Top Golden List that is still being tested. Highly likely to lag a ton when loading!"
-        },
-        "prefer_map_images": {
-          "label": "Prefer Map Images",
-          "note": "By default, if the first clear is a video on youtube, it's thumbnail is shown, if not the map image is shown instead. Enable this to always prefer the map image."
-        },
-        "hide_images": {
-          "label": "Hide Images",
-          "note": "Hides images on the Top Golden List alltogether. Will improve performance."
-        },
-        "compact_mode": {
-          "label": "Compact Mode",
-          "note": "Shows challenges in a compact layout without images, keeping all information on a single line."
         }
       },
       "difficulty_colors": {
@@ -1489,6 +1527,11 @@
   },
   "top_golden_list": {
     "title": "Top Golden List",
+    "type": {
+      "overall": "Top Golden List",
+      "campaign": "Campaign Top Golden List",
+      "player": "Personal Top Golden List"
+    },
     "notes": {
       "fc": "Golden clear with all optional collectibles (red berries, cassette, etc)",
       "c_fc": "Regular clear and Full Clear are the same placement",

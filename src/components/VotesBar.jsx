@@ -24,26 +24,33 @@ const fontSizeMap = {
 // - ownVoteType: "for" | "against" | "indifferent" | null. If the user has voted, this indicates their vote type. render as a brighter color for that particular section of the bar.
 // - isSecondary: whether the bar is in secondary mode
 // Show the vote count for each section on the bar section. the bar is never too small to fit the text, except if its 0 votes, then dont show that section at all.
-export function VotesBar({ size = "medium", votesFor, votesAgainst, votesIndifferent, ownVoteType = null }) {
+export function VotesBar({
+  size = "medium",
+  votesFor,
+  votesAgainst,
+  votesIndifferent,
+  ownVoteType = null,
+  style = {},
+}) {
   const theme = useTheme();
   const darkmode = theme.palette.mode === "dark";
   const borderColor = darkmode ? theme.palette.grey[800] : theme.palette.grey[400];
   const colors = {
-    for: "rgba(0, 255, 8, 0.3)",
-    against: "rgba(255, 17, 0, 0.3)",
-    indifferent: darkmode ? "rgba(70, 70, 70, 0.3)" : "rgba(0, 0, 0, 0.3)",
-    indifferent_own: darkmode ? "rgba(180, 180, 180, 0.7)" : "rgba(255, 255, 255, 0.7)",
+    for: "#156217",
+    against: "#591813ff",
+    indifferent: darkmode ? "#1c1c1cff" : "rgba(0, 0, 0, 0.3)",
+    indifferent_own: darkmode ? "#7c7c7cff" : "rgba(255, 255, 255, 0.7)",
   };
   const alpha = 0.7;
-  colors.for_own = new Color(colors.for).alpha(alpha).string();
-  colors.against_own = new Color(colors.against).alpha(alpha).string();
+  colors.for_own = new Color(colors.for).saturate(alpha).lighten(alpha).string();
+  colors.against_own = new Color(colors.against).saturate(alpha).lighten(alpha).string();
 
   const colorFor = ownVoteType === "for" ? colors.for_own : colors.for;
-  const contrastFor = darkmode ? "white" : "black";
+  const contrastFor = new Color(colorFor).isDark() ? "white" : "black";
   const colorAgainst = ownVoteType === "against" ? colors.against_own : colors.against;
-  const contrastAgainst = darkmode ? "white" : "black";
+  const contrastAgainst = new Color(colorAgainst).isDark() ? "white" : "black";
   const colorIndifferent = ownVoteType === "indifferent" ? colors.indifferent_own : colors.indifferent;
-  const contrastIndifferent = darkmode ? "white" : "black";
+  const contrastIndifferent = new Color(colorIndifferent).isDark() ? "white" : "black";
 
   const height = heightMap[size] || heightMap.medium;
   const fontSize = fontSizeMap[size] || fontSizeMap.medium;
@@ -73,7 +80,7 @@ export function VotesBar({ size = "medium", votesFor, votesAgainst, votesIndiffe
         width: "100%",
         border: `1px solid ${borderColor}`,
         borderRadius: "8px",
-        overflow: "hidden",
+        ...style,
       }}
     >
       {noVotes && (

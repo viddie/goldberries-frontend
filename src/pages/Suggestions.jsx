@@ -260,6 +260,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const isGeneral = suggestion.challenge_id === null;
   const votesSubmission = suggestion.votes.filter((vote) => vote.submission !== null);
   const votesNoSubmission = suggestion.votes.filter((vote) => vote.submission === null);
+
   let acceptedColor =
     suggestion.is_accepted === null
       ? new Color(theme.palette.box.border).alpha(0.25).string()
@@ -486,7 +487,7 @@ function SuggestionName({ suggestion, expired }) {
   );
 }
 
-function VotesDisplay({ votes, hasSubmission }) {
+function VotesDisplay({ votes, hasSubmission, style = {} }) {
   const auth = useAuth();
 
   const countFor = votes.filter((vote) => vote.vote === "+").length;
@@ -511,6 +512,7 @@ function VotesDisplay({ votes, hasSubmission }) {
       votesAgainst={countAgainst}
       votesIndifferent={countIndifferent}
       ownVoteType={ownVoteType}
+      style={style}
     />
   );
 }

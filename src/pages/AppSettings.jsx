@@ -661,67 +661,6 @@ function AppSettingsTopGoldenListForm() {
           )}
         />
       </SettingsEntry>
-
-      <SettingsEntry note={t("prefer_map_images.note")}>
-        <Controller
-          name="topGoldenList.preferMapImages"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("prefer_map_images.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("hide_images.note")}>
-        <Controller
-          name="topGoldenList.hideImages"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("hide_images.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("sort_by_fractional_tiers.note")}>
-        <Controller
-          name="topGoldenList.sortByFractionalTiers"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("sort_by_fractional_tiers.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("compact_mode.note")}>
-        <Controller
-          name="topGoldenList.compactMode"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("compact_mode.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
       <Footnote />
     </form>
   );
@@ -920,10 +859,20 @@ export function AppSettingsDevForm() {
   );
 }
 
-export function SettingsEntry({ title = "", tooltip, note, children, shiftNote = false }) {
+export function SettingsEntry({
+  title = "",
+  tooltip,
+  note,
+  children,
+  shiftNote = false,
+  titleWidth = 3,
+  justifyTitle = "flex-start",
+  sx = {},
+}) {
+  const contentWidth = 12 - titleWidth;
   return (
-    <Grid container columnSpacing={2} sx={{ mb: 1 }}>
-      <Grid item xs={12} md={3} display="flex" alignItems="center" justifyContent="flex-start">
+    <Grid container columnSpacing={2} sx={{ mb: 1, ...sx }}>
+      <Grid item xs={12} md={titleWidth} display="flex" alignItems="center" justifyContent={justifyTitle}>
         {tooltip === undefined ? (
           <Typography>{title}</Typography>
         ) : (
@@ -934,12 +883,12 @@ export function SettingsEntry({ title = "", tooltip, note, children, shiftNote =
           </Tooltip>
         )}
       </Grid>
-      <Grid item xs={12} md={9} display="flex" alignItems="center">
+      <Grid item xs={12} md={contentWidth} display="flex" alignItems="center">
         {children}
       </Grid>
-      {note && (title === "" || shiftNote) && <Grid item xs={12} md={3} />}
+      {note && (title === "" || shiftNote) && <Grid item xs={12} md={titleWidth} />}
       {note && (
-        <Grid item xs={12} md={title === "" || shiftNote ? 9 : 12}>
+        <Grid item xs={12} md={title === "" || shiftNote ? contentWidth : 12}>
           <Typography variant="body2" color={(t) => t.palette.text.secondary} sx={{ mb: 1 }}>
             {note}
           </Typography>

@@ -408,7 +408,7 @@ export function extractDifficultiesFromChangelog(entry, difficulties) {
   return [fromDiff, toDiff];
 }
 
-export function secondsToDuration(seconds) {
+export function secondsToDuration(seconds, dontPadHours = false) {
   if (isNaN(seconds) || seconds < 0 || seconds === null) {
     return "";
   }
@@ -419,7 +419,10 @@ export function secondsToDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;
 
-  const hoursStr = String(hours).padStart(2, "0");
+  let hoursStr = String(hours);
+  if (!dontPadHours) {
+    hoursStr = hoursStr.padStart(2, "0");
+  }
   const minutesStr = String(minutes).padStart(2, "0");
   const secsStr = String(secs).padStart(2, "0");
 

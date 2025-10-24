@@ -159,7 +159,7 @@ export function SubmissionFilter({
 
   return (
     <Stack direction="row" gap={1} alignItems="center">
-      <Button aria-describedby={elemId} variant={variant} onClick={handleClick}>
+      <Button aria-describedby={elemId} variant={variant} onClick={handleClick} fullWidth>
         {t("label")}
       </Button>
       <Popover
@@ -374,7 +374,8 @@ export function SubmissionFilter({
           <Stack direction="row" gap={0.5} alignItems="center">
             <FontAwesomeIcon icon={faEyeSlash} color={theme.palette.text.secondary} size="xs" />
             <Typography variant="caption" color="text.secondary">
-              {t("categories_hidden", { count: disabledFilters.length })}
+              {disabledFilters.length}
+              {/* {t("categories_hidden", { count: disabledFilters.length })} */}
             </Typography>
           </Stack>
         )}
