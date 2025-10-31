@@ -265,9 +265,9 @@
           "label": "Prefer Map Images",
           "note": "By default, the first clearer's youtube thumbnail is shown. Enable this to prefer showing the map image."
         },
-        "hide_images": {
-          "label": "Hide Images",
-          "note": "Hides images on the Top Golden List alltogether. Will improve performance."
+        "show_images": {
+          "label": "Show Images",
+          "note": "Disabling this hides the images, which will improve performance."
         },
         "compact_mode": {
           "label": "Compact Mode",
@@ -285,14 +285,14 @@
           "ascending": "Ascending",
           "descending": "Descending"
         },
-        "hide_time_taken": {
-          "label": "Hide Total Grind Time"
+        "show_time_taken": {
+          "label": "Show Total Grind Time"
         },
-        "hide_fractional_tiers": {
-          "label": "Hide Fractional Tiers"
+        "show_fractional_tiers": {
+          "label": "Show Fractional Tiers"
         },
-        "hide_empty_tiers": {
-          "label": "Hide Empty Tiers"
+        "show_empty_tiers": {
+          "label": "Show Empty Tiers"
         },
         "darken_tier_colors": {
           "label": "Darken Tier Colors",

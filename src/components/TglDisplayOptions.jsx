@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useTranslation } from "react-i18next";
 import { SettingsEntry } from "../pages/AppSettings";
+import { deepCompareObjects } from "../hooks/AppSettingsProvider";
 
 const sortOptions = [
   { value: "alphabetical", label: "alphabetical" },
@@ -42,6 +43,7 @@ export function TglMoreButton({
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [localOptions, setLocalOptions] = useState(options);
+  const defaultOptions = getDefaultOptions();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -55,11 +57,22 @@ export function TglMoreButton({
   const elemId = open ? "tgl-display-options" : undefined;
 
   useEffect(() => {
-    if (options.version !== getDefaultOptions().version) {
+    if (options.version !== defaultOptions.version) {
       console.log("Outdated options found, updating...");
-      if ((options.version < 1 || options.version === undefined) && getDefaultOptions().version >= 1) {
+      if ((options.version < 1 || options.version === undefined) && defaultOptions.version >= 1) {
         console.log("Updating options from version <undefined> to 1");
-        // Not yet necessary
+        deepCompareObjects(getDefaultOptions(), options);
+      } else if (options.version === 1 && defaultOptions.version === 2) {
+        console.log("Updating options from version 1 to 2: flipping hide/show options");
+        options.showImages = !options.hideImages;
+        delete options.hideImages;
+        options.showFractionalTiers = !options.hideFractionalTiers;
+        delete options.hideFractionalTiers;
+        options.showEmptyTiers = !options.hideEmptyTiers;
+        delete options.hideEmptyTiers;
+        options.showTimeTaken = !options.hideTimeTaken;
+        delete options.hideTimeTaken;
+        console.log("Updated options:", options);
       }
       options.version = getDefaultOptions().version;
       setOptions({ ...options });
@@ -140,28 +153,28 @@ export function TglMoreButton({
               setValue={(newValue) => changeOptions("preferMapImages", newValue)}
             />
             <BoolOption
-              tKey="hide_images"
-              value={localOptions.hideImages}
-              setValue={(newValue) => changeOptions("hideImages", newValue)}
+              tKey="show_images"
+              value={localOptions.showImages}
+              setValue={(newValue) => changeOptions("showImages", newValue)}
             />
             <Divider sx={{ my: 0.5 }} />
             <BoolOption
-              tKey="hide_fractional_tiers"
-              value={localOptions.hideFractionalTiers}
-              setValue={(newValue) => changeOptions("hideFractionalTiers", newValue)}
+              tKey="show_fractional_tiers"
+              value={localOptions.showFractionalTiers}
+              setValue={(newValue) => changeOptions("showFractionalTiers", newValue)}
               noNote
             />
             <BoolOption
-              tKey="hide_empty_tiers"
-              value={localOptions.hideEmptyTiers}
-              setValue={(newValue) => changeOptions("hideEmptyTiers", newValue)}
+              tKey="show_empty_tiers"
+              value={localOptions.showEmptyTiers}
+              setValue={(newValue) => changeOptions("showEmptyTiers", newValue)}
               noNote
             />
             {isPlayer && (
               <BoolOption
-                tKey="hide_time_taken"
-                value={localOptions.hideTimeTaken}
-                setValue={(newValue) => changeOptions("hideTimeTaken", newValue)}
+                tKey="show_time_taken"
+                value={localOptions.showTimeTaken}
+                setValue={(newValue) => changeOptions("showTimeTaken", newValue)}
                 noNote
               />
             )}
@@ -239,12 +252,12 @@ export function getDefaultOptions() {
     compactMode: false,
     sort: "fractional-tiers",
     sortOrder: "desc",
-    hideImages: false,
+    showImages: true,
     preferMapImages: false,
     unstackTiers: true,
-    hideFractionalTiers: false,
-    hideEmptyTiers: true,
-    hideTimeTaken: false,
-    version: 1,
+    showFractionalTiers: true,
+    showEmptyTiers: false,
+    showTimeTaken: true,
+    version: 2,
   };
 }

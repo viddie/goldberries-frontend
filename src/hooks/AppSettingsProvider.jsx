@@ -76,26 +76,6 @@ export function AppSettingsProvider({ children }) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings(prefersDarkMode));
 
-  const deepCompareSettings = (defaultSettings, settings) => {
-    let hadChange = false;
-    for (const key in defaultSettings) {
-      if (typeof defaultSettings[key] === "object") {
-        if (settings[key] === undefined) {
-          settings[key] = defaultSettings[key];
-          hadChange = true;
-        }
-        if (deepCompareSettings(defaultSettings[key], settings[key])) {
-          hadChange = true;
-        }
-      } else if (settings[key] === undefined) {
-        settings[key] = defaultSettings[key];
-        hadChange = true;
-      }
-    }
-
-    return hadChange;
-  };
-
   const checkSettingsVersion = (defaultSettings, settings) => {
     let hadChange = false;
     if (
@@ -110,7 +90,7 @@ export function AppSettingsProvider({ children }) {
 
   useEffect(() => {
     const defaultSettings = getDefaultSettings();
-    if (deepCompareSettings(defaultSettings, settings)) {
+    if (deepCompareObjects(defaultSettings, settings)) {
       setSettings({ ...settings });
     }
     if (checkSettingsVersion(defaultSettings, settings)) {
@@ -289,3 +269,23 @@ function fixSettings(settings, defaultSettings) {
   // Update version to current
   settings.general.settingsVersion = defaultSettings.general.settingsVersion;
 }
+
+export const deepCompareObjects = (defaultObj, obj) => {
+  let hadChange = false;
+  for (const key in defaultObj) {
+    if (typeof defaultObj[key] === "object") {
+      if (obj[key] === undefined) {
+        obj[key] = defaultObj[key];
+        hadChange = true;
+      }
+      if (deepCompareObjects(defaultObj[key], obj[key])) {
+        hadChange = true;
+      }
+    } else if (obj[key] === undefined) {
+      obj[key] = defaultObj[key];
+      hadChange = true;
+    }
+  }
+
+  return hadChange;
+};

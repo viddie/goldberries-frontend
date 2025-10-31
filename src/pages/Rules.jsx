@@ -69,8 +69,8 @@ function RulesList() {
         />
       </Typography>
       <Typography variant="body2" color="error" gutterBottom sx={{ mt: 1 }}>
-        PLEASE NOTE: These rules are currently in the process of being reworked and are temporarily only
-        available in English.
+        PLEASE NOTE: Translations of rules may be outdated or incomplete. In case of discrepancies, the
+        English is always the reference.
       </Typography>
       {Object.keys(allRules).map((key) => (
         <RulesSection key={key} sectionKey={key} section={allRules[key]} />

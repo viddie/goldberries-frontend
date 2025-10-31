@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/material";
 import { TglModalContainer } from "../components/TopGoldenList";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -20,7 +20,13 @@ import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilt
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faBackward,
+  faChartBar,
+  faFileExport,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
 import {
   getCampaignName,
@@ -30,13 +36,16 @@ import {
   secondsToDuration,
 } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { useCallback, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import { API_BASE_URL, getNewDifficultyColors } from "../util/constants";
 import Color from "color";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { useAuth } from "../hooks/AuthProvider";
 import { useOverflowX } from "../hooks/useOverflowX";
 import { getDefaultOptions, TglMoreButton } from "../components/TglDisplayOptions";
+import { useModal } from "../hooks/useModal";
+import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
+import { ExportTopGoldenListModal } from "./TopGoldenList";
 
 export function getTglOptionsKey(type) {
   if (type === "player") {
@@ -58,10 +67,12 @@ export function getTglFilterKey(type) {
 
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
+  const theme = useTheme();
 
   const { type, id } = useParams();
   const actualType = type || defaultType;
   const actualId = id || defaultId;
+  const isPlayer = actualType === "player";
 
   const defaultFilter = getDefaultFilter(true);
   const [filter, setFilter] = useLocalStorage(getTglFilterKey(actualType), defaultFilter);
@@ -97,10 +108,11 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const openEditSubmission = useCallback((id) => {
     modalRefs.submission.edit.current.open({ id });
   });
+  const exportModal = useModal();
+  const statsModal = useModal();
   //#endregion
 
   const title = t("title");
-  const header = t("type." + (actualType ? actualType : "overall"));
 
   return (
     <Box
@@ -113,12 +125,19 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
     >
       <HeadTitle title={title} />
       <Stack direction="column" gap={compactMode ? 0.5 : 1} sx={{ mb: 1 }}>
-        <BorderedBox sx={{ p: 1, minWidth: 0, flexShrink: 1, width: "fit-content" }}>
+        <BorderedBox
+          sx={{
+            p: 1,
+            minWidth: 0,
+            flexShrink: 1,
+            width: "fit-content",
+            borderColor: "rgba(255,255,255,0.2)",
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
           <Grid container alignItems="center" columnSpacing={1} rowSpacing={1}>
             <Grid item xs={12} sm="auto">
-              <Typography variant="h6" sx={{ mr: 1 }}>
-                {header}
-              </Typography>
+              <TopGoldenListHeader type={actualType} id={actualId} />
             </Grid>
             <Grid item xs={12} sm="auto">
               <SubmissionFilter
@@ -140,9 +159,29 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
                 variant="outlined"
               />
             </Grid>
+            <Grid item xs={12} sm="auto">
+              <IconButton onClick={exportModal.open}>
+                <FontAwesomeIcon
+                  color={theme.palette.text.secondary}
+                  icon={faFileExport}
+                  fixedWidth
+                  size="2xs"
+                />
+              </IconButton>
+              {isPlayer && (
+                <IconButton onClick={statsModal.open}>
+                  <FontAwesomeIcon
+                    color={theme.palette.text.secondary}
+                    icon={faChartBar}
+                    fixedWidth
+                    size="2xs"
+                  />
+                </IconButton>
+              )}
+            </Grid>
           </Grid>
         </BorderedBox>
-        <TopGoldenList
+        <MemoTopGoldenList
           type={actualType}
           id={actualId}
           filter={filter}
@@ -154,7 +193,32 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
       </Stack>
 
       <TglModalContainer modalRefs={modalRefs} />
+      <ExportTopGoldenListModal modalHook={exportModal} type={actualType} id={actualId} filter={filter} />
+      <TimeTakenTiersGraphModal modalHook={statsModal} id={actualId} filter={filter} />
     </Box>
+  );
+}
+
+function TopGoldenListHeader({ type, id }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
+  const theme = useTheme();
+
+  const header = t("type." + (type ? type : "overall"));
+  const returnUrl = type === "player" ? "/player/" + id : type === "campaign" ? "/campaign/" + id : null;
+
+  return (
+    <Stack direction="row" alignItems="center" gap={0.5}>
+      {returnUrl && (
+        <Link to={returnUrl} style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+          <IconButton size="small">
+            <FontAwesomeIcon icon={faArrowLeft} color={theme.palette.text.secondary} fixedWidth size="xs" />
+          </IconButton>
+        </Link>
+      )}
+      <Typography variant="h6" sx={{ mr: 1 }}>
+        {header}
+      </Typography>
+    </Stack>
   );
 }
 
@@ -162,6 +226,8 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
   const { settings } = useAppSettings();
   const query = useGetTopGoldenList(type, id, filter);
   const data = getQueryData(query);
+
+  console.log("Rendering TGL");
 
   if (query.isLoading) {
     return <LoadingSpinner sx={{ mt: 1 }} />;
@@ -194,7 +260,7 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
     );
   }
 
-  const hideEmptyTiers = options.hideEmptyTiers;
+  const hideEmptyTiers = !options.showEmptyTiers;
   const compactMode = options.compactMode;
 
   return (
@@ -246,6 +312,14 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
     </Stack>
   );
 }
+const MemoTopGoldenList = memo(TopGoldenList, (prevProps, newProps) => {
+  return (
+    prevProps.type === newProps.type &&
+    prevProps.id === newProps.id &&
+    JSON.stringify(prevProps.filter) === JSON.stringify(newProps.filter) &&
+    JSON.stringify(prevProps.options) === JSON.stringify(newProps.options)
+  );
+});
 
 function TierInfoBox({ tier, options }) {
   const { settings } = useAppSettings();
@@ -280,7 +354,7 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
   const theme = useTheme();
   const { settings } = useAppSettings();
   const compactMode = options.compactMode;
-  const showFractionalTiers = !options.hideFractionalTiers;
+  const showFractionalTiers = options.showFractionalTiers;
   const colors = getNewDifficultyColors(settings, tier.id);
 
   const challengeLabel = getChallengeName(challenge, false);
@@ -297,13 +371,13 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
 
   const hasGrindTime = isPlayer && firstSubmission.time_taken !== null;
   const timeTaken = isPlayer && hasGrindTime && firstSubmission.time_taken;
-  const hideGrindTime = isPlayer && options.hideTimeTaken;
+  const hideGrindTime = isPlayer && !options.showTimeTaken;
   let columnCount = 3;
   if (hideGrindTime || !isPlayer) columnCount--;
   if (!showFractionalTiers) columnCount--;
   const columnWidth = 12 / columnCount;
 
-  const hideImage = options.hideImages;
+  const hideImage = !options.showImages;
   const handleClick = (e) => {
     if (!isPlayer) {
       showMap(map?.id, challenge.id, !map);
