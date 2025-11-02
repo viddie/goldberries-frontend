@@ -65,6 +65,7 @@ import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
 import { API_BASE_URL } from "../util/constants";
 import { useTranslation } from "react-i18next";
+import { jsonDateToJsDate } from "../util/util";
 
 export function PageSubmission({}) {
   const { id } = useParams();
@@ -277,7 +278,7 @@ export function SubmissionDetailsDisplay({ submission, challenge = null, ...prop
                 flexWrap="wrap"
                 columnGap={1}
               >
-                <span>{displayDate(submission.date_achieved, t_g)}</span>
+                <DateWithTooltip date={submission.date_achieved} />
                 {submission.time_taken && (
                   <Stack direction="row" alignItems="center" gap={0.5}>
                     <span>{secondsToDuration(submission.time_taken)}</span>
@@ -358,7 +359,7 @@ export function SubmissionDetailsDisplay({ submission, challenge = null, ...prop
             </InfoBox>
             <InfoBox>
               <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faCalendar} />} text={t("submitted")} />
-              <InfoBoxIconTextLine text={displayDate(submission.date_created, t_g)} isSecondary />
+              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_created} />} isSecondary />
             </InfoBox>
             <InfoBox>
               <InfoBoxIconTextLine
@@ -371,7 +372,7 @@ export function SubmissionDetailsDisplay({ submission, challenge = null, ...prop
               <InfoBoxIconTextLine
                 text={<VerificationStatusChip isVerified={submission.is_verified} size="small" />}
               />
-              <InfoBoxIconTextLine text={displayDate(submission.date_verified, t_g)} isSecondary />
+              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_verified} />} isSecondary />
             </InfoBox>
           </>
         ) : (
@@ -385,7 +386,7 @@ export function SubmissionDetailsDisplay({ submission, challenge = null, ...prop
             </InfoBox>
             <InfoBox>
               <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faClock} />} text={t("submitted")} />
-              <InfoBoxIconTextLine text={displayDate(submission.date_created, t_g)} isSecondary />
+              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_created} />} isSecondary />
             </InfoBox>
           </>
         )}
@@ -438,5 +439,16 @@ function ChallengeInfoBoxes({ challenge, map, campaign, hideMap = false, showObj
         <InfoBoxIconTextLine text={<DifficultyChip difficulty={challenge.difficulty} />} isSecondary />
       </InfoBox>
     </>
+  );
+}
+
+export function DateWithTooltip({ date, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const tooltip =
+    date === null || date === undefined ? "" : jsonDateToJsDate(date).toLocaleString(navigator.language);
+  return (
+    <TooltipLineBreaks title={tooltip}>
+      <span {...props}>{displayDate(date, t_g)}</span>
+    </TooltipLineBreaks>
   );
 }

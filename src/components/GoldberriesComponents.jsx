@@ -34,6 +34,7 @@ import {
   faChildCombatant,
   faCircleExclamation,
   faComment,
+  faExclamationTriangle,
   faExternalLinkAlt,
   faGamepad,
   faHammer,
@@ -1292,6 +1293,23 @@ export function VerifierNotesIcon({ notes, fontSize = "1em" }) {
 }
 export function PlayerNotesIcon({ notes, fontSize = "1em" }) {
   return <TooltipIcon title={notes} icon={faComment} fontSize={fontSize} />;
+}
+export function ObsoleteIcon() {
+  const theme = useTheme();
+  const { t } = useTranslation(undefined, { keyPrefix: "components.top_golden_list" });
+  return (
+    <TooltipLineBreaks title={t("obsolete_notice")}>
+      <FontAwesomeIcon icon={faExclamationTriangle} color={theme.palette.text.secondary} size="sm" />
+    </TooltipLineBreaks>
+  );
+}
+export function PlayerNotesTooltip({ note }) {
+  const theme = useTheme();
+  return (
+    <TooltipLineBreaks title={note}>
+      <FontAwesomeIcon icon={faComment} color={theme.palette.text.secondary} size="sm" />
+    </TooltipLineBreaks>
+  );
 }
 
 export function DateAchievedTimePicker({ value, onChange, sx = {}, ...props }) {

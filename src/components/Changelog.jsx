@@ -25,6 +25,7 @@ import { useAuth } from "../hooks/AuthProvider";
 import { toast } from "react-toastify";
 import { DifficultyMoveDisplay } from "../pages/Suggestions";
 import { useTranslation } from "react-i18next";
+import { DateWithTooltip } from "../pages/Submission";
 
 export function Changelog({ type, id, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.changelog" });
@@ -105,7 +106,7 @@ export function ChangelogEntry({ entry, deleteEntry, canManage = false }) {
         <Grid item xs="auto" md></Grid>
         <Grid item xs="auto" display="flex" alignItems="center">
           <Typography variant="body1" sx={{ ml: { xs: 1, md: 0 } }}>
-            {displayDate(entry.date, t_g)}
+            <DateWithTooltip date={entry.date} />
           </Typography>
         </Grid>
         {canManage && (
@@ -147,7 +148,7 @@ function ChangelogEntryMovedChallenge({ entry, deleteEntry, canManage = false })
         <Grid item xs="auto" md></Grid>
         <Grid item xs="auto" display="flex" alignItems="center">
           <Typography variant="body1" sx={{ ml: { xs: 1, md: 0 } }}>
-            {displayDate(entry.date, t_g)}
+            <DateWithTooltip date={entry.date} />
           </Typography>
         </Grid>
         {canManage && (

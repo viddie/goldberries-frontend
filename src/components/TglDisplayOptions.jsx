@@ -1,7 +1,6 @@
 import {
   Button,
   Checkbox,
-  darken,
   Divider,
   FormControlLabel,
   Grid,
@@ -25,6 +24,7 @@ const sortOptions = [
   { value: "clear-count", label: "clear_count" },
   { value: "first-clear-date", label: "first_clear_date" },
 ];
+const personalTglSortOptions = [{ value: "time-taken", label: "time_taken" }];
 const sortOrders = [
   { value: "asc", label: "ascending" },
   { value: "desc", label: "descending" },
@@ -85,6 +85,7 @@ export function TglMoreButton({
 
   const isPlayer = type === "player";
   const typeString = t("type." + (type ? type : "overall"));
+  const sortOptionsFinal = isPlayer ? sortOptions.concat(personalTglSortOptions) : sortOptions;
 
   return (
     <Stack direction="row" gap={1} alignItems="center">
@@ -123,7 +124,7 @@ export function TglMoreButton({
               tKey="sort"
               value={localOptions.sort}
               setValue={(newValue) => changeOptions("sort", newValue)}
-              options={sortOptions}
+              options={sortOptionsFinal}
               noNote
             />
             <SelectOption
@@ -179,9 +180,9 @@ export function TglMoreButton({
               />
             )}
             <BoolOption
-              tKey="unstack_tiers"
-              value={localOptions.unstackTiers}
-              setValue={(newValue) => changeOptions("unstackTiers", newValue)}
+              tKey="stack_tiers"
+              value={localOptions.stackTiers}
+              setValue={(newValue) => changeOptions("stackTiers", newValue)}
               noNote
             />
           </Grid>
@@ -254,7 +255,7 @@ export function getDefaultOptions() {
     sortOrder: "desc",
     showImages: true,
     preferMapImages: false,
-    unstackTiers: true,
+    stackTiers: true,
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,

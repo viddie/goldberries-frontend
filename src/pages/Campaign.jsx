@@ -299,18 +299,55 @@ export function AuthorInfoBoxLine({ author_gb_id, author_gb_name }) {
     return <InfoBoxIconTextLine text={t_g("unknown_author")} isSecondary />;
   }
 
-  if (author_gb_id === null) {
-    return <InfoBoxIconTextLine text={author_gb_name} isSecondary />;
-  } else {
+  const authors = parseAuthors(author_gb_name);
+  //New code: join all authors into a list of StyledLinks to the author page, separated by normal text node commas and "and"
+  const authorElements = authors.map((author, index, array) => {
     return (
-      <InfoBoxIconTextLine
-        text={<StyledLink to={"/author/" + encodeURIComponent(author_gb_name)}>{author_gb_name}</StyledLink>}
-        isSecondary
-      />
+      <StyledLink key={author} to={"/author/" + encodeURIComponent(author)}>
+        {author}
+      </StyledLink>
     );
-  }
+  });
+
+  // The result should be: [StyledLink, ", ", StyledLink, " and ", StyledLink]
+  const authorElementsWithSeparators = [];
+
+  authorElements.forEach((element, index) => {
+    authorElementsWithSeparators.push(element);
+    if (index < authorElements.length - 2) {
+      // Add comma between all but the last two
+      authorElementsWithSeparators.push(", ");
+    } else if (index === authorElements.length - 2) {
+      // Add "and" before the last element
+      authorElementsWithSeparators.push(" and ");
+    }
+  });
+
+  return <InfoBoxIconTextLine text={<>{authorElementsWithSeparators}</>} isSecondary />;
+
+  // Old code
+  // if (author_gb_id === null) {
+  //   return <InfoBoxIconTextLine text={author_gb_name} isSecondary />;
+  // } else {
+  //   return (
+  //     <InfoBoxIconTextLine
+  //       text={<StyledLink to={"/author/" + encodeURIComponent(author_gb_name)}>{author_gb_name}</StyledLink>}
+  //       isSecondary
+  //     />
+  //   );
+  // }
 }
 
+// The name is a single string looking like:
+// - DeathKontrol
+// - voliver9 and Meario
+// - Appels, BossSauce, Crispybag, Freeka, Tear_, and tobyaaa
+// Parse the names of the authors from the string into an array of names
+function parseAuthors(name) {
+  //First, replace " and " with ", ". Do remember the oxford comma for more than 2 authors.
+  let parsedName = name.replace(/ and /g, ", ");
+  return parsedName.split(",").map((author) => author.trim());
+}
 //#endregion
 
 //#region Campaign Player Table

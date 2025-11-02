@@ -258,8 +258,8 @@
         "campaign": "Options: Campaign View"
       },
       "options": {
-        "unstack_tiers": {
-          "label": "Unstack Tiers"
+        "stack_tiers": {
+          "label": "Stack Tiers"
         },
         "prefer_map_images": {
           "label": "Prefer Map Images",
@@ -278,7 +278,8 @@
           "alphabetical": "Alphabetical",
           "fractional_tier": "Fractional Tier",
           "clear_count": "Clear Count",
-          "first_clear_date": "First Clear Date"
+          "first_clear_date": "First Clear Date",
+          "time_taken": "Time Taken"
         },
         "sort_order": {
           "label": "Order",
