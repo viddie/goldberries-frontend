@@ -133,7 +133,7 @@ function MonthlyRecap({ month }) {
           fullWidth
           difficultyId={allClearsDifficulty?.id ?? 23}
           setDifficulty={setAllClearsDifficulty}
-          minSort={DIFF_CONSTS.TIERED_SORT_START}
+          minSort={DIFF_CONSTS.OLD_TIERED_SORT_START}
           maxSort={DIFF_CONSTS.MAX_SORT}
         />
       </Grid>
@@ -143,7 +143,7 @@ function MonthlyRecap({ month }) {
           fullWidth
           difficultyId={firstClearsDifficulty?.id ?? 12}
           setDifficulty={setFirstClearsDifficulty}
-          minSort={DIFF_CONSTS.STANDARD_SORT_START}
+          minSort={DIFF_CONSTS.OLD_TIERED_SORT_START}
           maxSort={DIFF_CONSTS.MAX_SORT}
           noGuard
         />
@@ -362,15 +362,8 @@ function TimelineSubmission({ submission, challenge, isFirstClear }) {
   const map = challenge.map;
   const campaign = getChallengeCampaign(challenge);
   const nameIsSame = isMapSameNameAsCampaign(map, campaign);
-  const isBold = isFirstClear && challenge.difficulty.sort > DIFF_CONSTS.LOW_TIER_0_SORT;
   return (
-    <Stack
-      direction="row"
-      columnGap={1}
-      fontWeight={isBold ? "bold" : "inherit"}
-      alignItems="center"
-      sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}
-    >
+    <Stack direction="row" columnGap={1} alignItems="center" sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}>
       <Chip size="small" label={t(isFirstClear ? "first_clear" : "clear")} />
       <PlayerChip player={submission.player} size="small" />
       <DifficultyChip difficulty={challenge.difficulty} sx={{ mt: "1px" }} />

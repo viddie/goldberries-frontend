@@ -387,7 +387,7 @@ export function getDefaultFilter(isOverall) {
     hide_objectives: [],
     archived: true,
     arbitrary: true,
-    min_diff_id: isOverall ? DIFF_CONSTS.TIER_7_ID : DIFF_CONSTS.UNTIERED_ID,
+    min_diff_id: isOverall ? DIFF_CONSTS.TIER_4_ID : DIFF_CONSTS.UNTIERED_ID,
     max_diff_id: DIFF_CONSTS.HIGHEST_TIER_ID,
     undetermined: true,
     clear_state: 0,
