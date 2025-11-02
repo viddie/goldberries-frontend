@@ -41,7 +41,7 @@ import {
   secondsToDuration,
 } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { API_BASE_URL, DIFFICULTY_STACKS, getNewDifficultyColors } from "../util/constants";
 import Color from "color";
 import { PlaceholderImage } from "../components/PlaceholderImage";
@@ -229,14 +229,41 @@ function TopGoldenListHeader({ type, id }) {
 
 function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
   const query = useGetTopGoldenList(type, id, filter);
-  const data = getQueryData(query);
+
+  const key = getTglRenderKey(type, id, filter, options);
+  const [renderUpTo, setRenderUpTo] = useState({ key: key, index: 0 });
+
+  useEffect(() => {
+    console.log("[TopGoldenList] ===== KEY CHANGED =====");
+    if (key !== renderUpTo.key) {
+      console.log("[TopGoldenList] Resetting render up to index to 0");
+      setRenderUpTo({ key: key, index: 0 });
+    }
+  }, [key]);
+
+  const onFinishRendering = useCallback((index) => {
+    console.log(
+      "[TopGoldenList] Got callback for finished rendering index ",
+      index,
+      ", current renderUpTo index is ",
+      renderUpTo.index
+    );
+    if (index !== renderUpTo.index) return;
+    console.log("[TopGoldenList] Scheduling render of next index");
+    setTimeout(() => {
+      setRenderUpTo((prev) => {
+        return { key: prev.key, index: prev.index + 1 };
+      });
+    }, 50);
+  });
+
   if (query.isLoading) {
     return <LoadingSpinner sx={{ mt: 1 }} />;
   } else if (query.isError) {
     return <ErrorDisplay error={getErrorFromMultiple(query)} sx={{ mt: 1 }} />;
   }
 
-  const { tiers, challenges, maps, campaigns } = data;
+  const { tiers, challenges, maps, campaigns } = getQueryData(query);
 
   const stackTiers = options.stackTiers;
   const hideEmptyTiers = !options.showEmptyTiers;
@@ -271,8 +298,12 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
       gap={{ xs: compactMode ? 0.5 : 1, sm: compactMode ? 1 : 2 }}
     >
       {filteredTierGroups.map((tierGroup, index) => (
-        <TierStack
-          key={index}
+        <MemoTierStack
+          key={renderUpTo.key + index}
+          renderKey={renderUpTo.key}
+          index={index}
+          render={index <= renderUpTo.index}
+          onFinishRendering={onFinishRendering}
           tiers={tierGroup}
           challenges={challenges}
           maps={maps}
@@ -283,25 +314,6 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
           options={options}
         />
       ))}
-      {/* {tiers.map((tier) => {
-        const hasChallenges = challenges.any((c) => c.difficulty_id === tier.id);
-        if (hideEmptyTiers && !hasChallenges) {
-          return null;
-        }
-        return (
-          <TierDisplay
-            key={tier.id}
-            tier={tier}
-            challenges={challenges}
-            maps={maps}
-            campaigns={campaigns}
-            type={type}
-            showMap={showMap}
-            editSubmission={editSubmission}
-            options={options}
-          />
-        );
-      })} */}
     </Stack>
   );
 }
@@ -314,8 +326,37 @@ const MemoTopGoldenList = memo(TopGoldenList, (prevProps, newProps) => {
   );
 });
 
-function TierStack({ tiers, challenges, maps, campaigns, type, showMap, editSubmission, options }) {
+function TierStack({
+  index,
+  render,
+  onFinishRendering,
+  tiers,
+  challenges,
+  maps,
+  campaigns,
+  type,
+  showMap,
+  editSubmission,
+  options,
+}) {
   const isCompact = options.compactMode;
+
+  const diffsString = tiers.map((t) => t.name).join(", ");
+  console.log("Rendering tier stack with tiers: ", diffsString, " at index ", index, " and render=", render);
+  useEffect(() => {
+    console.log(
+      "[TierStack] Finished rendering tier stack with tiers: ",
+      diffsString,
+      " at index ",
+      index,
+      " and render=",
+      render
+    );
+    if (render) onFinishRendering(index);
+  }, [render]);
+
+  if (!render) return null;
+
   return (
     <Stack direction="column" gap={isCompact ? 0.5 : 1}>
       {tiers.map((tier) => (
@@ -334,10 +375,31 @@ function TierStack({ tiers, challenges, maps, campaigns, type, showMap, editSubm
     </Stack>
   );
 }
+const MemoTierStack = memo(TierStack, (prevProps, newProps) => {
+  if (prevProps.index === 0) {
+    console.log("[MemoTierStack] Comparing props: prevProps", prevProps, ", newProps", newProps);
+  }
+  return (
+    prevProps.index === newProps.index &&
+    prevProps.render === newProps.render &&
+    prevProps.renderKey === newProps.renderKey
+  );
+});
 
 function TierDisplay({ tier, challenges, maps, campaigns, type, showMap, editSubmission, options }) {
   const { settings } = useAppSettings();
   const [expanded, setExpanded] = useState(true);
+  const [renderUpTo, setRenderUpTo] = useState(0);
+
+  const onFinishRendering = useCallback(
+    (index) => {
+      if (index !== renderUpTo) return;
+      setTimeout(() => {
+        setRenderUpTo((prev) => prev + 5);
+      }, 50);
+    },
+    [renderUpTo]
+  );
 
   const challengesInTier = challenges.filter((c) => c.difficulty_id === tier.id);
 
@@ -391,12 +453,15 @@ function TierDisplay({ tier, challenges, maps, campaigns, type, showMap, editSub
       </Stack>
       <Stack direction="column" gap={compactMode ? 0.25 : 1} width="100%">
         {expanded &&
-          tierChallenges.map((challenge) => {
+          tierChallenges.map((challenge, index) => {
             const map = maps[challenge.map_id];
             const campaign = campaigns[map ? map.campaign_id : challenge.campaign_id];
             return (
-              <ChallengeInfoBox
+              <MemoChallengeInfoBox
                 key={challenge.id}
+                index={index}
+                render={index <= renderUpTo}
+                onFinishRendering={onFinishRendering}
                 type={type}
                 tier={tier}
                 challenge={challenge}
@@ -452,11 +517,30 @@ function TierInfoBox({ tier, options, countChallenges, countSubmissions, expande
   );
 }
 
-function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editSubmission, options }) {
+function ChallengeInfoBox({
+  index,
+  render,
+  onFinishRendering,
+  type,
+  tier,
+  challenge,
+  map,
+  campaign,
+  showMap,
+  editSubmission,
+  options,
+}) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const auth = useAuth();
   const theme = useTheme();
   const { settings } = useAppSettings();
+
+  useEffect(() => {
+    if (!render) return;
+    onFinishRendering(index);
+  }, [render]);
+  if (!render) return null;
+
   const compactMode = options.compactMode;
   const showFractionalTiers = options.showFractionalTiers;
   const colors = getNewDifficultyColors(settings, tier.id);
@@ -683,6 +767,16 @@ function ChallengeInfoBox({ type, tier, challenge, map, campaign, showMap, editS
     </Link>
   );
 }
+const MemoChallengeInfoBox = memo(ChallengeInfoBox, (prevProps, newProps) => {
+  return (
+    prevProps.index === newProps.index &&
+    prevProps.render === newProps.render &&
+    prevProps.type === newProps.type &&
+    prevProps.tier.id === newProps.tier.id &&
+    prevProps.challenge.id === newProps.challenge.id &&
+    prevProps.options === newProps.options
+  );
+});
 
 function GrindTimeLabel({ timeTaken, isCompact = false }) {
   const durationStr = secondsToDuration(timeTaken, true);
@@ -932,3 +1026,12 @@ function sortByTimeTaken(a, b, ascending) {
   return 0;
 }
 //#endregion
+
+function getTglRenderKey(type, id, filter, options) {
+  let key = "";
+  key += type;
+  key += id;
+  key += JSON.stringify(filter);
+  key += JSON.stringify(options);
+  return key;
+}
