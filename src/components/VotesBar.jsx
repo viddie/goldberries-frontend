@@ -33,13 +33,12 @@ export function VotesBar({
   style = {},
 }) {
   const theme = useTheme();
-  const darkmode = theme.palette.mode === "dark";
-  const borderColor = darkmode ? theme.palette.grey[800] : theme.palette.grey[400];
+  const borderColor = theme.palette.grey[800];
   const colors = {
     for: "#156217",
     against: "#591813ff",
-    indifferent: darkmode ? "#1c1c1cff" : "rgba(0, 0, 0, 0.3)",
-    indifferent_own: darkmode ? "#7c7c7cff" : "rgba(255, 255, 255, 0.7)",
+    indifferent: "#1c1c1cff",
+    indifferent_own: "#7c7c7cff",
   };
   const alpha = 0.7;
   colors.for_own = new Color(colors.for).saturate(alpha).lighten(alpha).string();

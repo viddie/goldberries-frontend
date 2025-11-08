@@ -335,7 +335,7 @@ function CampaignEntry({ campaign, type }) {
   const [selectedMapIndex, setSelectedMapIndex] = useState(0);
 
   return (
-    <BasicBox className={"campaign-box" + (theme.palette.mode === "dark" ? " dark" : "")}>
+    <BasicBox className={"campaign-box dark"}>
       <Grid container rowSpacing={0} columnSpacing={1}>
         <Grid item xs={12} className="campaign-box-header">
           <Grid container columnGap={1} sx={{ minHeight: "49px" }} wrap="nowrap">
@@ -407,8 +407,7 @@ function CampaignEntry({ campaign, type }) {
 }
 
 function LetterDivider({ letter }) {
-  const theme = useTheme();
-  const backgroundColor = theme.palette.mode === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)";
+  const backgroundColor = "rgba(0,0,0,0.5)";
   return (
     <a id={letter}>
       <Divider sx={{ my: 0 }}>

@@ -203,6 +203,26 @@ export function AppSettingsGeneralForm() {
 
 const testBackgrounds = [
   {
+    name: "Crystal Garden",
+    file: "cg.png",
+  },
+  {
+    name: "Farewell Golden",
+    file: "fwg.jpg",
+  },
+  {
+    name: "9D-2",
+    file: "9d-2.png",
+  },
+  {
+    name: "EHS-1",
+    file: "ehs.jpg",
+  },
+  {
+    name: "EHS-2",
+    file: "ehs-2.jpg",
+  },
+  {
     name: "9D Cloud Room",
     file: "9d-cloom.png",
   },
@@ -293,28 +313,6 @@ const backgroundsDark = [
     file: "cg-dark.png",
   },
 ];
-const backgroundsLight = [
-  {
-    name: "Crystal Garden",
-    file: "cg.png",
-  },
-  {
-    name: "Farewell Golden",
-    file: "fwg.jpg",
-  },
-  {
-    name: "9D-2",
-    file: "9d-2.png",
-  },
-  {
-    name: "EHS-1",
-    file: "ehs.jpg",
-  },
-  {
-    name: "EHS-2",
-    file: "ehs-2.jpg",
-  },
-];
 export function AppSettingsVisualForm() {
   const { t } = useTranslation(undefined, { keyPrefix: "app_settings.tabs.visual" });
   const { t: t_b } = useTranslation(undefined, { keyPrefix: "app_settings.tabs.visual.background" });
@@ -331,12 +329,6 @@ export function AppSettingsVisualForm() {
       },
     });
   };
-
-  useEffect(() => {
-    if (form.watch("darkmode" !== settings.visual.darkmode)) {
-      form.setValue("darkmode", settings.visual.darkmode, { shouldDirty: true });
-    }
-  }, [settings]);
 
   useEffect(() => {
     const subscription = form.watch(form.handleSubmit(doSubmit));
@@ -411,48 +403,6 @@ export function AppSettingsVisualForm() {
         />
       </SettingsEntry>
 
-      <Typography variant="h6">{t_b("light_mode")}</Typography>
-      <SettingsEntry title={t_b("label")}>
-        <Controller
-          name="background.light"
-          control={form.control}
-          render={({ field }) => (
-            <TextField
-              select
-              fullWidth
-              value={field.value}
-              onChange={field.onChange}
-              SelectProps={{
-                MenuProps: { disableScrollLock: true },
-              }}
-            >
-              <MenuItem value="">
-                <em>{t_b("default")}</em>
-              </MenuItem>
-              {backgroundsLight.map((bg) => (
-                <MenuItem key={bg.file} value={bg.file}>
-                  {bg.name}
-                </MenuItem>
-              ))}
-              <Divider />
-              {testBackgrounds.map((bg) => (
-                <MenuItem key={bg.file} value={bg.file}>
-                  {bg.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        />
-      </SettingsEntry>
-      <SettingsEntry title={t_b("custom.label")} tooltip={t_b("custom.tooltip")}>
-        <TextField
-          fullWidth
-          {...form.register("background.lightCustom")}
-          placeholder={t_b("custom.placeholder")}
-        />
-      </SettingsEntry>
-
-      <Typography variant="h6">{t_b("dark_mode")}</Typography>
       <SettingsEntry title={t_b("label")}>
         <Controller
           name="background.dark"

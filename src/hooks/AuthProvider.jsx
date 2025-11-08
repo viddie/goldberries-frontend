@@ -39,8 +39,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useLocalStorage("user", null);
 
   //For role override during dev settings
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings(prefersDarkMode));
+  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings());
   const roleOverride = settings?.dev?.roleOverride;
 
   const navigate = useNavigate();

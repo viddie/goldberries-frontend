@@ -491,10 +491,10 @@ function ExRoleLabel({ account }) {
     padding: "2px 10px",
     fontSize: "1em",
     fontWeight: "bold",
-    color: theme.palette.mode === "dark" ? "white" : "black",
+    color: "white",
     borderWidth: "1px",
     borderStyle: "solid",
-    borderColor: theme.palette.mode === "dark" ? "white" : "#575757",
+    borderColor: "white",
   };
 
   let icon = null;
@@ -690,8 +690,7 @@ function TimelineRatioSlider({ ratio, setRatio }) {
 
 function BigTimelineLabel({ label, isLast = false, isNow = false }) {
   const theme = useTheme();
-  const isDarkmode = theme.palette.mode === "dark";
-  const lineColor = isDarkmode ? "#bdbdbd" : "#bdbdbd";
+  const lineColor = "#bdbdbd";
   return (
     <TimelineItem>
       <TimelineOppositeContent>

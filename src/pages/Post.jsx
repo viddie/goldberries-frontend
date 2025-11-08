@@ -350,9 +350,8 @@ export function AdjacentPostsDisplay({ type, id }) {
 
 function AdjacentPostDetails({ isNext = false, post }) {
   const theme = useTheme();
-  const darkmode = theme.palette.mode === "dark";
-  const color = darkmode ? "black" : "white";
-  const radius = darkmode ? 3 : 2;
+  const color = "black";
+  const radius = 3;
 
   const textShadow = `0px 0px ${radius}px ${color}, 0px 0px ${radius}px ${color}, 0px 0px ${radius}px ${color}, 0px 0px ${radius}px ${color}, 0px 0px ${radius}px ${color}`;
   const dropShadow = `drop-shadow(0 0 1px ${color}) drop-shadow(0 0 1px ${color}) drop-shadow(0 0 1px ${color}) drop-shadow(0 0 1px ${color})`;

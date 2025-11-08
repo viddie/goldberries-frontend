@@ -331,7 +331,7 @@ function TabMonthlyTierClearsSingleChart({ difficulty }) {
       return theme.palette.text.primary;
     } else {
       const color = getNewDifficultyColors(settings, id).color;
-      return !settings.visual.darkmode && color === "#ffffff" ? "#222222" : color;
+      return color === "#ffffff" ? "#222222" : color;
     }
   };
 

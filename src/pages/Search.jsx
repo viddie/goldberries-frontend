@@ -123,10 +123,7 @@ export function SearchDisplay({ search }) {
   return (
     <Stack direction="column" gap={2}>
       {data.players && <SearchResultsPlayers players={data.players} />}
-      {/* {data.campaigns && <SearchResultsCampaigns campaigns={data.campaigns} />}
-      {data.maps && <SearchResultsMaps maps={data.maps} />}
-      {data.authors && <SearchResultsAuthors authors={data.authors} />} */}
-      <SearchResultTabs maps={data.maps} campaigns={data.campaigns} authors={data.authors} />
+      <SearchResultTabs search={search} maps={data.maps} campaigns={data.campaigns} authors={data.authors} />
     </Stack>
   );
 }
@@ -361,10 +358,21 @@ function SearchResultsSingleAuthor({ author }) {
   );
 }
 
-function SearchResultTabs({ maps, campaigns, authors }) {
+function SearchResultTabs({ search, maps, campaigns, authors }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const [tab, setTab] = useLocalStorage("search_selected_tab", "maps");
+
+  const getPreSelectedTab = () => {
+    if (maps.length > 0) return "maps";
+    if (campaigns.length > 0) return "campaigns";
+    if (authors.length > 0) return "authors";
+    return "maps";
+  };
+  const [tab, setTab] = useState(getPreSelectedTab());
+
+  useEffect(() => {
+    setTab(getPreSelectedTab());
+  }, [search]);
 
   const filteredCampaigns = campaigns
     ? campaigns.filter(

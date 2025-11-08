@@ -144,7 +144,7 @@ export function CampaignGallerySingleImage({ campaign, map, isSearch = false, ..
     borderColor = campaign.sort_major_colors[map.sort_major] || "#ffffff";
   }
   if (!borderColor) {
-    borderColor = theme.palette.mode === "dark" ? "#cccccc" : "#333333";
+    borderColor = "#cccccc";
   }
   const mapName = getMapName(map, campaign, isSearch);
 

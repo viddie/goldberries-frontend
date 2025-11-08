@@ -3,7 +3,7 @@ import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
 
 const AppSettingsContext = createContext();
 
-export const getDefaultSettings = (prefersDarkMode = true) => {
+export const getDefaultSettings = () => {
   return {
     general: {
       //language: "en",
@@ -13,15 +13,13 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
       settingsVersion: 1,
     },
     visual: {
-      darkmode: prefersDarkMode,
+      darkmode: true,
       topGoldenList: {
         darkenTierColors: 55,
       },
       background: {
         dark: "", //Indicates default, solid color background. Otherwise this is the image name
         darkCustom: "",
-        light: "", //Same
-        lightCustom: "",
         blur: 5,
       },
       playerNames: {
@@ -61,8 +59,7 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
 };
 
 export function AppSettingsProvider({ children }) {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings(prefersDarkMode));
+  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings());
 
   const checkSettingsVersion = (defaultSettings, settings) => {
     let hadChange = false;

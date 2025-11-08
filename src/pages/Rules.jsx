@@ -223,20 +223,13 @@ function RulesSubSection({ sectionKey, subSectionKey, subsection }) {
 }
 
 export function CodeBlock({ children, ...props }) {
-  const theme = useTheme();
-  const isDarkmode = theme.palette.mode === "dark";
   const codeStyle = {
     fontWeight: "bold",
     borderRadius: "5px",
     padding: "0 3px",
+    background: "rgba(255,255,255,.1)",
+    border: "1px solid white",
   };
-  if (isDarkmode) {
-    codeStyle.background = "rgba(255,255,255,.1)";
-    codeStyle.border = "1px solid white";
-  } else {
-    codeStyle.background = "rgba(0,0,0,.07)";
-    codeStyle.border = "1px solid black";
-  }
   return (
     <code {...props} style={codeStyle}>
       {children}

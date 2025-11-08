@@ -9,7 +9,6 @@ import {
 } from "./BasicComponents";
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Paper,
@@ -22,7 +21,6 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  darken,
 } from "@mui/material";
 import { DIFFICULTY_STACKS, getNewDifficultyColors, getOldDifficultyName } from "../util/constants";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -36,7 +34,6 @@ import {
   faExternalLink,
   faHashtag,
   faInfoCircle,
-  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { ChallengeDisplay } from "../pages/Challenge";
 import { getChallengeSuffix, getMapName, secondsToDuration } from "../util/data_util";
@@ -604,7 +601,7 @@ function TopGoldenListRow({
   const theme = useTheme();
   const { settings } = useAppSettings();
   const tpgSettings = settings.visual.topGoldenList;
-  const darkmode = settings.visual.darkmode;
+  const darkmode = false;
   const colors = getNewDifficultyColors(settings, tier.id, true);
   const isReference = challenge.data.is_stable;
 

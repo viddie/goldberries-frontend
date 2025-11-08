@@ -36,7 +36,6 @@ import {
   faCheckCircle,
   faDownload,
   faExclamationTriangle,
-  faLightbulb,
   faPlus,
   faSpinner,
   faTrash,

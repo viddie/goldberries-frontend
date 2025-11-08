@@ -318,78 +318,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-export const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    contrastThreshold: 4.5,
-    links: {
-      main: "#1e90ff",
-    },
-    background: {
-      other: "rgba(255,255,255,0.75)",
-      subtle: "rgba(0,0,0,0.05)",
-      lightShade: "rgba(0,0,0,10%)",
-      lightSubtle: "rgba(0,0,0,4%)",
-      mobileDrawer: "#ffffff",
-      paperContainer: "#ffffff",
-    },
-    tableDivider: "#949494",
-    tableDividerStrong: "#949494",
-    tableRowBorder: "rgba(224, 224, 224, 1)",
-    box: {
-      border: "#cccccc99",
-      hover: "#f0f0f0",
-    },
-    infoBox: "rgba(205, 205, 205, 0.77)",
-    errorBackground: "rgba(255,215,215,0.75)",
-    campaignPage: {
-      sweepBackground: "rgba(255,191,0,0.1)",
-      highlightBackground: "rgba(0,0,0,0.1)",
-      sweepHightlightBackground: "rgba(255,191,0,0.2)",
-      noProgressBackground: "rgba(0,0,0,4%)",
-    },
-    stats: {
-      chartBackdrop: "rgba(255,255,255,75%)",
-    },
-    globalNotices: {
-      background: "#eeeeee",
-    },
-    code: {
-      background: "#e8e8e8",
-      border: "#c8c8c8",
-    },
-    posts: {
-      background: "#f9f9f9",
-      backgroundHover: "#e8e8e8",
-      shadowColor: "#888",
-      imageOutline: "#8a8a8a",
-    },
-    tooltip: {
-      background: "rgba(230, 230, 230 ,1)",
-    },
-  },
-  components: {
-    MuiContainer: {
-      styleOverrides: {
-        root: {
-          background: "rgba(255,255,255,0.75)",
-          borderRadius: "10px",
-        },
-      },
-    },
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
-      xxl: 1830,
-    },
-  },
-});
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     links: {
@@ -490,7 +419,7 @@ export default function App() {
 export function ThemeWrapper({ children }) {
   const { settings } = useAppSettings();
   return (
-    <ThemeProvider theme={settings.visual.darkmode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       {children}
       <CssBaseline />
     </ThemeProvider>
@@ -543,7 +472,6 @@ export function Layout() {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation" });
   const theme = useTheme();
   const { settings } = useAppSettings();
-  const darkmode = settings.visual.darkmode;
   const auth = useAuth();
 
   const searchOpenRef = createRef();
@@ -866,19 +794,11 @@ export function Layout() {
   };
 
   let background = "rgba(0,0,0,0)";
-  const backgroundSettings = settings.visual.background;
-  if (!darkmode) {
-    if (backgroundSettings.lightCustom !== "") {
-      background = 'white url("' + backgroundSettings.lightCustom + '") 0 0 / cover no-repeat';
-    } else if (backgroundSettings.light !== "") {
-      background = 'white url("/img/' + backgroundSettings.light + '") 0 0 / cover no-repeat';
-    }
-  } else {
-    if (backgroundSettings.darkCustom !== "") {
-      background = 'black url("' + backgroundSettings.darkCustom + '") 0 0 / cover no-repeat';
-    } else if (backgroundSettings.dark !== "") {
-      background = 'black url("/img/' + backgroundSettings.dark + '") 0 0 / cover no-repeat';
-    }
+  const bgSettings = settings.visual.background;
+  if (bgSettings.darkCustom !== "") {
+    background = 'black url("' + bgSettings.darkCustom + '") 0 0 / cover no-repeat';
+  } else if (bgSettings.dark !== "") {
+    background = 'black url("/img/' + bgSettings.dark + '") 0 0 / cover no-repeat';
   }
 
   return (
@@ -893,7 +813,7 @@ export function Layout() {
           scrollbarGutter: "stable",
 
           background: background,
-          filter: "blur(" + backgroundSettings.blur + "px) " + (darkmode ? "brightness(0.35)" : ""),
+          filter: "blur(" + bgSettings.blur + "px) brightness(0.35)",
           transform: "scale(1.03)",
         }}
       ></div>
@@ -1013,18 +933,7 @@ function MobileDrawer({ leftMenu, rightMenu, userMenu, closeDrawer }) {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation" });
   const auth = useAuth();
   const { settings, setSettings } = useAppSettings();
-  const darkmode = settings.visual.darkmode;
   const nameStyle = getPlayerNameColorStyle(auth.user?.player, settings);
-
-  const toggleDarkmode = () => {
-    setSettings({
-      ...settings,
-      visual: {
-        ...settings.visual,
-        darkmode: !darkmode,
-      },
-    });
-  };
 
   return (
     <div>
@@ -1083,14 +992,6 @@ function MobileDrawer({ leftMenu, rightMenu, userMenu, closeDrawer }) {
       )}
       <MobileMenuItem
         item={{ name: t("settings"), path: "/settings", icon: <FontAwesomeIcon icon={faCogs} /> }}
-        closeDrawer={closeDrawer}
-      />
-      <MobileMenuItem
-        item={{
-          name: t(darkmode ? "switch_to_light_mode" : "switch_to_dark_mode"),
-          action: toggleDarkmode,
-          icon: <FontAwesomeIcon icon={darkmode ? faSun : faMoon} />,
-        }}
         closeDrawer={closeDrawer}
       />
     </div>
@@ -1180,17 +1081,6 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
   const { settings, setSettings } = useAppSettings();
   const nameStyle = getPlayerNameColorStyle(auth.user?.player, settings);
 
-  const darkmode = settings.visual.darkmode;
-  const toggleDarkmode = () => {
-    setSettings({
-      ...settings,
-      visual: {
-        ...settings.visual,
-        darkmode: !darkmode,
-      },
-    });
-  };
-
   const shift = true;
   const hotkeys = [
     {
@@ -1250,7 +1140,7 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
         width: "100vw",
         px: 3,
         scrollbarGutter: "stable",
-        color: darkmode ? "unset" : "primary.contrastText",
+        color: "unset",
 
         position: "fixed",
         top: "0",
@@ -1309,13 +1199,11 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
               />
             )}
             <Tooltip title={t("settings")}>
-              <IconButton sx={{ color: "#fff", p: 0, mr: 0.5 }} onClick={() => settingsOpenRef.current(true)}>
+              <IconButton
+                sx={{ color: "#fff", p: 0, "&&": { mr: 1 } }}
+                onClick={() => settingsOpenRef.current(true)}
+              >
                 <FontAwesomeIcon icon={faCogs} style={{ fontSize: "75%" }} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t(darkmode ? "switch_to_light_mode" : "switch_to_dark_mode")}>
-              <IconButton onClick={toggleDarkmode} sx={{ color: "#fff", p: 0 }}>
-                <FontAwesomeIcon icon={darkmode ? faSun : faMoon} style={{ fontSize: "75%" }} />
               </IconButton>
             </Tooltip>
           </Stack>

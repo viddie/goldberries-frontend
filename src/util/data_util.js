@@ -1,4 +1,4 @@
-import { lightTheme } from "../App";
+import { darkTheme } from "../App";
 import { jsonDateToJsDate } from "./util";
 
 export function getChallengeIsFullGame(challenge) {
@@ -327,10 +327,10 @@ export function getPlayerNameColorStyle(player, settings = null) {
   if (settings !== null && settings.visual.playerNames.preferSingleOverGradientColor) {
     nameColorEnd = nameColorStart;
   }
-  let contrastColorStart = lightTheme.palette.getContrastText(
+  let contrastColorStart = darkTheme.palette.getContrastText(
     nameColorStart === "" ? "#000000" : nameColorStart
   );
-  let contrastColorEnd = lightTheme.palette.getContrastText(nameColorEnd === "" ? "#000000" : nameColorEnd);
+  let contrastColorEnd = darkTheme.palette.getContrastText(nameColorEnd === "" ? "#000000" : nameColorEnd);
   const outlineColor = contrastColorStart === contrastColorEnd ? contrastColorStart : "rgba(0, 0, 0, 0.87)";
   // const outlineColor = contrastColorStart;
   const outline = settings?.visual.playerNames.showOutline

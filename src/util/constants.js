@@ -1,5 +1,4 @@
-import { darken } from "@mui/material";
-import { lightTheme } from "../App";
+import { darkTheme } from "../App";
 import Color from "color";
 
 export const APP_URL = process.env.REACT_APP_URL;
@@ -310,7 +309,7 @@ export function getNewDifficultyColors(settings, id) {
     color = DIFFICULTIES[id].color;
   }
 
-  const contrastColor = lightTheme.palette.getContrastText(color);
+  const contrastColor = darkTheme.palette.getContrastText(color);
   const mutedContrastColor = new Color(contrastColor).fade(0.3).rgb().string();
   return {
     color: color,

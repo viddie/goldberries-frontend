@@ -1018,8 +1018,6 @@
             "label": "Background Blur",
             "tooltip": "Gaussian Blur applied to the background"
           },
-          "light_mode": "Light Mode",
-          "dark_mode": "Dark Mode",
           "default": "Default Background",
           "custom": {
             "label": "Custom Background",

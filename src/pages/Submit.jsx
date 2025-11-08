@@ -1222,7 +1222,6 @@ export function MultiUserSubmissionMapRow({
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
   const { t: t_a } = useTranslation(undefined);
   const { settings } = useAppSettings();
-  const darkmode = settings.visual.darkmode;
   const [expanded, setExpanded] = useState(
     mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo
   );
@@ -1238,7 +1237,7 @@ export function MultiUserSubmissionMapRow({
   const needsRawSession =
     mapData.challenge && mapData.challenge.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT;
   const hasRawSession = mapData.raw_session_url !== "" && mapData.raw_session_url !== null;
-  const bgColor = needsRawSession && !hasRawSession ? (darkmode ? "#4a0000" : "#ffe7e7") : "inherit";
+  const bgColor = needsRawSession && !hasRawSession ? "#4a0000" : "inherit";
 
   const validTimeTaken = mapData.time_taken === "" || durationToSeconds(mapData.time_taken) !== null;
 
