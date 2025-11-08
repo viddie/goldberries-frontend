@@ -1030,43 +1030,11 @@
       },
       "top_golden_list": {
         "label": "Top Golden List",
+        "display_options_notice": "Customizations were moved to the \"Display Options\" menu on the Top Golden List pages.",
         "darken_colors": {
           "label": "Darken Tier Colors",
           "tooltip": "In dark-mode, makes the tier colors darker. 0% doesn't change the colors, 100% makes them entirely black.",
           "note": "This setting only affects the dark-mode colors!"
-        },
-        "campaign_icons": {
-          "label": "Show Campaign Icons",
-          "note": "Shows popular campaign's icons, such as SJ, SC, D-Sides..."
-        },
-        "text_fc_icons": {
-          "label": "Use Text FC Icons",
-          "note": "This will replace the flag icons with [C], [FC] and [C/FC] 'icons'"
-        },
-        "switch_order": {
-          "label": "Switch Map and Challenge",
-          "note": "Switches from 'Map Name [Challenge Name]' to 'Challenge Name [Map Name]' format"
-        },
-        "hide_empty_tiers": "Hide Empty Tiers",
-        "hide_time_taken": {
-          "label": "Hide Total Grind Time",
-          "note": "Hides the 'Total Grind Time' field in the personal Top Golden List of players"
-        },
-        "show_fractional_tiers": {
-          "label": "Show Fractional Tiers",
-          "note": "Shows fractional tier values and sorts the overall Top Golden List accordingly. Does NOT impact personal Top Golden Lists."
-        },
-        "sort_by_fractional_tiers": {
-          "label": "Sort by Fractional Tiers",
-          "note": "Sorts the Top Golden List by fractional tier values."
-        },
-        "unstack_tiers": {
-          "label": "Unstack Tiers",
-          "note": "This will put every tier in its own column, instead of stacking them vertically."
-        },
-        "use_experimental": {
-          "label": "Use Experimental Layout",
-          "note": "A new layout for the Top Golden List that is still being tested. Highly likely to lag a ton when loading!"
         }
       },
       "difficulty_colors": {

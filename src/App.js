@@ -279,8 +279,7 @@ const router = createBrowserRouter([
         ),
       },
 
-      { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenList /> },
-      { path: "top-golden-list-alt/:type?/:id?", element: <PageTopGoldenListAlt /> },
+      { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenListAlt /> },
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
 
       { path: "rejected-maps", element: <PageRejectedMaps /> },

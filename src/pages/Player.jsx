@@ -90,7 +90,6 @@ import { PlaceholderImage } from "../components/PlaceholderImage";
 import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
 
 export function PagePlayer() {
-  const { settings } = useAppSettings();
   const { id, tab } = useParams();
   const [selectedTab, setSelectedTab] = useState(tab || "info");
 
@@ -102,12 +101,8 @@ export function PagePlayer() {
     }
   }, [tab]);
 
-  if (settings.visual.topGoldenList.useExperimental && tab === "top-golden-list") {
-    return <PageTopGoldenListAlt defaultType="player" defaultId={id} />;
-  }
-
   if (selectedTab === "top-golden-list") {
-    return <PagePlayerTopGoldenList id={id} />;
+    return <PageTopGoldenListAlt defaultType="player" defaultId={id} />;
   }
 
   return (

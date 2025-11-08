@@ -52,23 +52,11 @@ import { useModal } from "../hooks/useModal";
 import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
 import { ExportTopGoldenListModal } from "./TopGoldenList";
 
-export function getTglOptionsKey(type) {
-  if (type === "player") {
-    return "top_golden_list_options_player";
-  } else if (type === "campaign") {
-    return "top_golden_list_options_campaign";
-  }
-  return "top_golden_list_options";
-}
-
-export function getTglFilterKey(type) {
-  if (type === "player") {
-    return "top_golden_list_filter_player";
-  } else if (type === "campaign") {
-    return "top_golden_list_filter_campaign";
-  }
-  return "top_golden_list_filter";
-}
+const textEllipsisStyles = {
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
 
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
@@ -78,10 +66,11 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const actualType = type || defaultType;
   const actualId = id || defaultId;
   const isPlayer = actualType === "player";
+  const isOverall = actualType === null;
 
   const defaultFilter = getDefaultFilter(true);
   const [filter, setFilter] = useLocalStorage(getTglFilterKey(actualType), defaultFilter);
-  const [options, setOptions] = useLocalStorage(getTglOptionsKey(actualType), getDefaultOptions());
+  const [options, setOptions] = useLocalStorage(getTglOptionsKey(actualType), getDefaultOptions(isOverall));
 
   const compactMode = options.compactMode;
 
@@ -160,7 +149,6 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
                 id={actualId}
                 options={options}
                 setOptions={setOptions}
-                defaultOptions={getDefaultOptions()}
                 variant="outlined"
               />
             </Grid>
@@ -234,22 +222,13 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
   const [renderUpTo, setRenderUpTo] = useState({ key: key, index: 0 });
 
   useEffect(() => {
-    console.log("[TopGoldenList] ===== KEY CHANGED =====");
     if (key !== renderUpTo.key) {
-      console.log("[TopGoldenList] Resetting render up to index to 0");
       setRenderUpTo({ key: key, index: 0 });
     }
   }, [key]);
 
   const onFinishRendering = useCallback((index) => {
-    console.log(
-      "[TopGoldenList] Got callback for finished rendering index ",
-      index,
-      ", current renderUpTo index is ",
-      renderUpTo.index
-    );
     if (index !== renderUpTo.index) return;
-    console.log("[TopGoldenList] Scheduling render of next index");
     setTimeout(() => {
       setRenderUpTo((prev) => {
         return { key: prev.key, index: prev.index + 1 };
@@ -342,16 +321,7 @@ function TierStack({
   const isCompact = options.compactMode;
 
   const diffsString = tiers.map((t) => t.name).join(", ");
-  console.log("Rendering tier stack with tiers: ", diffsString, " at index ", index, " and render=", render);
   useEffect(() => {
-    console.log(
-      "[TierStack] Finished rendering tier stack with tiers: ",
-      diffsString,
-      " at index ",
-      index,
-      " and render=",
-      render
-    );
     if (render) onFinishRendering(index);
   }, [render]);
 
@@ -376,9 +346,6 @@ function TierStack({
   );
 }
 const MemoTierStack = memo(TierStack, (prevProps, newProps) => {
-  if (prevProps.index === 0) {
-    console.log("[MemoTierStack] Comparing props: prevProps", prevProps, ", newProps", newProps);
-  }
   return (
     prevProps.index === newProps.index &&
     prevProps.render === newProps.render &&
@@ -599,12 +566,6 @@ function ChallengeInfoBox({
     },
   };
 
-  const textEllipsisStyles = {
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  };
-
   const campaignIconProps = {
     campaign: campaign,
     height: "0.85rem",
@@ -631,6 +592,14 @@ function ChallengeInfoBox({
       <PlayerNotesTooltip note={firstSubmission.player_notes} />
     ) : null;
 
+  const handleNameClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (isPlayer) {
+      showMap(map?.id, challenge.id, !map);
+    }
+  };
+
   // Layout: single line with map name, challenge label (if exists), FC icon, difficulty
   let element = null;
   if (compactMode) {
@@ -644,12 +613,7 @@ function ChallengeInfoBox({
             sx={{ flexGrow: 1, minWidth: 0, maxWidth: { xs: "100%", sm: "220px" } }}
             alignItems="center"
           >
-            <Typography
-              variant="body2"
-              sx={{ ...textEllipsisStyles, fontWeight: "bold", flexShrink: 30, minWidth: 0 }}
-            >
-              {name}
-            </Typography>
+            <NameLabel name={name} isPlayer={isPlayer} isCompact={compactMode} onClick={handleNameClick} />
             {challengeSuffix && (
               <Typography
                 variant="body2"
@@ -692,16 +656,7 @@ function ChallengeInfoBox({
           <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
             <Stack direction="row" gap={0.5} alignItems="center">
               <CampaignIcon {...campaignIconProps} style={{ marginRight: "2px" }} />
-              <Typography
-                variant="body1"
-                sx={{
-                  ...textEllipsisStyles,
-                  fontWeight: "bold",
-                  fontSize: "0.98rem",
-                }}
-              >
-                {name}
-              </Typography>
+              <NameLabel name={name} isPlayer={isPlayer} isCompact={compactMode} onClick={handleNameClick} />
             </Stack>
             <Stack direction="row" gap={0.5} alignItems="center">
               <ObjectiveIcon
@@ -777,6 +732,26 @@ const MemoChallengeInfoBox = memo(ChallengeInfoBox, (prevProps, newProps) => {
     prevProps.options === newProps.options
   );
 });
+
+function NameLabel({ name, isPlayer, isCompact, onClick = null }) {
+  const compactStyles = isCompact ? { flexShrink: 30, minWidth: 0 } : {};
+  const hoverStyles = isPlayer ? { textDecoration: "underline" } : {};
+  return (
+    <Typography
+      variant="body2"
+      sx={{
+        ...textEllipsisStyles,
+        fontWeight: "bold",
+        fontSize: "0.98rem",
+        ...compactStyles,
+        "&:hover": hoverStyles,
+      }}
+      onClick={isPlayer ? onClick : null}
+    >
+      {name}
+    </Typography>
+  );
+}
 
 function GrindTimeLabel({ timeTaken, isCompact = false }) {
   const durationStr = secondsToDuration(timeTaken, true);
@@ -898,6 +873,7 @@ function DifficultyNumber({
   let diffNumberColor = isCompact ? theme.palette.text.secondary : theme.palette.text.primary;
   if (isPersonal) diffNumberColor = new Color(diffNumberColor).mix(new Color("red"), 0.6).string();
   if (isUnset && isPlayer) diffNumberColor = "transparent";
+  if (isUnset && isPlayer && !isCompact) return;
 
   let beforeStyle = {};
   let bounds = isCompact
@@ -1027,6 +1003,25 @@ function sortByTimeTaken(a, b, ascending) {
 }
 //#endregion
 
+//#region Keys
+export function getTglOptionsKey(type) {
+  if (type === "player") {
+    return "top_golden_list_options_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_options_campaign";
+  }
+  return "top_golden_list_options";
+}
+
+export function getTglFilterKey(type) {
+  if (type === "player") {
+    return "top_golden_list_filter_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_filter_campaign";
+  }
+  return "top_golden_list_filter";
+}
+
 function getTglRenderKey(type, id, filter, options) {
   let key = "";
   key += type;
@@ -1035,3 +1030,4 @@ function getTglRenderKey(type, id, filter, options) {
   key += JSON.stringify(options);
   return key;
 }
+//#endregion

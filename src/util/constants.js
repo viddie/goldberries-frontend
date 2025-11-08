@@ -304,15 +304,10 @@ export const DIFFICULTIES = {
   },
 };
 
-export function getNewDifficultyColors(settings, id, useDarkening = false) {
+export function getNewDifficultyColors(settings, id) {
   let color = settings.visual.difficultyColors[id];
   if (color === "" || color === undefined) {
     color = DIFFICULTIES[id].color;
-  }
-
-  if (useDarkening && settings.visual.darkmode) {
-    const darkened = darken(color, settings.visual.topGoldenList.darkenTierColors / 100);
-    color = new Color(darkened).hex();
   }
 
   const contrastColor = lightTheme.palette.getContrastText(color);

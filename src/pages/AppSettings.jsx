@@ -19,7 +19,12 @@ import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../c
 import { Controller, set, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faCheck,
+  faInfoCircle,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { useLocalStorage } from "@uidotdev/usehooks";
@@ -516,151 +521,11 @@ function AppSettingsTopGoldenListForm() {
 
   return (
     <form>
-      <SettingsEntry
-        title={t("darken_colors.label")}
-        tooltip={t("darken_colors.tooltip")}
-        note={t("darken_colors.note")}
-      >
-        <Controller
-          name="topGoldenList.darkenTierColors"
-          control={form.control}
-          render={({ field }) => (
-            <Slider
-              value={field.value}
-              onChange={(e, v) => field.onChange(v)}
-              min={0}
-              max={100}
-              step={5}
-              marks
-              valueLabelDisplay="auto"
-              valueLabelFormat={(v) => `${v}%`}
-            />
-          )}
-        />
-      </SettingsEntry>
-      <SettingsEntry note={t("campaign_icons.note")}>
-        <Controller
-          name="topGoldenList.showCampaignIcons"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("campaign_icons.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-      <SettingsEntry note={t("text_fc_icons.note")}>
-        <Controller
-          name="topGoldenList.useTextFcIcons"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("text_fc_icons.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("switch_order.note")}>
-        <Controller
-          name="topGoldenList.switchMapAndChallenge"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("switch_order.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry>
-        <Controller
-          name="topGoldenList.hideEmptyTiers"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("hide_empty_tiers")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("hide_time_taken.note")}>
-        <Controller
-          name="topGoldenList.hideTimeTaken"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("hide_time_taken.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("show_fractional_tiers.note")}>
-        <Controller
-          name="topGoldenList.showFractionalTiers"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("show_fractional_tiers.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <SettingsEntry note={t("unstack_tiers.note")}>
-        <Controller
-          name="topGoldenList.unstackTiers"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("unstack_tiers.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
-
-      <Typography variant="h6">--- EXPERIMENTAL SETTINGS ---</Typography>
-      <Typography variant="body2" color={(theme) => theme.palette.text.secondary}>
-        The following settings only apply to the experimental layout of the Top Golden List.
+      <Typography variant="body2" color={(t) => t.palette.warning.main} sx={{ mt: 2 }}>
+        <FontAwesomeIcon icon={faArrowRight} style={{ marginRight: 6 }} />
+        {t("display_options_notice")}
       </Typography>
 
-      <SettingsEntry note={t("use_experimental.note")}>
-        <Controller
-          name="topGoldenList.useExperimental"
-          control={form.control}
-          render={({ field }) => (
-            <FormControlLabel
-              checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              control={<Checkbox />}
-              label={t("use_experimental.label")}
-            />
-          )}
-        />
-      </SettingsEntry>
       <Footnote />
     </form>
   );

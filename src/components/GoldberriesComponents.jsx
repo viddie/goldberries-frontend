@@ -246,34 +246,10 @@ export function PlayerSubmissionSelect({ playerId, submission, setSubmission, ..
   );
 }
 
-const SUBTIER_ICONS = {
-  high: { icon: "subtier-high.png", alt: "High", faIcon: faArrowUp, color: "black" },
-  mid: { icon: "subtier-mid.png", alt: "Mid", faIcon: faArrowRight, color: "black" },
-  low: { icon: "subtier-low.png", alt: "Low", faIcon: faArrowDown, color: "black" },
-};
-export function SubtierIcon({ subtier, height = "1em" }) {
-  if (subtier === null) return null;
-  const entry = SUBTIER_ICONS[subtier];
-
-  if (true) {
-    return <FontAwesomeIcon icon={entry.faIcon} style={{ height: height }} />;
-  }
-
-  return (
-    <img
-      src={"/icons/" + entry.icon}
-      alt={entry.alt}
-      style={{
-        height: height,
-      }}
-    />
-  );
-}
 export function DifficultyChip({
   difficulty,
   frac = null,
   prefix = "",
-  useDarkening = false,
   isPersonal = false,
   highlightPersonal = false,
   sx = {},
@@ -293,7 +269,7 @@ export function DifficultyChip({
       suffix = "." + frac;
     }
   }
-  const colors = getNewDifficultyColors(settings, difficulty?.id, useDarkening);
+  const colors = getNewDifficultyColors(settings, difficulty?.id);
 
   const showOld =
     settings.general.showOldTierNames &&
@@ -356,20 +332,12 @@ export function DifficultyChip({
 
   return chip;
 }
-export function DifficultyValueChip({
-  difficulty,
-  value,
-  prefix = "",
-  suffix = "",
-  useDarkening = false,
-  sx = {},
-  ...props
-}) {
+export function DifficultyValueChip({ difficulty, value, prefix = "", suffix = "", sx = {}, ...props }) {
   const { settings } = useAppSettings();
   if (difficulty === null) return null;
 
   const text = getDifficultyName(difficulty);
-  const colors = getNewDifficultyColors(settings, difficulty?.id, useDarkening);
+  const colors = getNewDifficultyColors(settings, difficulty?.id);
   return (
     <Grid container columnSpacing={0.75}>
       <Grid item xs>

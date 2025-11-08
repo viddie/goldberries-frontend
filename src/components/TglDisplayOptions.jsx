@@ -43,7 +43,9 @@ export function TglMoreButton({
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [localOptions, setLocalOptions] = useState(options);
-  const defaultOptions = getDefaultOptions();
+  const isPlayer = type === "player";
+  const isOverall = type === null;
+  const defaultOptions = getDefaultOptions(isOverall);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -61,7 +63,7 @@ export function TglMoreButton({
       console.log("Outdated options found, updating...");
       if ((options.version < 1 || options.version === undefined) && defaultOptions.version >= 1) {
         console.log("Updating options from version <undefined> to 1");
-        deepCompareObjects(getDefaultOptions(), options);
+        deepCompareObjects(defaultOptions, options);
       } else if (options.version === 1 && defaultOptions.version === 2) {
         console.log("Updating options from version 1 to 2: flipping hide/show options");
         options.showImages = !options.hideImages;
@@ -74,16 +76,15 @@ export function TglMoreButton({
         delete options.hideTimeTaken;
         console.log("Updated options:", options);
       }
-      options.version = getDefaultOptions().version;
+      options.version = defaultOptions.version;
       setOptions({ ...options });
     }
   }, []);
 
-  const changeOptions = (key, newValue) => {
+  const changedOption = (key, newValue) => {
     setLocalOptions((prev) => ({ ...prev, [key]: newValue }));
   };
 
-  const isPlayer = type === "player";
   const typeString = t("type." + (type ? type : "overall"));
   const sortOptionsFinal = isPlayer ? sortOptions.concat(personalTglSortOptions) : sortOptions;
 
@@ -110,7 +111,7 @@ export function TglMoreButton({
             sx: {
               width: "400px",
               maxWidth: "92%",
-              overflow: isMdScreen ? "visible" : undefined,
+              overflow: "auto",
             },
           },
         }}
@@ -123,14 +124,14 @@ export function TglMoreButton({
             <SelectOption
               tKey="sort"
               value={localOptions.sort}
-              setValue={(newValue) => changeOptions("sort", newValue)}
+              setValue={(newValue) => changedOption("sort", newValue)}
               options={sortOptionsFinal}
               noNote
             />
             <SelectOption
               tKey="sort_order"
               value={localOptions.sortOrder}
-              setValue={(newValue) => changeOptions("sortOrder", newValue)}
+              setValue={(newValue) => changedOption("sortOrder", newValue)}
               options={sortOrders}
               noNote
             />
@@ -138,7 +139,7 @@ export function TglMoreButton({
             <SliderOption
               tKey="darken_tier_colors"
               value={localOptions.darkenTierColors}
-              setValue={(newValue) => changeOptions("darkenTierColors", newValue)}
+              setValue={(newValue) => changedOption("darkenTierColors", newValue)}
               min={40}
               valueFormatter={(v) => `${v}%`}
             />
@@ -146,43 +147,43 @@ export function TglMoreButton({
             <BoolOption
               tKey="compact_mode"
               value={localOptions.compactMode}
-              setValue={(newValue) => changeOptions("compactMode", newValue)}
+              setValue={(newValue) => changedOption("compactMode", newValue)}
             />
             <BoolOption
               tKey="prefer_map_images"
               value={localOptions.preferMapImages}
-              setValue={(newValue) => changeOptions("preferMapImages", newValue)}
+              setValue={(newValue) => changedOption("preferMapImages", newValue)}
             />
             <BoolOption
               tKey="show_images"
               value={localOptions.showImages}
-              setValue={(newValue) => changeOptions("showImages", newValue)}
+              setValue={(newValue) => changedOption("showImages", newValue)}
             />
             <Divider sx={{ my: 0.5 }} />
             <BoolOption
               tKey="show_fractional_tiers"
               value={localOptions.showFractionalTiers}
-              setValue={(newValue) => changeOptions("showFractionalTiers", newValue)}
+              setValue={(newValue) => changedOption("showFractionalTiers", newValue)}
               noNote
             />
             <BoolOption
               tKey="show_empty_tiers"
               value={localOptions.showEmptyTiers}
-              setValue={(newValue) => changeOptions("showEmptyTiers", newValue)}
+              setValue={(newValue) => changedOption("showEmptyTiers", newValue)}
               noNote
             />
             {isPlayer && (
               <BoolOption
                 tKey="show_time_taken"
                 value={localOptions.showTimeTaken}
-                setValue={(newValue) => changeOptions("showTimeTaken", newValue)}
+                setValue={(newValue) => changedOption("showTimeTaken", newValue)}
                 noNote
               />
             )}
             <BoolOption
               tKey="stack_tiers"
               value={localOptions.stackTiers}
-              setValue={(newValue) => changeOptions("stackTiers", newValue)}
+              setValue={(newValue) => changedOption("stackTiers", newValue)}
               noNote
             />
           </Grid>
@@ -247,15 +248,15 @@ function SliderOption({ tKey, value, setValue, valueFormatter, min = 0, max = 10
   );
 }
 
-export function getDefaultOptions() {
+export function getDefaultOptions(isOverall = false) {
   return {
     darkenTierColors: 85,
-    compactMode: false,
+    compactMode: isOverall,
     sort: "fractional-tiers",
     sortOrder: "desc",
     showImages: true,
     preferMapImages: false,
-    stackTiers: true,
+    stackTiers: false,
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,

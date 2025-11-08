@@ -350,7 +350,6 @@ export function TiersCountDisplay({ stats, differences, hideEmpty = false, equal
             <DifficultyValueChip
               difficulty={diff}
               value={count + (difference ? ` (+${difference})` : "")}
-              useDarkening
               sx={{ width: 1, fontSize: "1em", opacity: isEmpty && hideEmpty ? 0.15 : 1 }}
             />
           </Grid>

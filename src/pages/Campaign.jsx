@@ -52,7 +52,6 @@ import {
 import "../css/Campaign.css";
 import { memo, useEffect, useState } from "react";
 import { getCampaignName, getChallengeNameShort, getMapLobbyInfo, getMapName } from "../util/data_util";
-import { getNewDifficultyColors } from "../util/constants";
 import { Changelog } from "../components/Changelog";
 import {
   CampaignIcon,
@@ -104,10 +103,6 @@ export function PageCampaign() {
   const navigate = useNavigate();
   const { settings } = useAppSettings();
 
-  if (settings.visual.topGoldenList.useExperimental && tab === "top-golden-list") {
-    return <PageTopGoldenListAlt defaultType="campaign" defaultId={id} />;
-  }
-
   const setTab = (newTab) => {
     if (newTab === "players") {
       navigate(`/campaign/${id}`, { replace: true });
@@ -117,7 +112,7 @@ export function PageCampaign() {
   };
 
   if (tab === "top-golden-list") {
-    return <PageCampaignTopGoldenList id={id} />;
+    return <PageTopGoldenListAlt defaultType="campaign" defaultId={id} />;
   }
 
   return (

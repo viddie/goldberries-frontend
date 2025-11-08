@@ -15,19 +15,7 @@ export const getDefaultSettings = (prefersDarkMode = true) => {
     visual: {
       darkmode: prefersDarkMode,
       topGoldenList: {
-        showCampaignIcons: true,
-        useTextFcIcons: false,
         darkenTierColors: 55,
-        switchMapAndChallenge: false,
-        hideEmptyTiers: false,
-        showFractionalTiers: false,
-        unstackTiers: true,
-        useExperimental: false,
-        preferMapImages: false,
-        hideTimeTaken: false,
-        sortByFractionalTiers: true,
-        hideImages: false,
-        compactMode: false,
       },
       background: {
         dark: "", //Indicates default, solid color background. Otherwise this is the image name

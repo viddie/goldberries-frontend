@@ -115,7 +115,7 @@ function TimeTakenTiersGraph({ tgl, useSuggested }) {
     //Step 4: add the difficulty to the data array
     dataBar.push({
       name: getDifficultyName(difficulty),
-      color: getNewDifficultyColors(settings, difficulty.id, false).color,
+      color: getNewDifficultyColors(settings, difficulty.id).color,
       time_taken: [min_time_taken, max_time_taken],
       id: difficulty.id,
       is_same: is_same,
@@ -242,7 +242,7 @@ function TimeTakenTiersGraph({ tgl, useSuggested }) {
                     key={difficulty.id}
                     name={getDifficultyName(difficulty)}
                     data={filteredData}
-                    fill={getNewDifficultyColors(settings, difficulty.id, false).color}
+                    fill={getNewDifficultyColors(settings, difficulty.id).color}
                   />
                 );
               })}
