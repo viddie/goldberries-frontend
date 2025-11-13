@@ -143,6 +143,7 @@ import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenListAlt } from "./pages/TopGoldenListAlt";
+import { getFeaturedCampaignsNavEntries } from "./util/other_data";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_URL;
@@ -511,56 +512,6 @@ export function Layout() {
           icon: <FontAwesomeIcon icon={faBan} />,
         },
         { divider: true },
-        {
-          name: "Strawberry Jam",
-          path: "/campaign/1199",
-          icon: <CampaignIcon campaign={{ name: "Strawberry Jam", icon_url: "/icons/campaigns/sj.png" }} />,
-        },
-        {
-          name: "Spring Collab 2020",
-          path: "/campaign/1200",
-          icon: (
-            <CampaignIcon
-              campaign={{
-                name: "Celeste 2020 Spring Collab",
-                icon_url: "/icons/campaigns/spring-collab-20.png",
-              }}
-            />
-          ),
-        },
-        {
-          name: "Winter Collab 2021",
-          path: "/campaign/977",
-          icon: (
-            <CampaignIcon
-              campaign={{
-                name: "Celeste 2021 Winter Collab",
-                icon_url: "/icons/campaigns/winter-collab-21.png",
-              }}
-            />
-          ),
-        },
-        {
-          name: "Monika's D-Sides",
-          path: "/campaign/867",
-          icon: (
-            <CampaignIcon
-              campaign={{ name: "Monika's D-Sides", icon_url: "/icons/campaigns/d-sides-monika.png" }}
-            />
-          ),
-        },
-        {
-          name: "Secret Santa Collab 2024",
-          path: "/campaign/1216",
-          icon: (
-            <CampaignIcon
-              campaign={{
-                name: "Secret Santa Collab 2024",
-                icon_url: "/icons/campaigns/secret-santa-collab-2024.png",
-              }}
-            />
-          ),
-        },
       ],
     },
     otherChallenges: {
@@ -746,6 +697,8 @@ export function Layout() {
       ],
     },
   };
+
+  menus.campaigns.items.push(...getFeaturedCampaignsNavEntries());
 
   if (auth.hasPlayerClaimed === true) {
     menus.user.items = menus.user.items.filter((item) => item.path !== "/claim-player");
@@ -1053,8 +1006,8 @@ function MobileMenuItem({ item, indent = 0, closeDrawer }) {
   return (
     <ListItem disablePadding>
       {item.action !== undefined && (
-        <ListItemButton onClick={onClick} sx={{ py: "2px", pl: 2 + indent * 2 }}>
-          <ListItemIcon>{item.icon}</ListItemIcon>
+        <ListItemButton onClick={onClick} sx={{ py: "2px", pl: 1.5 + indent * 2 }}>
+          <ListItemIcon sx={{ justifyContent: "space-around", mr: 0 }}>{item.icon}</ListItemIcon>
           <ListItemText primary={item.name} />
         </ListItemButton>
       )}
@@ -1063,10 +1016,10 @@ function MobileMenuItem({ item, indent = 0, closeDrawer }) {
           selected={selected}
           component={Link}
           to={item.path}
-          sx={{ py: "2px", pl: 2 + indent * 2 }}
+          sx={{ py: "2px", pl: 1.5 + indent * 2 }}
           onClick={onClick}
         >
-          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemIcon sx={{ justifyContent: "space-around", mr: 0 }}>{item.icon}</ListItemIcon>
           <ListItemText primary={item.name} />
         </ListItemButton>
       )}
@@ -1319,16 +1272,17 @@ function DesktopSubMenuItem({ item, closeMenu }) {
           item.action();
           closeMenu();
         }}
+        sx={{ pl: 1.5 }}
       >
-        <ListItemIcon>{item.icon}</ListItemIcon>
+        <ListItemIcon sx={{ justifyContent: "space-around", mr: 1 }}>{item.icon}</ListItemIcon>
         <ListItemText primary={item.name} />
       </MenuItem>
     );
   }
 
   return (
-    <MenuItem onClick={closeMenu} component={Link} to={item.path}>
-      <ListItemIcon>{item.icon}</ListItemIcon>
+    <MenuItem onClick={closeMenu} component={Link} to={item.path} sx={{ pl: 1.5 }}>
+      <ListItemIcon sx={{ justifyContent: "space-around", mr: 1 }}>{item.icon}</ListItemIcon>
       <ListItemText primary={item.name} />
     </MenuItem>
   );
