@@ -1539,6 +1539,7 @@
     "title": "Rules",
     "toc": "Table of Contents",
     "description": "This page exists mostly as a formalization of rules and edge cases for said rules. The most basic form of required submission rules is \"don't cheat, don't use gameplay-altering mods, have a full session recording for Tier 8+ challenges, and make sure to show the end screen\". However, this formalization exists to cover potential confusion for certain edge cases and all the like. This list isn't exhaustive. It can't be. Mappers come up with ways to subvert our expectations all the time, and if we tried to formalize the minefield that it is, we would get nowhere. If you have an edge case not covered by this list, or general questions about it, please ask us! Ask us before you make a submission that results in days of debate that may or may not result in it getting rejected. Thank you.",
+    "language_notice": "PLEASE NOTE: Translations of rules may be outdated or incomplete. In case of discrepancies, the English is always the reference.",
     "maps": {
       "header": "Rules for Maps and Challenges",
       "rules": {
@@ -1833,7 +1834,9 @@
     "people": "many many wonderful people from the goldberries-net thread in the Modded Golden Team Discord",
     "chinese_translation": "Chinese Translation",
     "french_translation": "French Translation",
-    "russian_translation": "Russian Translation"
+    "russian_translation": "Russian Translation",
+    "domain": "Domain",
+    "domain_text": "{{name}} (managing and paying for the domain & Cloudflare, as well as making the original goldberries.net!)"
   },
   "stats": {
     "title": "Stats",

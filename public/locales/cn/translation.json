@@ -1285,68 +1285,185 @@
   "rules": {
     "title": "规则",
     "toc": "目录",
-    "description": "此页面旨在对以上规则的形式化/严谨化，和一些边缘情况的处理。总体来说基本和你想得差不多：不要作弊，不要用会影响到游戏玩法的Mod，诸如此类。不过，如果你不知道什么能用什么不能用，或者想要一些建议/推荐，请阅读相应的规则部分（注：里面的一些链接需要挂梯子才能访问）。",
+    "description": "本页面的主要作用是对规则和极端情况的规范化。提交规则最基本的要求可概括为“禁止作弊、禁止使用影响游戏玩法的模组、Tier 8及以上的挑战需提供完整流程录像、并确保展示结算界面”。不过，这些规范可以更全面地涵盖某些极端情况，并解决可能存在的疑惑。该规则并不能完全覆盖所有情况，也不可能做到绝对完整。地图作者总可能会有一些意料之外的想法，如果我们试图为所有潜在的规则漏洞预先制定规范，那么我们将寸步难行。若您遇到未涵盖的边缘情况，或对规则存有疑问，欢迎向我们提问！在您提交可能引发数日争论且最终可能被拒绝的内容之前，请先问一问我们，谢谢。",
+    "language_notice": "请注意：下面一部分规则的翻译可能过时或不完整。请以英语翻译为准。(中文翻译在2025.11.12更新，目前是最新版本)",
     "maps": {
-      "header": "关于地图",
+      "header": "关于地图挑战",
       "rules": {
-        "0": "地图或地图包<strong>必须</strong>公开发布至<CustomExternalLink href=\"https://gamebanana.com/games/6460\">香蕉网</CustomExternalLink>。如果某张地图被删除或被作者设为私有，则此地图会上传至<CustomExternalLink href=\"https://archive.org/details/celeste-golden-list-removed-from-gb-maps\">互联网档案馆</CustomExternalLink>。除非作者明确不允许其他人下载，并要求彻底删除它。",
-        "1": "地图或地图包<strong>必须</strong>有一定难度，即使难度很小。几乎不会死的图会被拒绝。",
-        "2": "地图或地图包<strong>必须</strong>至少3面或3个存档点长，和官图最短的C面长度一致。",
-        "3": "地图或地图包<strong>不得</strong>包含NSFW内容。",
-        "4": "地图或地图包里的内容<strong>最好不要</strong>与官图或已经存在的其他图过于相似。不过像比较有特点的<CustomExternalLink href=\"https://gamebanana.com/mods/150418\">官图倒走</CustomExternalLink>，或者官图的加难版比如<CustomExternalLink href=\"https://www.youtube.com/watch?v=aYpean9AahU\">Farewell^9</CustomExternalLink>这类图是允许的，但是像<CustomExternalLink href=\"https://gamebanana.com/mods/349586\">1a Undefined</CustomExternalLink>这样的图大概率不行。",
-        "5": "地图或地图包<strong>最好</strong>质量不要太低。只要图本身有可玩性且用心制作，“垃圾类”或“整活类”图都可以。由于这个定义很模糊，因此大多数都根据具体情况决定。不过如果你也想来点参考，像<CustomExternalLink href=\"https://www.youtube.com/watch?v=MsScIP3ZqCM\">Shitpost Summit</CustomExternalLink>或者<CustomExternalLink href=\"https://www.youtube.com/watch?v=XODzWNSNKZk\">The Decline</CustomExternalLink>之类的图都可以，但是像<CustomExternalLink href=\"https://youtu.be/qRz5XC0P7MQ\">frickyou</CustomExternalLink>这样的图不行。"
+        "entries": [
+          {
+            "heading": "可公开获取",
+            "text": "地图或地图包<strong>必须</strong>上传至<CustomExternalLink href=\"https://gamebanana.com/games/6460\">GameBanana</CustomExternalLink>平台。 若地图曾经在GameBanana发布，在之后被下架，则需上传至<CustomExternalLink href=\"https://archive.org/details/celeste-golden-list-removed-from-gb-maps\">archive.org指定文件夹存档</CustomExternalLink>，除非地图作者特别要求禁止传播。"
+          },
+          {
+            "heading": "不能没有死亡风险",
+            "text": "地图或地图包<strong>必须</strong>包含具有死亡风险的部分，即使并不难。完全缺乏死亡风险的地图将会被拒绝收录。比如<CustomExternalLink href=\"https://www.youtube.com/watch?v=5YpJwGcr8ds\">Ultra Skrimbles</CustomExternalLink>，虽然操作难度较高，但并没有死亡风险。特殊情况下(通常是地图包或合集中包含的地图)，可破例收录，如<CustomExternalLink href=\"https://www.youtube.com/watch?v=o5zGa_w_2wA\">逆旅银草莓</CustomExternalLink>，此类地图将被收录入“Untiered”。"
+          },
+          {
+            "heading": "不与其他地图高度重复",
+            "text": "地图或地图包<strong>最好避免</strong>与官图或已有的mod地图高度雷同。<CustomExternalLink href=\"https://gamebanana.com/mods/150418\">Etselec</CustomExternalLink>等独特的地图包或<CustomExternalLink href=\"https://www.youtube.com/watch?v=aYpean9AahU\">Farewell^9</CustomExternalLink>等经过设计的(通常难度更高)的改版可以被收录，而<CustomExternalLink href=\"https://gamebanana.com/mods/349586\">1a Undefined</CustomExternalLink>这类地图则很可能被拒绝。"
+          },
+          {
+            "heading": "不得有敏感内容",
+            "text": "地图或地图包<strong>不得</strong>包含成人或冒犯性内容，包括但不限于：裸体画面、色情描写、血腥暴力、极端恋物癖内容，或对受保护的少数群体的冒犯性言论或描述。"
+          },
+          {
+            "heading": "挑战流程中只包含蔚蓝游玩过程",
+            "text": "地图包中的挑战<strong>不得</strong>涉及在蔚蓝以外的流程，比如<CustomExternalLink href=\"https://goldberries.net/submission/46033\">The Golden Challenge</CustomExternalLink>(需要游玩Minecraft)。"
+          }
+        ]
       }
     },
     "goldens": {
-      "header": "关于提交内容",
+      "header": "关于提交的视频",
       "rules": {
         "header": "单个地图提交规则",
-        "0": "视频<strong>必须</strong>上传至不需要登录就能观看的地方，目前主流的几个视频网站是：<CustomExternalLink href=\"https://www.youtube.com/\">油管</CustomExternalLink>、<CustomExternalLink href=\"https://www.twitch.tv/\">Twitch</CustomExternalLink>、<CustomExternalLink href=\"https://www.bilibili.com/\">B站</CustomExternalLink>和<CustomExternalLink href=\"https://www.nicovideo.jp/\">niconico动画</CustomExternalLink>，诸如此类的网站均可以进行提交。但不允许提交消息服务内容分发网络（比如<code>cdn.discordapp.com</code>或其他）中的视频。",
-        "1": "视频<strong>必须</strong>包含该挑战项目的完整流程，比如从拿到金草莓到结算。但金草莓结算后，在真正结束游戏返回地图前不一定必须一命（比如吃心后死亡）。但是如果在你想打FC金的情况下金草莓结算后还有剩下的收集物例如<CustomExternalLink href=\"https://youtu.be/c4VwQrNwGjE?t=235\">Anubi FC</CustomExternalLink>这种情况则不允许死亡。如果死亡，该挑战将仅会作为单金记录。 类似于直播回放突然中断导致视频不连续的例子非常少见，因此会根据具体情况进行评估，只要该玩家具有可信度。",
-        "2": "挑战<strong>必须</strong>在同一局游戏内完成。",
-        "3": "<strong>不得</strong>使用会影响游戏玩法的Mod、异变或帮助模式。改变视觉的Mod<strong>可能</strong>会根据一些具体的情况允许。详情请参考<CustomLink to=\"#allowed-mods\">允许和推荐的Mod</CustomLink>。",
-        "4": "<strong>t3及以上难度</strong>的挑战<strong>必须</strong>有完整的全程录像。如果在录像的第一局或开头就完成挑战，则需要提供之前的完整录像。",
-        "5": "<strong>最好不要</strong>使用任何提供信息的Mod，这类Mod通常会给你提供游戏内无法访问的信息。例如input history、体力条或CelesteTAS里的信息面板。如果在游戏过程中这些东西产生的影响很小，则此类提交内容均会被无条件接受；如果产生了一定量但不值得特别关注的影响，则此类提交内容依然会被接受但会打上注释；如果产生的影响很大，比如通过输入帧数反复调亚像素对准，或者在一些高速/控体力/禁无体力跳的图使用速度计和体力条的情况，则此类提交内容会被拒绝。",
-        "6": "<strong>不得</strong>滥用<i>暂停预输入</i>来降低难度。这会使得某些图中一些很难，容错很低的地方变得非常简单，由于定义也很模糊，通常也会根据具体情况进行评估。不过如果你想来点实际参考：比如用暂停过<CustomExternalLink href=\"https://youtu.be/rpSFgT29hK8?t=61\">海鲜市场倒二的蹭墙</CustomExternalLink>是可以的，但<CustomExternalLink href=\"https://www.youtube.com/watch?v=G-bmAvDaBtY\">I Wanna Atone the Flower</CustomExternalLink>则不行。使用不会被拒绝的暂停预输入也会被打上注释。",
-        "7": "<strong>不得</strong>通过等待118+小时的手段来<i>冻结圆刺</i>。<strong>但可以</strong>使用<i>spinner stunning</i>，因为这通常是由大量的fp实现的，不适合用在金草莓里。关于更多信息，请参考<CustomExternalLink href=\"https://youtu.be/UGQ5rXStKXg?t=64\">这个视频</CustomExternalLink>。",
-        "8": "如果地图上没有金草莓，<strong>则允许</strong>使用控制台命令<code>give_golden</code>生成一个金草莓。该命令<strong>必须</strong>在<strong>地图的第一面</strong>使用。或者也可以用<CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink>或<CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink>来给地图添加金草莓。",
-        "9": "对于金草莓本身，只要遵循挑战本身的规则，玩家<strong>可以不用</strong>真正收集金草莓（也叫<i>不带金一命</i>）。如果有金限，<strong>则很大可能不允许玩家以这种方式进行挑战</strong>。虽然本身不鼓励这种行为并希望你真正收集到金草莓，但有些时候真的会出现压死局变一命的情况，我们不希望抹杀任何人突如其来的成就。另外，不带金一命均会打上注释。",
-        "10": "对于金草莓本身，<strong>如果</strong>地图结尾不存在结算trigger，玩家<strong>可以</strong>在地图的<strong>结尾</strong>添加一个金草莓结算trigger。如果吃到心但不结束游戏，你也可以通过制图器将它改为吃到心结束游戏。这将根据具体情况进行评估，因为真的很少见。",
-        "11": "对于金草莓本身，<strong>允许金草莓不跟在你身边</strong>时死亡，次数不限。但这<strong>不适用于</strong>因为修复地图问题从而不得不分离金草莓（比如<CustomExternalLink href=\"https://youtu.be/iJuGoYOPFt4?t=782\">A Beautiful Meadow</CustomExternalLink>）或作者无意设置的情况。"
+        "entries": [
+          {
+            "heading": "视频能够永久保存",
+            "text": "提交的视频<strong>必须</strong>必须被上传到一个能够将其永久保存的平台，且不需要登录账号来观看。最流行的平台有<CustomExternalLink href=\"https://www.youtube.com/\">YouTube</CustomExternalLink>、<CustomExternalLink href=\"https://www.twitch.tv/\">Twitch</CustomExternalLink>、<CustomExternalLink href=\"https://www.bilibili.com/\">bilibili</CustomExternalLink>、<CustomExternalLink href=\"https://www.nicovideo.jp/\">nicovideo</CustomExternalLink>，但除这些之外的平台的也完全可以。将聊天软件的CDN(即<code>cdn.discordapp.com</code>等类似域名)作为提交的视频将不会被接受，到期自动失效的链接(即<CustomExternalLink href=\"https://0x0.st\">0x0.st</CustomExternalLink> links)链接)也将不会被接受。"
+          },
+          {
+            "heading": "视频记录完整",
+            "text": "提交的视频<strong>必须</strong>展示该挑战完整的通关记录，比如从拿金草莓到金草莓结算。在完成挑战之后、退出地图之前，允许玩家死亡。(比如“吃心后死亡[Heart Death]”，可以在<CustomExternalLink href=\"https://youtu.be/6BeQPj4UXE0?si=lob3z8BOTGtmtqLp&t=62\">Magnetic Dawn B-Side</CustomExternalLink>)的金草莓视频中找到案例)。注意金草莓结算不一定总是挑战的结尾，例如在全收集挑战中可能还有其它草莓需要收集，例如<CustomExternalLink href=\"https://youtu.be/tOHsr2JBfyQ?t=190\">Heather's Aquarium 全收集</CustomExternalLink>的情况就是这样。对此规则的例外非常罕见，如有，将根据具体情况进行评估。例如直播信号短暂中断，只要当时的情形和玩家本人可信。"
+          },
+          {
+            "heading": "结算界面要求",
+            "text": "提交的视频<strong>必须</strong>在完成挑战后展示地图的结算界面。如果没有结算界面，必须在通关之后立刻展示日志。<strong>重点：对于合集中的地图，你必须开启</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>选项，并启用结算界面显示计时器。</strong>。如果你不想让计时器一直显示，SpeedrunTool有一个只在结尾自动展示计时器的选项：<code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>。"
+          },
+          {
+            "heading": "流程连续",
+            "text": "提交的视频<strong>必须</strong>是一个连续的游玩流程。"
+          },
+          {
+            "heading": "不改变游戏玩法(Gameplay)",
+            "text": "提交的视频<strong>禁止</strong>使用任何地图允许以外的改变游戏玩法的mod、异变或者帮助模式。这<strong>包括</strong>包括拓展异变中的禁用冻结帧异变。根据具体情况，改变视觉的mod和异变<strong>可能</strong>会被允许。请查看<CustomLink to=\"#allowed-mods\">允许和推荐的Mod</CustomLink>来了解更多细节。"
+          },
+          {
+            "heading": "原始视频(Raw)要求",
+            "text": "难度在<strong>Tier 8</strong>及以上的挑战<strong>必须</strong>提供一份从开始录制到结束录制的完整视频。如果视频中刚开始的几局就出货了，那么你可能会被要求提供过去炼金过程中(还没出货)的视频。"
+          },
+          {
+            "heading": "禁止使用提供信息的Mod",
+            "text": "提交的视频<strong>禁止</strong>使用那些会提供原本游戏中不提供的信息的Mod，比如input history、体力条或者CelesteTAS的信息面板。若在挑战中使用此类模组几乎没有影响，提交的视频将会被打上警告的note，并且多次后会被拒绝。若在挑战中此类模组有影响，比如亚像素对准、严格控体力的地图、或者能够得到特定信息后可以用来执行特定策略或进行救场的情况等(比如在象牙中使用速度计，你可以通过速度判断是否通过这面)，提交的视频会在第一次直接被拒绝。"
+          },
+          {
+            "heading": "禁止滥用暂停",
+            "text": "提交的视频<strong>禁止</strong>滥用暂停来让游戏变得更简单。一个滥用暂停的极端例子是<i>暂停预输入(即社区中常说的Pause Buffer)</i>因为你可以通过预输入暂停键来一帧一帧地游玩。即使你不一帧一帧使用预输入暂停，通过暂停来让操作变得更简单<strong>也</strong>是被禁止的。不过，在没有死亡风险的地方，你可能可以使用暂停来完成其他困难或重复的对准。另外，在一些预料之外的情景之下，可以稍微使用一点暂停(就像ninz在烈冕炼狱金中所做的那样)来思考。但即使是在这样的情况下，也不允许使用多次暂停来搓出困难的操作。请注意，就像拓展异变中的<i>禁止冻结帧</i>一样，一小部分过去提交的视频虽违反此规则仍予保留，但若按现行标准均会被拒绝。滥用暂停应与暂停技巧区分——后者指的是在特定的游戏玩法中需要使用暂停来实现的技巧，是<strong>始终允许</strong>使用的。这包括在某个需要缓降，而按跳会触发其他操作的时候、在做望远镜切板保留平地ultra速度技巧(bino control storage)的时候和在做spinner stunning技巧的时候(参考规则9)。"
+          },
+          {
+            "heading": "Spinner Freeze/Stun",
+            "text": "提交的视频<strong>禁止</strong>滥用<i>spinner freezing技巧</i>——通过在游戏中等待大约118个小时来避免一些特定的圆刺加载。由于<i>spinner stunning</i>本身有着严格的fp(frame perfect)要求，并且不适用于炼金，提交的视频<strong>可能会</strong>允许使用这一技巧。如果想要了解更多这些技巧相关的内容，请查看<CustomExternalLink href=\"https://youtu.be/UGQ5rXStKXg?t=64\">由EuniverseCat制作的有关视频</CustomExternalLink>。"
+          },
+          {
+            "heading": "地图内没有金草莓时的情况",
+            "text": "在有着<code>Deathless</code>标签的挑战中，没有无伤草莓被放在图里面，但你仍须无伤通关整张地图。对于有这类标签的挑战，你可以用控制台指令<code>give_golden</code>来给自己一个金草莓。这条指令<strong>必须</strong>必须在重新开始章节后、地图<strong>第一个</strong>房间的开头来输入。另外，你可以使用<CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink>或者<CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink>在地图开头添加一个金草莓。然而，利用手动放置金草莓来获取优势是<strong>不被允许的</strong>这包括在结尾吃心结算时死亡和借助金草莓发光特性的提升地图能见度，如<CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink>。"
+          },
+          {
+            "heading": "0死不带金(Deathless Berryless/dlbl)",
+            "text": "对于金草莓(或者其他类似的草莓)，只要和带金时的流程相同(又叫<i>0死不带金(Dashless Berryless)</i>流程)，则<strong>不收集</strong>金草莓也可以。若带金时与不带金的时候存在一些根本上的差异，比如增加了一个金限房间，那么此类视频<strong>通常不被接受</strong>。另外，当带金时有类似于强制分离金草莓(比如第九章的月莓)的改变时，你<strong>必须</strong>拿分离后的金草莓，而不能离开直接进入下一面。我们虽不鼓励提交“0死不带金”流程的视频并鼓励希望挑战者收集对应的无伤草莓，但能理解意外的fluke导致这类情况发生，也不希望因此抹杀玩家的成就。此类提交将被附加note。"
+          },
+          {
+            "heading": "地图中没有收集金草莓的Trigger的情况",
+            "text": "对于金草莓(或其他类似草莓)的挑战，若地图中原本不存在金草莓结算的Trigger，则<strong>允许</strong>通过编辑地图<strong>末尾</strong>来添加该Trigger；若水晶之心<strong>代表且仅代表着</strong>着终点但未将玩家送出地图，则可修改地图，使其能够吃心结算并退出地图。此类修改将根据具体情况来评估，因为这类情况极为罕见。"
+          },
+          {
+            "heading": "对于地图有意设计的金草莓分离",
+            "text": "对于金草莓(或者其他类似草莓)的挑战，<strong>允许</strong>玩家在<strong>有意设置的金草莓分离环节中</strong>无限次死亡。此规则<strong>不适用于</strong>为修复地图bug而设置的金草莓分离（例如<CustomExternalLink href=\"https://youtu.be/iJuGoYOPFt4?t=782\">A Beautiful Meadow</CustomExternalLink>中的情况）或者其他非有意设置的金草莓分离。"
+          },
+          {
+            "heading": "地图进度相关",
+            "text": "炼金视频<strong>必须</strong>符合挑战所设的进度限制(进度锁)。若挑战涉及global flag(xaphan helper的一个trigger，可以生成一个直接写入存档的flag)或超出当前挑战范围的其他要素，可默认这些要素已解锁。若这些要素影响较大，则可能根据解锁的不同的状态对挑战进行分类。"
+          },
+          {
+            "heading": "游戏界面覆盖相关",
+            "text": "提交的视频<strong>禁止</strong>覆盖屏幕的大部分或者关键部分。关键的部分包括：计时器、左上角的草莓总数、暂停菜单下方的草莓记录器、操控的角色和右下角的自动保存标志。"
+          }
+        ]
       },
       "full_game_additional": {
-        "header": "多地图一命提交规则",
-        "explanation": "多地图一命有两种类型：1、完成地图包内有关联性的地图一命，比如全C面一命，初级地图大厅一命；2、整个地图包一命，比如全章节一命或100%一命。 这部分规则将仅适用于多地图一命。",
-        "0": "视频<strong>必须</strong>展示完整流程，对于第一种类型，视频必须开始于第一张地图的选关页面，并完成最后一张地图后结束。对于第二种类型，视频必须开始于选择存档之前，并完成最后一张地图后结束。",
-        "1": "对于类型2，<strong>必须</strong>按照新档要求的正常地图顺序完成，<strong>始终推荐</strong>创建新档并且<strong>不使用</strong>cheat mode。对于类型1，可按照任意顺序完成地图。",
-        "2": "<strong>不得</strong>使用返回地图或任何手段规避死亡或降低难度。也包括玩家因为各种原因导致没有死亡但无法继续过关的情况。",
-        "3": "<strong>不得</strong>使用多个存档完成挑战。",
-        "4": "如果存在强制死亡的地方（比如第九章月莓），则<strong>允许</strong>死亡，但死亡数量<strong>不得超过通过该部分要求的最低限制数</strong>。这与上面有关金草莓分离的说明不同。",
-        "5": "<strong>必须</strong>打开文件计时器，<strong>不仅仅是</strong>章节计时器。",
-        "6": "视频<strong>不得</strong>覆盖大部分游戏屏幕或关键部分。包括左上角的计时器与草莓数、玛德琳、暂停时下方的草莓计数器和右下角的保存图标。",
-        "7": "<strong>不建议</strong>在选关页面或暂停期间休息太长的时间，在地图内休息而非暂停期间休息更可接受，尽管不论任何情况，频繁休息均会引起怀疑并且会要求你提供更多证据。",
-        "8": "如果没有带上金/银草莓，<strong>同样允许</strong>将该多地图一命挑战内包含的所有单个挑战项目分别提交至单独的地图包列表里，前提是遵守上述关于不带金一命的相关规则。"
+        "header": "多地图一命提交的附加规则",
+        "explanation": "多地图一命有两种类型：1、完成地图包内有关联性的地图一命，即<i>“部分一命(partial full game runs)”<i>，比如全C面一命，初级地图大厅一命；2、整个地图包一命，比如全章节一命或100%一命。 这部分规则将仅适用于这两种多地图一命。",
+        "entries": [
+          {
+            "heading": "视频记录完整",
+            "text": "提交视频<strong>必须</strong>完整呈现整个通关流程。对于部分的多地图流程，视频必须在选择第一张地图或再之前开始录制，且须在完成最后一张地图后才能结束录制；对于完整全游戏流程(即Full Game Run)，视频起始时间不得晚于文件选择界面，且须在最终地图完成后结束。"
+          },
+          {
+            "heading": "地图进度相关",
+            "text": "作为提醒，如果你还没有看前面的规则的话，前文\"单个地图提交规则\"中的第14条已明确如何对待地图的进度相关问题，而多地图一命也一样。总的来说，完整全游戏流程<strong>必须</strong> 从创建一个存档开始，而部分全游戏提交则可灵活调整通关顺序。以原版游戏为例：若进行全A面一命通关，必须按章节顺序完成(1A解锁2A，2A解锁3A，依此类推)；若进行全B面一命通关，可任意安排顺序，因为解锁B面的顺序与B面本身无关；若进行100%一命通关，则必须从新存档开始。"
+          },
+          {
+            "heading": "不能使用“返回地图”",
+            "text": "提交的视频<strong>禁止</strong>使用“返回地图”或类似的选项来重置房间的状态。这些房间状态包括但不限于：玩家位置、一次性冲刺水晶、下落块、Kevin位置、开关等。"
+          },
+          {
+            "heading": "只使用一个存档文件",
+            "text": "提交的视频在任何情况下<strong>均禁止</strong>使用多个存档文件。"
+          },
+          {
+            "heading": "强制死亡的情况",
+            "text": "若该流程存在强制死亡(类似9A的月莓)，玩家将<strong>可以</strong>在这些地方死亡，但死亡数<strong>不能超过这一部分需要的最少死亡数</strong>。注意，此规则与单独地图无伤挑战(规则第13条所述)存在区别。"
+          },
+          {
+            "heading": "计时器要求",
+            "text": "提交的视频<strong>必须</strong>开启“文件计时器”，而<strong>不仅是</strong>章节计时器。"
+          },
+          {
+            "heading": "Long Breaks",
+            "text": "提交的视频<strong>不建议</strong>长时间或频繁地在菜单或暂停页面休息。在地图内、不暂停的情况下休息会更好，不过频繁休息仍然会变得可疑，并且需要更多的证据来确保视频可信。"
+          },
+          {
+            "heading": "允许提交0死不带金的视频",
+            "text": "若提交的视频未收集金/银草莓，且符合之前所描述0死不带金的要求(单个地图提交规则的规则11)，则这些视频<strong>可用于</strong>提交流程中各个小图的无伤通关。"
+          }
+        ]
       }
     },
     "general_recommendations": {
       "header": "一些建议",
       "section": {
         "explanation": "这些<strong>均不是</strong>需要遵循的规则，但都有助于提高可信度，避免给你的视频打上注释，或帮助到别人。",
-        "0": "打开计时器，对于单独的地图不强制要求打开。但多地图挑战<strong>必须</strong>打开文件计时器。",
-        "1": "使用按键映射，比如Windows的<CustomExternalLink href=\"https://github.com/ThoNohT/NohBoard\">NohBoard</CustomExternalLink>、Linux (X11)的<CustomExternalLink href=\"https://github.com/yoshiyoshyosh/kbdisplay\">kbdisplay</CustomExternalLink>或跨平台通用的<CustomExternalLink href=\"https://github.com/RoanH/KeysPerSecond\">KeysPerSecond</CustomExternalLink>。",
-        "2": "对于合集视频，在简介或你的视频链接里贴上时间戳将对验证大有帮助。",
-        "3": "保留一到两份完整的全程录像，尤其是对于难度很高的金草莓，以防验证者要求更多的证明。"
+        "entries": [
+          {
+            "text": "使用章节计时器或文件计时器有助于提升可信度，但单地图提交不作强制要求。请注意，多地图一命的挑战<strong>必须</strong>开启文件计时器。"
+          },
+          {
+            "text": "使用外部按键输入显示工具（如 Windows可用的<CustomExternalLink href=\"https://github.com/ThoNohT/NohBoard\">NohBoard</CustomExternalLink>、Linux(X11)可用的<CustomExternalLink href=\"https://github.com/yoshiyoshyosh/kbdisplay\">kbdisplay</CustomExternalLink>、多平台可用的<CustomExternalLink href=\"https://github.com/RoanH/KeysPerSecond\">KeysPerSecond</CustomExternalLink>）可使你的视频更可信。手柄玩家可使用<CustomExternalLink href=\"https://gamepadviewer.com\">GamePad Viewer</CustomExternalLink>或<CustomExternalLink href=\"https://www.ballini.uk/openjoystick.htm\">Joystick Display</CustomExternalLink>等输入显示工具。若使用<CustomExternalLink href=\"https://gamebanana.com/mods/34273\">Input History</CustomExternalLink>来显示输入，须禁用帧数计数与显示输入历史记录的功能。"
+          },
+          {
+            "text": "建议保留若干次完整流程录像，尤其是高难度的金草莓挑战，以便在审核人员要求补充证明时提供额外证据。"
+          }
+        ]
       }
     },
     "allowed_mods": {
       "header": "允许和推荐的Mod",
       "section": {
         "explanation": "除非另有规定，否则下方列出的所有Mod默认允许使用。下方未列出的Mod除非违反了上述关于影响游戏玩法或信息获取的规则，不然也都允许使用。",
-        "0": "<strong>唯一</strong>允许使用的改变游戏玩法的Mod是<CustomExternalLink href=\"https://gamebanana.com/mods/53650\">拓展异变</CustomExternalLink>中的<i>取消冻结帧</i>。该选项不会从根本上影响地图本来的玩法，并且在大多数时候都会使难度变得更高。",
-        "1": "对于多地图一命，使用<CustomExternalLink href=\"https://gamebanana.com/mods/53679\">硬核模式</CustomExternalLink>可以让你更快速的重置存档，但不是必需。另外硬核模式还允许金草莓在不打开cheat mode的情况下出现，这意味着即使有金限之类的东西，你也可以不受限制地将视频提交至单独的地图包列表里。",
-        "2": "<CustomExternalLink href=\"https://gamebanana.com/mods/363600\">Golden QOL</CustomExternalLink>允许使用。这个Mod可以让金草莓隐形，可以在不用制图器的情况下放置新的金草莓，或者可以让你带金死后直接从当前房间复活。",
-        "3": "<CustomExternalLink href=\"https://gamebanana.com/tools/6597\">速通辅助工具</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/tools/6715\">CelesteTAS</CustomExternalLink>可以帮助你在练习期间找各个地方的对准或偷鸡。但必须指出，在实战期间禁止使用这些工具里改变玩法和获取信息的功能。",
-        "4": "其他经常可用于练习的工具有<CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>。"
+        "entries": [
+          {
+            "text": "使用<CustomExternalLink href=\"https://gamebanana.com/mods/421816\">Deadzone Config</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/tools/13384\">viddie's Toolbox</CustomExternalLink>可让手柄玩家调整操作死区，尤其能简化速降及其他不方便的斜向操作。"
+          },
+          {
+            "text": "进行多地图一命挑战时，使用<CustomExternalLink href=\"https://gamebanana.com/mods/53679\">Hardcore Mode</CustomExternalLink>可以加速重开的速度，不过不做强制要求。Hardcore Mode还允许你在不使用cheat mode的情况下在开局生成金草莓，这意味着此时的视频也可直接用于提交多地图一命中的各单图挑战。此外，<CustomExternalLink href=\"https://gamebanana.com/mods/554057\">Collab Platinums</CustomExternalLink>能提升多地图一命挑战的游戏体验，允许玩家在大厅放置铂金草莓，让你在同一存档进行挑战时更快地重开。该模组还会在日志中增加“仅显示本次挑战数据”的额外部分——若使用已有存档进行含铂金草莓的多地图一命挑战，<strong>必须</strong>在视频结尾展示这一额外日志页。请注意：在使用此类模组时，若在新存档中默认无伤草莓未解锁，且该地图有使难度降低的金限改变，则可能<strong>被拒</strong>(这属于是罕见情况)。"
+          },
+          {
+            "text": "提交的视频允许使用<CustomExternalLink href=\"https://gamebanana.com/mods/363600\">Golden QOL</CustomExternalLink>。该模组给玩家提供了一些实用的功能，比如使金草莓半透明、在不编辑地图的情况下在地图中放置金草莓、允许玩家在带金死亡后回到此房间继续游玩等。<CustomExternalLink href=\"https://gamebanana.com/tools/6924\">Strawberry Tool</CustomExternalLink> 也提供了让跟随物半透明的选项，且允许在提交的视频中使用。"
+          },
+          {
+            "text": "<CustomExternalLink href=\"https://gamebanana.com/tools/6597\">Speedrun Tool</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/tools/6715\">CelesteTAS</CustomExternalLink>可以用于在练习时找策略或对准，但请注意：炼金过程中不能启用这些模组中任何改变游戏玩法或显示额外信息的功能。"
+          },
+          {
+            "text": "The <CustomExternalLink href=\"https://gamebanana.com/mods/514173\">Motion Smoothing</CustomExternalLink>允许玩家在不破坏游戏物理机制的前提下将游戏帧率提升至60帧以上。该mod允许在提交的视频中使用，但禁止使用其他任何会破坏游戏原有物理机制的帧率提升相关mod。"
+          },
+          {
+            "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/464283\">izumi’s quality of life</CustomExternalLink>提供多项在整体上提升游戏体验的功能，如记录某一时刻的日志并与现在的数据对比、ABC面独立统计用时、未录制视频时会有警告标志、通过热键切换键位配置等。该模组虽允许使用，但挑战过程中严禁启用任何改变游戏机制或显示额外信息的功能。此外，只有在处于无死亡风险时才允许在炼金过程中更改“控制”部分，即“选项”中的第二部分(例如站在地面上或抓墙时通常允许更改“控制”部分，但在空中或进行一连串的操作时更改设置可能导致提交的视频被拒绝)。"
+          },
+          {
+            "text": "在炼金挑战中其他常用模组还包括<CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>。"
+          }
+        ]
       }
     }
   },
@@ -1381,7 +1498,7 @@
         "question": "合作地图允许上榜吗？包含XXX的地图允许上榜吗？"
       }
     ],
-    "title": "FAQ",
+    "title": "常见问题解答",
     "vanilla_references": {
       "answer": "原版挑战之所以不被记录，是因为它们超出了Mod列表的范围，并且原版的挑战有太多完成数而难以合理地记录。不过，下方有着被普遍认可的原版挑战难度。以下是原版挑战在金榜中的位置：<br/><br/><i>注意：在过去，第九章[不使用双冲skip]在金榜中被认为是Tier 8的基准线。不过现在不是这样了，9金现在在Tier 8的范围内。另外，地狱三兄弟(6B、7B、8B)现在也不再严格地代表Tier 4的基准线。</i>",
       "question": "为什么原版挑战不在这个榜单上？"
