@@ -1248,7 +1248,10 @@ export function MultiUserSubmissionMapRow({
           {index + 1}
         </TableCell>
         <TableCell width={1}>
-          <Typography variant="body1" sx={{ whiteSpace: "nowrap" }}>
+          <Typography
+            variant="body1"
+            sx={{ whiteSpace: "nowrap", maxWidth: "270px", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
             {mapData.map.name}
           </Typography>
         </TableCell>
