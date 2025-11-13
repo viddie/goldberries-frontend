@@ -25,12 +25,16 @@ export function PageCredits() {
             <TableCell>Yoshi and many more people</TableCell>
           </TableRow>
           <TableRow>
+            <TableCell>{t("domain")}</TableCell>
+            <TableCell>{t("domain_text", { name: "Reinhardt" })}</TableCell>
+          </TableRow>
+          <TableRow>
             <TableCell>{t("testing")}</TableCell>
             <TableCell>{t("people")}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>{t("chinese_translation")}</TableCell>
-            <TableCell>Parabones</TableCell>
+            <TableCell>Parabones & xyAlone</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>{t("french_translation")}</TableCell>
