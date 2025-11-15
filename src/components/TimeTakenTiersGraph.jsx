@@ -23,10 +23,8 @@ import { CustomModal, ModalButtons } from "../hooks/useModal";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
 
-export function TimeTakenTiersGraphModal({ modalHook, id, filter, useSuggested = false }) {
+export function TimeTakenTiersGraphModal({ modalHook, id, filter, useSuggested = false, options = {} }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.time_taken_graph" });
-  const query = useGetTopGoldenList("player", id, filter);
-  const data = getQueryData(query);
   return (
     <CustomModal
       modalHook={modalHook}
@@ -34,19 +32,26 @@ export function TimeTakenTiersGraphModal({ modalHook, id, filter, useSuggested =
       actions={[ModalButtons.close]}
       options={{ title: t("title") }}
     >
-      {query.isLoading && <LoadingSpinner />}
-      {query.isError && <ErrorDisplay error={query.error} />}
-      {query.isSuccess && <TimeTakenTiersGraph tgl={data} useSuggested={useSuggested} />}
+      <TimeTakenTiersGraph id={id} filter={filter} options={options} useSuggested={useSuggested} />
     </CustomModal>
   );
 }
 
-function TimeTakenTiersGraph({ tgl, useSuggested }) {
+function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.time_taken_graph" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const { settings } = useAppSettings();
   const [scatter, setScatter] = useLocalStorage("tgl_stats_scatter", false);
+
+  const query = useGetTopGoldenList("player", id, filter, options.highlightPlayerId);
+  const tgl = getQueryData(query);
+
+  if (query.isLoading) {
+    return <LoadingSpinner />;
+  } else if (query.isError) {
+    return <ErrorDisplay error={query.error} />;
+  }
 
   const hideEmpty = settings.visual.topGoldenList.hideEmptyTiers;
 

@@ -31,7 +31,7 @@ export function fetchGoldenList(
   return axios.get("/lists/golden-list", { params: data });
 }
 
-export function fetchTopGoldenList(type, id = null, filter) {
+export function fetchTopGoldenList(type, id = null, filter, highlightPlayerId = null) {
   const data = {
     archived: filter.archived,
     undetermined: filter.undetermined,
@@ -40,6 +40,8 @@ export function fetchTopGoldenList(type, id = null, filter) {
     hide_objectives: filter.hide_objectives,
     sub_count_is_min: filter.sub_count_is_min ?? false,
     clear_state: filter.clear_state ?? 0,
+
+    highlight_player_id: highlightPlayerId || null,
   };
 
   if (filter.sub_count !== null && filter.sub_count !== "") data.sub_count = filter.sub_count;

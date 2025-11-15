@@ -369,10 +369,10 @@ export function useGetAllDifficulties() {
   });
 }
 
-export function useGetTopGoldenList(type, id, filter) {
+export function useGetTopGoldenList(type, id, filter, highlightPlayerId = null) {
   return useQuery({
-    queryKey: ["top_golden_list", type, id, filter],
-    queryFn: () => fetchTopGoldenList(type, id, filter),
+    queryKey: ["top_golden_list", type, id, filter, highlightPlayerId],
+    queryFn: () => fetchTopGoldenList(type, id, filter, highlightPlayerId),
   });
 }
 

@@ -107,9 +107,9 @@ export function PageTopGoldenList({}) {
   );
 }
 
-export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPersonal = false }) {
+export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPersonal = false, options = {} }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.top_golden_list.export" });
-  const query = useGetTopGoldenList(type, id, filter);
+  const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
   const topGoldenList = getQueryData(query);
   const { settings } = useAppSettings();
   const tpgSettings = settings.visual.topGoldenList;

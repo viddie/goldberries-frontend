@@ -17,6 +17,8 @@ import { useTheme } from "@emotion/react";
 import { useTranslation } from "react-i18next";
 import { SettingsEntry } from "../pages/AppSettings";
 import { deepCompareObjects } from "../hooks/AppSettingsProvider";
+import { useAuth } from "../hooks/AuthProvider";
+import { PlayerIdSelect, PlayerSelect } from "./GoldberriesComponents";
 
 const sortOptions = [
   { value: "alphabetical", label: "alphabetical" },
@@ -40,12 +42,13 @@ export function TglMoreButton({
   transformOrigin,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.tgl_more_button" });
+  const auth = useAuth();
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [localOptions, setLocalOptions] = useState(options);
   const isPlayer = type === "player";
   const isOverall = type === null;
-  const defaultOptions = getDefaultOptions(isOverall);
+  const defaultOptions = getDefaultOptions(isOverall, auth.user?.player_id);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -59,21 +62,30 @@ export function TglMoreButton({
   const elemId = open ? "tgl-display-options" : undefined;
 
   useEffect(() => {
-    if (options.version !== defaultOptions.version) {
-      console.log("Outdated options found, updating...");
+    const hadChange = deepCompareObjects(defaultOptions, options);
+
+    if (options.version !== defaultOptions.version || hadChange) {
+      console.log("Outdated options found, updating...", options);
       if ((options.version < 1 || options.version === undefined) && defaultOptions.version >= 1) {
         console.log("Updating options from version <undefined> to 1");
-        deepCompareObjects(defaultOptions, options);
-      } else if (options.version === 1 && defaultOptions.version === 2) {
-        console.log("Updating options from version 1 to 2: flipping hide/show options");
-        options.showImages = !options.hideImages;
-        delete options.hideImages;
-        options.showFractionalTiers = !options.hideFractionalTiers;
-        delete options.hideFractionalTiers;
-        options.showEmptyTiers = !options.hideEmptyTiers;
-        delete options.hideEmptyTiers;
-        options.showTimeTaken = !options.hideTimeTaken;
-        delete options.hideTimeTaken;
+      } else {
+        if (options.version === 1) {
+          console.log("Updating options from version 1: flipping hide/show options");
+          options.showImages = !options.hideImages;
+          delete options.hideImages;
+          options.showFractionalTiers = !options.hideFractionalTiers;
+          delete options.hideFractionalTiers;
+          options.showEmptyTiers = !options.hideEmptyTiers;
+          delete options.hideEmptyTiers;
+          options.showTimeTaken = !options.hideTimeTaken;
+          delete options.hideTimeTaken;
+          options.version = 2;
+        }
+        if (options.version === 2) {
+          console.log("Updating options from version 2: minimum darkenTierColors adjustment");
+          options.darkenTierColors = Math.max(60, options.darkenTierColors);
+          options.version = 3;
+        }
         console.log("Updated options:", options);
       }
       options.version = defaultOptions.version;
@@ -82,6 +94,7 @@ export function TglMoreButton({
   }, []);
 
   const changedOption = (key, newValue) => {
+    console.log("Changed option", key, "to", newValue);
     setLocalOptions((prev) => ({ ...prev, [key]: newValue }));
   };
 
@@ -111,7 +124,8 @@ export function TglMoreButton({
             sx: {
               width: "400px",
               maxWidth: "92%",
-              overflow: "auto",
+              overflowY: "auto",
+              overflowX: "hidden",
             },
           },
         }}
@@ -140,7 +154,7 @@ export function TglMoreButton({
               tKey="darken_tier_colors"
               value={localOptions.darkenTierColors}
               setValue={(newValue) => changedOption("darkenTierColors", newValue)}
-              min={40}
+              min={60}
               valueFormatter={(v) => `${v}%`}
             />
 
@@ -186,6 +200,23 @@ export function TglMoreButton({
               setValue={(newValue) => changedOption("stackTiers", newValue)}
               noNote
             />
+            {!isPlayer && (
+              <>
+                <Divider sx={{ my: 0.5 }} />
+                <Grid container item xs={12} sx={{ mt: 1.5, mb: 0 }} columnSpacing={1}>
+                  <Grid item xs={12} sm="auto" sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography variant="subtitle1">{t("options.highlight_player.label")}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm>
+                    <PlayerIdSelect
+                      type="all"
+                      value={localOptions.highlightPlayerId}
+                      onChange={(e, id) => changedOption("highlightPlayerId", id)}
+                    />
+                  </Grid>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Grid>
       </Popover>
@@ -248,7 +279,7 @@ function SliderOption({ tKey, value, setValue, valueFormatter, min = 0, max = 10
   );
 }
 
-export function getDefaultOptions(isOverall = false) {
+export function getDefaultOptions(isOverall = false, playerId = null) {
   return {
     darkenTierColors: 85,
     compactMode: isOverall,
@@ -260,6 +291,7 @@ export function getDefaultOptions(isOverall = false) {
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,
-    version: 2,
+    highlightPlayerId: playerId,
+    version: 3,
   };
 }

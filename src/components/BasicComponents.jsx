@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { APP_NAME_LONG, APP_URL, TWITCH_EMBED_PARENT } from "../util/constants";
+import { APP_NAME_LONG, APP_URL, IS_DEBUG, TWITCH_EMBED_PARENT } from "../util/constants";
 import { COUNTRY_CODES } from "../util/country_codes";
 import { useTheme } from "@emotion/react";
 import { LANGUAGES } from "../i18n/config";
@@ -335,6 +335,7 @@ export function CustomizedMenu({ title, button, children, ...props }) {
 }
 
 export function HeadTitle({ title }) {
+  title = IS_DEBUG ? `[DEV] ${title}` : title;
   return (
     <Helmet>
       <title>

@@ -61,6 +61,7 @@ const textEllipsisStyles = {
 export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
   const theme = useTheme();
+  const auth = useAuth();
 
   const { type, id } = useParams();
   const actualType = type || defaultType;
@@ -70,7 +71,10 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
 
   const defaultFilter = getDefaultFilter(true);
   const [filter, setFilter] = useLocalStorage(getTglFilterKey(actualType), defaultFilter);
-  const [options, setOptions] = useLocalStorage(getTglOptionsKey(actualType), getDefaultOptions(isOverall));
+  const [options, setOptions] = useLocalStorage(
+    getTglOptionsKey(actualType),
+    getDefaultOptions(isOverall, auth.user?.player_id)
+  );
 
   const compactMode = options.compactMode;
 
@@ -186,8 +190,14 @@ export function PageTopGoldenListAlt({ defaultType = null, defaultId = null }) {
       </Stack>
 
       <TglModalContainer modalRefs={modalRefs} />
-      <ExportTopGoldenListModal modalHook={exportModal} type={actualType} id={actualId} filter={filter} />
-      <TimeTakenTiersGraphModal modalHook={statsModal} id={actualId} filter={filter} />
+      <ExportTopGoldenListModal
+        modalHook={exportModal}
+        type={actualType}
+        id={actualId}
+        filter={filter}
+        options={options}
+      />
+      <TimeTakenTiersGraphModal modalHook={statsModal} id={actualId} filter={filter} options={options} />
     </Box>
   );
 }
@@ -216,7 +226,7 @@ function TopGoldenListHeader({ type, id }) {
 }
 
 function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
-  const query = useGetTopGoldenList(type, id, filter);
+  const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
 
   const key = getTglRenderKey(type, id, filter, options);
   const [renderUpTo, setRenderUpTo] = useState({ key: key, index: 0 });
@@ -544,24 +554,40 @@ function ChallengeInfoBox({
     }
   };
 
+  let borderColor = new Color(colors.color).alpha(0.6).string();
+  let borderColorHover = new Color(colors.color).alpha(1).string();
+  let darken = options.darkenTierColors;
+  let filter = "none";
+  let backgroundAlpha = 0.75;
+  let backgroundAlphaHover = 0.85;
+  if (challenge.data.done) {
+    borderColor = new Color("rgba(255, 255, 255, 1)").alpha(0.7).string();
+    borderColorHover = new Color("rgba(255, 255, 255, 1)").alpha(1).string();
+    darken = Math.max(darken - 20, 0);
+    filter = "drop-shadow(0 0 3px rgba(255,255,255,0.75))";
+    backgroundAlpha = 1;
+    backgroundAlphaHover = 1;
+  }
+
   //#region Common style objects
   const boxBaseStyles = {
     borderWidth: compactMode ? "1px" : "3px",
     borderStyle: "solid",
     borderRadius: "4px",
-    borderColor: new Color(colors.color).alpha(0.6).string(),
+    borderColor: borderColor,
+    filter: filter,
     backgroundColor: new Color(colors.color)
-      .darken(options.darkenTierColors / 100)
-      .alpha(0.75)
+      .darken(darken / 100)
+      .alpha(backgroundAlpha)
       .string(),
 
     cursor: "pointer",
     transition: "all 0.2s",
     "&:hover": {
-      borderColor: new Color(colors.color).alpha(1).string(),
+      borderColor: borderColorHover,
       backgroundColor: new Color(colors.color)
-        .darken(options.darkenTierColors / 100 + 0.05)
-        .alpha(0.85)
+        .darken(darken / 100 + 0.05)
+        .alpha(backgroundAlphaHover)
         .string(),
     },
   };
