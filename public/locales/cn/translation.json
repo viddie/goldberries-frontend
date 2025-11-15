@@ -241,6 +241,57 @@
       },
       "challenge_inline": {
         "error": "<Challenge not found: {{id}}>"
+    }
+  },
+    "tgl_more_button": {
+      "label": "显示设置",
+      "type": {
+        "overall": "选项：全部地图",
+        "player": "选项：玩家",
+        "campaign": "选项：地图包或合集"
+      },
+      "options": {
+        "stack_tiers": {
+          "label": "堆叠原先的high/mid/low等级"
+        },
+        "prefer_map_images": {
+          "label": "优先显示地图图片",
+          "note": "默认显示首位通关者的YouTube缩略图，开启本选项后将优先显示地图图片"
+        },
+        "show_images": {
+          "label": "展示地图图片",
+          "note": "禁用此选项将隐藏地图图片，可提升加载速度"
+        },
+        "compact_mode": {
+          "label": "紧凑模式",
+          "note": "采用更接近初版金榜布局的紧凑版式"
+        },
+        "sort": {
+          "label": "排序方式",
+          "alphabetical": "按字母顺序",
+          "fractional_tier": "按小数等级",
+          "clear_count": "按通关人数",
+          "first_clear_date": "按首通日期",
+          "time_taken": "按炼金耗时"
+        },
+        "sort_order": {
+          "label": "排序顺序",
+          "ascending": "升序",
+          "descending": "降序"
+        },
+        "show_time_taken": {
+          "label": "显示总计耗时"
+        },
+        "show_fractional_tiers": {
+          "label": "显示小数等级"
+        },
+        "show_empty_tiers": {
+          "label": "显示空层级"
+        },
+        "darken_tier_colors": {
+          "label": "加深等级颜色",
+          "note": "调整层级颜色深度：0%=原始颜色，100%=纯黑色"
+        }
       }
     }
   },
@@ -465,7 +516,10 @@
       "monthly_recap": "每月数据回顾",
       "stats": "统计数据",
       "rules": "规则",
-      "faq": "常见问题解答"
+      "faq": "常见问题解答",
+      "news": "新闻",
+      "changelog": "更新日志",
+      "report": "问题报告"
     },
     "internal_menu": {
       "name": "管理",
@@ -730,6 +784,10 @@
         "suggestion_created": {
           "label": "意见箱通知",
           "description": "当你达成的挑战由别人在意见箱里提出建议时获取通知"
+        },
+        "suggestion_accepted": {
+          "label": "建议通过或拒绝通知",
+          "description": "当你建议的状态（已通过/已拒绝）发生变化时获取通知"
         }
       },
       "profile": {
@@ -787,10 +845,24 @@
       },
       "danger_zone": {
         "label": "慎入",
-        "description": "永久删除你的账户",
-        "note": "请注意这不会删除任何已经验证通过的内容，只会将你的玩家名称变回未绑定状态，如果你想移除你的提交内容，请联系验证者（一般来说私信我就行：Parabones）",
-        "confirm": "输入DELETE以确认",
-        "button": "删除账号"
+        "api_key": {
+          "label": "API密钥",
+          "description": "你的API密钥可用于以你的名义访问goldberries.net的API。请不要让别人知道你的API！",
+          "description_not_set": "你还没有API密钥。",
+          "buttons": {
+            "copy": "复制密钥",
+            "reroll": "更改密钥",
+            "create": "创建密钥",
+            "revoke": "撤销密钥"
+          }
+        },
+        "delete_account": {
+          "label": "慎入",
+          "description": "永久删除你的账户",
+          "note": "请注意这不会删除任何已经验证通过的内容，只会将你的玩家名称变回未绑定状态，如果你想移除你的提交内容，请联系验证者（一般来说私信我就行：Parabones）",
+          "confirm": "输入DELETE以确认",
+          "button": "删除账号"
+        }
       }
     }
   },
@@ -800,10 +872,19 @@
     "tabs": {
       "general": {
         "label": "通用",
-        "language": "多语言",
+        "language": "语言",
         "golden_changes": {
-          "label": "不显示金草莓造成的地图变化",
-          "note": "启用此功能可避免金限或其他内容的剧透。"
+          "label": "总是显示带金改变",
+          "note": "启用后移除“显示带金改变”的防剧透按钮，直接显示金限或其他内容的剧透"
+        },
+        "old_tier_names": {
+          "label": "Show Old Tier Names",
+          "note": "Turn this on to make all difficulty chips show the old tier names in addition to the current names.",
+          "tooltip": "Not all places will show the old tier names!"
+        },
+        "show_fractional_tiers": {
+          "label": "显示小数点层级",
+          "note": "在网站各处显示带小数点定数的层级。此选项也会影响个人金草莓排行榜！"
         }
       },
       "visual": {
@@ -811,18 +892,18 @@
         "name_colors": {
           "label": "玩家名称颜色",
           "show": "显示名称颜色",
-          "prefer_solid_color": "默认显示纯色",
+          "prefer_solid_color": "使用纯色而非渐变色",
           "show_outline": "显示黑边"
         },
         "background": {
           "label": "背景",
           "blur": {
-            "label": "模糊度",
-            "tooltip": "调整背景清晰度"
+            "label": "背景模糊度",
+            "tooltip": "应用于背景的高斯模糊强度"
           },
-          "light_mode": "白天",
-          "dark_mode": "夜间",
-          "default": "无",
+          "light_mode": "浅色背景",
+          "dark_mode": "深色背景",
+          "default": "默认背景",
           "custom": {
             "label": "自定义背景",
             "tooltip": "这将替换上面已经设置好的背景（在浏览器暗色模式下图片可能会无法显示）",
@@ -832,25 +913,44 @@
       },
       "top_golden_list": {
         "label": "金草莓排行榜",
+        "display_options_notice": "自定义设置已移至金榜(Top Golden List)的“显示选项(Display Options)”菜单中。",
         "darken_colors": {
-          "label": "层级暗度",
-          "tooltip": "这可以使排行榜上的层级颜色变暗，0%为原色，100%为纯黑",
-          "note": "此设置仅在夜间模式生效！"
-        },
-        "campaign_icons": {
-          "label": "显示地图包图标",
-          "note": "在地图右侧显示图标（如果有的话）"
-        },
-        "text_fc_icons": {
-          "label": "使用文字图标",
-          "note": "这将用[C]、[FC]和[C/FC]替换绿旗和黄旗图标"
-        },
-        "switch_order": {
-          "label": "切换地图和挑战内容的位置",
-          "note": "从“地图名 [挑战内容名]”切换至“挑战内容名 [地图名]”格式"
-        },
-        "hide_empty_tiers": "隐藏空层级"
+          "label": "加深层级颜色",
+          "tooltip": "在深色模式下使等级颜色变暗。0%保持原色，100%变为纯黑色。",
+          "note": "此设置仅影响深色模式下的颜色！"
+        }
       },
+      "difficulty_colors": {
+        "label": "层级颜色",
+        "description": "上位和下位的颜色都是根据中位颜色计算出的，你可以明确填写出上位和下位的颜色来覆盖。",
+        "high": "High",
+        "mid": "Mid",
+        "low": "Low",
+        "t4+": "Tier 4及以上(无子等级)",
+        "presets": {
+          "label": "预设:",
+          "default": "默认",
+          "colorblind": "色盲预设:",
+          "protanopia": "红色盲",
+          "deuteranopia": "绿色盲",
+          "tritanopia": "蓝色盲"
+        },
+        "export": {
+          "label": "导出/导入颜色",
+          "export": "导出到剪贴板",
+          "export_success": "已复制到剪贴板",
+          "import": "从剪贴板导入"
+        }
+      },
+      "dev": {
+        "label": "开发者模式",
+        "role_override": {
+          "label": "其他视角模拟",
+          "note": "以其他权限用户的视角查看网站"
+        }
+      }
+    }
+  },
       "difficulty_colors": {
         "label": "层级颜色",
         "description": "上位和下位的颜色都是根据中位颜色计算出的，你可以明确填写出上位和下位的颜色来覆盖",
@@ -865,8 +965,6 @@
           "protanopia": "红色盲",
           "deuteranopia": "绿色盲",
           "tritanopia": "蓝色盲"
-        }
-      }
     }
   },
   "challenge": {
@@ -1016,20 +1114,34 @@
     }
   },
   "player": {
-    "title": "个人页面",
+    "title": "个人界面",
     "personal_tgl": "个人金草莓排行榜",
-    "stats": "玩家数据",
-    "showcase_hardest": "默认置顶",
-    "chart": {
-      "show_standard": "显示Standard与待定层",
-      "x_axis": "各层级的金草莓数量"
+    "tabs": {
+      "info": {
+        "label": "玩家信息",
+        "stats": "玩家数据",
+        "showcase_hardest": "最难挑战置顶",
+        "chart": {
+          "show_standard": "显示Untiered与Undetermined层级",
+          "x_axis": "各层级的金草莓数量"
+        }
+      },
+      "timeline": {
+        "label": "玩家时间线",
+        "description": "以下是该玩家完成的所有挑战记录的时间线！",
+        "group_campaigns": "将来自同一地图包的提交内容归类到同一组",
+        "show_difficulty_ratio": "提交的内容里，显示缩略图的内容所占的比例"
+      }
     }
   },
-  "rejected_maps": {
+  "rejected_challenges": {
     "title": "已拒绝的地图",
-    "info_1": "包含所有不会添加到地图包列表的地图，以及原因",
+    "info_1": "This page lists all rejected challenges. If you think a challenge is listed by mistake, bring it up in #gb-report in the Discord server!",
     "info_2": "如果地图或地图包违反了<CustomLink>地图规则第4条</CustomLink>（含有敏感文字、视觉内容等），也不会在此处列出。",
-    "reason": "原因"
+    "fullgame_notice": "这是一个多地图一命挑战",
+    "no_rejected_challenges": "现在还没有被拒绝的地图",
+    "reason": "原因",
+    "video": "视频"
   },
   "search": {
     "title_content": "搜索'{{content}}'",
@@ -1244,7 +1356,8 @@
     "filter": {
       "all": "全部",
       "general": "通用建议",
-      "challenge": "挑战建议"
+      "challenge": "挑战建议",
+      "challenge_own": "我已完成的挑战的建议"
     }
   },
   "top_golden_list": {
@@ -1282,11 +1395,10 @@
       }
     }
   },
-  "rules": {
+   "rules": {
     "title": "规则",
     "toc": "目录",
     "description": "本页面的主要作用是对规则和极端情况的规范化。提交规则最基本的要求可概括为“禁止作弊、禁止使用影响游戏玩法的模组、Tier 8及以上的挑战需提供完整流程录像、并确保展示结算界面”。不过，这些规范可以更全面地涵盖某些极端情况，并解决可能存在的疑惑。该规则并不能完全覆盖所有情况，也不可能做到绝对完整。地图作者总可能会有一些意料之外的想法，如果我们试图为所有潜在的规则漏洞预先制定规范，那么我们将寸步难行。若您遇到未涵盖的边缘情况，或对规则存有疑问，欢迎向我们提问！在您提交可能引发数日争论且最终可能被拒绝的内容之前，请先问一问我们，谢谢。",
-    "language_notice": "请注意：下面一部分规则的翻译可能过时或不完整。请以英语翻译为准。(中文翻译在2025.11.12更新，目前是最新版本)",
     "maps": {
       "header": "关于地图挑战",
       "rules": {
@@ -1297,7 +1409,7 @@
           },
           {
             "heading": "不能没有死亡风险",
-            "text": "地图或地图包<strong>必须</strong>包含具有死亡风险的部分，即使并不难。完全缺乏死亡风险的地图将会被拒绝收录。比如<CustomExternalLink href=\"https://www.youtube.com/watch?v=5YpJwGcr8ds\">Ultra Skrimbles</CustomExternalLink>，虽然操作难度较高，但并没有死亡风险。特殊情况下(通常是地图包或合集中包含的地图)，可破例收录，如<CustomExternalLink href=\"https://www.youtube.com/watch?v=o5zGa_w_2wA\">逆旅银草莓</CustomExternalLink>，此类地图将被收录入“Untiered”。"
+            "text": "地图或地图包<strong>必须</strong>包含具有死亡风险的部分，即使并不难。完全缺乏死亡风险的地图将会被拒绝收录。比如<CustomExternalLink href=\"https://www.youtube.com/watch?v=5YpJwGcr8ds\">Ultra Skrimbles</CustomExternalLink>，虽然操作难度较高，但并没有死亡风险。特殊情况下(通常是地图包或合集中包含的地图)，可破例收录，如<CustomExternalLink href=\"https://www.youtube.com/watch?v=o5zGa_w_2wA\">逆旅的银草莓</CustomExternalLink>，此类地图将被收录入“Untiered”。"
           },
           {
             "heading": "不与其他地图高度重复",
@@ -1321,15 +1433,15 @@
         "entries": [
           {
             "heading": "视频能够永久保存",
-            "text": "提交的视频<strong>必须</strong>必须被上传到一个能够将其永久保存的平台，且不需要登录账号来观看。最流行的平台有<CustomExternalLink href=\"https://www.youtube.com/\">YouTube</CustomExternalLink>、<CustomExternalLink href=\"https://www.twitch.tv/\">Twitch</CustomExternalLink>、<CustomExternalLink href=\"https://www.bilibili.com/\">bilibili</CustomExternalLink>、<CustomExternalLink href=\"https://www.nicovideo.jp/\">nicovideo</CustomExternalLink>，但除这些之外的平台的也完全可以。将聊天软件的CDN(即<code>cdn.discordapp.com</code>等类似域名)作为提交的视频将不会被接受，到期自动失效的链接(即<CustomExternalLink href=\"https://0x0.st\">0x0.st</CustomExternalLink> links)链接)也将不会被接受。"
+            "text": "提交的视频<strong>必须</strong>必须被上传到一个能够将其永久保存的平台，且不需要登录账号来观看。最流行的平台有<CustomExternalLink href=\"https://www.youtube.com/\">YouTube</CustomExternalLink>、<CustomExternalLink href=\"https://www.twitch.tv/\">Twitch</CustomExternalLink>、<CustomExternalLink href=\"https://www.bilibili.com/\">bilibili</CustomExternalLink>、<CustomExternalLink href=\"https://www.nicovideo.jp/\">nicovideo</CustomExternalLink>，但除这些之外的平台的也完全可以。将聊天软件的CDN(即<code>cdn.discordapp.com</code>等类似域名)作为提交的视频将不会被接受，到期自动失效的链接(即<CustomExternalLink href=\"https://0x0.st\">0x0.st</CustomExternalLink>链接)也将不会被接受。"
           },
           {
             "heading": "视频记录完整",
-            "text": "提交的视频<strong>必须</strong>展示该挑战完整的通关记录，比如从拿金草莓到金草莓结算。在完成挑战之后、退出地图之前，允许玩家死亡。(比如“吃心后死亡[Heart Death]”，可以在<CustomExternalLink href=\"https://youtu.be/6BeQPj4UXE0?si=lob3z8BOTGtmtqLp&t=62\">Magnetic Dawn B-Side</CustomExternalLink>)的金草莓视频中找到案例)。注意金草莓结算不一定总是挑战的结尾，例如在全收集挑战中可能还有其它草莓需要收集，例如<CustomExternalLink href=\"https://youtu.be/tOHsr2JBfyQ?t=190\">Heather's Aquarium 全收集</CustomExternalLink>的情况就是这样。对此规则的例外非常罕见，如有，将根据具体情况进行评估。例如直播信号短暂中断，只要当时的情形和玩家本人可信。"
+            "text": "提交的视频<strong>必须</strong>展示该挑战完整的通关记录，比如从拿金草莓到金草莓结算。在完成挑战之后、退出地图之前，允许玩家死亡。(比如“吃心后死亡[Heart Death]”，可以在<CustomExternalLink href=\"https://youtu.be/6BeQPj4UXE0?si=lob3z8BOTGtmtqLp&t=62\">Magnetic Dawn B-Side</CustomExternalLink>的金草莓视频中找到案例)。注意金草莓结算不一定总是挑战的结尾，例如在全收集挑战中可能还有其它草莓需要收集，例如<CustomExternalLink href=\"https://youtu.be/tOHsr2JBfyQ?t=190\">Heather's Aquarium 全收集</CustomExternalLink>的情况就是这样。对此规则的例外非常罕见，如有，将根据具体情况进行评估。例如直播信号短暂中断，只要当时的情形和玩家本人可信。"
           },
           {
             "heading": "结算界面要求",
-            "text": "提交的视频<strong>必须</strong>在完成挑战后展示地图的结算界面。如果没有结算界面，必须在通关之后立刻展示日志。<strong>重点：对于合集中的地图，你必须开启</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>选项，并启用结算界面显示计时器。</strong>。如果你不想让计时器一直显示，SpeedrunTool有一个只在结尾自动展示计时器的选项：<code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>。"
+            "text": "提交的视频<strong>必须</strong>在完成挑战后展示地图的结算界面。如果没有结算界面，必须在通关之后立刻展示日志。<strong>重点：对于合集中的地图，你必须开启</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>选项，并启用结算界面显示计时器</strong>。如果你不想让计时器一直显示，SpeedrunTool有一个只在结尾自动展示计时器的选项：<code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>。"
           },
           {
             "heading": "流程连续",
@@ -1337,7 +1449,7 @@
           },
           {
             "heading": "不改变游戏玩法(Gameplay)",
-            "text": "提交的视频<strong>禁止</strong>使用任何地图允许以外的改变游戏玩法的mod、异变或者帮助模式。这<strong>包括</strong>包括拓展异变中的禁用冻结帧异变。根据具体情况，改变视觉的mod和异变<strong>可能</strong>会被允许。请查看<CustomLink to=\"#allowed-mods\">允许和推荐的Mod</CustomLink>来了解更多细节。"
+            "text": "提交的视频<strong>禁止</strong>使用任何地图允许以外的改变游戏玩法的mod、异变或者帮助模式。这<strong>包括</strong>拓展异变中的禁用冻结帧异变。根据具体情况，改变视觉的mod和异变<strong>可能</strong>会被允许。请查看<CustomLink to=\"#allowed-mods\">允许和推荐的Mod</CustomLink>来了解更多细节。"
           },
           {
             "heading": "原始视频(Raw)要求",
@@ -1349,7 +1461,7 @@
           },
           {
             "heading": "禁止滥用暂停",
-            "text": "提交的视频<strong>禁止</strong>滥用暂停来让游戏变得更简单。一个滥用暂停的极端例子是<i>暂停预输入(即社区中常说的Pause Buffer)</i>因为你可以通过预输入暂停键来一帧一帧地游玩。即使你不一帧一帧使用预输入暂停，通过暂停来让操作变得更简单<strong>也</strong>是被禁止的。不过，在没有死亡风险的地方，你可能可以使用暂停来完成其他困难或重复的对准。另外，在一些预料之外的情景之下，可以稍微使用一点暂停(就像ninz在烈冕炼狱金中所做的那样)来思考。但即使是在这样的情况下，也不允许使用多次暂停来搓出困难的操作。请注意，就像拓展异变中的<i>禁止冻结帧</i>一样，一小部分过去提交的视频虽违反此规则仍予保留，但若按现行标准均会被拒绝。滥用暂停应与暂停技巧区分——后者指的是在特定的游戏玩法中需要使用暂停来实现的技巧，是<strong>始终允许</strong>使用的。这包括在某个需要缓降，而按跳会触发其他操作的时候、在做望远镜切板保留平地ultra速度技巧(bino control storage)的时候和在做spinner stunning技巧的时候(参考规则9)。"
+            "text": "提交的视频<strong>禁止</strong>滥用暂停来让游戏变得更简单。一个滥用暂停的极端例子是<i>暂停预输入</i>(即社区中常说的Pause Buffer)因为你可以通过预输入暂停键来一帧一帧地游玩。即使你不一帧一帧使用预输入暂停，通过暂停来让操作变得更简单<strong>也</strong>是被禁止的。不过，在没有死亡风险的地方，你可能可以使用暂停来完成其他困难或重复的对准。另外，在一些预料之外的情景之下，可以稍微使用一点暂停(就像ninz在烈冕炼狱金中所做的那样)来思考。但即使是在这样的情况下，也不允许使用多次暂停来搓出困难的操作。请注意，就像拓展异变中的<i>禁止冻结帧</i>一样，一小部分过去提交的视频虽违反此规则仍予保留，但若按现行标准均会被拒绝。滥用暂停应与暂停技巧区分——后者指的是在特定的游戏玩法中需要使用暂停来实现的技巧，是<strong>始终允许</strong>使用的。这包括在某个需要缓降，而按跳会触发其他操作的时候、在做望远镜切板保留平地ultra速度技巧(bino control storage)的时候和在做spinner stunning技巧的时候(参考规则9)。"
           },
           {
             "heading": "Spinner Freeze/Stun",
@@ -1357,11 +1469,11 @@
           },
           {
             "heading": "地图内没有金草莓时的情况",
-            "text": "在有着<code>Deathless</code>标签的挑战中，没有无伤草莓被放在图里面，但你仍须无伤通关整张地图。对于有这类标签的挑战，你可以用控制台指令<code>give_golden</code>来给自己一个金草莓。这条指令<strong>必须</strong>必须在重新开始章节后、地图<strong>第一个</strong>房间的开头来输入。另外，你可以使用<CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink>或者<CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink>在地图开头添加一个金草莓。然而，利用手动放置金草莓来获取优势是<strong>不被允许的</strong>这包括在结尾吃心结算时死亡和借助金草莓发光特性的提升地图能见度，如<CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink>。"
+            "text": "在有着“<code>Deathless</code>”标签的挑战中，没有无伤草莓被放在图里面，但你仍须无伤通关整张地图。对于有这类标签的挑战，你可以用控制台指令<code>give_golden</code>来给自己一个金草莓。这条指令<strong>必须</strong>必须在重新开始章节后、地图<strong>第一个</strong>房间的开头来输入。另外，你可以使用<CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink>或者<CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink>在地图开头添加一个金草莓。然而，利用手动放置金草莓来获取优势是<strong>不被允许的</strong>。这包括在结尾吃心结算时死亡和借助金草莓发光特性的提升地图能见度，如<CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink>。"
           },
           {
             "heading": "0死不带金(Deathless Berryless/dlbl)",
-            "text": "对于金草莓(或者其他类似的草莓)，只要和带金时的流程相同(又叫<i>0死不带金(Dashless Berryless)</i>流程)，则<strong>不收集</strong>金草莓也可以。若带金时与不带金的时候存在一些根本上的差异，比如增加了一个金限房间，那么此类视频<strong>通常不被接受</strong>。另外，当带金时有类似于强制分离金草莓(比如第九章的月莓)的改变时，你<strong>必须</strong>拿分离后的金草莓，而不能离开直接进入下一面。我们虽不鼓励提交“0死不带金”流程的视频并鼓励希望挑战者收集对应的无伤草莓，但能理解意外的fluke导致这类情况发生，也不希望因此抹杀玩家的成就。此类提交将被附加note。"
+            "text": "对于金草莓(或者其他类似的草莓)，只要和带金时的流程相同(又叫<i>0死不带金/Dashless Berryless</i>流程)，则<strong>不收集</strong>金草莓也可以。若带金时与不带金的时候存在一些根本上的差异，比如增加了一个金限房间，那么此类视频<strong>通常不被接受</strong>。另外，当带金时有类似于强制分离金草莓(比如第九章的月莓)的改变时，你<strong>必须</strong>拿分离后的金草莓，而不能离开直接进入下一面。我们虽不鼓励提交“0死不带金”流程的视频并鼓励希望挑战者收集对应的无伤草莓，但能理解意外的fluke导致这类情况发生，也不希望因此抹杀玩家的成就。此类提交将被附加note。"
           },
           {
             "heading": "地图中没有收集金草莓的Trigger的情况",
@@ -1383,7 +1495,7 @@
       },
       "full_game_additional": {
         "header": "多地图一命提交的附加规则",
-        "explanation": "多地图一命有两种类型：1、完成地图包内有关联性的地图一命，即<i>“部分一命(partial full game runs)”<i>，比如全C面一命，初级地图大厅一命；2、整个地图包一命，比如全章节一命或100%一命。 这部分规则将仅适用于这两种多地图一命。",
+        "explanation": "多地图一命有两种类型：1、完成地图包内有关联性的地图一命，即<i>“部分一命(partial full game runs)”</i>，比如全C面一命，初级地图大厅一命；2、整个地图包一命，比如全章节一命或100%一命。 这部分规则将仅适用于这两种多地图一命。",
         "entries": [
           {
             "heading": "视频记录完整",
@@ -1391,7 +1503,7 @@
           },
           {
             "heading": "地图进度相关",
-            "text": "作为提醒，如果你还没有看前面的规则的话，前文\"单个地图提交规则\"中的第14条已明确如何对待地图的进度相关问题，而多地图一命也一样。总的来说，完整全游戏流程<strong>必须</strong> 从创建一个存档开始，而部分全游戏提交则可灵活调整通关顺序。以原版游戏为例：若进行全A面一命通关，必须按章节顺序完成(1A解锁2A，2A解锁3A，依此类推)；若进行全B面一命通关，可任意安排顺序，因为解锁B面的顺序与B面本身无关；若进行100%一命通关，则必须从新存档开始。"
+            "text": "作为提醒，如果你还没有看前面的规则的话，前文“单个地图提交规则”中的第14条已明确如何对待地图的进度相关问题，而多地图一命也一样。总的来说，完整全游戏流程<strong>必须</strong>从创建一个存档开始，而部分全游戏提交则可灵活调整通关顺序。以原版游戏为例：若进行全A面一命通关，必须按章节顺序完成(1A解锁2A，2A解锁3A，依此类推)；若进行全B面一命通关，可任意安排顺序，因为解锁B面的顺序与B面本身无关；若进行100%一命通关，则必须从新存档开始。"
           },
           {
             "heading": "不能使用“返回地图”",
@@ -1410,7 +1522,7 @@
             "text": "提交的视频<strong>必须</strong>开启“文件计时器”，而<strong>不仅是</strong>章节计时器。"
           },
           {
-            "heading": "Long Breaks",
+            "heading": "长时间休息的情况",
             "text": "提交的视频<strong>不建议</strong>长时间或频繁地在菜单或暂停页面休息。在地图内、不暂停的情况下休息会更好，不过频繁休息仍然会变得可疑，并且需要更多的证据来确保视频可信。"
           },
           {
@@ -1559,6 +1671,17 @@
       "text": "网站处在刚发布阶段，鉴于旧表格上有很多很混乱的数据，因此网站同步过来的数据很可能会出现问题。如果你发现此类问题，请在金榜服务器中报告！",
       "migration": "将整个表格的数据同步到网站需要一定的时间，你依然可以暂时在Discord服务器上@Modded Golden Team来提交你的金草莓。（发布在b站的视频可以无视这条）"
     }
+  },
+    "rework": {
+      "header": "层级调整！",
+      "text": "截至2025年2月，层级调整已正式上线！做出这些改动的原因有很多，包括让将来的高难Tier改动更容易、便于添加新的最高Tier、并将Tier标准改为上升的难度系统。",
+      "bullet_points": [
+        "Tier名称现在已经改变含义，Tier 1是最简单的难度，而Tier等级随着难度的增加而上升。",
+        "旧的Standard难度现在由最低的三个Tier表示。默认情况下，由于加载时间较长，它们在金榜中被隐藏，但你可以通过调整过滤器中的“最小显示等级(Minimum Tier)”来显示它们。",
+        "过去的子层级(high mid low)现在自己单独代表一个层级。",
+        "一个新的Tier(Tier 0.5)被添加在过去的High Tier 1与Low Tier 0之间，使得现在总共有20个Tier。"
+      ],
+      "more_text": "增加了一个选项来堆叠最高层级(之前的High/Mid/Low，默认禁用)来使得金榜列表更加紧凑，就像调整之前一样。"
   },
   "credits": {
     "title": "主创人员",
@@ -1710,7 +1833,7 @@
   },
   "author": {
     "view_on_gamebanana": "查看Gamebanana上的个人资料",
-    "maps_text": "所有作者在其他人的地图包中制作的地图",
+    "maps_text": "作者在其他人的地图包中制作的地图",
     "campaigns_text": "整个地图包都由这位作者制作."
   }
 }
