@@ -322,6 +322,7 @@ const router = createBrowserRouter([
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
+    contrastThreshold: 4.5,
     links: {
       main: "#1e90ff",
     },

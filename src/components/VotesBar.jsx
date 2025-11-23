@@ -101,6 +101,7 @@ export function VotesBar({
             style={{
               backgroundColor: seg.color,
               flexGrow: seg.votes,
+              flexBasis: 0,
               height: "100%",
               minWidth,
               ...centerStyle,
