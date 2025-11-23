@@ -18,6 +18,7 @@ import { Autocomplete, Chip, Divider, Grid, MenuItem, Stack, TextField, Tooltip 
 import {
   API_BASE_URL,
   DIFF_CONSTS,
+  getDifficultyChipName,
   getNewDifficultyColors,
   getOldDifficultyLabelColor,
   getOldDifficultyName,
@@ -257,25 +258,21 @@ export function DifficultyChip({
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.difficulty_chip" });
   const { settings } = useAppSettings();
-  const theme = useTheme();
   if (difficulty === null) return null;
 
-  const text = getDifficultyName(difficulty);
   let suffix = "";
+  let hasFraction = false;
   if (frac !== null && settings.general.showFractionalTiers) {
     if (frac < 10) {
       suffix = ".0" + frac;
     } else {
       suffix = "." + frac;
     }
+    hasFraction = true;
   }
-  const colors = getNewDifficultyColors(settings, difficulty?.id);
+  const name = getDifficultyChipName(settings, difficulty.id, hasFraction);
 
-  const showOld =
-    settings.general.showOldTierNames &&
-    difficulty.id !== DIFF_CONSTS.TRIVIAL_ID &&
-    difficulty.id !== DIFF_CONSTS.UNTIERED_ID &&
-    false;
+  const colors = getNewDifficultyColors(settings, difficulty?.id);
   const isTrivial = difficulty.id === DIFF_CONSTS.TRIVIAL_ID;
 
   const bgColor = colors.color;
@@ -290,24 +287,13 @@ export function DifficultyChip({
       label={
         <Stack direction="column" gap={0} sx={{ lineHeight: "11px" }} alignItems="center">
           <Stack direction="row" gap={1} alignItems="center">
-            <span>{prefix + text + suffix}</span>
+            <span>{prefix + name + suffix}</span>
             {isTrivial && (
               <Tooltip title={t("trivial_explanation")} arrow>
                 <FontAwesomeIcon icon={faInfoCircle} />
               </Tooltip>
             )}
           </Stack>
-          {showOld && (
-            <span
-              style={{
-                // color: getOldDifficultyLabelColor(difficulty.id),
-                color: colors.muted_contrast_color,
-                fontSize: "0.8em",
-              }}
-            >
-              ({getOldDifficultyName(difficulty.id)})
-            </span>
-          )}
         </Stack>
       }
       size="small"

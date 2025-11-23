@@ -104,6 +104,7 @@ export const COLOR_PRESETS = [
     name: "Default",
     disabled: false,
     colors: {
+      25: "",
       24: "",
       2: "",
       3: "",
@@ -132,6 +133,7 @@ export const COLOR_PRESETS = [
     name: "Alternate Colors",
     disabled: false,
     colors: {
+      25: "",
       24: "#ff76cc",
       2: "#ff97d8",
       3: "#fcb5e0",
@@ -160,6 +162,7 @@ export const COLOR_PRESETS = [
     name: "Protanopia",
     disabled: true,
     colors: {
+      25: "",
       24: "",
       2: "",
       3: "",
@@ -188,6 +191,7 @@ export const COLOR_PRESETS = [
     name: "Deuteranopia",
     disabled: true,
     colors: {
+      25: "",
       24: "",
       2: "",
       3: "",
@@ -216,6 +220,7 @@ export const COLOR_PRESETS = [
     name: "Triatanopia",
     disabled: true,
     colors: {
+      25: "",
       24: "",
       2: "",
       3: "",

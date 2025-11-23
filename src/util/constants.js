@@ -1,5 +1,6 @@
 import { darkTheme } from "../App";
 import Color from "color";
+import { getDifficultyName } from "./data_util";
 
 export const APP_URL = process.env.REACT_APP_URL;
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -98,13 +99,22 @@ export const FormOptions = {
 };
 
 export const DIFFICULTIES = {
+  25: {
+    color: "#d863ff",
+    name: "Tier 21+",
+    fractional_name_override: "Tier 21",
+    sort: 21,
+    old_name: "",
+    old_name_label_color: "#ffffff",
+    shares: 4,
+  },
   24: {
     color: "#f266ff",
     name: "Tier 20",
     sort: 20,
     old_name: "",
     old_name_label_color: "#ffffff",
-    shares: 6,
+    shares: 4,
   },
   //Tier 0
   2: {
@@ -113,7 +123,7 @@ export const DIFFICULTIES = {
     sort: 19,
     old_name: "Mid Tier 0",
     old_name_label_color: "#ffffff",
-    shares: 6,
+    shares: 4,
   },
   3: {
     color: "#ff6daa",
@@ -318,6 +328,14 @@ export function getNewDifficultyColors(settings, id) {
   };
 }
 
+export function getDifficultyChipName(settings, id, hasFraction = false) {
+  const override = DIFFICULTIES[id].fractional_name_override;
+  if (override !== undefined && hasFraction) {
+    return override;
+  }
+  return DIFFICULTIES[id].name;
+}
+
 export function getDifficultySubtierShares(id) {
   return DIFFICULTIES[id].shares;
 }
@@ -325,7 +343,7 @@ export function getDifficultySubtierShares(id) {
 //Some difficulty details being used in the frontend
 const DIFF_CONSTS_ = {
   //Difficulty ID constants
-  HIGHEST_TIER_ID: 24,
+  HIGHEST_TIER_ID: 25,
   TRIVIAL_ID: 20,
   UNTIERED_ID: 19,
   TIER_4_ID: 17,
@@ -335,7 +353,7 @@ const DIFF_CONSTS_ = {
   TIERED_SORT_START: 1,
   OLD_TIERED_SORT_START: 4,
   UNTIERED_SORT: 0,
-  MAX_SORT: 20,
+  MAX_SORT: 21,
   MIN_SORT: -1,
 
   //References, added here for intellisense
@@ -393,7 +411,7 @@ export function getDifficultiesSorted() {
 }
 
 export const DIFFICULTY_STACKS = [
-  [24, 2, 3, 23],
+  [25, 24, 2, 3, 23],
   [4, 5, 6],
   [7, 8, 9],
   [10, 11, 12],

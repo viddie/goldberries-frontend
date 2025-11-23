@@ -99,10 +99,7 @@ export function SubmissionFilter({
     if (filter.filter_version !== defaultFilter.filter_version) {
       console.log("Outdated filter found, updating...");
 
-      if (
-        (filter.filter_version < 1 || filter.filter_version === undefined) &&
-        defaultFilter.filter_version >= 1
-      ) {
+      if (filter.filter_version < 1 || filter.filter_version === undefined) {
         console.log("Updating filter from version <undefined> to 1");
 
         //Fix the IDs being strings instead of numbers
@@ -113,7 +110,16 @@ export function SubmissionFilter({
         if (filter.max_diff_id === 2) {
           filter.max_diff_id = 24;
         }
+        filter.filter_version = 1;
       }
+
+      if (filter.filter_version === 1) {
+        console.log("Updating filter from version 1 to 2");
+        if (filter.max_diff_id === 24) {
+          filter.max_diff_id = 25;
+        }
+      }
+
       filter.filter_version = defaultFilter.filter_version;
       setFilter({ ...filter });
     }
@@ -395,6 +401,6 @@ export function getDefaultFilter(isOverall) {
     sub_count_is_min: false,
     start_date: null,
     end_date: null,
-    filter_version: 1, //Version of the filter structure, used for future changes
+    filter_version: 2, //Version of the filter structure, used for future changes
   };
 }
