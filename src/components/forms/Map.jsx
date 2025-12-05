@@ -385,6 +385,7 @@ export const COLLECTIBLES = [
       { value: "26", name: "Chaos Complex Strawberry", icon: "/icons/strawberry-chaoscomplex.png" },
       { value: "27", name: "Winter Collab Strawberry", icon: "/icons/strawberry-wintercollab.png" },
       { value: "28", name: "Mirror Bemple Strawberry", icon: "/icons/strawberry-mirrorbemple.png" },
+      { value: "29", name: "CTS Strawberry", icon: "/icons/strawberry-cts.png" },
     ],
   },
   {
