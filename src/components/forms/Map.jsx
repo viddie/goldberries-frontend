@@ -321,6 +321,7 @@ export const COLLECTIBLES = [
       { value: "15", name: "Jim's Adventure Golden", icon: "/icons/golden-jim.png" },
       { value: "16", name: "Focus Golden", icon: "/icons/golden-focus.png" },
       { value: "17", name: "Balls 2 Golden", icon: "/icons/golden-balls2.png" },
+      { value: "18", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
     ],
   },
   {
@@ -329,7 +330,7 @@ export const COLLECTIBLES = [
     icon: "/icons/silverberry-8x.png",
     variants: [
       { value: "1", name: "Taswell Silver", icon: "/icons/golden-taswell.png" },
-      { value: "2", name: "Diamond Berry", icon: "/icons/diamondberry.png", variants: [] },
+      { value: "2", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
     ],
   },
   { value: "4", name: "Winged Golden Berry", icon: "/icons/winged-goldenberry-8x.png", variants: [] },
@@ -351,6 +352,7 @@ export const COLLECTIBLES = [
       { value: "11", name: "Vivid Abyss Moon Berry", icon: "/icons/moonberry-vabyss.png" },
       { value: "12", name: "Strawberry (hidden Moon Berry)", icon: "/icons/strawberry-8x.png" },
       { value: "13", name: "Balls 2 Moon Berry", icon: "/icons/moonberry-balls2.png" },
+      { value: "14", name: "Floppy Disk Moon Berry", icon: "/icons/moonberry-floppydisk.png" },
     ],
   },
   {
@@ -497,6 +499,60 @@ export const COLLECTIBLES = [
         icon: "/icons/orb-zescent-2.png",
       },
       { value: "4", name: "Intro Car", displayName: "Intro Car", icon: "/icons/intro-car.png" },
+      {
+        value: "5",
+        name: "Terraria Crimson Heart",
+        displayName: "Crimson Heart",
+        icon: "/icons/terraria-crimsonheart.png",
+      },
+      {
+        value: "6",
+        name: "Terraria Crimson Plant",
+        displayName: "Crimson Plant",
+        icon: "/icons/terraria-crimsonplant.png",
+      },
+      {
+        value: "7",
+        name: "Terraria Jungle Plant",
+        displayName: "Jungle Plant",
+        icon: "/icons/terraria-jungleplant.png",
+      },
+      {
+        value: "8",
+        name: "Terraria Life Crystal",
+        displayName: "Life Crystal",
+        icon: "/icons/terraria-lifecrystal.png",
+      },
+      {
+        value: "9",
+        name: "Terraria Mana Crystal",
+        displayName: "Mana Crystal",
+        icon: "/icons/terraria-manacrystal.png",
+      },
+      {
+        value: "10",
+        name: "Terraria Ocean Plant",
+        displayName: "Ocean Plant",
+        icon: "/icons/terraria-oceanplant.png",
+      },
+      {
+        value: "11",
+        name: "Terraria Snow Plant",
+        displayName: "Snow Plant",
+        icon: "/icons/terraria-snowplant.png",
+      },
+      {
+        value: "12",
+        name: "Terraria Underground Plant",
+        displayName: "Underground Plant",
+        icon: "/icons/terraria-undergroundplant.png",
+      },
+      {
+        value: "13",
+        name: "Terraria Underworld Plant",
+        displayName: "Underworld Plant",
+        icon: "/icons/terraria-underworldplant.png",
+      },
     ],
   },
 ];
