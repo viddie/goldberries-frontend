@@ -154,7 +154,7 @@ export function TglMoreButton({
               tKey="darken_tier_colors"
               value={localOptions.darkenTierColors}
               setValue={(newValue) => changedOption("darkenTierColors", newValue)}
-              min={60}
+              min={0}
               valueFormatter={(v) => `${v}%`}
             />
 

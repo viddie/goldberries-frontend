@@ -53,7 +53,7 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
     return <ErrorDisplay error={query.error} />;
   }
 
-  const hideEmpty = settings.visual.topGoldenList.hideEmptyTiers;
+  const hideEmpty = !options.showEmptyTiers;
 
   //Goal: A horizontal bar chart. X-axis is the time taken for a challenge. Each bar on the y-axis represents a tier of difficulty.
   //The length of the bar represents the time span from the minimum time taken to the maximum time taken for that tier.
@@ -186,7 +186,7 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
                         dataBar[props.index].time_taken[0] === 0 ? (
                           <></>
                         ) : (
-                          <>{dataBar[props.index].time_taken[0]}</>
+                          <>{dataBar[props.index].time_taken[1]}</>
                         )
                       ) : (
                         <>

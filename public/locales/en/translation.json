@@ -1004,7 +1004,7 @@
         },
         "show_fractional_tiers": {
           "label": "Show Fractional Tiers",
-          "note": "Show fractional tiers in various places throughout the website. This option also affects personal Top Golden Lists!"
+          "note": "Show fractional tiers in various places throughout the website."
         }
       },
       "visual": {

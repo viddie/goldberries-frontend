@@ -28,6 +28,7 @@ export const getDefaultSettings = () => {
         showOutline: true,
       },
       difficultyColors: {
+        25: "",
         24: "",
         2: "",
         3: "",

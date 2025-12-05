@@ -87,6 +87,7 @@ export function VotesBar({
           style={{
             backgroundColor: theme.palette.background.paper,
             width: "100%",
+            borderRadius: "8px",
             ...centerStyle,
           }}
         >
