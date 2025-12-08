@@ -322,6 +322,7 @@ export const COLLECTIBLES = [
       { value: "16", name: "Focus Golden", icon: "/icons/golden-focus.png" },
       { value: "17", name: "Balls 2 Golden", icon: "/icons/golden-balls2.png" },
       { value: "18", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
+      { value: "19", name: "Rift Golden", icon: "/icons/strawberry-rift.png" },
     ],
   },
   {
@@ -331,6 +332,7 @@ export const COLLECTIBLES = [
     variants: [
       { value: "1", name: "Taswell Silver", icon: "/icons/golden-taswell.png" },
       { value: "2", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
+      { value: "3", name: "Rift Silver", icon: "/icons/silver-rift.png" },
     ],
   },
   { value: "4", name: "Winged Golden Berry", icon: "/icons/winged-goldenberry-8x.png", variants: [] },
@@ -352,7 +354,24 @@ export const COLLECTIBLES = [
       { value: "11", name: "Vivid Abyss Moon Berry", icon: "/icons/moonberry-vabyss.png" },
       { value: "12", name: "Strawberry (hidden Moon Berry)", icon: "/icons/strawberry-8x.png" },
       { value: "13", name: "Balls 2 Moon Berry", icon: "/icons/moonberry-balls2.png" },
-      { value: "14", name: "Floppy Disk Moon Berry", icon: "/icons/moonberry-floppydisk.png" },
+      {
+        value: "14",
+        name: "Floppy Disk Moon Berry",
+        displayName: "Floppy Disk",
+        icon: "/icons/moonberry-floppydisk.png",
+      },
+      {
+        value: "15",
+        name: "Floppy Disk Rift Moon Berry",
+        displayName: "Floppy Disk",
+        icon: "/icons/moonberry-floppydisk-rift.png",
+      },
+      {
+        value: "16",
+        name: "Floppy Disk Rift B Moon Berry",
+        displayName: "Floppy Disk",
+        icon: "/icons/moonberry-floppydisk-riftb.png",
+      },
     ],
   },
   {
@@ -388,6 +407,9 @@ export const COLLECTIBLES = [
       { value: "27", name: "Winter Collab Strawberry", icon: "/icons/strawberry-wintercollab.png" },
       { value: "28", name: "Mirror Bemple Strawberry", icon: "/icons/strawberry-mirrorbemple.png" },
       { value: "29", name: "CTS Strawberry", icon: "/icons/strawberry-cts.png" },
+      { value: "30", name: "Rift Strawberry", icon: "/icons/strawberry-rift.png" },
+      { value: "31", name: "Celeste Dash Strawberry", icon: "/icons/strawberry-celestedash.png" },
+      { value: "32", name: "Catbird Strawberry", icon: "/icons/strawberry-catbird.png" },
     ],
   },
   {
@@ -484,6 +506,12 @@ export const COLLECTIBLES = [
         name: "Corner Berry",
         icon: "/icons/cornerberry.png",
       },
+      {
+        value: "15",
+        name: "Death Pon",
+        displayName: "Death Pon",
+        icon: "/icons/deathpon.png",
+      },
     ],
   },
   {
@@ -552,6 +580,12 @@ export const COLLECTIBLES = [
         name: "Terraria Underworld Plant",
         displayName: "Underworld Plant",
         icon: "/icons/terraria-underworldplant.png",
+      },
+      {
+        value: "14",
+        name: "Xaphan Upgrade",
+        displayName: "Xaphan Upgrade",
+        icon: "/icons/xaphan-upgrade.png",
       },
     ],
   },
