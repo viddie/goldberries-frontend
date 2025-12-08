@@ -66,11 +66,6 @@ export function PageIndex() {
               <RecentSubmissions />
             </BorderedBox>
             <BorderedBox>
-              <ErrorBoundary>
-                <ReworkNotice />
-              </ErrorBoundary>
-            </BorderedBox>
-            <BorderedBox>
               <UsefulLinksComponent />
             </BorderedBox>
             <BorderedBox>
@@ -243,29 +238,6 @@ function GettingStarted() {
           />
         </li>
       </ul>
-    </>
-  );
-}
-function ReworkNotice() {
-  const { t } = useTranslation(undefined, { keyPrefix: "index.rework" });
-  const bulletPoints = t("bullet_points", { returnObjects: true });
-  return (
-    <>
-      <Typography variant="h5">{t("header")}</Typography>
-      <Typography variant="body1" gutterBottom>
-        {t("text")}
-      </Typography>
-      <ul>
-        {bulletPoints.map((point, index) => (
-          <li key={index}>{point}</li>
-        ))}
-      </ul>
-      <Typography variant="body1" gutterBottom>
-        {t("more_text")}
-      </Typography>
-      {/* <Typography variant="body1" gutterBottom>
-        {t("migration")}
-      </Typography> */}
     </>
   );
 }
