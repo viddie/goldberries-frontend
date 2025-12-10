@@ -43,6 +43,14 @@ export const NewRules = {
       count: 6,
     },
   },
+  website: {
+    id: "website",
+    rules: {
+      header: false,
+      type: "ordered",
+      count: 2,
+    },
+  },
 };
 
 export const featuredCampaigns = [

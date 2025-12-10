@@ -407,7 +407,12 @@ export const COLLECTIBLES = [
       { value: "27", name: "Winter Collab Strawberry", icon: "/icons/strawberry-wintercollab.png" },
       { value: "28", name: "Mirror Bemple Strawberry", icon: "/icons/strawberry-mirrorbemple.png" },
       { value: "29", name: "CTS Strawberry", icon: "/icons/strawberry-cts.png" },
-      { value: "30", name: "Rift Strawberry", icon: "/icons/strawberry-rift.png" },
+      {
+        value: "30",
+        name: "Rift Pon Strawberry",
+        displayName: "Rift Pon",
+        icon: "/icons/strawberry-rift.png",
+      },
       { value: "31", name: "Celeste Dash Strawberry", icon: "/icons/strawberry-celestedash.png" },
       { value: "32", name: "Catbird Strawberry", icon: "/icons/strawberry-catbird.png" },
     ],

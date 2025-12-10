@@ -1542,7 +1542,7 @@
     "title": "Rules",
     "toc": "Table of Contents",
     "description": "This page exists mostly as a formalization of rules and edge cases for said rules. The most basic form of required submission rules is \"don't cheat, don't use gameplay-altering mods, have a full session recording for Tier 8+ challenges, and make sure to show the end screen\". However, this formalization exists to cover potential confusion for certain edge cases and all the like. This list isn't exhaustive. It can't be. Mappers come up with ways to subvert our expectations all the time, and if we tried to formalize the minefield that it is, we would get nowhere. If you have an edge case not covered by this list, or general questions about it, please ask us! Ask us before you make a submission that results in days of debate that may or may not result in it getting rejected. Thank you.",
-    "language_notice": "PLEASE NOTE: Translations of rules may be outdated or incomplete. In case of discrepancies, the English is always the reference.",
+    "language_notice": "PLEASE NOTE: Translations of rules may be outdated or incomplete. In case of discrepancies, the English version is always the reference.",
     "maps": {
       "header": "Rules for Maps and Challenges",
       "rules": {
@@ -1585,7 +1585,7 @@
           },
           {
             "heading": "End Screen",
-            "text": "Submissions <strong>must</strong> show the end screen of a map upon completing the challenge. If an end screen does not exist, the journal must be shown immediately after exiting. <strong>IMPORTANT: For collab maps you have to enable the mod option</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>AND enable the speedrun timer for the end screen to show up</strong>. If you don't like the timer being always visible, SpeedrunTool has an option to automatically show the timer only for the end screen at <code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>."
+            "text": "Submissions <strong>must</strong> show the end screen of a map upon completing the challenge. If an end screen does not exist, it is recommended but not required to show the journal after exiting. <strong>IMPORTANT: For collab maps you have to enable the mod option</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>AND enable the speedrun timer for the end screen to show up</strong>. If you don't like the timer being always visible, SpeedrunTool has an option to automatically show the timer only for the end screen at <code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>."
           },
           {
             "heading": "Session",
@@ -1634,6 +1634,10 @@
           {
             "heading": "Overlay",
             "text": "Submissions <strong>must not</strong> have an overlay covering a large amount or essential parts of the screen. Essential parts include the timer, the total berry count in the top left, the pause menu berry tracker, the player, and the save icon in the bottom right."
+          },
+          {
+            "heading": "Map Version",
+            "text": "One is allowed to play on any patch/version of a map. In cases where an old patch of a map is significantly different in gameplay and/or difficulty, an archived map listing may be created, such as <CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>. Submissions must collect the golden strawberry on the map version which is being played, regardless of whether gameplay was changed or removed in a different patch. Exceptions may be made if a run dies to a bug which is later fixed. What counts as a bug is subjective and decided on a case-by-case basis."
           }
         ]
       },
@@ -1718,6 +1722,24 @@
           },
           {
             "text": "Other mods frequently used for deathless challenges include <CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink> and <CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>."
+          },
+          {
+            "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> will automatically pause the game if a lag spike is detected, and is allowed for submissions."
+          }
+        ]
+      }
+    },
+    "website": {
+      "header": "Website Rules",
+      "rules": {
+        "entries": [
+          {
+            "heading": "No Alt Accounts",
+            "text": "Each player must have only <strong>one account</strong> on this website. Using multiple accounts to submit runs, vote on suggestions, or otherwise manipulate the website is not allowed."
+          },
+          {
+            "heading": "No Account Sharing",
+            "text": "Accounts <strong>must not</strong> be shared between multiple players. Each account must represent a single player."
           }
         ]
       }
