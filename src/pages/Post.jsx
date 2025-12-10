@@ -495,7 +495,7 @@ export function MarkdownRenderer({ markdown, isCentered = false }) {
         ),
         code: ({ children, className, node }) => {
           if (node.data?.meta === "fence") {
-            return <code>{children}</code>;
+            return <code style={{ whiteSpace: "pre-wrap" }}>{children}</code>;
           }
           return <MarkdownInlineCodeBlock className={className}>{children}</MarkdownInlineCodeBlock>;
         },
