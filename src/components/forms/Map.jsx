@@ -415,6 +415,8 @@ export const COLLECTIBLES = [
       },
       { value: "31", name: "Celeste Dash Strawberry", icon: "/icons/strawberry-celestedash.png" },
       { value: "32", name: "Catbird Strawberry", icon: "/icons/strawberry-catbird.png" },
+      { value: "33", name: "Treasure Search Strawberry", icon: "/icons/strawberry-treasuresearch.png" },
+      { value: "34", name: "Rad Cat Strawberry", icon: "/icons/strawberry-radcat.png" },
     ],
   },
   {
