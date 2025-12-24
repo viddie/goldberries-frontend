@@ -323,6 +323,7 @@ export const COLLECTIBLES = [
       { value: "17", name: "Balls 2 Golden", icon: "/icons/golden-balls2.png" },
       { value: "18", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
       { value: "19", name: "Rift Golden", icon: "/icons/strawberry-rift.png" },
+      { value: "20", name: "Glitchtophen Golden", icon: "/icons/golden-glitchtophen.png" },
     ],
   },
   {
@@ -335,7 +336,14 @@ export const COLLECTIBLES = [
       { value: "3", name: "Rift Silver", icon: "/icons/silver-rift.png" },
     ],
   },
-  { value: "4", name: "Winged Golden Berry", icon: "/icons/winged-goldenberry-8x.png", variants: [] },
+  {
+    value: "4",
+    name: "Winged Golden Berry",
+    icon: "/icons/winged-goldenberry-8x.png",
+    variants: [
+      { value: "1", name: "Glitchtophen Winged Golden Berry", icon: "/icons/winged-goldenberry-glitchtophen.png" },
+    ],
+  },
   {
     value: "3",
     name: "Moon Berry",
@@ -372,6 +380,7 @@ export const COLLECTIBLES = [
         displayName: "Floppy Disk",
         icon: "/icons/moonberry-floppydisk-riftb.png",
       },
+      { value: "17", name: "Glitchtophen Moon Berry", icon: "/icons/moonberry-glitchtophen.png" },
     ],
   },
   {
@@ -417,6 +426,7 @@ export const COLLECTIBLES = [
       { value: "32", name: "Catbird Strawberry", icon: "/icons/strawberry-catbird.png" },
       { value: "33", name: "Treasure Search Strawberry", icon: "/icons/strawberry-treasuresearch.png" },
       { value: "34", name: "Rad Cat Strawberry", icon: "/icons/strawberry-radcat.png" },
+      { value: "35", name: "Glitchtophen Strawberry", icon: "/icons/strawberry-glitchtophen.png" },
     ],
   },
   {
@@ -461,7 +471,10 @@ export const COLLECTIBLES = [
     value: "6",
     name: "Cassette",
     icon: "/icons/cassette-crisp.png",
-    variants: [{ value: "1", name: "D-Sides Cassette", icon: "/icons/cassette-crisp-d-sides.png" }],
+    variants: [
+      { value: "1", name: "D-Sides Cassette", icon: "/icons/cassette-crisp-d-sides.png" },
+      { value: "2", name: "Glitchtophen Cassette", icon: "/icons/cassette-glitchtophen.png" },
+    ],
   },
   { value: "5", name: "Platinum Berry", icon: "/icons/platinumberry-8x.png", variants: [] },
   { value: "10", name: "Speedberry", icon: "/icons/speedberry.png", variants: [] },
