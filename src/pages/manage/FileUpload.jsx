@@ -124,7 +124,7 @@ export function PageFileUpload() {
           <Typography variant="body1">{t("file_input_description")}</Typography>
         </Grid>
         <Grid item xs={12} sm>
-          <MuiFileInput fullWidth placeholder={t("file_input")} value={file} onChange={setFile} />
+          <MuiFileInput fullWidth label={t("file_input")} value={file} onChange={setFile} />
         </Grid>
         <Box sx={{ width: "100%" }} />
         <Grid item xs>
