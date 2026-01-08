@@ -341,7 +341,18 @@ export const COLLECTIBLES = [
     name: "Winged Golden Berry",
     icon: "/icons/winged-goldenberry-8x.png",
     variants: [
-      { value: "1", name: "Glitchtophen Winged Golden Berry", icon: "/icons/winged-goldenberry-glitchtophen.png" },
+      {
+        value: "1",
+        name: "Glitchtophen Winged Golden Berry",
+        icon: "/icons/winged-goldenberry-glitchtophen.png",
+      },
+      { value: "2", name: "Drizzle Winged Golden Berry", icon: "/icons/winged-goldenberry-drizzle.png" },
+      {
+        value: "3",
+        name: "Winged Silver Berry",
+        displayName: "Winged Silver Berry",
+        icon: "/icons/winged-silverberry.png",
+      },
     ],
   },
   {
@@ -427,6 +438,18 @@ export const COLLECTIBLES = [
       { value: "33", name: "Treasure Search Strawberry", icon: "/icons/strawberry-treasuresearch.png" },
       { value: "34", name: "Rad Cat Strawberry", icon: "/icons/strawberry-radcat.png" },
       { value: "35", name: "Glitchtophen Strawberry", icon: "/icons/strawberry-glitchtophen.png" },
+      { value: "36", name: "Just Breathe Strawberry", icon: "/icons/strawberry-justbreathe.png" },
+      {
+        value: "37",
+        name: "Ruins of Hallownest Strawberry",
+        icon: "/icons/strawberry-ruinsofhallownest.png",
+      },
+      { value: "38", name: "Bentley's Paradox Strawberry", icon: "/icons/strawberry-bentleysparadox.png" },
+      {
+        value: "39",
+        name: "World Domination Contest Strawberry",
+        icon: "/icons/strawberry-worlddominationcontest.png",
+      },
     ],
   },
   {
@@ -474,6 +497,7 @@ export const COLLECTIBLES = [
     variants: [
       { value: "1", name: "D-Sides Cassette", icon: "/icons/cassette-crisp-d-sides.png" },
       { value: "2", name: "Glitchtophen Cassette", icon: "/icons/cassette-glitchtophen.png" },
+      { value: "3", name: "Focus Cassette", icon: "/icons/cassette-focus.png" },
     ],
   },
   { value: "5", name: "Platinum Berry", icon: "/icons/platinumberry-8x.png", variants: [] },

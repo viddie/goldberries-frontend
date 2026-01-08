@@ -1399,6 +1399,7 @@
     "title": "规则",
     "toc": "目录",
     "description": "本页面的主要作用是对规则和极端情况的规范化。提交规则最基本的要求可概括为“禁止作弊、禁止使用影响游戏玩法的模组、Tier 8及以上的挑战需提供完整流程录像、并确保展示结算界面”。不过，这些规范可以更全面地涵盖某些极端情况，并解决可能存在的疑惑。该规则并不能完全覆盖所有情况，也不可能做到绝对完整。地图作者总可能会有一些意料之外的想法，如果我们试图为所有潜在的规则漏洞预先制定规范，那么我们将寸步难行。若您遇到未涵盖的边缘情况，或对规则存有疑问，欢迎向我们提问！在您提交可能引发数日争论且最终可能被拒绝的内容之前，请先问一问我们，谢谢。",
+    "language_notice": "请注意：下面一部分规则的翻译可能过时或不完整。请以英语翻译为准。(中文翻译在2025.12.24更新，目前是最新版本)",
     "maps": {
       "header": "关于地图挑战",
       "rules": {
@@ -1426,6 +1427,22 @@
         ]
       }
     },
+        "website": {
+            "header": "网站规则",
+            "rules": {
+                "entries": [
+                    {
+                        "heading": "禁止多开账号",
+                        "text": "每位玩家在本网站有且仅能有<strong>一个账号</strong>。禁止使用多个账号提交视频录像、参与建议箱内的投票或进行任何其他操作。"
+                    },
+                    {
+                        "heading": "禁止分享账号",
+                        "text": "不同的玩家<strong>禁止</strong>共用一个账号。每个账号必须代表且仅代表一个玩家。"
+                    }
+                ]
+            }
+        }
+    },
     "goldens": {
       "header": "关于提交的视频",
       "rules": {
@@ -1441,7 +1458,7 @@
           },
           {
             "heading": "结算界面要求",
-            "text": "提交的视频<strong>必须</strong>在完成挑战后展示地图的结算界面。如果没有结算界面，必须在通关之后立刻展示日志。<strong>重点：对于合集中的地图，你必须开启</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>选项，并启用结算界面显示计时器</strong>。如果你不想让计时器一直显示，SpeedrunTool有一个只在结尾自动展示计时器的选项：<code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>。"
+            "text": "提交的视频<strong>必须</strong>在完成挑战后展示地图的结算界面。如果没有结算界面，建议在通关之后展示日志，不过不做强制要求。<strong>重点：对于合集中的地图，你必须开启</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>选项，并启用结算界面显示计时器</strong>。如果你不想让计时器一直显示，SpeedrunTool有一个只在结尾自动展示计时器的选项：<code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>。"
           },
           {
             "heading": "流程连续",
@@ -1473,7 +1490,7 @@
           },
           {
             "heading": "0死不带金(Deathless Berryless/dlbl)",
-            "text": "对于金草莓(或者其他类似的草莓)，只要和带金时的流程相同(又叫<i>0死不带金/Dashless Berryless</i>流程)，则<strong>不收集</strong>金草莓也可以。若带金时与不带金的时候存在一些根本上的差异，比如增加了一个金限房间，那么此类视频<strong>通常不被接受</strong>。另外，当带金时有类似于强制分离金草莓(比如第九章的月莓)的改变时，你<strong>必须</strong>拿分离后的金草莓，而不能离开直接进入下一面。我们虽不鼓励提交“0死不带金”流程的视频并鼓励希望挑战者收集对应的无伤草莓，但能理解意外的fluke导致这类情况发生，也不希望因此抹杀玩家的成就。此类提交将被附加note。"
+            "text": "对于金草莓(或者其他类似的草莓)，只要和带金时的流程相同(又叫<i>0死不带金/Deathless Berryless</i>流程)，则<strong>不收集</strong>金草莓也可以。若带金时与不带金的时候存在一些根本上的差异，比如增加了一个金限房间，那么此类视频<strong>通常不被接受</strong>。另外，当带金时有类似于强制分离金草莓(比如第九章的月莓)的改变时，你<strong>必须</strong>拿分离后的金草莓，而不能离开直接进入下一面。我们虽不鼓励提交“0死不带金”流程的视频并鼓励希望挑战者收集对应的无伤草莓，但能理解意外的fluke导致这类情况发生，也不希望因此抹杀玩家的成就。此类提交将被附加note。"
           },
           {
             "heading": "地图中没有收集金草莓的Trigger的情况",
@@ -1486,6 +1503,10 @@
           {
             "heading": "地图进度相关",
             "text": "炼金视频<strong>必须</strong>符合挑战所设的进度限制(进度锁)。若挑战涉及global flag(xaphan helper的一个trigger，可以生成一个直接写入存档的flag)或超出当前挑战范围的其他要素，可默认这些要素已解锁。若这些要素影响较大，则可能根据解锁的不同的状态对挑战进行分类。"
+          },
+          {
+            "heading": "地图版本相关",
+            "text": "玩家可以游玩任何版本的地图，并提交视频。 若某张地图的旧版本在玩法或难度(或者两者都有)上存在显著的差异，可为其单独开一档挑战栏，比如<CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>。在提交的视频中，玩家必须在对应版本的地图内收集金草莓，不论其他版本是否已经修改或者删除了部分玩法(Gameplay)。若游玩过程中因bug而死亡，而该bug在后续版本中被修复，则可当作特例处理。“什么算是bug”具有主观性，需要根据具体的例子来决定。"
           },
           {
             "heading": "游戏界面覆盖相关",
@@ -1574,11 +1595,13 @@
           },
           {
             "text": "在炼金挑战中其他常用模组还包括<CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink>和<CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>。"
+          },
+          {
+            "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink>会在检测到游戏突然卡顿时自动暂停，允许在提交的视频中使用。"
           }
         ]
       }
-    }
-  },
+    },
   "faq": {
     "entries": [
       {
