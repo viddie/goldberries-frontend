@@ -237,6 +237,9 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
     if (notice && notice.verifier.id !== auth.user.player_id) {
       text += " Locked";
     }
+    if (notice && notice.verifier.id === auth.user.player_id) {
+      text += " My Lock";
+    }
 
     const containsText = text.toLowerCase().includes(search.toLowerCase());
     const doesntContainExcluded = excludeTokens.every(
