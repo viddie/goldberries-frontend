@@ -500,7 +500,14 @@ export const COLLECTIBLES = [
       { value: "3", name: "Focus Cassette", icon: "/icons/cassette-focus.png" },
     ],
   },
-  { value: "5", name: "Platinum Berry", icon: "/icons/platinumberry-8x.png", variants: [] },
+  {
+    value: "5",
+    name: "Platinum Berry",
+    icon: "/icons/platinumberry-8x.png",
+    variants: [
+      { value: "1", name: "Glitchtophen Platinum Berry", icon: "/icons/platinumberry-glitchtophen.png" },
+    ],
+  },
   { value: "10", name: "Speedberry", icon: "/icons/speedberry.png", variants: [] },
   {
     value: "13",
