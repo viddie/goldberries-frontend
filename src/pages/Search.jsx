@@ -50,6 +50,12 @@ export function PageSearch({ isDirectSearch = false }) {
     }
   };
 
+  useEffect(() => {
+    if (q !== undefined && q !== search) {
+      setSearch(q);
+    }
+  }, [q]);
+
   const title = search ? t("title_content", { content: search }) : t("title_no_content");
 
   const containerSx = { mt: 0 };
@@ -377,7 +383,7 @@ function SearchResultTabs({ search, maps, campaigns, authors }) {
   const filteredCampaigns = campaigns
     ? campaigns.filter(
         (campaign) =>
-          campaign.maps.length !== 0 && (campaign.maps.length > 1 || campaign.maps[0].name !== campaign.name)
+          campaign.maps.length !== 0 && (campaign.maps.length > 1 || campaign.maps[0].name !== campaign.name),
       )
     : [];
 
@@ -413,6 +419,10 @@ function DebouncedTextField({ value, setValue, label, clearOnFocus = false, isDi
   const [valueInternal, setValueInternal] = useState(value);
   const setValueDebounced = useDebouncedCallback(setValue, 250);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setValueInternal(value);
+  }, [value]);
 
   const onKeyDown = (event) => {
     if (event.key === "Enter") {
