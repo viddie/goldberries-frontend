@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Checkbox,
   Chip,
@@ -284,6 +285,11 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
       </Stack>
       {challenge && (
         <>
+          {challenge.is_rejected && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {t("rejected_notice")}
+            </Alert>
+          )}
           <h4>{t("challenge_data")}</h4>
           <FullChallengeDisplay challenge={challenge} map={map} campaign={campaign} hideMap showObjective />
         </>

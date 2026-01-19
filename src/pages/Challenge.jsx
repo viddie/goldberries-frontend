@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Button,
   Chip,
   Divider,
@@ -148,11 +150,13 @@ export function ChallengeDisplay({ id }) {
       </Stack>
       {auth.hasPlayerClaimed && (
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
-          <Link to={"/submit/single-challenge/" + id}>
-            <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} sx={{ mt: 0, mb: 0 }}>
-              {t("buttons.submit")}
-            </Button>
-          </Link>
+          {!challenge.is_rejected && (
+            <Link to={"/submit/single-challenge/" + id}>
+              <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} sx={{ mt: 0, mb: 0 }}>
+                {t("buttons.submit")}
+              </Button>
+            </Link>
+          )}
           {auth.hasHelperPriv && (
             <Button
               onClick={editChallengeModal.open}
@@ -167,7 +171,7 @@ export function ChallengeDisplay({ id }) {
       )}
       <ChallengeDetailsList map={challenge.map} challenge={challenge} sx={{ mb: 1, mt: 0.5 }} />
       {challenge.description && (
-        <NoteDisclaimer title={t("description")} note={challenge.description} sx={{ mb: 2 }} />
+        <NoteDisclaimer title={t("description")} note={challenge.description} sx={{ mb: 2, mt: 1 }} />
       )}
       <ChallengeSubmissionTable challenge={challenge} />
 
@@ -773,14 +777,9 @@ const MemoChallengeSubmissionRow = memo(ChallengeSubmissionRow);
 
 export function NoteDisclaimer({ title, note, sx = {} }) {
   return (
-    <Stack direction="column" gap={1} sx={sx}>
-      <Stack direction="row" gap={1} alignItems="center">
-        <FontAwesomeIcon icon={faInfoCircle} />
-        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          {title}
-        </Typography>
-      </Stack>
-      <Typography variant="body2">{note}</Typography>
-    </Stack>
+    <Alert severity="info" variant="outlined" sx={sx}>
+      <AlertTitle>{title}</AlertTitle>
+      {note}
+    </Alert>
   );
 }
