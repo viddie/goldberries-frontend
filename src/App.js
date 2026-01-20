@@ -126,7 +126,7 @@ import { PageReport } from "./pages/Report";
 import { PageRules } from "./pages/Rules";
 import { PageSearch } from "./pages/Search";
 import { PageServerCosts } from "./pages/ServerCosts";
-import { PageStats } from "./pages/Stats";
+import { PageStats } from "./pages/stats/Stats";
 import { PageSubmission } from "./pages/Submission";
 import { PageSubmit } from "./pages/Submit";
 import { PageSuggestions } from "./pages/Suggestions";
@@ -1305,21 +1305,21 @@ function VerifierStatsNavDesktop() {
       <Tooltip title={t("widgets.submission_queue")}>
         <Link to="/manage/submission-queue" style={{ color: "inherit", textDecoration: "none" }}>
           <FontAwesomeIcon icon={faMailBulk} style={{ marginRight: "5px" }} />
-          {query.isError ? "X" : data.submissions_in_queue ?? "..."}
+          {query.isError ? "X" : (data.submissions_in_queue ?? "...")}
         </Link>
       </Tooltip>
       {isVerifier && (
         <Tooltip title={t("widgets.player_claims")}>
           <Link to="/manage/accounts/player-claims" style={{ color: "inherit", textDecoration: "none" }}>
             <FontAwesomeIcon icon={faUserNinja} style={{ marginRight: "5px" }} />
-            {query.isError ? "X" : data.open_player_claims ?? "..."}
+            {query.isError ? "X" : (data.open_player_claims ?? "...")}
           </Link>
         </Tooltip>
       )}
       <Tooltip title={t("widgets.pending_suggestions")}>
         <Link to="/suggestions" style={{ color: "inherit", textDecoration: "none" }}>
           <FontAwesomeIcon icon={faChartBar} style={{ marginRight: "5px" }} />
-          {query.isError ? "X" : data.pending_suggestions ?? "..."}
+          {query.isError ? "X" : (data.pending_suggestions ?? "...")}
         </Link>
       </Tooltip>
     </Stack>
