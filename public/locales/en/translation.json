@@ -1005,6 +1005,10 @@
         "show_fractional_tiers": {
           "label": "Show Fractional Tiers",
           "note": "Show fractional tiers in various places throughout the website."
+        },
+        "show_rejected_submissions": {
+          "label": "Show Own Rejected Submissions",
+          "note": "Show rejected submissions on your player profile."
         }
       },
       "visual": {

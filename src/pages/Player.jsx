@@ -292,7 +292,9 @@ function SubmissionShowcase({ id }) {
 function PlayerRecentSubmissions({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
   const auth = useAuth();
+  const { settings } = useAppSettings();
   const canSeeRejected = auth.hasHelperPriv || auth.isPlayerWithId(id);
+  const showRejected = canSeeRejected && settings.general.showRejectedSubmissions;
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -301,7 +303,7 @@ function PlayerRecentSubmissions({ id }) {
       <RecentSubmissionsHeadless verified={null} playerId={id} showChip hideIfEmpty />
       <RecentSubmissionsHeadless verified={true} playerId={id} showChip chipSx={{ mt: 2 }} />
 
-      {canSeeRejected && (
+      {showRejected && (
         <>
           <RecentSubmissionsHeadless verified={false} playerId={id} showChip hideIfEmpty chipSx={{ mt: 2 }} />
         </>
@@ -403,7 +405,7 @@ export function DifficultyCountChart({ difficulty_counts }) {
   let difficulties = [...rawDiffs];
   if (!showUntiered) {
     difficulties = difficulties.filter(
-      (d) => d.id !== DIFF_CONSTS.TRIVIAL_ID && d.id !== DIFF_CONSTS.UNTIERED_ID
+      (d) => d.id !== DIFF_CONSTS.TRIVIAL_ID && d.id !== DIFF_CONSTS.UNTIERED_ID,
     );
   }
 
@@ -902,7 +904,7 @@ function calculateShowPreviewImageDifficulty(submissions, ratio) {
   if (ratio === 0) return null;
   if (submissions.length === 0) return null;
   const sortedSubmissions = submissions.sort(
-    (a, b) => b.challenge.difficulty.sort - a.challenge.difficulty.sort
+    (a, b) => b.challenge.difficulty.sort - a.challenge.difficulty.sort,
   );
   const index = Math.floor(Math.min(submissions.length * ratio, submissions.length - 1));
   return sortedSubmissions[index].challenge.difficulty;

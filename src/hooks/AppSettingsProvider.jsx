@@ -10,6 +10,7 @@ export const getDefaultSettings = () => {
       alwaysShowGoldenChanges: false,
       showOldTierNames: false,
       showFractionalTiers: true,
+      showRejectedSubmissions: true,
       settingsVersion: 1,
     },
     visual: {
