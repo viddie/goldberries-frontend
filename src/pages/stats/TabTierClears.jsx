@@ -282,8 +282,11 @@ function TotalClears() {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom sx={{ mt: 1 }}>
+      <Typography variant="h5" sx={{ mt: 1 }}>
         Total Clears by Player
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        (might delete this later, it's a bit big)
       </Typography>
       <DataGrid
         rows={data}

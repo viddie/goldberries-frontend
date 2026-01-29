@@ -570,7 +570,7 @@
     "campaigns_menu": {
       "name": "Campaigns",
       "campaign_list": "Campaign List",
-      "rejected_maps": "Rejected Maps"
+      "rejected_challenges": "Rejected Challenges"
     },
     "other_menu": {
       "name": "Other",

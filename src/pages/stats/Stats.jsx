@@ -100,6 +100,8 @@ export function PageStats() {
         value={selectedTab}
         onChange={(_, newValue) => updateSelectedTab(newValue)}
         sx={{ borderBottom: "1px solid grey", mb: 1 }}
+        allowScrollButtonsMobile
+        variant="scrollable"
       >
         {STATS_TABS.map((tab) => (
           <Tab key={tab.value} label={t_tabs(tab.i18key)} value={tab.value} />

@@ -121,7 +121,7 @@ import { PageMap } from "./pages/Map";
 import { PageMonthlyRecap } from "./pages/MonthlyRecap";
 import { PagePlayer } from "./pages/Player";
 import { PagePostList } from "./pages/Post";
-import { PageRejectedMaps } from "./pages/RejectedMaps";
+import { PageRejectedChallenges } from "./pages/RejectedChallenges";
 import { PageReport } from "./pages/Report";
 import { PageRules } from "./pages/Rules";
 import { PageSearch } from "./pages/Search";
@@ -283,7 +283,7 @@ const router = createBrowserRouter([
       { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenListAlt /> },
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
 
-      { path: "rejected-maps", element: <PageRejectedMaps /> },
+      { path: "rejected-challenges", element: <PageRejectedChallenges /> },
 
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },
@@ -508,8 +508,8 @@ export function Layout() {
           icon: <JournalIcon height="1.3em" />,
         },
         {
-          name: t("campaigns_menu.rejected_maps"),
-          path: "/rejected-maps",
+          name: t("campaigns_menu.rejected_challenges"),
+          path: "/rejected-challenges",
           icon: <FontAwesomeIcon icon={faBan} />,
         },
         { divider: true },
