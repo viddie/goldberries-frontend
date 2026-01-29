@@ -24,7 +24,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ProofExternalLinkButton } from "../components/GoldberriesComponents";
 
-export function PageRejectedMaps() {
+export function PageRejectedChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "rejected_challenges" });
 
   return (
@@ -120,6 +120,13 @@ function RejectedChallengesTableResults({ challenges }) {
   }, {});
   const keys = Object.keys(groupedChallenges);
 
+  // Sort keys by campaign name
+  keys.sort((a, b) => {
+    const campaignA = getChallengeCampaign(groupedChallenges[a][0]);
+    const campaignB = getChallengeCampaign(groupedChallenges[b][0]);
+    return campaignA.name.localeCompare(campaignB.name);
+  });
+
   return (
     <TableContainer component={Paper}>
       <Table size="small">
@@ -140,16 +147,21 @@ function RejectedChallengesTableResults({ challenges }) {
                 {campaignChallenges.map((challenge, index) => {
                   const firstSubmission = challenge.submissions[0];
                   const hasSubmission = firstSubmission !== undefined;
+                  const isFirst = index === 0;
+                  const isLast = index === campaignChallenges.length - 1;
+                  const cellBorder = isLast ? undefined : "1px dashed #444";
                   return (
                     <TableRow key={challenge.id}>
-                      <TableCell>
-                        {index === 0 && (
+                      <TableCell align={isFirst ? "left" : "center"} sx={{ borderBottom: cellBorder }}>
+                        {isFirst ? (
                           <StyledLink to={"/campaign/" + getChallengeCampaign(challenge).id}>
                             {getCampaignName(getChallengeCampaign(challenge), t_g)}
                           </StyledLink>
+                        ) : (
+                          "|"
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ borderBottom: cellBorder }}>
                         {challenge.map ? (
                           <StyledLink to={"/map/" + challenge.map.id}>
                             {getMapName(challenge.map, getChallengeCampaign(challenge), true, true, false)}
@@ -162,13 +174,13 @@ function RejectedChallengesTableResults({ challenges }) {
                           </Typography>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ borderBottom: cellBorder }}>
                         <StyledLink to={"/challenge/" + challenge.id}>
                           {getChallengeNameShort(challenge, true, true, false)}
                         </StyledLink>
                       </TableCell>
-                      <TableCell>{challenge.reject_note}</TableCell>
-                      <TableCell align="center">
+                      <TableCell sx={{ borderBottom: cellBorder }}>{challenge.reject_note}</TableCell>
+                      <TableCell align="center" sx={{ borderBottom: cellBorder }}>
                         {hasSubmission ? <ProofExternalLinkButton url={firstSubmission.proof_url} /> : "-"}
                       </TableCell>
                     </TableRow>
