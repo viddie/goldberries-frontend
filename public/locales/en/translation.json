@@ -1472,21 +1472,55 @@
           "created": "Suggestion created"
         },
         "header": "New Suggestion",
-        "select_challenge": "Select Challenge",
-        "suggestion_type": "Suggestion Type",
-        "error_difficulty_general": "Cannot select a difficulty when making a general challenge suggestion.",
-        "not_placement": {
-          "label": "Not a placement suggestion",
-          "note": "Checking this means not suggesting a difficulty, e.g. when splitting a C/FC challenge into C and FC."
+        "header_general": "New General Suggestion",
+        "header_feature": "New Feature Request",
+        "header_challenge_general": "New Challenge General Suggestion",
+        "header_challenge_split": "New Challenge Split Suggestion",
+        "header_challenge_placement": "New Challenge Placement Suggestion",
+        "back": "Back",
+        "types": {
+          "select_type": "Select Suggestion Type",
+          "general": {
+            "label": "General Suggestion",
+            "description": "Suggest a general change to the website or list"
+          },
+          "feature": {
+            "label": "Feature Request",
+            "description": "Suggest a new feature for the website"
+          },
+          "challenge_general": {
+            "label": "Challenge General",
+            "description": "Suggest a general change to a specific challenge (not placement)"
+          },
+          "challenge_split": {
+            "label": "Challenge Split",
+            "description": "Suggest splitting a combined C/FC challenge into separate C and FC challenges"
+          },
+          "challenge_placement": {
+            "label": "Challenge Placement",
+            "description": "Suggest a different difficulty tier for a challenge"
+          }
         },
-        "no_challenge_note": "Not selecting a challenge will create a general suggestion.",
+        "select_challenge": "Select Challenge",
+        "suggested_placement": "Suggested Placement",
+        "current_difficulty": "Current difficulty",
         "challenge_details": "Challenge Details",
         "totals": "Total for each tier",
         "comment": {
           "label": "Comment",
           "placeholder": "Explain why you think something should be changed",
-          "required": "Comment is required for general suggestions."
+          "required": "Comment is required."
         },
+        "feature_alert": "Whether a feature is implemented depends on a lot of things (popularity, viability, maintainability), so don't be disappointed if a suggestion is rejected.",
+        "feature_placeholder": "Describe the feature you would like to see",
+        "split_details": "Split Details",
+        "split_type_label": "Challenge type to split off",
+        "split_type_help": "Select which challenge type should get the new difficulty",
+        "split_difficulty_label": "Difficulty for split challenge",
+        "split_preview": "Split preview",
+        "split_comment_placeholder": "Optionally explain why you think this challenge should be split",
+        "split_error_not_combined": "This challenge is not a combined C/FC challenge and cannot be split.",
+        "split_error_same_difficulty": "You must select a different difficulty than the current one.",
         "button": "Create Suggestion"
       },
       "delete": {

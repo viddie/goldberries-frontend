@@ -20,28 +20,23 @@ import {
   TooltipLineBreaks,
 } from "../components/BasicComponents";
 import {
+  Alert,
   Box,
   Button,
   ButtonGroup,
-  Checkbox,
   Chip,
   Dialog,
   DialogContent,
   Divider,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
   IconButton,
   MenuItem,
   Pagination,
-  Radio,
-  RadioGroup,
   Select,
   Stack,
-  Tab,
-  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -100,6 +95,7 @@ import { VotesBar } from "../components/VotesBar";
 import Color from "color";
 import { ClearIcon } from "@mui/x-date-pickers";
 import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
+import { DIFFICULTIES } from "../util/constants";
 
 export function PageSuggestions({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
@@ -364,7 +360,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
           <Grid container columnSpacing={0.5}>
             <Grid item xs={12} sm>
               <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
-                {suggestion.comment ?? "-"}
+                <SuggestionCommentDisplay comment={suggestion.comment} />
               </Typography>
             </Grid>
           </Grid>
@@ -821,7 +817,7 @@ function ViewSuggestionModal({ id }) {
             </Grid>
             <Grid item xs={12} sm>
               <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
-                <FontAwesomeIcon icon={faComment} /> {suggestion.comment ?? "-"}
+                <FontAwesomeIcon icon={faComment} /> <SuggestionCommentDisplay comment={suggestion.comment} />
               </Typography>
             </Grid>
           </Grid>
@@ -1060,9 +1056,301 @@ function VotesDetailsDisplay({ votes, voteType, hasSubmission, highlightedPlayer
 //#endregion
 
 //#region == Create Suggestion Modal ==
+const SUGGESTION_TYPES = {
+  GENERAL: "general",
+  FEATURE: "feature",
+  CHALLENGE_GENERAL: "challenge_general",
+  CHALLENGE_SPLIT: "challenge_split",
+  CHALLENGE_PLACEMENT: "challenge_placement",
+};
+
 function CreateSuggestionModal({ onSuccess }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
-  const { t: t_a } = useTranslation();
+  const [stage, setStage] = useState(1);
+  const [suggestionType, setSuggestionType] = useState(null);
+
+  const handleTypeSelect = (type) => {
+    setSuggestionType(type);
+    setStage(2);
+  };
+
+  const handleBack = () => {
+    setStage(1);
+    setSuggestionType(null);
+  };
+
+  const handleSuccess = () => {
+    // Reset state on success
+    setStage(1);
+    setSuggestionType(null);
+    if (onSuccess) onSuccess();
+  };
+
+  // Get the header text based on stage and type
+  const getHeaderText = () => {
+    if (stage === 1) return t("header");
+    switch (suggestionType) {
+      case SUGGESTION_TYPES.GENERAL:
+        return t("header_general");
+      case SUGGESTION_TYPES.FEATURE:
+        return t("header_feature");
+      case SUGGESTION_TYPES.CHALLENGE_GENERAL:
+        return t("header_challenge_general");
+      case SUGGESTION_TYPES.CHALLENGE_SPLIT:
+        return t("header_challenge_split");
+      case SUGGESTION_TYPES.CHALLENGE_PLACEMENT:
+        return t("header_challenge_placement");
+      default:
+        return t("header");
+    }
+  };
+
+  return (
+    <Grid container rowSpacing={1} columnSpacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h5" gutterBottom>
+          {getHeaderText()}
+        </Typography>
+      </Grid>
+
+      {stage === 1 && <SuggestionTypeSelector onSelect={handleTypeSelect} />}
+
+      {stage === 2 && suggestionType === SUGGESTION_TYPES.GENERAL && (
+        <GeneralSuggestionForm onSuccess={handleSuccess} onBack={handleBack} />
+      )}
+
+      {stage === 2 && suggestionType === SUGGESTION_TYPES.FEATURE && (
+        <FeatureSuggestionForm onSuccess={handleSuccess} onBack={handleBack} />
+      )}
+
+      {stage === 2 && suggestionType === SUGGESTION_TYPES.CHALLENGE_GENERAL && (
+        <ChallengeGeneralSuggestionForm onSuccess={handleSuccess} onBack={handleBack} />
+      )}
+
+      {stage === 2 && suggestionType === SUGGESTION_TYPES.CHALLENGE_SPLIT && (
+        <ChallengeSplitSuggestionForm onSuccess={handleSuccess} onBack={handleBack} />
+      )}
+
+      {stage === 2 && suggestionType === SUGGESTION_TYPES.CHALLENGE_PLACEMENT && (
+        <ChallengePlacementSuggestionForm onSuccess={handleSuccess} onBack={handleBack} />
+      )}
+    </Grid>
+  );
+}
+
+function SuggestionTypeSelector({ onSelect }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create.types" });
+  const theme = useTheme();
+
+  const types = [
+    {
+      value: SUGGESTION_TYPES.GENERAL,
+      label: t("general.label"),
+      description: t("general.description"),
+      icon: faComment,
+    },
+    {
+      value: SUGGESTION_TYPES.FEATURE,
+      label: t("feature.label"),
+      description: t("feature.description"),
+      icon: faPlus,
+    },
+    {
+      value: SUGGESTION_TYPES.CHALLENGE_GENERAL,
+      label: t("challenge_general.label"),
+      description: t("challenge_general.description"),
+      icon: faInfoCircle,
+    },
+    {
+      value: SUGGESTION_TYPES.CHALLENGE_SPLIT,
+      label: t("challenge_split.label"),
+      description: t("challenge_split.description"),
+      icon: faArrowRight,
+    },
+    {
+      value: SUGGESTION_TYPES.CHALLENGE_PLACEMENT,
+      label: t("challenge_placement.label"),
+      description: t("challenge_placement.description"),
+      icon: faArrowRight,
+    },
+  ];
+
+  return (
+    <>
+      {types.map((type) => (
+        <Grid item xs={12} key={type.value}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => onSelect(type.value)}
+            sx={{
+              justifyContent: "flex-start",
+              textAlign: "left",
+              py: 1.5,
+              px: 2,
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover,
+              },
+            }}
+          >
+            <Stack direction="row" gap={2} alignItems="center" sx={{ width: "100%" }}>
+              <FontAwesomeIcon icon={type.icon} style={{ width: "1.5em" }} />
+              <Stack direction="column" gap={0} alignItems="flex-start">
+                <Typography variant="body1" sx={{ fontWeight: "bold", textTransform: "none" }}>
+                  {type.label}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ textTransform: "none" }}>
+                  {type.description}
+                </Typography>
+              </Stack>
+            </Stack>
+          </Button>
+        </Grid>
+      ))}
+    </>
+  );
+}
+
+function BackButton({ onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  return (
+    <Button variant="text" onClick={onBack} sx={{ mr: 1 }}>
+      {t("back")}
+    </Button>
+  );
+}
+
+function GeneralSuggestionForm({ onSuccess, onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  const theme = useTheme();
+  const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
+    toast.success(t("feedback.created"));
+    if (onSuccess) onSuccess();
+  });
+
+  const form = useForm({
+    defaultValues: {
+      comment: "",
+    },
+  });
+
+  const comment = form.watch("comment");
+  const isDisabled = comment.length < 10;
+
+  const onSubmit = form.handleSubmit((data) => {
+    postSuggestion({
+      challenge_id: null,
+      suggested_difficulty_id: null,
+      comment: data.comment,
+    });
+  });
+
+  return (
+    <>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          label={t("comment.label")}
+          placeholder={t("comment.placeholder")}
+          required
+          multiline
+          minRows={3}
+          variant="outlined"
+          {...form.register("comment")}
+        />
+        <CharsCountLabel text={comment} maxChars={1000} minChars={10} />
+        {comment.length < 10 && (
+          <FormHelperText sx={{ color: theme.palette.error.main }}>{t("comment.required")}</FormHelperText>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <BackButton onBack={onBack} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            disabled={isDisabled || postSuggestionLoading}
+          >
+            {t("button")}
+          </Button>
+        </Stack>
+      </Grid>
+    </>
+  );
+}
+
+function FeatureSuggestionForm({ onSuccess, onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  const theme = useTheme();
+  const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
+    toast.success(t("feedback.created"));
+    if (onSuccess) onSuccess();
+  });
+
+  const form = useForm({
+    defaultValues: {
+      comment: "",
+    },
+  });
+
+  const comment = form.watch("comment");
+  const isDisabled = comment.length < 10;
+
+  const onSubmit = form.handleSubmit((data) => {
+    // Hardcoded English prefix since it's sent to the server
+    const featurePrefix =
+      "FEATURE: This is a feature suggestion. Vote 'for' if you would use this feature or 'against' if you wouldn't use it.";
+    const fullComment = `${featurePrefix}\n\n${data.comment}`;
+    postSuggestion({
+      challenge_id: null,
+      suggested_difficulty_id: null,
+      comment: fullComment,
+    });
+  });
+
+  return (
+    <>
+      <Grid item xs={12}>
+        <Alert severity="info" variant="outlined">
+          {t("feature_alert")}
+        </Alert>
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          label={t("comment.label")}
+          placeholder={t("feature_placeholder")}
+          required
+          multiline
+          minRows={3}
+          variant="outlined"
+          {...form.register("comment")}
+        />
+        <CharsCountLabel text={comment} maxChars={1000} minChars={10} />
+        {comment.length < 10 && (
+          <FormHelperText sx={{ color: theme.palette.error.main }}>{t("comment.required")}</FormHelperText>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <BackButton onBack={onBack} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            disabled={isDisabled || postSuggestionLoading}
+          >
+            {t("button")}
+          </Button>
+        </Stack>
+      </Grid>
+    </>
+  );
+}
+
+function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
   const theme = useTheme();
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
     toast.success(t("feedback.created"));
@@ -1072,39 +1360,27 @@ function CreateSuggestionModal({ onSuccess }) {
   const form = useForm({
     defaultValues: {
       challenge: null,
-      suggested_difficulty_id: null,
-      is_general_challenge_suggestion: false,
       comment: "",
     },
-  });
-  const onSubmit = form.handleSubmit((data) => {
-    postSuggestion({
-      ...data,
-      challenge: undefined,
-      is_general_challenge_suggestion: undefined,
-      challenge_id: data.challenge?.id,
-    });
   });
 
   const selectedChallenge = form.watch("challenge");
   const comment = form.watch("comment");
-  const isGeneral = form.watch("is_general_challenge_suggestion");
-  const selectedDifficulty = form.watch("suggested_difficulty_id");
-  const isDisabled =
-    (selectedChallenge !== null && selectedDifficulty === null && !isGeneral) ||
-    (selectedDifficulty !== null && isGeneral) ||
-    (comment.length < 10 && (isGeneral || selectedChallenge === null));
+  const isDisabled = selectedChallenge === null || comment.length < 10;
 
   const query = useGetChallenge(selectedChallenge?.id);
   const fetchedChallenge = getQueryData(query);
 
+  const onSubmit = form.handleSubmit((data) => {
+    postSuggestion({
+      challenge_id: data.challenge?.id,
+      suggested_difficulty_id: null,
+      comment: data.comment,
+    });
+  });
+
   return (
-    <Grid container rowSpacing={1} columnSpacing={2}>
-      <Grid item xs={12}>
-        <Typography variant="h5" gutterBottom>
-          {t("header")}
-        </Typography>
-      </Grid>
+    <>
       <Grid item xs={12}>
         <Divider>
           <Chip label={t("select_challenge")} size="small" />
@@ -1115,104 +1391,14 @@ function CreateSuggestionModal({ onSuccess }) {
           name="challenge"
           control={form.control}
           render={({ field }) => (
-            <FullChallengeSelect
-              challenge={field.value}
-              setChallenge={(c) => {
-                field.onChange(c);
-              }}
-            />
+            <FullChallengeSelect challenge={field.value} setChallenge={(c) => field.onChange(c)} />
           )}
         />
       </Grid>
-      {selectedChallenge !== null && (
-        <>
-          <Grid item xs={12}>
-            <Divider>
-              <Chip label={t("suggestion_type")} size="small" />
-            </Divider>
-          </Grid>
-          <Grid item xs={12}>
-            <Controller
-              name="suggested_difficulty_id"
-              control={form.control}
-              render={({ field }) => (
-                <DifficultySelectControlled
-                  label={t_a("components.difficulty_select.label")}
-                  fullWidth
-                  isSuggestion
-                  difficultyId={field.value}
-                  setDifficultyId={(d) => {
-                    field.onChange(d);
-                  }}
-                  sx={{ mt: 1 }}
-                />
-              )}
-            />
-            {isGeneral && selectedDifficulty !== null && (
-              <FormHelperText sx={{ color: theme.palette.error.main }}>
-                {t("error_difficulty_general")}
-              </FormHelperText>
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            <Controller
-              name="is_general_challenge_suggestion"
-              control={form.control}
-              render={({ field }) => (
-                <FormControlLabel
-                  label={t("not_placement.label")}
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  control={<Checkbox />}
-                  sx={{ mt: 0 }}
-                />
-              )}
-            />
-            <FormHelperText>{t("not_placement.note")}</FormHelperText>
-          </Grid>
-        </>
-      )}
-      {selectedChallenge === null && (
-        <Grid item xs={12}>
-          <Typography variant="body2">{t("no_challenge_note")}</Typography>
-        </Grid>
-      )}
+
       {query.isLoading && <LoadingSpinner />}
       {query.isError && <ErrorDisplay error={query.error} />}
-      {fetchedChallenge !== null && (
-        <>
-          <Grid item xs={12}>
-            <Divider>
-              <Chip label={t("challenge_details")} size="small" />
-            </Divider>
-          </Grid>
-          <Grid item xs={12}>
-            <DifficultyChip difficulty={fetchedChallenge.difficulty} />
-          </Grid>
-          <Grid item xs={12}>
-            <ChallengeSubmissionTable challenge={fetchedChallenge} onlyShowFirstFew />
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Stack direction="row" justifyContent="space-around">
-              <SuggestedDifficultyChart challenge={fetchedChallenge} />
-            </Stack>
-          </Grid>
-          <Grid item xs={12} sm>
-            <Typography variant="body1" gutterBottom>
-              {t("totals")}
-            </Typography>
-            <SuggestedDifficultyTierCounts
-              challenge={fetchedChallenge}
-              direction="column"
-              hideIfEmpty
-              stackGrid
-            />
-          </Grid>
-        </>
-      )}
+      {fetchedChallenge !== null && <ChallengeDetailsDisplay challenge={fetchedChallenge} t={t} />}
 
       <Grid item xs={12}>
         <Divider />
@@ -1228,22 +1414,397 @@ function CreateSuggestionModal({ onSuccess }) {
           variant="outlined"
           {...form.register("comment")}
         />
-        <CharsCountLabel text={comment} maxChars={1000} />
-        {(isGeneral || selectedChallenge === null) && comment.length < 10 && (
+        <CharsCountLabel text={comment} maxChars={1000} minChars={10} />
+        {comment.length < 10 && (
           <FormHelperText sx={{ color: theme.palette.error.main }}>{t("comment.required")}</FormHelperText>
         )}
       </Grid>
       <Grid item xs={12}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onSubmit}
-          disabled={isDisabled || postSuggestionLoading}
-        >
-          {t("button")}
-        </Button>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <BackButton onBack={onBack} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            disabled={isDisabled || postSuggestionLoading}
+          >
+            {t("button")}
+          </Button>
+        </Stack>
       </Grid>
-    </Grid>
+    </>
+  );
+}
+
+function ChallengeSplitSuggestionForm({ onSuccess, onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  const { t: t_a } = useTranslation();
+  const theme = useTheme();
+  const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
+    toast.success(t("feedback.created"));
+    if (onSuccess) onSuccess();
+  });
+
+  const form = useForm({
+    defaultValues: {
+      challenge: null,
+      split_type: "c", // "c" or "fc"
+      split_difficulty_id: null,
+      comment: "",
+    },
+  });
+
+  const selectedChallenge = form.watch("challenge");
+  const splitType = form.watch("split_type");
+  const splitDifficultyId = form.watch("split_difficulty_id");
+  const comment = form.watch("comment");
+
+  const query = useGetChallenge(selectedChallenge?.id);
+  const fetchedChallenge = getQueryData(query);
+
+  // Determine if the challenge is a combined C/FC challenge (has_fc = true means it can be split)
+  const isCombinedChallenge = fetchedChallenge?.has_fc === true;
+  const currentDifficulty = fetchedChallenge?.difficulty;
+
+  // Check if selected difficulty is the same as current
+  const isSameDifficulty = splitDifficultyId !== null && currentDifficulty?.id === splitDifficultyId;
+
+  const isDisabled =
+    selectedChallenge === null || splitDifficultyId === null || !isCombinedChallenge || isSameDifficulty;
+
+  const onSubmit = form.handleSubmit((data) => {
+    // Get difficulty names for the prefix
+    const splitDifficultyName =
+      DIFFICULTIES[data.split_difficulty_id]?.name || `ID ${data.split_difficulty_id}`;
+    const currentDifficultyName = currentDifficulty?.name || "current";
+
+    // Always keep C on the left and FC on the right in the prefix
+    const cDifficulty = data.split_type === "c" ? splitDifficultyName : currentDifficultyName;
+    const fcDifficulty = data.split_type === "fc" ? splitDifficultyName : currentDifficultyName;
+
+    // Hardcoded English prefix since it's sent to the server
+    const splitPrefix = `SPLIT: This is a suggestion to split the challenge: C → ${cDifficulty} | FC → ${fcDifficulty}`;
+
+    const fullComment = data.comment.trim() ? `${splitPrefix}\n\n${data.comment}` : splitPrefix;
+
+    postSuggestion({
+      challenge_id: data.challenge?.id,
+      suggested_difficulty_id: null,
+      comment: fullComment,
+    });
+  });
+
+  return (
+    <>
+      <Grid item xs={12}>
+        <Divider>
+          <Chip label={t("select_challenge")} size="small" />
+        </Divider>
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          name="challenge"
+          control={form.control}
+          render={({ field }) => (
+            <FullChallengeSelect challenge={field.value} setChallenge={(c) => field.onChange(c)} />
+          )}
+        />
+      </Grid>
+
+      {query.isLoading && <LoadingSpinner />}
+      {query.isError && <ErrorDisplay error={query.error} />}
+
+      {fetchedChallenge !== null && !isCombinedChallenge && (
+        <Grid item xs={12}>
+          <FormHelperText sx={{ color: theme.palette.error.main }}>
+            {t("split_error_not_combined")}
+          </FormHelperText>
+        </Grid>
+      )}
+
+      {fetchedChallenge !== null && isCombinedChallenge && (
+        <>
+          <Grid item xs={12}>
+            <Divider>
+              <Chip label={t("split_details")} size="small" />
+            </Divider>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row" gap={2} alignItems="center">
+              <Typography variant="body2">{t("current_difficulty")}:</Typography>
+              <DifficultyChip difficulty={currentDifficulty} />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <Controller
+                name="split_type"
+                control={form.control}
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value="c">C (Clear)</MenuItem>
+                    <MenuItem value="fc">FC (Full Clear)</MenuItem>
+                  </Select>
+                )}
+              />
+              <FormHelperText>{t("split_type_help")}</FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="split_difficulty_id"
+              control={form.control}
+              render={({ field }) => (
+                <DifficultySelectControlled
+                  label={t("split_difficulty_label")}
+                  fullWidth
+                  isSuggestion
+                  difficultyId={field.value}
+                  setDifficultyId={(d) => field.onChange(d)}
+                />
+              )}
+            />
+            {isSameDifficulty && (
+              <FormHelperText sx={{ color: theme.palette.error.main }}>
+                {t("split_error_same_difficulty")}
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <SplitPreview
+              splitType={splitType}
+              splitDifficultyId={splitDifficultyId}
+              currentDifficulty={currentDifficulty}
+            />
+          </Grid>
+        </>
+      )}
+
+      {fetchedChallenge !== null && <ChallengeDetailsDisplay challenge={fetchedChallenge} t={t} />}
+
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          label={t("comment.label")}
+          placeholder={t("split_comment_placeholder")}
+          multiline
+          minRows={3}
+          variant="outlined"
+          {...form.register("comment")}
+        />
+        <CharsCountLabel text={comment} maxChars={1000} />
+      </Grid>
+      <Grid item xs={12}>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <BackButton onBack={onBack} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            disabled={isDisabled || postSuggestionLoading}
+          >
+            {t("button")}
+          </Button>
+        </Stack>
+      </Grid>
+    </>
+  );
+}
+
+function SplitPreview({ splitType, splitDifficultyId, currentDifficulty }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  const theme = useTheme();
+
+  if (!splitDifficultyId) return null;
+
+  // Create a difficulty object from the ID
+  const splitDifficulty = DIFFICULTIES[splitDifficultyId]
+    ? { id: splitDifficultyId, ...DIFFICULTIES[splitDifficultyId] }
+    : null;
+
+  // Always keep C on the left and FC on the right
+  const cDifficulty = splitType === "c" ? splitDifficulty : currentDifficulty;
+  const fcDifficulty = splitType === "fc" ? splitDifficulty : currentDifficulty;
+
+  return (
+    <Box sx={{ p: 1.5, backgroundColor: theme.palette.action.hover, borderRadius: 1 }}>
+      <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
+        {t("split_preview")}:
+      </Typography>
+      <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+        <Typography variant="body2">C:</Typography>
+        <DifficultyChip difficulty={cDifficulty} />
+        <Typography variant="body2">|</Typography>
+        <Typography variant="body2">FC:</Typography>
+        <DifficultyChip difficulty={fcDifficulty} />
+      </Stack>
+    </Box>
+  );
+}
+
+function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
+  const { t: t_a } = useTranslation();
+  const theme = useTheme();
+  const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
+    toast.success(t("feedback.created"));
+    if (onSuccess) onSuccess();
+  });
+
+  const form = useForm({
+    defaultValues: {
+      challenge: null,
+      suggested_difficulty_id: null,
+      comment: "",
+    },
+  });
+
+  const selectedChallenge = form.watch("challenge");
+  const selectedDifficulty = form.watch("suggested_difficulty_id");
+  const comment = form.watch("comment");
+  const isDisabled = selectedChallenge === null || selectedDifficulty === null;
+
+  const query = useGetChallenge(selectedChallenge?.id);
+  const fetchedChallenge = getQueryData(query);
+
+  const onSubmit = form.handleSubmit((data) => {
+    postSuggestion({
+      challenge_id: data.challenge?.id,
+      suggested_difficulty_id: data.suggested_difficulty_id,
+      comment: data.comment,
+    });
+  });
+
+  return (
+    <>
+      <Grid item xs={12}>
+        <Divider>
+          <Chip label={t("select_challenge")} size="small" />
+        </Divider>
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          name="challenge"
+          control={form.control}
+          render={({ field }) => (
+            <FullChallengeSelect challenge={field.value} setChallenge={(c) => field.onChange(c)} />
+          )}
+        />
+      </Grid>
+
+      {query.isLoading && <LoadingSpinner />}
+      {query.isError && <ErrorDisplay error={query.error} />}
+
+      {selectedChallenge !== null && (
+        <>
+          <Grid item xs={12}>
+            <Divider>
+              <Chip label={t("suggested_placement")} size="small" />
+            </Divider>
+          </Grid>
+          {fetchedChallenge && (
+            <Grid item xs={12}>
+              <Stack direction="row" gap={2} alignItems="center">
+                <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                  {t("current_difficulty")}:
+                </Typography>
+                <DifficultyChip difficulty={fetchedChallenge.difficulty} />
+              </Stack>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <Controller
+              name="suggested_difficulty_id"
+              control={form.control}
+              render={({ field }) => (
+                <DifficultySelectControlled
+                  label={t_a("components.difficulty_select.label")}
+                  fullWidth
+                  isSuggestion
+                  difficultyId={field.value}
+                  setDifficultyId={(d) => field.onChange(d)}
+                />
+              )}
+            />
+          </Grid>
+          {fetchedChallenge && selectedDifficulty && (
+            <Grid item xs={12}>
+              <DifficultyMoveDisplay
+                from={fetchedChallenge.difficulty}
+                to={
+                  DIFFICULTIES[selectedDifficulty]
+                    ? { id: selectedDifficulty, ...DIFFICULTIES[selectedDifficulty] }
+                    : null
+                }
+              />
+            </Grid>
+          )}
+        </>
+      )}
+
+      {fetchedChallenge !== null && <ChallengeDetailsDisplay challenge={fetchedChallenge} t={t} />}
+
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          label={t("comment.label")}
+          placeholder={t("comment.placeholder")}
+          multiline
+          minRows={3}
+          variant="outlined"
+          {...form.register("comment")}
+        />
+        <CharsCountLabel text={comment} maxChars={1000} />
+      </Grid>
+      <Grid item xs={12}>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <BackButton onBack={onBack} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            disabled={isDisabled || postSuggestionLoading}
+          >
+            {t("button")}
+          </Button>
+        </Stack>
+      </Grid>
+    </>
+  );
+}
+
+function ChallengeDetailsDisplay({ challenge, t }) {
+  return (
+    <>
+      <Grid item xs={12}>
+        <Divider>
+          <Chip label={t("challenge_details")} size="small" />
+        </Divider>
+      </Grid>
+      <Grid item xs={12}>
+        <ChallengeSubmissionTable challenge={challenge} onlyShowFirstFew />
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12} sm={9}>
+        <Stack direction="row" justifyContent="space-around">
+          <SuggestedDifficultyChart challenge={challenge} />
+        </Stack>
+      </Grid>
+      <Grid item xs={12} sm>
+        <Typography variant="body1" gutterBottom>
+          {t("totals")}
+        </Typography>
+        <SuggestedDifficultyTierCounts challenge={challenge} direction="column" hideIfEmpty stackGrid />
+      </Grid>
+    </>
   );
 }
 
@@ -1256,6 +1817,17 @@ export function CharsCountLabel({ text, minChars = -1, maxChars }) {
     <Typography variant="caption" color={color}>
       {t("label", { count: length, max: maxChars })}
     </Typography>
+  );
+}
+
+// Component for displaying suggestion comments with line breaks
+export function SuggestionCommentDisplay({ comment, ...props }) {
+  if (!comment) return "-";
+
+  return (
+    <Box component="span" sx={{ whiteSpace: "pre-wrap" }} {...props}>
+      {comment}
+    </Box>
   );
 }
 //#endregion
