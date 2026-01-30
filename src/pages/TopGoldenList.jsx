@@ -299,6 +299,15 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
     <Stack
       direction={{ xs: "column", sm: "row" }}
       gap={{ xs: compactMode ? 0.5 : 1, sm: compactMode ? 1 : 2 }}
+      sx={{
+        // Regular padding/margin doesn't work on overflowing flex containers, so use a pseudo-element instead
+        "&::after": {
+          content: '""',
+          display: { xs: "none", sm: "block" },
+          minWidth: "1px",
+          flexShrink: 0,
+        },
+      }}
     >
       {filteredTierGroups.map((tierGroup, index) => (
         <MemoTierStack
