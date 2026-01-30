@@ -9,7 +9,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { TglModalContainer, sortChallengesForTGL } from "../components/TopGoldenList";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CustomModal, ModalButtons } from "../hooks/useModal";
@@ -73,6 +72,10 @@ import { useOverflowX } from "../hooks/useOverflowX";
 import { getDefaultOptions, TglMoreButton } from "../components/TglDisplayOptions";
 import { useModal } from "../hooks/useModal";
 import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
+import { MapDisplay } from "./Map";
+import { ChallengeDisplay } from "./Challenge";
+import { FormChallengeWrapper } from "../components/forms/Challenge";
+import { FormSubmissionWrapper } from "../components/forms/Submission";
 
 const textEllipsisStyles = {
   whiteSpace: "nowrap",
@@ -1020,11 +1023,14 @@ export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPerson
   const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
   const topGoldenList = getQueryData(query);
   const { settings } = useAppSettings();
-  const tpgSettings = settings.visual.topGoldenList;
   const [includeHeader, setIncludeHeader] = useLocalStorage("export_tgl_include_header", true);
   const [includeCount, setIncludeCount] = useLocalStorage("export_tgl_include_count", true);
   const [includeLink, setIncludeLink] = useLocalStorage("export_tgl_include_link", false);
   const [includeTimeTaken, setIncludeTimeTaken] = useLocalStorage("export_tgl_include_time_taken", false);
+
+  const sortBy = options.sort;
+  const sortOrder = options.sortOrder;
+  const isPlayer = type === "player";
 
   const copyToClipboard = () => {
     let text = "";
@@ -1041,7 +1047,7 @@ export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPerson
 
       if (filteredChallenges.length === 0) continue;
 
-      sortChallengesForTGL(filteredChallenges, maps, campaigns);
+      sortChallengesForTGLNew(filteredChallenges, maps, campaigns, sortBy, sortOrder, isPlayer);
 
       if (includeHeader) {
         if (index > 0 && hadContent) {
@@ -1160,6 +1166,52 @@ export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPerson
         </>
       )}
     </CustomModal>
+  );
+}
+
+function TglModalContainer({ modalRefs }) {
+  const showMapModal = useModal();
+  const editChallengeModal = useModal();
+  const editSubmissionModal = useModal();
+
+  // Setting the refs
+  modalRefs.map.show.current = showMapModal;
+  modalRefs.challenge.edit.current = editChallengeModal;
+  modalRefs.submission.edit.current = editSubmissionModal;
+
+  return (
+    <>
+      <CustomModal
+        modalHook={showMapModal}
+        maxWidth={false}
+        sx={{ maxWidth: "720px", margin: "auto" }}
+        options={{ hideFooter: true }}
+      >
+        {showMapModal.data?.id == null ? (
+          <LoadingSpinner />
+        ) : showMapModal.data?.isCampaign ? (
+          <ChallengeDisplay id={showMapModal.data.id} />
+        ) : (
+          <MapDisplay id={showMapModal.data.id} challengeId={showMapModal.data.challengeId} isModal />
+        )}
+      </CustomModal>
+
+      <CustomModal modalHook={editChallengeModal} options={{ hideFooter: true }}>
+        {editChallengeModal.data?.id == null ? (
+          <LoadingSpinner />
+        ) : (
+          <FormChallengeWrapper id={editChallengeModal.data.id} onSave={editChallengeModal.close} />
+        )}
+      </CustomModal>
+
+      <CustomModal modalHook={editSubmissionModal} options={{ hideFooter: true }}>
+        {editSubmissionModal.data?.id == null ? (
+          <LoadingSpinner />
+        ) : (
+          <FormSubmissionWrapper id={editSubmissionModal.data.id} onSave={editSubmissionModal.close} />
+        )}
+      </CustomModal>
+    </>
   );
 }
 //#endregion
