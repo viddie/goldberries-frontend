@@ -46,6 +46,7 @@ import {
 } from "../components/GoldberriesComponents";
 import {
   getChallengeCampaign,
+  getChallengeFractionalTier,
   getChallengeNameShort,
   getChallengeSuffix,
   getMapLobbyInfo,
@@ -101,6 +102,7 @@ import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { useTheme } from "@emotion/react";
 import { MapImageBanner } from "../components/MapImage";
+import { sortToDifficulty, sortToDifficultyId } from "../util/constants";
 
 const displayNoneOnMobile = {
   display: {
@@ -291,6 +293,7 @@ export function ChallengeDetailsList({ map, challenge = null, ...props }) {
                 text={
                   <Stack direction="row" alignItems="center" gap={1}>
                     <DifficultyChip difficulty={challenge.difficulty} />
+                    <CalculatedFractionalTierChip challenge={challenge} />
                     {challenge.reject_note && !challenge.is_rejected && (
                       <TooltipLineBreaks title={challenge.reject_note}>
                         <FontAwesomeIcon icon={faExclamationTriangle} />
@@ -782,4 +785,56 @@ export function NoteDisclaimer({ title, note, sx = {} }) {
       {note}
     </Alert>
   );
+}
+
+/**
+ * Displays the calculated fractional tier for a challenge as a DifficultyChip
+ * wrapped in parentheses with a tooltip explaining its meaning.
+ * Only renders if the user has fractional tiers enabled in settings and
+ * if valid fractional tier data can be calculated from submissions.
+ */
+export function CalculatedFractionalTierChip({ challenge }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
+  const { settings } = useAppSettings();
+
+  if (!settings.general.showFractionalTiers) return null;
+
+  const fracData = getCalculatedFractionalTierData(challenge);
+  if (!fracData) return null;
+
+  return (
+    <Stack direction="row" alignItems="center" gap={0.5}>
+      <span style={{ opacity: "0.33" }}>(</span>
+      <Tooltip title={t("calculated_tier_tooltip")} arrow placement="top">
+        <span>
+          <DifficultyChip
+            difficulty={fracData.difficulty}
+            frac={fracData.frac}
+            sx={{ opacity: "0.33" }}
+            noTier
+          />
+        </span>
+      </Tooltip>
+      <span style={{ opacity: "0.33" }}>)</span>
+    </Stack>
+  );
+}
+
+/**
+ * Gets the calculated fractional tier data for a challenge.
+ * Returns an object with:
+ *   - difficulty: the difficulty object for the tier (based on the integer part)
+ *   - frac: the fractional part (0-99) for display on the chip
+ * Returns null if no valid fractional tier can be calculated.
+ */
+function getCalculatedFractionalTierData(challenge) {
+  const fractionalTier = getChallengeFractionalTier(challenge);
+  if (fractionalTier === null) return null;
+
+  const tierSort = Math.floor(fractionalTier);
+  const difficulty = sortToDifficulty(tierSort);
+  const difficultyId = sortToDifficultyId(tierSort);
+  const frac = Math.round((fractionalTier % 1) * 100);
+
+  return { difficulty: { ...difficulty, id: difficultyId }, frac };
 }

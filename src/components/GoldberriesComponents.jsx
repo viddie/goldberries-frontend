@@ -127,7 +127,7 @@ export function MapSelect({ campaign, selected, setSelected, disabled, ...props 
   const { t } = useTranslation();
   const query = useGetAllMapsInCampaign(campaign?.id);
 
-  const maps = campaign ? getQueryData(query)?.maps ?? [] : [];
+  const maps = campaign ? (getQueryData(query)?.maps ?? []) : [];
 
   const getOptionLabel = (map) => {
     const oldPrefix = map.is_archived ? "[Old] " : "";
@@ -253,6 +253,7 @@ export function DifficultyChip({
   prefix = "",
   isPersonal = false,
   highlightPersonal = false,
+  noTier = false,
   sx = {},
   ...props
 }) {
@@ -270,7 +271,10 @@ export function DifficultyChip({
     }
     hasFraction = true;
   }
-  const name = getDifficultyChipName(settings, difficulty.id, hasFraction);
+  let name = getDifficultyChipName(settings, difficulty.id, hasFraction);
+  if (noTier) {
+    name = name.replace(/^Tier\s*/, "");
+  }
 
   const colors = getNewDifficultyColors(settings, difficulty?.id);
   const isTrivial = difficulty.id === DIFF_CONSTS.TRIVIAL_ID;
@@ -396,7 +400,7 @@ export function DifficultySelectControlled({
   difficulties = JSON.parse(JSON.stringify(difficulties));
   if (isSuggestion) {
     difficulties = difficulties.filter(
-      (d) => d.id !== DIFF_CONSTS.TRIVIAL_ID && d.id !== DIFF_CONSTS.UNTIERED_ID
+      (d) => d.id !== DIFF_CONSTS.TRIVIAL_ID && d.id !== DIFF_CONSTS.UNTIERED_ID,
     );
   }
   if (minSort !== null) {
@@ -890,8 +894,8 @@ export function ChallengeFcIcon({
   const icon = challenge.requires_fc
     ? "fullclear.png"
     : challenge.has_fc
-    ? "clear-fullclear.png"
-    : "clear.png";
+      ? "clear-fullclear.png"
+      : "clear.png";
   const alt = getChallengeFcLong(challenge);
   const shortAlt = getChallengeFcShort(challenge);
 
@@ -1168,7 +1172,7 @@ export function WebsiteIcon({
         odds: oddsText,
         count: loaded,
       }),
-    []
+    [],
   );
   let styleToDisplay = useMemo(() => style, []);
 

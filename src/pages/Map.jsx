@@ -10,7 +10,12 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChallengeDetailsList, ChallengeSubmissionTable, NoteDisclaimer } from "./Challenge";
+import {
+  CalculatedFractionalTierChip,
+  ChallengeDetailsList,
+  ChallengeSubmissionTable,
+  NoteDisclaimer,
+} from "./Challenge";
 import {
   faArrowRightToBracket,
   faEdit,
@@ -142,6 +147,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
             <ChallengeFcIcon challenge={selectedChallenge} showClear height="1.3em" />
             <span>{getChallengeFcShort(selectedChallenge)}</span>
             <DifficultyChip difficulty={selectedChallenge.difficulty} />
+            <CalculatedFractionalTierChip challenge={selectedChallenge} />
             {selectedChallenge.reject_note && (
               <>
                 {selectedChallenge.is_rejected && <VerificationStatusChip isVerified={false} size="small" />}

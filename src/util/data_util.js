@@ -60,7 +60,7 @@ export function getChallengeNameShort(
   challenge,
   withSuffix = false,
   includeFc = true,
-  includeRejected = true
+  includeRejected = true,
 ) {
   const rejectedPrefix = challenge.is_rejected && includeRejected ? "[Rejected] " : "";
   const challengeSuffix =
@@ -86,6 +86,42 @@ export function getDifficultyName(difficulty) {
   //capitalize first letter
   subtierPrefix = subtierPrefix.charAt(0).toUpperCase() + subtierPrefix.slice(1);
   return subtierPrefix + difficulty.name;
+}
+
+/**
+ * Calculates the average fractional tier for a challenge based on its submissions.
+ *
+ * The fractional tier is calculated by averaging:
+ *   - submission.suggested_difficulty.sort (tier number) + submission.frac / 100
+ *
+ * Only submissions that:
+ *   - Have a suggested_difficulty set
+ *   - Are NOT personal opinions (is_personal = false)
+ * are included in the calculation.
+ *
+ * @param {Object} challenge - The challenge object with submissions array
+ * @returns {number|null} The average fractional tier (e.g., 7.42), or null if no valid submissions
+ */
+export function getChallengeFractionalTier(challenge) {
+  if (!challenge || !challenge.submissions || challenge.submissions.length === 0) {
+    return null;
+  }
+
+  const validSubmissions = challenge.submissions.filter(
+    (sub) => sub.suggested_difficulty !== null && sub.is_personal !== true,
+  );
+
+  if (validSubmissions.length === 0) {
+    return null;
+  }
+
+  const totalFrac = validSubmissions.reduce((sum, sub) => {
+    const tierSort = sub.suggested_difficulty.sort;
+    const frac = (sub.frac ?? 50) / 100;
+    return sum + tierSort + frac;
+  }, 0);
+
+  return totalFrac / validSubmissions.length;
 }
 
 export function getChallengeFlags(challenge) {
@@ -178,7 +214,7 @@ export function getMapName(
   campaign,
   includeMapWithSide = true,
   includeOld = true,
-  includeRejected = true
+  includeRejected = true,
 ) {
   campaign = campaign || map.campaign;
 
@@ -328,7 +364,7 @@ export function getPlayerNameColorStyle(player, settings = null) {
     nameColorEnd = nameColorStart;
   }
   let contrastColorStart = darkTheme.palette.getContrastText(
-    nameColorStart === "" ? "#000000" : nameColorStart
+    nameColorStart === "" ? "#000000" : nameColorStart,
   );
   let contrastColorEnd = darkTheme.palette.getContrastText(nameColorEnd === "" ? "#000000" : nameColorEnd);
   const outlineColor = contrastColorStart === contrastColorEnd ? contrastColorStart : "rgba(0, 0, 0, 0.87)";
@@ -364,7 +400,7 @@ export function getPlayerNameColorStyle(player, settings = null) {
 
 export function getSortedSuggestedDifficulties(challenge) {
   let allSuggestedDiffs = challenge.submissions.filter(
-    (submission) => submission.suggested_difficulty !== null && !submission.is_personal
+    (submission) => submission.suggested_difficulty !== null && !submission.is_personal,
   );
   allSuggestedDiffs = allSuggestedDiffs.map((submission) => submission.suggested_difficulty);
 

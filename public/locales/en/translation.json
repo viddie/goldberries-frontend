@@ -1079,6 +1079,7 @@
       "edit": "Edit Challenge"
     },
     "difficulty_suggestions": "Difficulty Opinions",
+    "calculated_tier_tooltip": "Calculated tier based on player difficulty opinions",
     "is_full_game": "Full Game?",
     "lobby_info": "Lobby Info",
     "description": "Challenge Description",
