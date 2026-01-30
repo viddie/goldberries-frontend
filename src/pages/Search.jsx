@@ -368,16 +368,10 @@ function SearchResultTabs({ search, maps, campaigns, authors }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
-  const getPreSelectedTab = () => {
-    if (maps.length > 0) return "maps";
-    if (campaigns.length > 0) return "campaigns";
-    if (authors.length > 0) return "authors";
-    return "maps";
-  };
-  const [tab, setTab] = useState(getPreSelectedTab());
+  const [tab, setTab] = useState(getPreSelectedTab(maps, campaigns, authors, search));
 
   useEffect(() => {
-    setTab(getPreSelectedTab());
+    setTab(getPreSelectedTab(maps, campaigns, authors, search));
   }, [search]);
 
   const filteredCampaigns = campaigns
@@ -454,4 +448,48 @@ function DebouncedTextField({ value, setValue, label, clearOnFocus = false, isDi
       autoFocus
     />
   );
+}
+
+/**
+ * Get the pre-selected tab based on the search input and available results.
+ * @param {*} maps list of maps
+ * @param {*} campaigns list of campaigns
+ * @param {*} authors list of authors
+ * @param {string} search search input
+ * @returns pre-selected tab
+ */
+function getPreSelectedTab(maps, campaigns, authors, search) {
+  const normalize = (str) => str?.toLowerCase()?.replace(/[^a-z0-9]/g, "") ?? "";
+
+  const searchNormalized = normalize(search);
+
+  const campaignKeywords = ["collab", "contest", "campaign"];
+  if (campaignKeywords.some((keyword) => searchNormalized.includes(keyword))) {
+    if (campaigns.length > 0) return "campaigns";
+  }
+
+  const hasExactMatch = (items, getName) =>
+    items.some((item) => normalize(getName(item)) === searchNormalized);
+  const hasPrefixMatch = (items, getName) =>
+    items.some((item) => normalize(getName(item)).startsWith(searchNormalized));
+
+  const mapExact = maps.length > 0 && hasExactMatch(maps, (m) => m.name);
+  const campaignExact = campaigns.length > 0 && hasExactMatch(campaigns, (c) => c.name);
+  const authorExact = authors.length > 0 && hasExactMatch(authors, (a) => a.name);
+  if (mapExact) return "maps";
+  if (campaignExact) return "campaigns";
+  if (authorExact) return "authors";
+
+  const mapPrefix = maps.length > 0 && hasPrefixMatch(maps, (m) => m.name);
+  const campaignPrefix = campaigns.length > 0 && hasPrefixMatch(campaigns, (c) => c.name);
+  const authorPrefix = authors.length > 0 && hasPrefixMatch(authors, (a) => a.name);
+  if (mapPrefix) return "maps";
+  if (campaignPrefix) return "campaigns";
+  if (authorPrefix) return "authors";
+
+  // Fallback: select first non-empty tab
+  if (maps.length > 0) return "maps";
+  if (campaigns.length > 0) return "campaigns";
+  if (authors.length > 0) return "authors";
+  return "maps";
 }
