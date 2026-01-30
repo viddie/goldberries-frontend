@@ -42,6 +42,7 @@ import {
   faClipboard,
   faComment,
   faExclamationTriangle,
+  faEyeSlash,
   faFileExport,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -57,7 +58,14 @@ import {
 } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { API_BASE_URL, DIFFICULTY_STACKS, getNewDifficultyColors } from "../util/constants";
+import {
+  API_BASE_URL,
+  DIFF_CONSTS,
+  DIFFICULTIES,
+  DIFFICULTY_STACKS,
+  difficultyIdToSort,
+  getNewDifficultyColors,
+} from "../util/constants";
 import Color from "color";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { useAuth } from "../hooks/AuthProvider";
@@ -326,6 +334,7 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
           options={options}
         />
       ))}
+      <HiddenTiersNotice filter={filter} compactMode={compactMode} />
     </Stack>
   );
 }
@@ -965,121 +974,45 @@ function DifficultyNumber({
   );
 }
 
-//#region Sorting functions
-export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sortOrder, isPlayer = false) {
-  const ascending = sortOrder === "asc";
-  const sortChallenges = (a, b) => {
-    switch (sortBy) {
-      case "fractional-tiers":
-        return sortByFractionalTier(a, b, isPlayer, ascending);
-      case "clear-count":
-        return sortByClearCount(a, b, ascending);
-      case "first-clear-date":
-        return sortByFirstClearDate(a, b, ascending);
-      case "time-taken":
-        return sortByTimeTaken(a, b, ascending);
-      case "alphabetical":
-      default:
-        break;
-    }
-    return sortByAlphabetical(a, b, maps, campaigns, ascending);
-  };
-  challenges.sort(sortChallenges);
-  return challenges;
-}
-function sortByFractionalTier(a, b, isPlayer, ascending) {
-  //If fraction is available, use that for sorting first. if no frac is available, treat it as 0.5
-  let fracA = 0.5;
-  let fracB = 0.5;
-  if (isPlayer) {
-    //First sort for the suggested difficulty, if it exists
-    const diffSortA = a.submissions[0].suggested_difficulty?.sort ?? a.difficulty.sort;
-    const diffSortB = b.submissions[0].suggested_difficulty?.sort ?? b.difficulty.sort;
-    if (diffSortA !== diffSortB) {
-      return ascending ? diffSortA - diffSortB : diffSortB - diffSortA;
-    }
-    fracA = a.submissions[0].frac ?? 50;
-    fracB = b.submissions[0].frac ?? 50;
-  } else {
-    fracA = a.data.frac !== false && a.data.frac !== undefined ? a.data.frac : 0.5;
-    fracB = b.data.frac !== false && b.data.frac !== undefined ? b.data.frac : 0.5;
-  }
-  if (fracA !== fracB) {
-    return ascending ? fracA - fracB : fracB - fracA;
-  }
-  return 0;
-}
-function sortByClearCount(a, b, ascending) {
-  const countA = a.data.submission_count;
-  const countB = b.data.submission_count;
-  if (countA !== countB) {
-    return ascending ? countA - countB : countB - countA;
-  }
-  return 0;
-}
-function sortByFirstClearDate(a, b, ascending) {
-  const dateA = new Date(a.submissions[0].date_achieved);
-  const dateB = new Date(b.submissions[0].date_achieved);
-  if (dateA !== dateB) {
-    return ascending ? dateA - dateB : dateB - dateA;
-  }
-  return 0;
-}
-function sortByAlphabetical(a, b, maps, campaigns, ascending) {
-  const mapA = maps[a.map_id];
-  const mapB = maps[b.map_id];
-  const campaignA = mapA === undefined ? campaigns[a.campaign_id] : campaigns[mapA.campaign_id];
-  const campaignB = mapB === undefined ? campaigns[b.campaign_id] : campaigns[mapB.campaign_id];
-  const mapNameA = getMapName(mapA, campaignA, true, false);
-  const mapNameB = getMapName(mapB, campaignB, true, false);
-  return ascending ? mapNameA.localeCompare(mapNameB) : mapNameB.localeCompare(mapNameA);
-}
-function sortByTimeTaken(a, b, ascending) {
-  const timeA = a.submissions[0].time_taken;
-  const timeB = b.submissions[0].time_taken;
-  //Always sort null values to the end
-  if (timeA === null && timeB === null) {
-    return 0;
-  } else if (timeA === null) {
-    return 1;
-  } else if (timeB === null) {
-    return -1;
-  }
-  if (timeA !== timeB) {
-    return ascending ? timeA - timeB : timeB - timeA;
-  }
-  return 0;
-}
-//#endregion
+function HiddenTiersNotice({ filter, compactMode }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
+  const theme = useTheme();
 
-//#region Keys
-export function getTglOptionsKey(type) {
-  if (type === "player") {
-    return "top_golden_list_options_player";
-  } else if (type === "campaign") {
-    return "top_golden_list_options_campaign";
-  }
-  return "top_golden_list_options";
-}
+  const hiddenCount = countHiddenTiers(filter);
+  if (hiddenCount === 0) return null;
+  const hiddenMessage = t("hidden_tiers.notice", { count: hiddenCount });
 
-export function getTglFilterKey(type) {
-  if (type === "player") {
-    return "top_golden_list_filter_player";
-  } else if (type === "campaign") {
-    return "top_golden_list_filter_campaign";
-  }
-  return "top_golden_list_filter";
+  return (
+    <Stack
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      gap={1}
+      sx={{
+        p: 2,
+        minWidth: { xs: "auto", sm: "300px" },
+        maxWidth: { xs: "100%", sm: "350px" },
+        height: "fit-content",
+        border: `1px dashed ${theme.palette.text.secondary}`,
+        borderRadius: "8px",
+        backgroundColor: "rgba(0,0,0,0.2)",
+        textAlign: "center",
+      }}
+    >
+      <FontAwesomeIcon
+        icon={faEyeSlash}
+        color={theme.palette.text.secondary}
+        size={compactMode ? "lg" : "2x"}
+      />
+      <Typography variant={compactMode ? "body2" : "body1"} color="text.secondary">
+        {hiddenMessage}
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        {t("hidden_tiers.change_filter")}
+      </Typography>
+    </Stack>
+  );
 }
-
-function getTglRenderKey(type, id, filter, options) {
-  let key = "";
-  key += type;
-  key += id;
-  key += JSON.stringify(filter);
-  key += JSON.stringify(options);
-  return key;
-}
-//#endregion
 
 //#region Export Modal
 export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPersonal = false, options = {} }) {
@@ -1229,4 +1162,147 @@ export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPerson
     </CustomModal>
   );
 }
+//#endregion
+
+//#region Sorting functions
+export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sortOrder, isPlayer = false) {
+  const ascending = sortOrder === "asc";
+  const sortChallenges = (a, b) => {
+    switch (sortBy) {
+      case "fractional-tiers":
+        return sortByFractionalTier(a, b, isPlayer, ascending);
+      case "clear-count":
+        return sortByClearCount(a, b, ascending);
+      case "first-clear-date":
+        return sortByFirstClearDate(a, b, ascending);
+      case "time-taken":
+        return sortByTimeTaken(a, b, ascending);
+      case "alphabetical":
+      default:
+        break;
+    }
+    return sortByAlphabetical(a, b, maps, campaigns, ascending);
+  };
+  challenges.sort(sortChallenges);
+  return challenges;
+}
+function sortByFractionalTier(a, b, isPlayer, ascending) {
+  //If fraction is available, use that for sorting first. if no frac is available, treat it as 0.5
+  let fracA = 0.5;
+  let fracB = 0.5;
+  if (isPlayer) {
+    //First sort for the suggested difficulty, if it exists
+    const diffSortA = a.submissions[0].suggested_difficulty?.sort ?? a.difficulty.sort;
+    const diffSortB = b.submissions[0].suggested_difficulty?.sort ?? b.difficulty.sort;
+    if (diffSortA !== diffSortB) {
+      return ascending ? diffSortA - diffSortB : diffSortB - diffSortA;
+    }
+    fracA = a.submissions[0].frac ?? 50;
+    fracB = b.submissions[0].frac ?? 50;
+  } else {
+    fracA = a.data.frac !== false && a.data.frac !== undefined ? a.data.frac : 0.5;
+    fracB = b.data.frac !== false && b.data.frac !== undefined ? b.data.frac : 0.5;
+  }
+  if (fracA !== fracB) {
+    return ascending ? fracA - fracB : fracB - fracA;
+  }
+  return 0;
+}
+function sortByClearCount(a, b, ascending) {
+  const countA = a.data.submission_count;
+  const countB = b.data.submission_count;
+  if (countA !== countB) {
+    return ascending ? countA - countB : countB - countA;
+  }
+  return 0;
+}
+function sortByFirstClearDate(a, b, ascending) {
+  const dateA = new Date(a.submissions[0].date_achieved);
+  const dateB = new Date(b.submissions[0].date_achieved);
+  if (dateA !== dateB) {
+    return ascending ? dateA - dateB : dateB - dateA;
+  }
+  return 0;
+}
+function sortByAlphabetical(a, b, maps, campaigns, ascending) {
+  const mapA = maps[a.map_id];
+  const mapB = maps[b.map_id];
+  const campaignA = mapA === undefined ? campaigns[a.campaign_id] : campaigns[mapA.campaign_id];
+  const campaignB = mapB === undefined ? campaigns[b.campaign_id] : campaigns[mapB.campaign_id];
+  const mapNameA = getMapName(mapA, campaignA, true, false);
+  const mapNameB = getMapName(mapB, campaignB, true, false);
+  return ascending ? mapNameA.localeCompare(mapNameB) : mapNameB.localeCompare(mapNameA);
+}
+function sortByTimeTaken(a, b, ascending) {
+  const timeA = a.submissions[0].time_taken;
+  const timeB = b.submissions[0].time_taken;
+  //Always sort null values to the end
+  if (timeA === null && timeB === null) {
+    return 0;
+  } else if (timeA === null) {
+    return 1;
+  } else if (timeB === null) {
+    return -1;
+  }
+  if (timeA !== timeB) {
+    return ascending ? timeA - timeB : timeB - timeA;
+  }
+  return 0;
+}
+//#endregion
+
+//#region Keys
+export function getTglOptionsKey(type) {
+  if (type === "player") {
+    return "top_golden_list_options_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_options_campaign";
+  }
+  return "top_golden_list_options";
+}
+
+export function getTglFilterKey(type) {
+  if (type === "player") {
+    return "top_golden_list_filter_player";
+  } else if (type === "campaign") {
+    return "top_golden_list_filter_campaign";
+  }
+  return "top_golden_list_filter";
+}
+
+function getTglRenderKey(type, id, filter, options) {
+  let key = "";
+  key += type;
+  key += id;
+  key += JSON.stringify(filter);
+  key += JSON.stringify(options);
+  return key;
+}
+//#endregion
+
+//#region Utilities
+
+// Helper function to calculate amount of hidden tiers based on filter
+function countHiddenTiers(filter) {
+  const defaultMaxSort = DIFF_CONSTS.MAX_SORT; // Tier 21+ (sort 21)
+  const defaultMinSort = DIFF_CONSTS.UNTIERED_SORT; // Untiered (sort 0)
+
+  const maxDiffSort = difficultyIdToSort(filter.max_diff_id);
+  const minDiffSort = difficultyIdToSort(filter.min_diff_id);
+
+  let countHiddenTiers = 0;
+
+  // Check if higher tiers are hidden (above max filter)
+  if (maxDiffSort < defaultMaxSort) {
+    countHiddenTiers += defaultMaxSort - maxDiffSort;
+  }
+
+  // Check if lower tiers are hidden (below min filter)
+  if (minDiffSort > defaultMinSort) {
+    countHiddenTiers += minDiffSort - defaultMinSort;
+  }
+
+  return countHiddenTiers;
+}
+
 //#endregion

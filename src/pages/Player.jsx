@@ -32,7 +32,6 @@ import {
   useGetTopGoldenList,
 } from "../hooks/useApi";
 import { useNavigate, useParams } from "react-router-dom";
-import { TopGoldenList } from "../components/TopGoldenList";
 import {
   AdminIcon,
   InputMethodIcon,
@@ -308,82 +307,6 @@ function PlayerRecentSubmissions({ id }) {
         </>
       )}
     </>
-  );
-}
-
-export function PagePlayerTopGoldenList({ id }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "player" });
-  const { t: t_gl } = useTranslation(undefined, { keyPrefix: "golden_list" });
-  const { t: t_tgl } = useTranslation(undefined, { keyPrefix: "components.top_golden_list" });
-  const query = useGetPlayer(id);
-  const theme = useTheme();
-
-  const exportModal = useModal();
-  const statsModal = useModal();
-  const useSuggestedRef = useRef();
-
-  const defaultFilter = getDefaultFilter(false);
-  const [filter, setFilter] = useLocalStorage("top_golden_list_filter_player", defaultFilter);
-
-  if (query.isLoading) {
-    return (
-      <BasicBox>
-        <LoadingSpinner />
-      </BasicBox>
-    );
-  } else if (query.isError) {
-    return (
-      <BasicBox>
-        <ErrorDisplay error={query.error} />
-      </BasicBox>
-    );
-  }
-
-  const player = getQueryData(query);
-
-  const title = `${player.name} - ` + t("personal_tgl");
-
-  return (
-    <Box sx={{ mx: 2 }}>
-      <HeadTitle title={title} />
-      <BasicBox sx={{ mb: 1 }}>
-        <Typography variant="h4">
-          <StyledLink to={`/player/${id}`}>{player.name}</StyledLink> - {t("personal_tgl")}
-        </Typography>
-        <Stack direction="row" gap={1}>
-          <SubmissionFilter
-            type="player"
-            id={id}
-            filter={filter}
-            setFilter={setFilter}
-            defaultFilter={defaultFilter}
-          />
-          <TooltipLineBreaks title={t_tgl("export_button_tooltip")}>
-            <IconButton onClick={exportModal.open}>
-              <FontAwesomeIcon
-                color={theme.palette.text.secondary}
-                icon={faFileExport}
-                fixedWidth
-                size="2xs"
-              />
-            </IconButton>
-          </TooltipLineBreaks>
-          <TooltipLineBreaks title={t_tgl("stats_button_tooltip")}>
-            <IconButton onClick={statsModal.open}>
-              <FontAwesomeIcon color={theme.palette.text.secondary} icon={faChartBar} fixedWidth size="2xs" />
-            </IconButton>
-          </TooltipLineBreaks>
-        </Stack>
-      </BasicBox>
-      <TopGoldenList type="player" id={id} filter={filter} useSuggestedRef={useSuggestedRef} />
-      <ExportTopGoldenListModal modalHook={exportModal} type="player" id={id} filter={filter} isPersonal />
-      <TimeTakenTiersGraphModal
-        modalHook={statsModal}
-        id={id}
-        filter={filter}
-        useSuggested={useSuggestedRef.current}
-      />
-    </Box>
   );
 }
 

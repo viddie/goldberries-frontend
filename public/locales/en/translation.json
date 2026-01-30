@@ -1549,6 +1549,11 @@
       "fc": "Golden clear with all optional collectibles (red berries, cassette, etc)",
       "c_fc": "Regular clear and Full Clear are the same placement",
       "new_old": "Old version of the map"
+    },
+    "hidden_tiers": {
+      "notice_one": "{{count}} tier is hidden",
+      "notice_other": "{{count}} tiers are hidden",
+      "change_filter": "Change your filter settings to show them!"
     }
   },
   "campaign": {

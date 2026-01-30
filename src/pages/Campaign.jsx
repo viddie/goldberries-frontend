@@ -34,7 +34,6 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { TopGoldenList } from "../components/TopGoldenList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -842,52 +841,3 @@ function CampaignChallengeEntry({ challenge, campaign, sx = {}, ...props }) {
 }
 
 //#endregion
-
-export function PageCampaignTopGoldenList({ id }) {
-  const query = useGetCampaignView(id);
-  const theme = useTheme();
-  const exportModal = useModal();
-
-  const defaultFilter = getDefaultFilter(false);
-  const [filter, setFilter] = useLocalStorage("top_golden_list_filter_campaign", defaultFilter);
-
-  if (query.isLoading) {
-    return (
-      <BasicBox>
-        <LoadingSpinner />
-      </BasicBox>
-    );
-  } else if (query.isError) {
-    return (
-      <BasicBox>
-        <ErrorDisplay error={query.error} />
-      </BasicBox>
-    );
-  }
-
-  const response = getQueryData(query);
-
-  return (
-    <Box sx={{ mx: 2 }}>
-      <BasicBox sx={{ mb: 1 }}>
-        <Typography variant="h4">
-          Top Golden List: <StyledLink to={`/campaign/${id}`}>{response.campaign.name}</StyledLink>
-        </Typography>
-        <Stack direction="row" gap={1}>
-          <SubmissionFilter
-            type="campaign"
-            id={id}
-            filter={filter}
-            setFilter={setFilter}
-            defaultFilter={defaultFilter}
-          />
-          <IconButton onClick={exportModal.open}>
-            <FontAwesomeIcon color={theme.palette.text.secondary} icon={faFileExport} fixedWidth size="2xs" />
-          </IconButton>
-        </Stack>
-      </BasicBox>
-      <TopGoldenList type="campaign" id={id} filter={filter} />
-      <ExportTopGoldenListModal modalHook={exportModal} type="campaign" id={id} filter={filter} />
-    </Box>
-  );
-}
