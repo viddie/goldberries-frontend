@@ -131,7 +131,6 @@ import { PageSubmission } from "./pages/Submission";
 import { PageSubmit } from "./pages/Submit";
 import { PageSuggestions } from "./pages/suggestions/Suggestions";
 import { PageTest } from "./pages/Test";
-import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { PageManageAccounts } from "./pages/manage/Accounts";
 import { PageManageBadges } from "./pages/manage/Badges";
 import { PageManageChallenges } from "./pages/manage/Challenges";
@@ -142,7 +141,7 @@ import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
-import { PageTopGoldenListAlt } from "./pages/TopGoldenListAlt";
+import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { getFeaturedCampaignsNavEntries } from "./util/other_data";
 
 axios.defaults.withCredentials = true;
@@ -280,7 +279,7 @@ const router = createBrowserRouter([
         ),
       },
 
-      { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenListAlt /> },
+      { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenList /> },
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
 
       { path: "rejected-challenges", element: <PageRejectedChallenges /> },

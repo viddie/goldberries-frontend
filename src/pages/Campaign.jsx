@@ -72,9 +72,8 @@ import { useAuth } from "../hooks/AuthProvider";
 import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
-import { ExportTopGoldenListModal } from "./TopGoldenList";
 import { CampaignGallery } from "../components/MapImage";
-import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
+import { ExportTopGoldenListModal, PageTopGoldenList } from "./TopGoldenList";
 
 const STYLE_CONSTS = {
   player: {
@@ -112,7 +111,7 @@ export function PageCampaign() {
   };
 
   if (tab === "top-golden-list") {
-    return <PageTopGoldenListAlt defaultType="campaign" defaultId={id} />;
+    return <PageTopGoldenList defaultType="campaign" defaultId={id} />;
   }
 
   return (
@@ -364,10 +363,10 @@ export function CampaignPlayerTable({ campaign, players, ...props }) {
   }, [showAll]);
 
   const validMaps = campaign.maps.filter(
-    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map)
+    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map),
   );
   const countFcs = validMaps.filter((map) =>
-    map.challenges.some((challenge) => (challenge.has_fc || challenge.requires_fc) && !challenge.is_rejected)
+    map.challenges.some((challenge) => (challenge.has_fc || challenge.requires_fc) && !challenge.is_rejected),
   ).length;
   const reducedPlayerAmount = 100;
   const playersToShow = actuallyShowAll ? players : players.slice(0, reducedPlayerAmount);
@@ -472,11 +471,11 @@ function CampaignPlayerTableRow({ index, campaign, playerEntry, isSelf = false }
   const [expanded, setExpanded] = useState(false);
   const { player, stats, last_submission, highest_lobby_sweep, highest_lobby_sweep_fcs } = playerEntry;
   const validMaps = campaign.maps.filter(
-    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map)
+    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map),
   );
   const mapsInCampaign = validMaps.length;
   const countFcs = validMaps.filter((map) =>
-    map.challenges.some((challenge) => (challenge.has_fc || challenge.requires_fc) && !challenge.is_rejected)
+    map.challenges.some((challenge) => (challenge.has_fc || challenge.requires_fc) && !challenge.is_rejected),
   ).length;
   const hasAllFcs = stats.full_clears === countFcs && countFcs > 0;
   const hasAllClears = stats.clears === mapsInCampaign;
@@ -486,7 +485,7 @@ function CampaignPlayerTableRow({ index, campaign, playerEntry, isSelf = false }
     ? campaignPage.sweepHightlightBackground
     : campaignPage.highlightBackground;
   const sweepColor =
-    campaign.sort_major_name !== null ? campaign.sort_major_colors[highest_lobby_sweep] ?? "white" : null;
+    campaign.sort_major_name !== null ? (campaign.sort_major_colors[highest_lobby_sweep] ?? "white") : null;
   const borderLeft = sweepColor ? "20px solid " + sweepColor : "none";
   const selfStyle = isSelf ? { borderBottomWidth: "5px" } : {};
 
@@ -560,7 +559,7 @@ function CampaignPlayerTableRowExpanded({ player, campaign }) {
   const query = useGetCampaignViewPlayer(campaign.id, player.id);
   const validMaps = campaign.maps.filter((map) => !map.is_archived && mapHasValidChallenges(map));
   const validMapsForMax = campaign.maps.filter(
-    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map)
+    (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map),
   );
   const hasMajorSort = campaign.sort_major_name !== null;
 
@@ -701,7 +700,7 @@ const CampaignPlayerTableRowExpandedMapGroupRowMemo = memo(
       oldProps.mapData[oldProps.map.id].challenges[0].submissions[0].is_fc ===
       newProps.mapData[newProps.map.id].challenges[0].submissions[0].is_fc
     );
-  }
+  },
 );
 
 export function MapNoProgressTooltip() {
@@ -786,7 +785,7 @@ function CampaignMapListMapEntry({ map, campaign, sx = {}, ...props }) {
                     {getChallengeNameShort(
                       challenge,
                       true,
-                      isMdScreen ? true : useTextFcIcons ? true : false
+                      isMdScreen ? true : useTextFcIcons ? true : false,
                     )}
                     <ObjectiveIcon objective={challenge.objective} challenge={challenge} />
                     <ChallengeFcIcon

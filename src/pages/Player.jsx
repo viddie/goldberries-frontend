@@ -71,7 +71,6 @@ import { useTranslation } from "react-i18next";
 import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import { useTheme } from "@emotion/react";
-import { ExportTopGoldenListModal } from "./TopGoldenList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { useModal } from "../hooks/useModal";
@@ -87,7 +86,7 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import { BadgeDisplay } from "../components/Badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
-import { PageTopGoldenListAlt } from "./TopGoldenListAlt";
+import { ExportTopGoldenListModal, PageTopGoldenList } from "./TopGoldenList";
 
 export function PagePlayer() {
   const { id, tab } = useParams();
@@ -102,7 +101,7 @@ export function PagePlayer() {
   }, [tab]);
 
   if (selectedTab === "top-golden-list") {
-    return <PageTopGoldenListAlt defaultType="player" defaultId={id} />;
+    return <PageTopGoldenList defaultType="player" defaultId={id} />;
   }
 
   return (
