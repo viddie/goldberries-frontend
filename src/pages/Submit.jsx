@@ -64,6 +64,7 @@ import { usePostPlayer, usePostSubmission } from "../hooks/useApi";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { Trans, useTranslation } from "react-i18next";
 import { FullChallengeDisplay } from "./Submission";
+import { NoteDisclaimer } from "./Challenge";
 import { CharsCountLabel } from "./suggestions/Suggestions";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "../components/forms/Map";
 import { StringListEditor } from "../components/StringListEditor";
@@ -288,6 +289,10 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
           )}
           <h4>{t("challenge_data")}</h4>
           <FullChallengeDisplay challenge={challenge} map={map} campaign={campaign} hideMap showObjective />
+          {map?.note && <NoteDisclaimer note={map.note} title={t("map_note")} sx={{ mt: 2 }} />}
+          {challenge.description && (
+            <NoteDisclaimer note={challenge.description} title={t("challenge_note")} sx={{ mt: 2 }} />
+          )}
         </>
       )}
       <Divider sx={{ my: 3 }} />

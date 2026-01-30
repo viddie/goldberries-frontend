@@ -1331,6 +1331,8 @@
         "full_game": "Select Map OR Full Game Challenge",
         "rejected_notice": "This challenge is rejected, submissions will not be accepted.",
         "challenge_data": "Challenge Data",
+        "map_note": "Map Note",
+        "challenge_note": "Challenge Note",
         "your_run": "Your Run",
         "verifier": {
           "player_select": "[Verifier Only] Submit for Player",
