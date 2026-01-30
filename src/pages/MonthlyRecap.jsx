@@ -1,4 +1,4 @@
-import { Button, Checkbox, Chip, Divider, FormControlLabel, Grid, Stack, Typography } from "@mui/material";
+import { Checkbox, Chip, Divider, FormControlLabel, Grid, Stack, Typography } from "@mui/material";
 import {
   BasicContainerBox,
   CustomIconButton,
@@ -42,7 +42,7 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent, { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { DifficultyMoveDisplay } from "./Suggestions";
+import { DifficultyMoveDisplay } from "./suggestions/Suggestions";
 import { useTranslation } from "react-i18next";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -114,11 +114,11 @@ function MonthlyRecap({ month }) {
   const { t: t_s } = useTranslation(undefined, { keyPrefix: "monthly_recap.settings" });
   const [allClearsDifficulty, setAllClearsDifficulty] = useLocalStorage(
     "monthly_recap_all_clears_tier_sort",
-    null
+    null,
   );
   const [firstClearsDifficulty, setFirstClearsDifficulty] = useLocalStorage(
     "monthly_recap_first_clears_tier_sort",
-    null
+    null,
   );
   const [hideChangelog, setHideChangelog] = useLocalStorage("monthly_recap_hide_changelog", false);
 

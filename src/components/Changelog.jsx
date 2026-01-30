@@ -17,13 +17,13 @@ import {
 } from "../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "./BasicComponents";
 import { PlayerChip } from "./GoldberriesComponents";
-import { displayDate, extractDifficultiesFromChangelog, getDifficultyName } from "../util/data_util";
+import { extractDifficultiesFromChangelog } from "../util/data_util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
 import { toast } from "react-toastify";
-import { DifficultyMoveDisplay } from "../pages/Suggestions";
+import { DifficultyMoveDisplay } from "../pages/suggestions/Suggestions";
 import { useTranslation } from "react-i18next";
 import { DateWithTooltip } from "../pages/Submission";
 

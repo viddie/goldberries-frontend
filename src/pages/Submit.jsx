@@ -48,7 +48,6 @@ import {
   faChevronDown,
   faChevronLeft,
   faInfoCircle,
-  faTents,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -65,10 +64,7 @@ import { usePostPlayer, usePostSubmission } from "../hooks/useApi";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { Trans, useTranslation } from "react-i18next";
 import { FullChallengeDisplay } from "./Submission";
-import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { CharsCountLabel } from "./Suggestions";
-import { useTheme } from "@emotion/react";
+import { CharsCountLabel } from "./suggestions/Suggestions";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "../components/forms/Map";
 import { StringListEditor } from "../components/StringListEditor";
 import { NOTIFICATIONS, hasFlag } from "./Account";
@@ -341,7 +337,7 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
                     {t(
                       isAddingPlayer && newPlayerName.length < 3
                         ? "verifier.buttons.cancel"
-                        : "verifier.buttons.add_player"
+                        : "verifier.buttons.add_player",
                     )}
                   </Button>
                 </Stack>
@@ -636,7 +632,7 @@ export function MultiUserSubmission() {
         let challenge = map.challenges[0];
         if (map.challenges.length > 1) {
           challenge = map.challenges.find(
-            (c) => (c.requires_fc && preferFc) || (!c.requires_fc && !preferFc)
+            (c) => (c.requires_fc && preferFc) || (!c.requires_fc && !preferFc),
           );
           //If challenge wasnt found
           if (challenge === undefined) {
@@ -1229,7 +1225,7 @@ export function MultiUserSubmissionMapRow({
   const { t: t_a } = useTranslation(undefined);
   const { settings } = useAppSettings();
   const [expanded, setExpanded] = useState(
-    mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo
+    mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo,
   );
 
   useEffect(() => {
@@ -1237,7 +1233,7 @@ export function MultiUserSubmissionMapRow({
   }, [multiVideo]);
 
   const lobbyInfo = getMapLobbyInfo(mapData.map);
-  const color = lobbyInfo?.major ? lobbyInfo?.major?.color : lobbyInfo?.minor?.color ?? "inherit";
+  const color = lobbyInfo?.major ? lobbyInfo?.major?.color : (lobbyInfo?.minor?.color ?? "inherit");
   const border = lobbyInfo?.major || lobbyInfo?.minor ? "20px solid " + color : "none";
 
   const needsRawSession =

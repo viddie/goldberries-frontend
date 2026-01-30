@@ -2,13 +2,10 @@ import {
   Button,
   Checkbox,
   Divider,
-  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
-  IconButton,
   MenuItem,
-  Select,
   Stack,
   Switch,
   Tab,
@@ -67,14 +64,14 @@ import {
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { isValidHttpUrl, jsonDateToJsDate } from "../util/util";
 import { MuiColorInput } from "mui-color-input";
 import { getPlayerNameColorStyle } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { SettingsEntry } from "./AppSettings";
 import { Trans, useTranslation } from "react-i18next";
-import { CharsCountLabel } from "./Suggestions";
+import { CharsCountLabel } from "./suggestions/Suggestions";
 
 export const NOTIFICATIONS = {
   sub_verified: { key: "sub_verified", flag: 1 },
@@ -232,7 +229,7 @@ export function UserAccountLoginMethodsForm() {
                   label={t("email")}
                   {...form.register(
                     "email",
-                    addEmail ? FormOptions.Email(t_ff) : FormOptions.EmailOptional(t_ff)
+                    addEmail ? FormOptions.Email(t_ff) : FormOptions.EmailOptional(t_ff),
                   )}
                   fullWidth
                 />
@@ -242,7 +239,7 @@ export function UserAccountLoginMethodsForm() {
                     type="password"
                     {...form.register(
                       "password",
-                      addEmail ? FormOptions.Password(t_ff) : FormOptions.PasswordOptional(t_ff)
+                      addEmail ? FormOptions.Password(t_ff) : FormOptions.PasswordOptional(t_ff),
                     )}
                     fullWidth
                     error={!!errors.password}
@@ -495,7 +492,7 @@ export function UserAccountProfileForm() {
           showOutline: settings.visual.playerNames.showOutline,
         },
       },
-    }
+    },
   );
 
   return (

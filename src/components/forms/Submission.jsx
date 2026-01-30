@@ -1,13 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { useAuth } from "../../hooks/AuthProvider";
-import { fetchSubmission, postSubmission } from "../../util/api";
+import { fetchSubmission } from "../../util/api";
 import {
   Button,
   Checkbox,
   Divider,
   FormControlLabel,
   Grid,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -16,7 +15,6 @@ import {
   TextField,
   Tooltip,
   Typography,
-  duration,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -46,17 +44,12 @@ import { FullChallengeDisplay } from "../../pages/Submission";
 import { getQueryData, usePostSubmission } from "../../hooks/useApi";
 import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { useTranslation } from "react-i18next";
-import { DatePicker, DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
-import {
-  ChallengeDetailsList,
-  ChallengeDetailsListWrapper,
-  CollectiblesInfoBox,
-} from "../../pages/Challenge";
+import { ChallengeDetailsListWrapper, CollectiblesInfoBox } from "../../pages/Challenge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
-import { CharsCountLabel } from "../../pages/Suggestions";
+import { CharsCountLabel } from "../../pages/suggestions/Suggestions";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
 import { inputBaseClasses } from "@mui/material/InputBase";
 

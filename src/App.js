@@ -129,7 +129,7 @@ import { PageServerCosts } from "./pages/ServerCosts";
 import { PageStats } from "./pages/stats/Stats";
 import { PageSubmission } from "./pages/Submission";
 import { PageSubmit } from "./pages/Submit";
-import { PageSuggestions } from "./pages/Suggestions";
+import { PageSuggestions } from "./pages/suggestions/Suggestions";
 import { PageTest } from "./pages/Test";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { PageManageAccounts } from "./pages/manage/Accounts";
