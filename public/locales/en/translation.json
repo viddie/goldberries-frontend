@@ -1485,7 +1485,7 @@
           "select_type": "Select Suggestion Type",
           "general": {
             "label": "General Suggestion",
-            "description": "Suggest a general change to the website or list"
+            "description": "Suggest a general change to the website"
           },
           "feature": {
             "label": "Feature Request",
@@ -1501,7 +1501,7 @@
           },
           "challenge_placement": {
             "label": "Challenge Placement",
-            "description": "Suggest a different difficulty tier for a challenge"
+            "description": "Suggest a different tier for a challenge"
           }
         },
         "select_challenge": "Select Challenge",

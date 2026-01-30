@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { Button, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faComment, faInfoCircle, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faArrowsSplitUpAndLeft,
+  faComment,
+  faInfoCircle,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../../components/Stats";
 import { ChallengeSubmissionTable } from "../Challenge";
@@ -102,6 +108,24 @@ function SuggestionTypeSelector({ onSelect }) {
 
   const types = [
     {
+      value: SUGGESTION_TYPES.CHALLENGE_GENERAL,
+      label: t("challenge_general.label"),
+      description: t("challenge_general.description"),
+      icon: faInfoCircle,
+    },
+    {
+      value: SUGGESTION_TYPES.CHALLENGE_PLACEMENT,
+      label: t("challenge_placement.label"),
+      description: t("challenge_placement.description"),
+      icon: faArrowRight,
+    },
+    {
+      value: SUGGESTION_TYPES.CHALLENGE_SPLIT,
+      label: t("challenge_split.label"),
+      description: t("challenge_split.description"),
+      icon: faArrowsSplitUpAndLeft,
+    },
+    {
       value: SUGGESTION_TYPES.GENERAL,
       label: t("general.label"),
       description: t("general.description"),
@@ -112,24 +136,6 @@ function SuggestionTypeSelector({ onSelect }) {
       label: t("feature.label"),
       description: t("feature.description"),
       icon: faPlus,
-    },
-    {
-      value: SUGGESTION_TYPES.CHALLENGE_GENERAL,
-      label: t("challenge_general.label"),
-      description: t("challenge_general.description"),
-      icon: faInfoCircle,
-    },
-    {
-      value: SUGGESTION_TYPES.CHALLENGE_SPLIT,
-      label: t("challenge_split.label"),
-      description: t("challenge_split.description"),
-      icon: faArrowRight,
-    },
-    {
-      value: SUGGESTION_TYPES.CHALLENGE_PLACEMENT,
-      label: t("challenge_placement.label"),
-      description: t("challenge_placement.description"),
-      icon: faArrowRight,
     },
   ];
 
@@ -152,7 +158,7 @@ function SuggestionTypeSelector({ onSelect }) {
             }}
           >
             <Stack direction="row" gap={2} alignItems="center" sx={{ width: "100%" }}>
-              <FontAwesomeIcon icon={type.icon} style={{ width: "1.5em" }} />
+              <FontAwesomeIcon icon={type.icon} style={{ width: "1.0em" }} size="xl" />
               <Stack direction="column" gap={0} alignItems="flex-start">
                 <Typography variant="body1" sx={{ fontWeight: "bold", textTransform: "none" }}>
                   {type.label}
