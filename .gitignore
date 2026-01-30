@@ -25,3 +25,4 @@ yarn-error.log*
 /public/badges
 /public/img/map
 .github/copilot-instructions.md
+.github/goldberries.sql
