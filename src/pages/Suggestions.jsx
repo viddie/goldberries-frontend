@@ -9,7 +9,7 @@ import {
   usePostSuggestion,
   usePostSuggestionVote,
 } from "../hooks/useApi";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import {
   BasicBox,
   BasicContainerBox,
@@ -99,7 +99,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { VotesBar } from "../components/VotesBar";
 import Color from "color";
 import { ClearIcon } from "@mui/x-date-pickers";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
 
 export function PageSuggestions({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
@@ -108,6 +108,8 @@ export function PageSuggestions({}) {
   const navigate = useNavigate();
   const [type, setType] = useLocalStorage("search_filter_type", "all");
   const [tab, setTab] = useLocalStorage("search_filter_tab", "active");
+  const [search, setSearch] = useLocalStorage("suggestions_search", "");
+  const searchDebounced = useDebounce(search, 500);
 
   const newSuggestion = () => {
     modalRefs.create.current.open();
@@ -174,12 +176,14 @@ export function PageSuggestions({}) {
         value={tab}
         onChange={(v) => setTab(v)}
       />
+      <SuggestionsSearch search={search} setSearch={setSearch} />
       <SuggestionsList
         expired={tabExpiredValue}
         defaultPerPage={25}
         modalRefs={modalRefs}
         filterType={type}
         tab={tab}
+        search={searchDebounced}
       />
 
       <SuggestionsModalContainer modalRefs={modalRefs} suggestionId={id} closeModal={onCloseSuggestion} />
@@ -188,16 +192,16 @@ export function PageSuggestions({}) {
 }
 
 //#region == Suggestions List ==
-function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType, tab = null }) {
+function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType, tab = null, search = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(defaultPerPage);
 
-  const query = useGetSuggestions(page, perPage, expired, null, filterType);
+  const query = useGetSuggestions(page, perPage, expired, null, filterType, search);
 
   useEffect(() => {
     setPage(1);
-  }, [filterType, tab]);
+  }, [filterType, tab, search]);
 
   if (query.isLoading) {
     return <LoadingSpinner sx={{ mt: 1 }} />;
@@ -237,6 +241,29 @@ function SuggestionsList({ expired, defaultPerPage, modalRefs, filterType, tab =
   );
 }
 
+const SuggestionsSearch = memo(function SuggestionsSearch({ search, setSearch }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
+  const [localSearch, setLocalSearch] = useState(search);
+  const localSearchDebounced = useDebounce(localSearch, 500);
+
+  useEffect(() => {
+    if (localSearch !== search) {
+      setSearch(localSearch);
+    }
+  }, [localSearchDebounced]);
+
+  return (
+    <TextField
+      label={t("search")}
+      value={localSearch}
+      onChange={(e) => setLocalSearch(e.target.value)}
+      fullWidth
+      size="small"
+      sx={{ mt: 1 }}
+    />
+  );
+});
+
 function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
   const { t: t_sv } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
@@ -265,8 +292,8 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
     suggestion.is_accepted === null
       ? new Color(theme.palette.box.border).alpha(0.25).string()
       : suggestion.is_accepted
-      ? theme.palette.success.main
-      : theme.palette.error.main;
+        ? theme.palette.success.main
+        : theme.palette.error.main;
   const borderWidth = suggestion.is_accepted === null ? "1px" : "3px";
   const unverified = suggestion.is_verified !== true;
 
@@ -985,7 +1012,7 @@ function ViewSuggestionModal({ id }) {
 function VotesDetailsDisplay({ votes, voteType, hasSubmission, highlightedPlayers = {} }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
   const votesFiltered = votes.filter(
-    (vote) => vote.vote === voteType && (hasSubmission ? vote.submission !== null : vote.submission === null)
+    (vote) => vote.vote === voteType && (hasSubmission ? vote.submission !== null : vote.submission === null),
   );
   const count = votesFiltered.length;
   const voteIcon = voteType === "+" ? faThumbsUp : voteType === "-" ? faThumbsDown : faEquals;

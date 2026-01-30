@@ -7,7 +7,7 @@ import { DIFF_CONSTS, difficultyIdToSort } from "./constants";
 export function fetchGoldenList(
   type,
   id = null,
-  options = { include_archived: false, include_arbitrary: false }
+  options = { include_archived: false, include_arbitrary: false },
 ) {
   const data = {};
 
@@ -148,7 +148,7 @@ export function fetchCampaign(
   challenges = true,
   submission = true,
   empty = false,
-  rejected = false
+  rejected = false,
 ) {
   const params = {
     id: id,
@@ -318,7 +318,14 @@ export function fetchLogs(page, perPage, level, topic, search, start_date, end_d
   });
 }
 
-export function fetchSuggestions(page, perPage, expired = null, challengeId = null, type = "all") {
+export function fetchSuggestions(
+  page,
+  perPage,
+  expired = null,
+  challengeId = null,
+  type = "all",
+  search = null,
+) {
   const params = {
     page: page,
     per_page: perPage,
@@ -326,6 +333,7 @@ export function fetchSuggestions(page, perPage, expired = null, challengeId = nu
   };
   if (expired !== null) params.expired = expired;
   if (challengeId !== null) params.challenge = challengeId;
+  if (search !== null && search !== "") params.search = search;
   return axios.get("/suggestion/paginated", {
     params: params,
   });
@@ -450,7 +458,7 @@ export function claimPlayer(player) {
     formatDataForApi({
       self: true,
       claimed_player_id: player.id,
-    })
+    }),
   );
 }
 
@@ -467,7 +475,7 @@ export function postAccount(self, data) {
     formatDataForApi({
       ...data,
       self: self,
-    })
+    }),
   );
 }
 

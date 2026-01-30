@@ -396,10 +396,17 @@ export function useGetLogs(page, perPage, level, topic, search, start_date, end_
   });
 }
 
-export function useGetSuggestions(page, perPage, expired = null, challengeId = null, type = "all") {
+export function useGetSuggestions(
+  page,
+  perPage,
+  expired = null,
+  challengeId = null,
+  type = "all",
+  search = null,
+) {
   return useQuery({
-    queryKey: ["suggestions", page, perPage, expired, challengeId, type],
-    queryFn: () => fetchSuggestions(page, perPage, expired, challengeId, type),
+    queryKey: ["suggestions", page, perPage, expired, challengeId, type, search],
+    queryFn: () => fetchSuggestions(page, perPage, expired, challengeId, type, search),
     onError: errorToast,
     refetchInterval: 15 * 1000,
   });
