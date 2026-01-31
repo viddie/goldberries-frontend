@@ -182,7 +182,7 @@ export function ViewSuggestionModal({ id }) {
   } else {
     modifyItems.push({
       icon: postSuggestionLoading ? loadingSpinner : faQuestion,
-      text: "Set to Pending",
+      text: t("buttons.set_to_pending"),
       onClick: () => updateSuggestion(null),
       disabled: postSuggestionLoading,
       keepOpen: true,

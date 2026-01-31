@@ -67,6 +67,7 @@ import {
   deleteVerificationNotice,
   fetchStatsMostGoldened,
   fetchStatsMisc,
+  fetchStatsCollectibleCounts,
   fetchTopGoldenList,
   fetchServerSettings,
   postServerSettings,
@@ -460,6 +461,13 @@ export function useGetStatsMisc() {
   return useQuery({
     queryKey: ["stats_misc"],
     queryFn: () => fetchStatsMisc(),
+    onError: errorToast,
+  });
+}
+export function useGetStatsCollectibleCounts() {
+  return useQuery({
+    queryKey: ["stats_collectible_counts"],
+    queryFn: () => fetchStatsCollectibleCounts(),
     onError: errorToast,
   });
 }

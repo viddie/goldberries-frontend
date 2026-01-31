@@ -375,6 +375,9 @@ export function fetchStatsMostGoldened(date) {
 export function fetchStatsMisc() {
   return axios.get("/stats/misc");
 }
+export function fetchStatsCollectibleCounts() {
+  return axios.get("/stats/collectible-counts");
+}
 
 export function fetchModInfo(url) {
   const params = { url };

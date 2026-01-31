@@ -1467,7 +1467,8 @@
           "verify": "Verify",
           "accept": "Accept Change",
           "reject_verification": "Reject Verification",
-          "reject_change": "Reject Change"
+          "reject_change": "Reject Change",
+          "set_to_pending": "Set to Pending"
         }
       },
       "create": {
@@ -1963,6 +1964,14 @@
       "tier_clears": {
         "label": "Tier Clears",
         "header": "Highest Clear Counts per Tier"
+      },
+      "collectible_counts": {
+        "label": "Collectibles",
+        "header": "Total Collectibles Across All Maps",
+        "text": "This table shows the total count of each type of collectible across all maps in the database.",
+        "total": "Total",
+        "collectible": "Collectible",
+        "count": "Count"
       }
     }
   },
