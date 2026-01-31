@@ -14,6 +14,8 @@ import {
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../../components/forms/Map";
 import { OtherIcon } from "../../components/GoldberriesComponents";
 
+const reducePadding = { px: 0.5 };
+
 export function TabCollectibleCounts() {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.collectible_counts" });
 
@@ -44,9 +46,9 @@ export function TabCollectibleCounts() {
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell width={1} sx={{ pr: 0 }}></TableCell>
                 <TableCell width={1}></TableCell>
-                <TableCell>{t("collectible")}</TableCell>
+                <TableCell width={1} sx={reducePadding}></TableCell>
+                <TableCell sx={reducePadding}>{t("collectible")}</TableCell>
                 <TableCell width={1}>{t("count")}</TableCell>
               </TableRow>
             </TableHead>
@@ -59,19 +61,19 @@ export function TabCollectibleCounts() {
 
                 return (
                   <TableRow key={entry.collectible_id}>
-                    <TableCell sx={{ pr: 0 }}>
+                    <TableCell align="center">
                       <Typography variant="body1" fontWeight="bold">
                         #{index + 1}
                       </Typography>
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={reducePadding}>
                       {icon && (
                         <Stack direction="row" alignItems="center" justifyContent="center">
                           <OtherIcon url={icon} height="26px" />
                         </Stack>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={reducePadding}>
                       <Typography variant="body1">{name}</Typography>
                     </TableCell>
                     <TableCell>
