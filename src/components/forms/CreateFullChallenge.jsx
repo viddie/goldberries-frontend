@@ -90,6 +90,8 @@ export function FormCreateFullChallenge({ data, onSuccess, ...props }) {
   });
   const errors = form.formState.errors;
   const onCreateSubmit = form.handleSubmit((data) => {
+    // Filter out collectibles without a selected collectible ID
+    const filteredCollectibles = data.map_collectibles?.filter((item) => item[0] && item[0] !== "") ?? null;
     //Create all the data
     const campaign = {
       name: data.campaign_name,
@@ -100,7 +102,7 @@ export function FormCreateFullChallenge({ data, onSuccess, ...props }) {
     const map = {
       name: data.map_name,
       golden_changes: data.map_golden_changes,
-      collectibles: data.map_collectibles,
+      collectibles: filteredCollectibles?.length > 0 ? filteredCollectibles : null,
       is_progress: true,
     };
     const challenge = {
@@ -135,7 +137,7 @@ export function FormCreateFullChallenge({ data, onSuccess, ...props }) {
     },
     (error) => {
       setModFetchState(3);
-    }
+    },
   );
   const fetchModInfo = () => {
     setModFetchState(1);

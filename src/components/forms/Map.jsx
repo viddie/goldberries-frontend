@@ -111,8 +111,11 @@ export function FormMap({ map, onSave, ...props }) {
   });
   const errors = form.formState.errors;
   const onUpdateSubmit = form.handleSubmit((data) => {
+    // Filter out collectibles without a selected collectible ID
+    const filteredCollectibles = data.collectibles?.filter((item) => item[0] && item[0] !== "") ?? null;
     const toSubmit = {
       ...data,
+      collectibles: filteredCollectibles?.length > 0 ? filteredCollectibles : null,
       campaign_id: data.campaign.id,
       counts_for_id: data.counts_for?.id,
     };
@@ -691,7 +694,7 @@ export function getCollectibleVariantOptions(collectibleId) {
         <OtherIcon url={collectible.icon} />
         <Typography variant="body1">Default: {collectible.name}</Typography>
       </Stack>
-    </MenuItem>
+    </MenuItem>,
   );
   return options;
 }

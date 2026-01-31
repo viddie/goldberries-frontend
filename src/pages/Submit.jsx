@@ -935,6 +935,13 @@ export function NewChallengeUserSubmission({}) {
     },
   });
   const onSubmit = form.handleSubmit((data) => {
+    // Filter out collectibles without a selected collectible ID
+    if (data.new_challenge?.collectibles) {
+      const filteredCollectibles = data.new_challenge.collectibles.filter(
+        (item) => item[0] && item[0] !== "",
+      );
+      data.new_challenge.collectibles = filteredCollectibles.length > 0 ? filteredCollectibles : null;
+    }
     submitRun({
       player_id: selectedPlayer.id,
       ...data,

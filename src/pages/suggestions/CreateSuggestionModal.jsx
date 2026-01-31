@@ -4,8 +4,8 @@ import { useTheme } from "@emotion/react";
 import { Button, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowRight,
   faArrowsSplitUpAndLeft,
+  faArrowsUpDown,
   faComment,
   faInfoCircle,
   faPlus,
@@ -117,7 +117,7 @@ function SuggestionTypeSelector({ onSelect }) {
       value: SUGGESTION_TYPES.CHALLENGE_PLACEMENT,
       label: t("challenge_placement.label"),
       description: t("challenge_placement.description"),
-      icon: faArrowRight,
+      icon: faArrowsUpDown,
     },
     {
       value: SUGGESTION_TYPES.CHALLENGE_SPLIT,
