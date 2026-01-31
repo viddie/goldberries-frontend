@@ -2,6 +2,7 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Divider,
   FormControlLabel,
   Grid,
   MenuItem,
@@ -15,7 +16,14 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getQueryData, useGetObjectiveSubmissionCount, useGetObjectives } from "../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks, getErrorFromMultiple } from "./BasicComponents";
+import {
+  CountrySelect,
+  ErrorDisplay,
+  LoadingSpinner,
+  TooltipLineBreaks,
+  getErrorFromMultiple,
+} from "./BasicComponents";
+import { INPUT_METHOD_ICONS, InputMethodIcon } from "./GoldberriesComponents";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -45,6 +53,8 @@ import { DIFFICULTIES, DIFF_CONSTS, sortToDifficulty, sortToDifficultyId } from 
     sub_count_is_min: bool, //true if sub_count is a minimum, false if it is a maximum (both inclusive)
     start_date: string, //start date for date range
     end_date: string, //end date for date range
+    country: string, //country code to filter by (e.g., "us", "de")
+    input_method: string, //input method to filter by (e.g., "keyboard", "dpad", "analog")
   }
 */
 export function SubmissionFilter({
@@ -59,6 +69,7 @@ export function SubmissionFilter({
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [localFilter, setLocalFilter] = useState(filter);
@@ -118,6 +129,14 @@ export function SubmissionFilter({
         if (filter.max_diff_id === 24) {
           filter.max_diff_id = 25;
         }
+        filter.filter_version = 2;
+      }
+
+      if (filter.filter_version === 2) {
+        console.log("Updating filter from version 2 to 3");
+        filter.country = null;
+        filter.input_method = null;
+        filter.filter_version = 3;
       }
 
       filter.filter_version = defaultFilter.filter_version;
@@ -266,6 +285,7 @@ export function SubmissionFilter({
               <TextField
                 select
                 label={t("clear_state.label")}
+                size="small"
                 fullWidth
                 value={localFilter.clear_state ?? 0}
                 onChange={(e) => changedFilter("clear_state", e.target.value)}
@@ -292,6 +312,7 @@ export function SubmissionFilter({
                     <Grid item xs={6}>
                       <TextField
                         type="number"
+                        size="small"
                         fullWidth
                         value={localFilter.sub_count ?? ""}
                         onChange={(e) => changedFilter("sub_count", e.target.value)}
@@ -361,6 +382,38 @@ export function SubmissionFilter({
               >
                 {t("date_range.clear_dates")}
               </Button>
+
+              <Divider sx={{ my: 1 }} />
+
+              <CountrySelect
+                value={localFilter.country ?? ""}
+                setValue={(value) => changedFilter("country", value === "" ? null : value)}
+                label={t("country.label")}
+                size="small"
+              />
+              <TextField
+                select
+                fullWidth
+                size="small"
+                label={t("input_method.label")}
+                value={localFilter.input_method ?? ""}
+                onChange={(e) => changedFilter("input_method", e.target.value === "" ? null : e.target.value)}
+                SelectProps={{
+                  MenuProps: { disableScrollLock: true },
+                }}
+                sx={{ mt: 1 }}
+              >
+                <MenuItem value="">
+                  <em>{t("input_method.all")}</em>
+                </MenuItem>
+                {Object.keys(INPUT_METHOD_ICONS).map((method) => (
+                  <MenuItem key={method} value={method}>
+                    {t_im(method)}
+                    <InputMethodIcon method={method} style={{ marginLeft: "8px" }} />
+                  </MenuItem>
+                ))}
+              </TextField>
+
               <Button
                 variant="contained"
                 fullWidth
@@ -401,6 +454,8 @@ export function getDefaultFilter(isOverall) {
     sub_count_is_min: false,
     start_date: null,
     end_date: null,
-    filter_version: 2, //Version of the filter structure, used for future changes
+    country: null,
+    input_method: null,
+    filter_version: 3, //Version of the filter structure, used for future changes
   };
 }

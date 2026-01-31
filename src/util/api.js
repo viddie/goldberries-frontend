@@ -47,6 +47,8 @@ export function fetchTopGoldenList(type, id = null, filter, highlightPlayerId = 
   if (filter.sub_count !== null && filter.sub_count !== "") data.sub_count = filter.sub_count;
   if (filter.start_date !== null && filter.start_date !== "") data.start_date = filter.start_date;
   if (filter.end_date !== null && filter.end_date !== "") data.end_date = filter.end_date;
+  if (filter.country !== null && filter.country !== "") data.country = filter.country;
+  if (filter.input_method !== null && filter.input_method !== "") data.input_method = filter.input_method;
 
   let endpoint = "/lists/top-golden-list";
   if (type === "all") {

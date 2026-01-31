@@ -112,7 +112,7 @@ function TierClearCounts({ groupBy }) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
   const { user } = useAuth();
   const [highlightPlayerId, setHighlightPlayerId] = useState();
-  const [highlightCountry, setHighlightCountry] = useState("");
+  const [highlightCountry, setHighlightCountry] = useState(user?.country ?? "");
   const [showUnknown, setShowUnknown] = useLocalStorage("tier_clears_show_unknown", false);
 
   const diffQuery = useGetAllDifficulties();

@@ -233,6 +233,13 @@
         "start_date": "Start Date",
         "end_date": "End Date",
         "clear_dates": "Clear Dates"
+      },
+      "country": {
+        "label": "Country"
+      },
+      "input_method": {
+        "label": "Input Method",
+        "all": "All"
       }
     },
     "chars_count_label": {
@@ -1940,7 +1947,7 @@
       },
       "misc": {
         "label": "Misc Stats",
-        "header": "Misceallaneous Stats",
+        "header": "Miscellaneous Stats",
         "suggestions": {
           "header": "Suggestions",
           "accepted": "Accepted Suggestions",
