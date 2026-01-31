@@ -30,7 +30,6 @@ import {
   faCalendarXmark,
   faCheck,
   faCheckSquare,
-  faEyeSlash,
   faGreaterThanEqual,
   faLessThanEqual,
   faQuestionCircle,
@@ -66,6 +65,8 @@ export function SubmissionFilter({
   anchorOrigin,
   transformOrigin,
   defaultFilter,
+  anchorEl,
+  setAnchorEl,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -74,7 +75,6 @@ export function SubmissionFilter({
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [localFilter, setLocalFilter] = useState(filter);
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -156,13 +156,6 @@ export function SubmissionFilter({
   const isError = queryObjectives.isError || queryObjectiveSubmissionCount.isError;
   const error = isError ? getErrorFromMultiple(queryObjectives, queryObjectiveSubmissionCount) : null;
 
-  const disabledFilters = [];
-  if (!filter.archived) disabledFilters.push("Archived Maps");
-  if (!filter.arbitrary) disabledFilters.push("Arbitrary Challenges");
-  sortedObjectives.forEach((objective) => {
-    if (filter.hide_objectives.includes(objective.id)) disabledFilters.push(objective.name);
-  });
-
   const changedTierSlider = (newSort) => {
     const diffMax = sortToDifficultyId(decodeDiffSort(newSort[0]));
     const diffMin = sortToDifficultyId(decodeDiffSort(newSort[1]));
@@ -205,7 +198,8 @@ export function SubmissionFilter({
             sx: {
               width: "500px",
               maxWidth: "92%",
-              overflow: isMdScreen ? "visible" : undefined,
+              maxHeight: "90vh",
+              overflowY: "auto",
             },
           },
         }}
@@ -427,19 +421,21 @@ export function SubmissionFilter({
           </Grid>
         )}
       </Popover>
-
-      {disabledFilters.length > 0 && (
-        <Stack direction="row" gap={0.5} alignItems="center">
-          <FontAwesomeIcon icon={faEyeSlash} color={theme.palette.text.secondary} size="xs" />
-          <Typography variant="caption" color="text.secondary">
-            {disabledFilters.length}
-            {/* {t("categories_hidden", { count: disabledFilters.length })} */}
-          </Typography>
-        </Stack>
-      )}
     </Stack>
   );
 }
+
+//#region Uncontrolled Wrapper
+/**
+ * Uncontrolled wrapper for SubmissionFilter that manages its own anchor state.
+ * Use this when you don't need external control over the popover and want to
+ * avoid re-renders in the parent component when the filter opens/closes.
+ */
+export function SubmissionFilterUncontrolled(props) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  return <SubmissionFilter {...props} anchorEl={anchorEl} setAnchorEl={setAnchorEl} />;
+}
+//#endregion
 
 export function getDefaultFilter(isOverall) {
   return {

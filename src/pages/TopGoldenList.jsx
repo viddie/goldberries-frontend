@@ -17,6 +17,7 @@ import {
   ErrorDisplay,
   getErrorFromMultiple,
   HeadTitle,
+  LanguageFlag,
   LoadingSpinner,
   parseYouTubeUrl,
   TooltipLineBreaks,
@@ -24,6 +25,7 @@ import {
 import {
   CampaignIcon,
   ChallengeFcIcon,
+  InputMethodIcon,
   ObjectiveIcon,
   ObsoleteIcon,
   PlayerNotesTooltip,
@@ -43,6 +45,7 @@ import {
   faExclamationTriangle,
   faEyeSlash,
   faFileExport,
+  faFilter,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
@@ -55,6 +58,7 @@ import {
   getMapName,
   secondsToDuration,
 } from "../util/data_util";
+import { COUNTRY_CODES } from "../util/country_codes";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -117,6 +121,11 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
       edit: useRef(),
     },
   };
+  const filterButtonRef = useRef(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+  const openSubmissionFilter = useCallback(() => {
+    setFilterAnchorEl(filterButtonRef.current);
+  }, []);
   const showMap = useCallback((id, challengeId, isCampaign) => {
     const data = {
       id: isCampaign ? challengeId : id,
@@ -162,7 +171,7 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
             <Grid item xs={12} sm="auto">
               <TopGoldenListHeader type={actualType} id={actualId} />
             </Grid>
-            <Grid item xs={12} sm="auto">
+            <Grid item xs={12} sm="auto" ref={filterButtonRef}>
               <SubmissionFilter
                 type={actualType}
                 id={actualId}
@@ -170,6 +179,8 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
                 setFilter={setFilter}
                 defaultFilter={defaultFilter}
                 variant="outlined"
+                anchorEl={filterAnchorEl}
+                setAnchorEl={setFilterAnchorEl}
               />
             </Grid>
             <Grid item xs={12} sm="auto">
@@ -211,6 +222,7 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
           isOverallList
           showMap={showMap}
           editSubmission={openEditSubmission}
+          openSubmissionFilter={openSubmissionFilter}
         />
       </Stack>
 
@@ -250,7 +262,7 @@ function TopGoldenListHeader({ type, id }) {
   );
 }
 
-function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
+function TopGoldenList({ type, id, filter, options, showMap, editSubmission, openSubmissionFilter }) {
   const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
 
   const key = getTglRenderKey(type, id, filter, options);
@@ -337,7 +349,7 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission }) {
           options={options}
         />
       ))}
-      <HiddenTiersNotice filter={filter} compactMode={compactMode} />
+      <HiddenTiersNotice filter={filter} compactMode={compactMode} onClick={openSubmissionFilter} />
     </Stack>
   );
 }
@@ -977,13 +989,93 @@ function DifficultyNumber({
   );
 }
 
-function HiddenTiersNotice({ filter, compactMode }) {
+function HiddenTiersNotice({ filter, compactMode, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
+  const { t: t_sf } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
+  const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
   const theme = useTheme();
 
   const hiddenCount = countHiddenTiers(filter);
-  if (hiddenCount === 0) return null;
-  const hiddenMessage = t("hidden_tiers.notice", { count: hiddenCount });
+
+  //#region Build active filters list
+  const activeFilters = [];
+
+  // Hidden objectives count
+  const hiddenObjectivesCount = filter.hide_objectives?.length ?? 0;
+  if (hiddenObjectivesCount > 0) {
+    activeFilters.push({
+      label: t("hidden_tiers.filters.hidden_objectives", { count: hiddenObjectivesCount }),
+    });
+  }
+
+  // Clear state
+  if (filter.clear_state && filter.clear_state !== 0 && filter.clear_state !== "0") {
+    const clearStateKey = {
+      1: "only_c",
+      2: "only_fc",
+      3: "no_c",
+      4: "no_fc",
+    }[filter.clear_state];
+    if (clearStateKey) {
+      activeFilters.push({
+        label: t("hidden_tiers.filters.clear_state", { state: t_sf(`clear_state.${clearStateKey}`) }),
+      });
+    }
+  }
+
+  // Submission count
+  if (filter.sub_count !== null && filter.sub_count !== "" && filter.sub_count !== undefined) {
+    const operator = filter.sub_count_is_min ? "≥" : "≤";
+    activeFilters.push({
+      label: t("hidden_tiers.filters.submission_count", { operator, count: filter.sub_count }),
+    });
+  }
+
+  // Date range
+  const hasStartDate =
+    filter.start_date !== null && filter.start_date !== "" && filter.start_date !== undefined;
+  const hasEndDate = filter.end_date !== null && filter.end_date !== "" && filter.end_date !== undefined;
+  if (hasStartDate || hasEndDate) {
+    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(navigator.language);
+    let dateLabel;
+    if (hasStartDate && hasEndDate) {
+      dateLabel = t("hidden_tiers.filters.date_range.both", {
+        start: formatDate(filter.start_date),
+        end: formatDate(filter.end_date),
+      });
+    } else if (hasStartDate) {
+      dateLabel = t("hidden_tiers.filters.date_range.from", { start: formatDate(filter.start_date) });
+    } else {
+      dateLabel = t("hidden_tiers.filters.date_range.until", { end: formatDate(filter.end_date) });
+    }
+    activeFilters.push({ label: dateLabel });
+  }
+
+  // Country
+  if (filter.country !== null && filter.country !== "" && filter.country !== undefined) {
+    const countryName = COUNTRY_CODES[filter.country] || filter.country;
+    activeFilters.push({
+      label: t("hidden_tiers.filters.country", { country: countryName }),
+      icon: <LanguageFlag code={filter.country} height="16" />,
+    });
+  }
+
+  // Input method
+  if (filter.input_method !== null && filter.input_method !== "" && filter.input_method !== undefined) {
+    activeFilters.push({
+      label: t("hidden_tiers.filters.input_method", { method: t_im(filter.input_method) }),
+      icon: <InputMethodIcon method={filter.input_method} />,
+    });
+  }
+  //#endregion
+
+  const hasActiveFilters = activeFilters.length > 0;
+  const hasHiddenTiers = hiddenCount > 0;
+
+  // Don't show the notice if there's nothing to show
+  if (!hasHiddenTiers && !hasActiveFilters) return null;
+
+  const hiddenMessage = hasHiddenTiers ? t("hidden_tiers.notice", { count: hiddenCount }) : null;
 
   return (
     <Stack
@@ -991,6 +1083,7 @@ function HiddenTiersNotice({ filter, compactMode }) {
       alignItems="center"
       justifyContent="center"
       gap={1}
+      onClick={onClick}
       sx={{
         p: 2,
         minWidth: { xs: "auto", sm: "300px" },
@@ -1000,19 +1093,48 @@ function HiddenTiersNotice({ filter, compactMode }) {
         borderRadius: "8px",
         backgroundColor: "rgba(0,0,0,0.2)",
         textAlign: "center",
+        cursor: "pointer",
+        transition: "background-color 0.2s, border-color 0.2s",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.05)",
+          borderColor: theme.palette.text.primary,
+        },
+        "&:active": {
+          backgroundColor: "rgba(255,255,255,0.1)",
+        },
       }}
     >
-      <FontAwesomeIcon
-        icon={faEyeSlash}
-        color={theme.palette.text.secondary}
-        size={compactMode ? "lg" : "2x"}
-      />
-      <Typography variant={compactMode ? "body2" : "body1"} color="text.secondary">
-        {hiddenMessage}
-      </Typography>
-      <Typography variant="caption" color="text.secondary">
-        {t("hidden_tiers.change_filter")}
-      </Typography>
+      {hasActiveFilters && (
+        <Stack direction="column" gap={0.5} alignItems="center">
+          <Stack direction="row" gap={1} alignItems="center">
+            <FontAwesomeIcon icon={faFilter} color={theme.palette.text.secondary} />
+            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+              {t("hidden_tiers.filter_settings")}
+            </Typography>
+          </Stack>
+          {activeFilters.map((filterItem, index) => (
+            <Stack key={index} direction="row" gap={0.5} alignItems="center">
+              {filterItem.icon}
+              <Typography variant="caption" color="text.secondary">
+                {filterItem.label}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+      )}
+      {hiddenMessage && (
+        <>
+          <Stack direction="row" gap={1} alignItems="center">
+            <FontAwesomeIcon icon={faEyeSlash} color={theme.palette.text.secondary} />
+            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+              {hiddenMessage}
+            </Typography>
+          </Stack>
+          <Typography variant="caption" color="text.secondary">
+            {t("hidden_tiers.change_filter")}
+          </Typography>
+        </>
+      )}
     </Stack>
   );
 }

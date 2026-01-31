@@ -67,7 +67,7 @@ import { Changelog } from "../components/Changelog";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { ROLES, useAuth } from "../hooks/AuthProvider";
 import { useTranslation } from "react-i18next";
-import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
+import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -534,7 +534,7 @@ function PlayerTimeline({ id }) {
           <Typography variant="h5">{t("label")}</Typography>
         </Grid>
         <Grid item xs="auto">
-          <SubmissionFilter
+          <SubmissionFilterUncontrolled
             type="player"
             id={id}
             filter={filter}

@@ -1568,7 +1568,21 @@
     "hidden_tiers": {
       "notice_one": "{{count}} tier is hidden",
       "notice_other": "{{count}} tiers are hidden",
-      "change_filter": "Change your filter settings to show them!"
+      "change_filter": "Change your filter settings to show them!",
+      "filter_settings": "Filter Settings",
+      "filters": {
+        "hidden_objectives_one": "{{count}} objective hidden",
+        "hidden_objectives_other": "{{count}} objectives hidden",
+        "clear_state": "Clear State: {{state}}",
+        "submission_count": "Submissions {{operator}} {{count}}",
+        "date_range": {
+          "from": "From {{start}}",
+          "until": "Until {{end}}",
+          "both": "{{start}} - {{end}}"
+        },
+        "country": "Country: {{country}}",
+        "input_method": "Input: {{method}}"
+      }
     }
   },
   "campaign": {
