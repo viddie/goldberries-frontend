@@ -378,6 +378,11 @@ export function fetchStatsMisc() {
 export function fetchStatsCollectibleCounts() {
   return axios.get("/stats/collectible-counts");
 }
+export function fetchStatsBiggestDifficultyGap(playerId = null) {
+  const params = {};
+  if (playerId) params.player_id = playerId;
+  return axios.get("/stats/biggest-difficulty-gap", { params });
+}
 
 export function fetchModInfo(url) {
   const params = { url };

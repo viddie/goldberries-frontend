@@ -31,6 +31,7 @@ import {
   faUserCheck,
   faEllipsis,
   faBasketShopping,
+  faArrowsUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { TabMonthlyTierClears } from "./TabMonthlyTierClears";
@@ -39,6 +40,7 @@ import { TabMisc } from "./TabMisc";
 import { TabVerifierStats } from "./TabVerifierStats";
 import { TabTierClears } from "./TabTierClears";
 import { TabCollectibleCounts } from "./TabCollectibleCounts";
+import { TabBiggestDifficultyGap } from "./TabBiggestDifficultyGap";
 
 // ============================================
 // NAVIGATION STYLE CONFIGURATION
@@ -67,6 +69,13 @@ const STATS_TABS = [
     value: "most-goldened",
     component: <TabMostGoldened />,
     icon: faTrophy,
+    subtabs: [],
+  },
+  {
+    i18key: "biggest_difficulty_gap.label",
+    value: "biggest-difficulty-gap",
+    component: <TabBiggestDifficultyGap />,
+    icon: faArrowsUpDown,
     subtabs: [],
   },
   {
