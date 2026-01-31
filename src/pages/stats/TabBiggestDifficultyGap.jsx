@@ -23,7 +23,6 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { red } from "@mui/material/colors";
 
 const DEFAULT_SHOW_COUNT = 20;
-const FULL_LIST_COUNT = 100;
 
 const reducedPadding = { px: 0.5 };
 const noPadding = { px: 0 };
@@ -50,11 +49,7 @@ export function TabBiggestDifficultyGap() {
   const data = getQueryData(query);
   const { list, player: highlightedPlayerData } = data;
 
-  // Calculate display list
-  const displayCount = expanded ? FULL_LIST_COUNT : DEFAULT_SHOW_COUNT;
-  const displayList = list.slice(0, displayCount);
-
-  // Check if highlighted player is in the displayed list
+  const displayList = expanded ? list : list.slice(0, DEFAULT_SHOW_COUNT);
   const highlightedInList = highlightedPlayerData
     ? displayList.some((entry) => entry.player.id === highlightedPlayerData.player.id)
     : false;
@@ -164,7 +159,7 @@ export function TabBiggestDifficultyGap() {
       {/* Expand/collapse button */}
       {list.length > DEFAULT_SHOW_COUNT && (
         <Button variant="outlined" onClick={() => setExpanded(!expanded)} sx={{ mt: 1, alignSelf: "center" }}>
-          {expanded ? t_s("show_less") : t_s("show_all", { count: Math.min(list.length, FULL_LIST_COUNT) })}
+          {expanded ? t_s("show_less") : t_s("show_all", { count: list.length })}
         </Button>
       )}
     </Stack>

@@ -96,6 +96,7 @@ import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import HoverMenu from "material-ui-popup-state/HoverMenu";
 import { createRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ProfileSettingsAlert } from "./components/AlertBanner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";
 import {
@@ -842,6 +843,7 @@ export function Layout() {
           userMenu={userMenu}
           settingsOpenRef={settingsOpenRef}
         />
+        <ProfileSettingsAlert />
         <Box
           component="main"
           sx={{

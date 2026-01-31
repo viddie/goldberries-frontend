@@ -151,6 +151,13 @@
     "stats": {
       "no_suggestions_yet": "No difficulty opinions yet"
     },
+    "alert_banner": {
+      "hide_for_day": "Hide",
+      "hide_permanently": "Don't show again",
+      "profile_settings": {
+        "message": "You have not set your country or input method yet. Consider setting them in your <SettingsLink>account settings</SettingsLink> to improve our <StatsLink>stats page</StatsLink>!"
+      }
+    },
     "top_golden_list": {
       "use_suggested": "Use Difficulty Opinions for Ranking",
       "toggle_edit_mode": "Toggle Edit Submissions Mode",
