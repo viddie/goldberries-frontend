@@ -8,6 +8,7 @@ import {
   Chip,
   Divider,
   Grid,
+  MenuItem,
   Stack,
   TextField,
   Tooltip,
@@ -20,6 +21,7 @@ import {
   faEquals,
   faHorse,
   faInfoCircle,
+  faQuestion,
   faSpinner,
   faThumbsDown,
   faThumbsUp,
@@ -34,7 +36,12 @@ import {
   usePostSuggestionVote,
 } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../../components/BasicComponents";
+import {
+  CustomizedMenu,
+  ErrorDisplay,
+  LoadingSpinner,
+  TooltipLineBreaks,
+} from "../../components/BasicComponents";
 import { DifficultyChip, PlayerChip } from "../../components/GoldberriesComponents";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../../components/Stats";
 import { ChallengeSubmissionTable } from "../Challenge";
@@ -46,6 +53,7 @@ import {
   SuggestionCommentDisplay,
   SuggestionName,
 } from "./Suggestions";
+import { CustomMenu } from "../../components/Menu";
 
 export function ViewSuggestionModal({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.view" });
@@ -151,9 +159,35 @@ export function ViewSuggestionModal({ id }) {
       });
     }
   };
-  const acceptVariant = suggestion.is_accepted === true ? "contained" : "outlined";
-  const rejectVariant =
-    suggestion.is_verified === false || suggestion.is_accepted === false ? "contained" : "outlined";
+
+  const modifyItems = [];
+  const loadingSpinner = <FontAwesomeIcon icon={faSpinner} size="lg" spin />;
+  if (suggestion.is_accepted === null) {
+    modifyItems.push({
+      icon: postSuggestionLoading ? loadingSpinner : faCheck,
+      text: t(isUnverified ? "buttons.verify" : "buttons.accept"),
+      onClick: () => updateSuggestion(true),
+      color: "success",
+      disabled: postSuggestionLoading,
+      keepOpen: true,
+    });
+    modifyItems.push({
+      icon: postSuggestionLoading ? loadingSpinner : faXmark,
+      text: t(isUnverified ? "buttons.reject_verification" : "buttons.reject_change"),
+      onClick: () => updateSuggestion(false),
+      color: "error",
+      disabled: postSuggestionLoading,
+      keepOpen: true,
+    });
+  } else {
+    modifyItems.push({
+      icon: postSuggestionLoading ? loadingSpinner : faQuestion,
+      text: "Set to Pending",
+      onClick: () => updateSuggestion(null),
+      disabled: postSuggestionLoading,
+      keepOpen: true,
+    });
+  }
 
   let highlightedPlayers = {};
   if (!isGeneral && hasMap) {
@@ -189,39 +223,7 @@ export function ViewSuggestionModal({ id }) {
         </Grid>
         {auth.hasHelperPriv && (
           <Grid item xs={12} sm="auto">
-            <ButtonGroup>
-              <Tooltip title={t(isUnverified ? "buttons.verify" : "buttons.accept")} arrow>
-                <Button
-                  variant={acceptVariant}
-                  color="success"
-                  onClick={() => updateSuggestion(true)}
-                  disabled={postSuggestionLoading}
-                >
-                  <FontAwesomeIcon
-                    icon={postSuggestionLoading ? faSpinner : faCheck}
-                    spin={postSuggestionLoading}
-                    style={{ height: "1.5em" }}
-                  />
-                </Button>
-              </Tooltip>
-              <Tooltip
-                title={t(isUnverified ? "buttons.reject_verification" : "buttons.reject_change")}
-                arrow
-              >
-                <Button
-                  variant={rejectVariant}
-                  color="error"
-                  onClick={() => updateSuggestion(false)}
-                  disabled={postSuggestionLoading}
-                >
-                  <FontAwesomeIcon
-                    icon={postSuggestionLoading ? faSpinner : faXmark}
-                    spin={postSuggestionLoading}
-                    style={{ height: "1.5em" }}
-                  />
-                </Button>
-              </Tooltip>
-            </ButtonGroup>
+            <CustomMenu title="Modify" variant="outlined" items={modifyItems} />
           </Grid>
         )}
         {suggestion.challenge !== null && suggestion.suggested_difficulty !== null && (

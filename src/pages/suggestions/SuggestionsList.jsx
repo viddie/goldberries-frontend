@@ -179,8 +179,8 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
                 if (d.value !== difficultiesSorted[0].value) return null;
                 return (
                   <>
-                    {index > 0 && " / "}
-                    <DifficultyChip difficulty={d.difficulty} />
+                    {index > 0 && <span key={"k2" + d.difficulty.id}> / </span>}
+                    <DifficultyChip key={"k1" + d.difficulty.id} difficulty={d.difficulty} />
                   </>
                 );
               })}
