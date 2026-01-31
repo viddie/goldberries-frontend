@@ -364,8 +364,10 @@ export function fetchStatsMonthlyRecap(month, allClearsTierSort = null, firstCle
 export function fetchStatsMonthlyTierClears() {
   return axios.get("/stats/monthly-tier-clears");
 }
-export function fetchStatsPlayerTierClearCounts() {
-  return axios.get("/stats/player-tier-clear-counts");
+export function fetchStatsPlayerTierClearCounts(groupBy = null) {
+  const params = {};
+  if (groupBy) params.group_by = groupBy;
+  return axios.get("/stats/player-tier-clear-counts", { params });
 }
 export function fetchStatsMostGoldened(date) {
   const data = {};

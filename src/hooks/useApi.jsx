@@ -444,10 +444,10 @@ export function useGetStatsMonthlyTierClears() {
     onError: errorToast,
   });
 }
-export function useGetStatsPlayerTierClearCounts() {
+export function useGetStatsPlayerTierClearCounts(groupBy = null) {
   return useQuery({
-    queryKey: ["stats_player_tier_clear_counts"],
-    queryFn: () => fetchStatsPlayerTierClearCounts(),
+    queryKey: ["stats_player_tier_clear_counts", groupBy],
+    queryFn: () => fetchStatsPlayerTierClearCounts(groupBy),
     onError: errorToast,
   });
 }

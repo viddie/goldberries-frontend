@@ -1,5 +1,8 @@
 import {
+  Button,
+  Checkbox,
   Divider,
+  FormControlLabel,
   Grid,
   Paper,
   Stack,
@@ -11,8 +14,14 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../../components/BasicComponents";
-import { PlayerIdSelect, PlayerLink } from "../../components/GoldberriesComponents";
+import {
+  CountrySelect,
+  ErrorDisplay,
+  getErrorFromMultiple,
+  LanguageFlag,
+  LoadingSpinner,
+} from "../../components/BasicComponents";
+import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../../components/GoldberriesComponents";
 import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";
@@ -20,29 +29,94 @@ import { getDifficultyName } from "../../util/data_util";
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useAuth } from "../../hooks/AuthProvider";
 import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { useNavigate, useParams } from "react-router-dom";
 import Color from "color";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { COUNTRY_CODES } from "../../util/country_codes";
+
+const VALID_GROUP_BY_VALUES = ["player", "country", "input_method"];
+const DEFAULT_GROUP_BY = "player";
 
 export function TabTierClears() {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
+  const navigate = useNavigate();
+  const { subtab } = useParams();
+
+  // Use useState to control groupBy, synced with URL
+  const initialGroupBy = VALID_GROUP_BY_VALUES.includes(subtab) ? subtab : DEFAULT_GROUP_BY;
+  const [groupBy, setGroupBy] = useState(initialGroupBy);
+
+  const onChangeGroupBy = (newGroupBy) => {
+    setGroupBy(newGroupBy);
+    navigate(`/stats/tier-clears/${newGroupBy}`, { replace: true });
+  };
+
+  // Sync state when URL changes externally (e.g., browser back/forward)
+  useEffect(() => {
+    const urlGroupBy = VALID_GROUP_BY_VALUES.includes(subtab) ? subtab : DEFAULT_GROUP_BY;
+    if (subtab !== groupBy && urlGroupBy !== groupBy) {
+      setGroupBy(urlGroupBy);
+    }
+  }, [subtab, groupBy]);
+
+  const groupOptions = [
+    { value: "player", label: t("group_by.player") },
+    { value: "country", label: t("group_by.country") },
+    { value: "input_method", label: t("group_by.input_method") },
+  ];
 
   return (
     <Stack>
       <Typography variant="h4" gutterBottom sx={{ mb: 1 }}>
         {t("header")}
       </Typography>
-      <TierClearCounts />
-      <Divider sx={{ my: 2 }} />
-      <TotalClears />
+
+      <GroupBySelector options={groupOptions} value={groupBy} onChange={onChangeGroupBy} />
+
+      <TierClearCounts groupBy={groupBy} />
+      {/* <Divider sx={{ my: 2 }} />
+      <TotalClears groupBy={groupBy} /> */}
     </Stack>
   );
 }
 
-function TierClearCounts() {
+//#region Group By Selector
+function GroupBySelector({ options, value, onChange }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
+  const variantUnselected = "outlined";
+  const variantSelected = "contained";
+
+  return (
+    <Stack direction="column" gap={0} sx={{ mb: 1 }}>
+      <Typography variant="h6">{t("group_by.label")}</Typography>
+      <Stack direction="row" gap={2} alignItems="center" sx={{ mb: 1 }} flexWrap="wrap">
+        {options.map((option) => (
+          <Button
+            key={option.value}
+            variant={value === option.value ? variantSelected : variantUnselected}
+            color="primary"
+            onClick={() => onChange(option.value)}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+//#endregion
+
+//#region Tier Clear Counts Grid
+function TierClearCounts({ groupBy }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
   const { user } = useAuth();
   const [highlightPlayerId, setHighlightPlayerId] = useState();
+  const [highlightCountry, setHighlightCountry] = useState("");
+  const [showUnknown, setShowUnknown] = useLocalStorage("tier_clears_show_unknown", false);
+
   const diffQuery = useGetAllDifficulties();
-  const query = useGetStatsPlayerTierClearCounts();
+  const query = useGetStatsPlayerTierClearCounts(groupBy === "player" ? null : groupBy);
 
   if (query.isLoading || diffQuery.isLoading) {
     return <LoadingSpinner />;
@@ -50,104 +124,165 @@ function TierClearCounts() {
     return <ErrorDisplay error={getErrorFromMultiple(query, diffQuery)} />;
   }
 
-  const data = getQueryData(query);
+  let data = getQueryData(query);
   const difficulties = getQueryData(diffQuery).filter(
     (diff) => diff.id !== DIFF_CONSTS.UNTIERED_ID && diff.id !== DIFF_CONSTS.TRIVIAL_ID,
   );
 
-  // Make a list of the top 10 players for each difficulty
-  const topPlayersByDifficulty = {};
+  // Filter out null entries if showUnknown is false (for country/input_method grouping)
+  if (groupBy !== "player" && !showUnknown) {
+    data = data.filter((entry) => {
+      if (groupBy === "country") return entry.country !== null;
+      if (groupBy === "input_method") return entry.input_method !== null;
+      return true;
+    });
+  }
+
+  // Determine the key field based on groupBy
+  const getEntryKey = (entry) => {
+    if (groupBy === "player") return entry.player.id;
+    if (groupBy === "country") return entry.country ?? "null";
+    if (groupBy === "input_method") return entry.input_method ?? "null";
+    return entry.player?.id;
+  };
+
+  // Make a list of the top 10 entries for each difficulty
+  const topEntriesByDifficulty = {};
   const totalClearsByDifficulty = {};
 
-  const doHighlightPlayerId = highlightPlayerId || user?.player?.id;
-  const highlightPlayer = data.find((player) => doHighlightPlayerId === player.player.id);
-  const highlightPlayerRanksByDifficulty = {};
+  // Determine highlight entry
+  let highlightEntry = null;
+  let highlightEntryKey = null;
+
+  if (groupBy === "player") {
+    const doHighlightPlayerId = highlightPlayerId || user?.player?.id;
+    highlightEntry = data.find((entry) => doHighlightPlayerId === entry.player.id);
+    highlightEntryKey = highlightEntry?.player.id;
+  } else if (groupBy === "country") {
+    highlightEntry = highlightCountry ? data.find((entry) => entry.country === highlightCountry) : null;
+    highlightEntryKey = highlightEntry?.country ?? "null";
+  }
+  // No highlighting for input_method
+
+  const highlightEntryRanksByDifficulty = {};
 
   difficulties.forEach((diff) => {
-    const sortedPlayers = [...data].sort((a, b) => b.clears[diff.id] - a.clears[diff.id]);
-    if (highlightPlayer) {
-      const rank = sortedPlayers.findIndex((player) => player.player.id === highlightPlayer.player.id);
-      highlightPlayerRanksByDifficulty[diff.id] = rank !== -1 ? rank + 1 : null;
+    const sortedEntries = [...data].sort((a, b) => b.clears[diff.id] - a.clears[diff.id]);
+    if (highlightEntry) {
+      const rank = sortedEntries.findIndex((entry) => getEntryKey(entry) === highlightEntryKey);
+      highlightEntryRanksByDifficulty[diff.id] = rank !== -1 ? rank + 1 : null;
     }
-    topPlayersByDifficulty[diff.id] = sortedPlayers.slice(0, 10);
-    // Filter out players with 0 clears for this difficulty
-    topPlayersByDifficulty[diff.id] = topPlayersByDifficulty[diff.id].filter(
-      (player) => player.clears[diff.id] > 0,
+    topEntriesByDifficulty[diff.id] = sortedEntries.slice(0, 10);
+    // Filter out entries with 0 clears for this difficulty
+    topEntriesByDifficulty[diff.id] = topEntriesByDifficulty[diff.id].filter(
+      (entry) => entry.clears[diff.id] > 0,
     );
-
-    totalClearsByDifficulty[diff.id] = sortedPlayers.reduce((sum, player) => sum + player.clears[diff.id], 0);
+    totalClearsByDifficulty[diff.id] = sortedEntries.reduce((sum, entry) => sum + entry.clears[diff.id], 0);
   });
 
   // Also top 10 for total clears
-  const totalSortedPlayers = [...data].sort((a, b) => b.total_clears - a.total_clears);
-  const topPlayersByTotalClears = totalSortedPlayers.slice(0, 10);
-  const totalClearsOverall = data.reduce((sum, player) => sum + player.total, 0);
+  const totalSortedEntries = [...data].sort((a, b) => b.total - a.total);
+  const topEntriesByTotalClears = totalSortedEntries.slice(0, 10);
+  const totalClearsOverall = data.reduce((sum, entry) => sum + entry.total, 0);
 
-  // Find own player
-  let highlightPlayerRankOverall = null;
-  if (highlightPlayer) {
-    highlightPlayerRankOverall = totalSortedPlayers.findIndex(
-      (player) => player.player.id === highlightPlayer.player.id,
+  // Find highlight entry rank overall
+  let highlightEntryRankOverall = null;
+  if (highlightEntry) {
+    highlightEntryRankOverall = totalSortedEntries.findIndex(
+      (entry) => getEntryKey(entry) === highlightEntryKey,
     );
-    highlightPlayerRankOverall = highlightPlayerRankOverall !== -1 ? highlightPlayerRankOverall + 1 : null;
+    highlightEntryRankOverall = highlightEntryRankOverall !== -1 ? highlightEntryRankOverall + 1 : null;
   }
 
   return (
     <>
-      <Grid container>
-        <Grid item xs={12} md={4}>
-          <PlayerIdSelect
-            type="all"
-            value={highlightPlayerId}
-            onChange={(e, id) => {
-              setHighlightPlayerId(id);
-            }}
-            sx={{ mb: 2, mt: 1 }}
-          />
-        </Grid>
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+        {/* Selector for highlighting */}
+        {groupBy === "player" && (
+          <Grid item xs={12} md={4}>
+            <PlayerIdSelect
+              type="all"
+              value={highlightPlayerId}
+              onChange={(e, id) => setHighlightPlayerId(id)}
+              sx={{ mt: 1 }}
+            />
+          </Grid>
+        )}
+        {groupBy === "country" && (
+          <Grid item xs={12} md={4}>
+            <CountrySelect
+              value={highlightCountry}
+              setValue={setHighlightCountry}
+              label={t("highlight_country")}
+              sx={{ mt: 1 }}
+            />
+          </Grid>
+        )}
+
+        {/* Show unknown checkbox for country/input_method */}
+        {groupBy !== "player" && (
+          <Grid item xs={12} md={4} display="flex" alignItems="center">
+            <FormControlLabel
+              control={<Checkbox checked={showUnknown} onChange={(e) => setShowUnknown(e.target.checked)} />}
+              label={t("show_unknown")}
+            />
+          </Grid>
+        )}
       </Grid>
+
       <Grid container spacing={2}>
         {difficulties.map((diff) => (
           <Grid key={diff.id} item xs={12} md={4}>
             <SingleTierClearCounts
               key={diff.id}
               difficulty={diff}
-              topPlayers={topPlayersByDifficulty[diff.id]}
-              highlightPlayer={highlightPlayer}
-              highlightPlayerRank={highlightPlayerRanksByDifficulty[diff.id]}
+              topEntries={topEntriesByDifficulty[diff.id]}
+              highlightEntry={highlightEntry}
+              highlightEntryKey={highlightEntryKey}
+              highlightEntryRank={highlightEntryRanksByDifficulty[diff.id]}
               totalClears={totalClearsByDifficulty[diff.id]}
+              groupBy={groupBy}
+              getEntryKey={getEntryKey}
             />
           </Grid>
         ))}
         <Grid item xs={12} md={4}>
           <SingleTierClearCounts
             difficulty={null}
-            topPlayers={topPlayersByTotalClears}
-            highlightPlayer={highlightPlayer}
-            highlightPlayerRank={highlightPlayerRankOverall}
+            topEntries={topEntriesByTotalClears}
+            highlightEntry={highlightEntry}
+            highlightEntryKey={highlightEntryKey}
+            highlightEntryRank={highlightEntryRankOverall}
             totalClears={totalClearsOverall}
+            groupBy={groupBy}
+            getEntryKey={getEntryKey}
           />
         </Grid>
       </Grid>
     </>
   );
 }
+
 function SingleTierClearCounts({
   difficulty,
-  topPlayers,
-  highlightPlayer,
-  highlightPlayerRank,
+  topEntries,
+  highlightEntry,
+  highlightEntryKey,
+  highlightEntryRank,
   totalClears,
+  groupBy,
+  getEntryKey,
 }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
   const { settings } = useAppSettings();
-  const name = difficulty === null ? "Total Submissions" : getDifficultyName(difficulty);
+  const name = difficulty === null ? t("total_submissions") : getDifficultyName(difficulty);
   const color = difficulty === null ? "white" : getNewDifficultyColors(settings, difficulty.id).color;
   const valueGetter = (row) => (difficulty === null ? row.total : row.clears[difficulty.id]);
 
   const backgroundColor = new Color(color).darken(0.95).string();
   const backgroundColorHover = new Color(color).darken(0.9).string();
-  const highlightIsInTop = highlightPlayer
-    ? topPlayers.some((entry) => entry.player.id === highlightPlayer.player.id)
+  const highlightIsInTop = highlightEntry
+    ? topEntries.some((entry) => getEntryKey(entry) === highlightEntryKey)
     : false;
 
   return (
@@ -168,7 +303,7 @@ function SingleTierClearCounts({
       </Typography>
       <Stack direction="row" justifyContent="center" alignItems="center" spacing={1} sx={{ mb: 1 }}>
         <Typography variant="caption" color="text.secondary">
-          Total clears: {totalClears.toLocaleString()}
+          {t("total_clears")}: {totalClears.toLocaleString()}
         </Typography>
       </Stack>
       <TableContainer>
@@ -176,23 +311,23 @@ function SingleTierClearCounts({
           <TableHead>
             <TableRow>
               <TableCell width={1}></TableCell>
-              <TableCell>Player</TableCell>
+              <TableCell>{getColumnHeader(groupBy, t)}</TableCell>
               <TableCell width={1} align="right">
                 #
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {topPlayers.map((entry, index) => {
-              const doHighlight = highlightPlayer && entry.player.id === highlightPlayer.player.id;
+            {topEntries.map((entry, index) => {
+              const doHighlight = highlightEntry && getEntryKey(entry) === highlightEntryKey;
               return (
                 <TableRow
-                  key={entry.player.id}
+                  key={getEntryKey(entry)}
                   sx={doHighlight ? { backgroundColor: "rgba(255, 215, 0, 0.15)" } : {}}
                 >
                   <TableCell width={1}>#{index + 1}</TableCell>
                   <TableCell>
-                    <PlayerLink player={entry.player} />
+                    <EntryDisplay entry={entry} groupBy={groupBy} />
                   </TableCell>
                   <TableCell width={1} align="right">
                     {valueGetter(entry)}
@@ -200,17 +335,17 @@ function SingleTierClearCounts({
                 </TableRow>
               );
             })}
-            {highlightPlayer && !highlightIsInTop && valueGetter(highlightPlayer) !== 0 && (
+            {highlightEntry && !highlightIsInTop && valueGetter(highlightEntry) !== 0 && (
               <TableRow
-                key={highlightPlayer.player.id}
+                key={highlightEntryKey}
                 sx={{ backgroundColor: "rgba(255, 215, 0, 0.15)", borderTop: "2px solid grey" }}
               >
-                <TableCell width={1}>#{highlightPlayerRank}</TableCell>
+                <TableCell width={1}>#{highlightEntryRank}</TableCell>
                 <TableCell>
-                  <PlayerLink player={highlightPlayer.player} />
+                  <EntryDisplay entry={highlightEntry} groupBy={groupBy} />
                 </TableCell>
                 <TableCell width={1} align="right">
-                  {valueGetter(highlightPlayer)}
+                  {valueGetter(highlightEntry)}
                 </TableCell>
               </TableRow>
             )}
@@ -220,10 +355,63 @@ function SingleTierClearCounts({
     </Paper>
   );
 }
+//#endregion
 
-function TotalClears() {
+//#region Helper Components
+function getColumnHeader(groupBy, t) {
+  switch (groupBy) {
+    case "country":
+      return t("column.country");
+    case "input_method":
+      return t("column.input_method");
+    default:
+      return t("column.player");
+  }
+}
+
+function EntryDisplay({ entry, groupBy }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
+  const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
+
+  if (groupBy === "player") {
+    return <PlayerLink player={entry.player} />;
+  }
+
+  if (groupBy === "country") {
+    if (entry.country === null) {
+      return <Typography variant="body2">{t("unknown")}</Typography>;
+    }
+    return (
+      <Stack direction="row" alignItems="center" gap={1}>
+        <LanguageFlag code={entry.country} height="20" />
+        <Typography variant="body2">{COUNTRY_CODES[entry.country] || entry.country}</Typography>
+      </Stack>
+    );
+  }
+
+  if (groupBy === "input_method") {
+    if (entry.input_method === null) {
+      return <Typography variant="body2">{t("unknown")}</Typography>;
+    }
+    return (
+      <Stack direction="row" alignItems="center" gap={1}>
+        <InputMethodIcon method={entry.input_method} />
+        <Typography variant="body2">{t_im(entry.input_method)}</Typography>
+      </Stack>
+    );
+  }
+
+  return null;
+}
+//#endregion
+
+function TotalClears({ groupBy }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
+  const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
+  const [showUnknown] = useLocalStorage("tier_clears_show_unknown", false);
+
   const diffQuery = useGetAllDifficulties();
-  const query = useGetStatsPlayerTierClearCounts();
+  const query = useGetStatsPlayerTierClearCounts(groupBy === "player" ? null : groupBy);
 
   if (query.isLoading || diffQuery.isLoading) {
     return <LoadingSpinner />;
@@ -231,30 +419,49 @@ function TotalClears() {
     return <ErrorDisplay error={getErrorFromMultiple(query, diffQuery)} />;
   }
 
-  const data = getQueryData(query);
+  let data = getQueryData(query);
   const difficulties = getQueryData(diffQuery).filter(
     (diff) => diff.id !== DIFF_CONSTS.UNTIERED_ID && diff.id !== DIFF_CONSTS.TRIVIAL_ID,
   );
 
+  // Filter out null entries if showUnknown is false
+  if (groupBy !== "player" && !showUnknown) {
+    data = data.filter((entry) => {
+      if (groupBy === "country") return entry.country !== null;
+      if (groupBy === "input_method") return entry.input_method !== null;
+      return true;
+    });
+  }
+
+  const getRowId = (row) => {
+    if (groupBy === "player") return row.player.id;
+    if (groupBy === "country") return row.country ?? "null";
+    if (groupBy === "input_method") return row.input_method ?? "null";
+    return row.player?.id;
+  };
+
   const columns = [
     {
       field: "name",
-      headerName: "Name",
-      // width: 130,
+      headerName: getColumnHeader(groupBy, t),
       flex: 2.5,
       resizable: false,
       disableReorder: true,
-      valueGetter: (value, row) => row.player.name,
-      renderCell: (params) => {
-        return <PlayerLink player={params.row.player} />;
+      valueGetter: (value, row) => {
+        if (groupBy === "player") return row.player.name;
+        if (groupBy === "country")
+          return row.country ? COUNTRY_CODES[row.country] || row.country : t("unknown");
+        if (groupBy === "input_method") return row.input_method ? t_im(row.input_method) : t("unknown");
+        return row.player?.name;
       },
+      renderCell: (params) => <EntryDisplay entry={params.row} groupBy={groupBy} />,
     },
   ];
+
   difficulties.forEach((diff) => {
     columns.push({
       field: `tier_${diff.id}`,
       headerName: "t" + diff.sort,
-      // width: 90,
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -266,6 +473,7 @@ function TotalClears() {
       valueGetter: (value, row) => row.clears[diff.id],
     });
   });
+
   columns.push({
     field: `total`,
     headerName: "Total",
@@ -277,16 +485,15 @@ function TotalClears() {
     resizable: false,
     disableColumnMenu: true,
     disableReorder: true,
-    // valueGetter: (value, row) => row.total,
   });
 
   return (
     <>
       <Typography variant="h5" sx={{ mt: 1 }}>
-        Total Clears by Player
+        {t("total_clears_header")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-        (might delete this later, it's a bit big)
+        (might delete this later, it's a bit big and broken)
       </Typography>
       <DataGrid
         rows={data}
@@ -306,7 +513,7 @@ function TotalClears() {
           includeHeaders: true,
         }}
         disableRowSelectionOnClick
-        getRowId={(row) => row.player.id}
+        getRowId={getRowId}
       />
     </>
   );

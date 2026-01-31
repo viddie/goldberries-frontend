@@ -1963,7 +1963,24 @@
       },
       "tier_clears": {
         "label": "Tier Clears",
-        "header": "Highest Clear Counts per Tier"
+        "header": "Highest Clear Counts per Tier",
+        "group_by": {
+          "label": "Group By",
+          "player": "Player",
+          "country": "Country",
+          "input_method": "Input Method"
+        },
+        "column": {
+          "player": "Player",
+          "country": "Country",
+          "input_method": "Input Method"
+        },
+        "highlight_country": "Highlight Country",
+        "show_unknown": "Show Unknown/Unset",
+        "unknown": "Unknown",
+        "total_submissions": "Total Submissions",
+        "total_clears": "Total clears",
+        "total_clears_header": "Total Clears"
       },
       "biggest_difficulty_gap": {
         "label": "Difficulty Gap",
