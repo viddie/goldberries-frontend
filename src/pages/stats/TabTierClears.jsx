@@ -1,7 +1,6 @@
 import {
   Button,
   Checkbox,
-  Divider,
   FormControlLabel,
   Grid,
   Paper,
@@ -33,8 +32,10 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import { useNavigate, useParams } from "react-router-dom";
 import Color from "color";
 import { useEffect, useState } from "react";
-import { COUNTRY_CODES } from "../../util/country_codes";
+import { COUNTRY_CODES, COUNTRY_CODES_SHORT } from "../../util/country_codes";
 
+const reducedPadding = { px: 0.5 };
+const reducedPaddingLeft = { pl: 1.0 };
 const VALID_GROUP_BY_VALUES = ["player", "country", "input_method"];
 const DEFAULT_GROUP_BY = "player";
 
@@ -311,26 +312,32 @@ function SingleTierClearCounts({
           <TableHead>
             <TableRow>
               <TableCell width={1}></TableCell>
-              <TableCell>{getColumnHeader(groupBy, t)}</TableCell>
+              <TableCell sx={reducedPadding}>{getColumnHeader(groupBy, t)}</TableCell>
               <TableCell width={1} align="right">
                 #
               </TableCell>
+              <TableCell width={1} align="center" sx={reducedPaddingLeft}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {topEntries.map((entry, index) => {
               const doHighlight = highlightEntry && getEntryKey(entry) === highlightEntryKey;
+              const percentage =
+                totalClears > 0 ? ((valueGetter(entry) / totalClears) * 100).toFixed(1) : "0.0";
               return (
                 <TableRow
                   key={getEntryKey(entry)}
                   sx={doHighlight ? { backgroundColor: "rgba(255, 215, 0, 0.15)" } : {}}
                 >
                   <TableCell width={1}>#{index + 1}</TableCell>
-                  <TableCell>
+                  <TableCell sx={reducedPadding}>
                     <EntryDisplay entry={entry} groupBy={groupBy} />
                   </TableCell>
                   <TableCell width={1} align="right">
-                    {valueGetter(entry)}
+                    {valueGetter(entry).toLocaleString()}
+                  </TableCell>
+                  <TableCell width={1} align="center" sx={reducedPaddingLeft}>
+                    {percentage}%
                   </TableCell>
                 </TableRow>
               );
@@ -341,11 +348,14 @@ function SingleTierClearCounts({
                 sx={{ backgroundColor: "rgba(255, 215, 0, 0.15)", borderTop: "2px solid grey" }}
               >
                 <TableCell width={1}>#{highlightEntryRank}</TableCell>
-                <TableCell>
+                <TableCell sx={reducedPadding}>
                   <EntryDisplay entry={highlightEntry} groupBy={groupBy} />
                 </TableCell>
                 <TableCell width={1} align="right">
-                  {valueGetter(highlightEntry)}
+                  {valueGetter(highlightEntry).toLocaleString()}
+                </TableCell>
+                <TableCell width={1} align="right" sx={reducedPaddingLeft}>
+                  {totalClears > 0 ? ((valueGetter(highlightEntry) / totalClears) * 100).toFixed(1) : "0.0"}%
                 </TableCell>
               </TableRow>
             )}
@@ -384,7 +394,7 @@ function EntryDisplay({ entry, groupBy }) {
     return (
       <Stack direction="row" alignItems="center" gap={1}>
         <LanguageFlag code={entry.country} height="20" />
-        <Typography variant="body2">{COUNTRY_CODES[entry.country] || entry.country}</Typography>
+        <Typography variant="body2">{COUNTRY_CODES_SHORT[entry.country] || entry.country}</Typography>
       </Stack>
     );
   }
