@@ -98,6 +98,9 @@ import {
   rerollApiKey,
   revokeApiKey,
   postReport,
+  fetchChallengeLikes,
+  postChallengeLike,
+  deleteChallengeLike,
 } from "../util/api";
 import { errorToast } from "../util/util";
 import { toast } from "react-toastify";
@@ -1163,6 +1166,41 @@ export function useRevokeApiKey(onSuccess) {
       queryClient.invalidateQueries(["api_key"]);
       if (onSuccess) onSuccess(response);
       else toast.success("API Key revoked");
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /challenge/like
+export function useGetChallengeLikes(challengeId) {
+  return useQuery({
+    queryKey: ["challenge_likes", challengeId],
+    queryFn: () => fetchChallengeLikes(challengeId),
+    onError: errorToast,
+    enabled: !!challengeId,
+  });
+}
+
+export function usePostChallengeLike(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postChallengeLike(data),
+    onSuccess: (response, data) => {
+      queryClient.invalidateQueries(["challenge_likes", data.challenge_id]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+
+export function useDeleteChallengeLike(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, challengeId }) => deleteChallengeLike(id),
+    onSuccess: (response, { id, challengeId }) => {
+      queryClient.invalidateQueries(["challenge_likes", challengeId]);
+      if (onSuccess) onSuccess(response);
     },
     onError: errorToast,
   });

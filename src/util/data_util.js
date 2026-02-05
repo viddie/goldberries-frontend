@@ -1,4 +1,5 @@
 import { darkTheme } from "../App";
+import { sortToDifficulty, sortToDifficultyId } from "./constants";
 import { jsonDateToJsDate } from "./util";
 
 export function getChallengeIsFullGame(challenge) {
@@ -122,6 +123,34 @@ export function getChallengeFractionalTier(challenge) {
   }, 0);
 
   return totalFrac / validSubmissions.length;
+}
+
+/**
+ * Gets the calculated fractional tier data for a challenge.
+ * Returns an object with:
+ *   - difficulty: the difficulty object for the tier (based on the integer part)
+ *   - frac: the fractional part (0-99) for display on the chip
+ * Returns null if no valid fractional tier can be calculated.
+ */
+export function getCalculatedFractionalTierData(challenge) {
+  const fractionalTier = getChallengeFractionalTier(challenge);
+  if (fractionalTier === null) return null;
+
+  // Round the fractional part first to avoid display issues like t9.100
+  const roundedFrac = Math.round((fractionalTier % 1) * 100);
+
+  // If rounding causes frac to be 100, wrap to next tier
+  let tierSort = Math.floor(fractionalTier);
+  let frac = roundedFrac;
+  if (roundedFrac >= 100) {
+    tierSort += 1;
+    frac = 0;
+  }
+
+  const difficulty = sortToDifficulty(tierSort);
+  const difficultyId = sortToDifficultyId(tierSort);
+
+  return { difficulty: { ...difficulty, id: difficultyId }, frac };
 }
 
 export function getChallengeFlags(challenge) {

@@ -21,7 +21,6 @@ import {
 import { Link, useParams } from "react-router-dom";
 import {
   BasicContainerBox,
-  CustomIconButton,
   ErrorDisplay,
   HeadTitle,
   InfoBox,
@@ -42,11 +41,10 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
-  getPlatformIcon,
 } from "../components/GoldberriesComponents";
 import {
+  getCalculatedFractionalTierData,
   getChallengeCampaign,
-  getChallengeFractionalTier,
   getChallengeNameShort,
   getChallengeSuffix,
   getMapLobbyInfo,
@@ -59,7 +57,6 @@ import {
   faArrowRight,
   faBasketShopping,
   faBook,
-  faCheck,
   faCheckCircle,
   faCircleExclamation,
   faClock,
@@ -68,13 +65,9 @@ import {
   faEdit,
   faExclamationTriangle,
   faExternalLink,
-  faExternalLinkAlt,
-  faFileDownload,
   faFlagCheckered,
   faInfoCircle,
   faPlus,
-  faToggleOff,
-  faToggleOn,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
@@ -86,23 +79,20 @@ import {
   useGetChallenge,
   useGetMap,
   useGetModDirectDownloadLink,
-  usePostChallenge,
   usePostMap,
-  usePostSubmission,
 } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";
-import { toast } from "react-toastify";
 import { memo, useEffect, useState } from "react";
 import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { useTheme } from "@emotion/react";
 import { MapImageBanner } from "../components/MapImage";
-import { sortToDifficulty, sortToDifficultyId } from "../util/constants";
+import { LikeButton } from "../components/Likes";
 
 const displayNoneOnMobile = {
   display: {
@@ -175,6 +165,7 @@ export function ChallengeDisplay({ id }) {
       {challenge.description && (
         <NoteDisclaimer title={t("description")} note={challenge.description} sx={{ mb: 2, mt: 1 }} />
       )}
+      <LikeButton challengeId={challenge.id} sx={{ mb: 2 }} />
       <ChallengeSubmissionTable challenge={challenge} />
 
       <Divider sx={{ my: 2 }}>
@@ -818,23 +809,4 @@ export function CalculatedFractionalTierChip({ challenge }) {
       <span style={{ opacity: "0.33" }}>)</span>
     </Stack>
   );
-}
-
-/**
- * Gets the calculated fractional tier data for a challenge.
- * Returns an object with:
- *   - difficulty: the difficulty object for the tier (based on the integer part)
- *   - frac: the fractional part (0-99) for display on the chip
- * Returns null if no valid fractional tier can be calculated.
- */
-function getCalculatedFractionalTierData(challenge) {
-  const fractionalTier = getChallengeFractionalTier(challenge);
-  if (fractionalTier === null) return null;
-
-  const tierSort = Math.floor(fractionalTier);
-  const difficulty = sortToDifficulty(tierSort);
-  const difficultyId = sortToDifficultyId(tierSort);
-  const frac = Math.round((fractionalTier % 1) * 100);
-
-  return { difficulty: { ...difficulty, id: difficultyId }, frac };
 }

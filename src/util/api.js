@@ -751,3 +751,25 @@ export function revokeApiKey() {
   return axios.delete("/auth/api-key");
 }
 //#endregion
+
+//#region /challenge/like
+export function fetchChallengeLikes(challengeId) {
+  return axios.get("/challenge/like", {
+    params: {
+      challenge_id: challengeId,
+    },
+  });
+}
+
+export function postChallengeLike(data) {
+  return axios.post("/challenge/like", formatDataForApi(data));
+}
+
+export function deleteChallengeLike(id) {
+  return axios.delete("/challenge/like", {
+    params: {
+      id: id,
+    },
+  });
+}
+//#endregion

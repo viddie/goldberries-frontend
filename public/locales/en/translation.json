@@ -573,6 +573,12 @@
       }
     }
   },
+  "likes": {
+    "wishlist": "Add to wishlist",
+    "completed": "Completed",
+    "not_completed": "Not Completed",
+    "no_likes": "None"
+  },
   "hooks": {
     "auth": {
       "logout_success": "Logged out successfully",
