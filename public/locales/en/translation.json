@@ -290,6 +290,7 @@
         "sort": {
           "label": "Sort By",
           "alphabetical": "Alphabetical",
+          "campaign": "Campaign",
           "fractional_tier": "Fractional Tier",
           "clear_count": "Clear Count",
           "first_clear_date": "First Clear Date",

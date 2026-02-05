@@ -22,6 +22,7 @@ import { PlayerIdSelect, PlayerSelect } from "./GoldberriesComponents";
 
 const sortOptions = [
   { value: "alphabetical", label: "alphabetical" },
+  { value: "campaign", label: "campaign" },
   { value: "fractional-tiers", label: "fractional_tier" },
   { value: "clear-count", label: "clear_count" },
   { value: "first-clear-date", label: "first_clear_date" },

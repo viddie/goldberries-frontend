@@ -1351,6 +1351,8 @@ export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sor
         return sortByFirstClearDate(a, b, ascending);
       case "time-taken":
         return sortByTimeTaken(a, b, ascending);
+      case "campaign":
+        return sortByCampaignName(a, b, maps, campaigns, ascending);
       case "alphabetical":
       default:
         break;
@@ -1405,6 +1407,21 @@ function sortByAlphabetical(a, b, maps, campaigns, ascending) {
   const campaignB = mapB === undefined ? campaigns[b.campaign_id] : campaigns[mapB.campaign_id];
   const mapNameA = getMapName(mapA, campaignA, true, false);
   const mapNameB = getMapName(mapB, campaignB, true, false);
+  return ascending ? mapNameA.localeCompare(mapNameB) : mapNameB.localeCompare(mapNameA);
+}
+function sortByCampaignName(a, b, maps, campaigns, ascending) {
+  const mapA = maps[a.map_id];
+  const mapB = maps[b.map_id];
+  const campaignA = mapA === undefined ? campaigns[a.campaign_id] : campaigns[mapA.campaign_id];
+  const campaignB = mapB === undefined ? campaigns[b.campaign_id] : campaigns[mapB.campaign_id];
+  const campaignNameA = campaignA?.name ?? "";
+  const campaignNameB = campaignB?.name ?? "";
+  const campaignCompare = ascending
+    ? campaignNameA.localeCompare(campaignNameB)
+    : campaignNameB.localeCompare(campaignNameA);
+  if (campaignCompare !== 0) return campaignCompare;
+  const mapNameA = mapA?.name ?? "";
+  const mapNameB = mapB?.name ?? "";
   return ascending ? mapNameA.localeCompare(mapNameB) : mapNameB.localeCompare(mapNameA);
 }
 function sortByTimeTaken(a, b, ascending) {
