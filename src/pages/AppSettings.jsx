@@ -16,20 +16,15 @@ import {
   Typography,
 } from "@mui/material";
 import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/basic";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faCheck,
-  faInfoCircle,
-  faTriangleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { MuiColorInput } from "mui-color-input";
-import { DIFFICULTIES, IS_DEBUG, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
+import { IS_DEBUG, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
 import i18n, { LANGUAGES } from "../i18n/config";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "../hooks/AuthProvider";

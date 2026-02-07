@@ -3,7 +3,6 @@ import {
   Checkbox,
   Divider,
   FormControlLabel,
-  IconButton,
   Slider,
   Stack,
   Tab,
@@ -11,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  BasicBox,
   BasicContainerBox,
   ErrorDisplay,
   HeadTitle,
@@ -19,7 +17,6 @@ import {
   LoadingSpinner,
   StyledExternalLink,
   StyledLink,
-  TooltipLineBreaks,
   getErrorFromMultiple,
   parseYouTubeUrl,
 } from "../components/basic";
@@ -33,26 +30,16 @@ import {
 } from "../hooks/useApi";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  AdminIcon,
   InputMethodIcon,
   LinkIcon,
   SubmissionEmbed,
   SuspendedIcon,
-  HelperIcon,
-  VerifierIcon,
   AccountRoleIcon,
   ChallengeFcIcon,
   DifficultyChip,
-  AnyImage,
 } from "../components/goldberries";
 import { RecentSubmissionsHeadless } from "../components/recent_submissions";
-import {
-  API_BASE_URL,
-  DIFFICULTIES,
-  DIFF_CONSTS,
-  getNewDifficultyColors,
-  sortToDifficulty,
-} from "../util/constants";
+import { API_BASE_URL, DIFF_CONSTS, getNewDifficultyColors } from "../util/constants";
 import {
   getCampaignName,
   getChallengeCampaign,
@@ -68,14 +55,10 @@ import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { ROLES, useAuth } from "../hooks/AuthProvider";
 import { useTranslation } from "react-i18next";
 import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import { useTheme } from "@emotion/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartBar, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { useModal } from "../hooks/useModal";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import Grid from "@mui/material/Unstable_Grid2";
-import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TimelineOppositeContent, { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -85,7 +68,7 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
-import { ExportTopGoldenListModal, PageTopGoldenList } from "./TopGoldenList";
+import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PagePlayer() {
   const { id, tab } = useParams();
@@ -404,7 +387,6 @@ export function DifficultyCountChart({ difficulty_counts }) {
 function ExRoleLabel({ account }) {
   //A small, fancy label for ex-roles
   const { t } = useTranslation(undefined, { keyPrefix: "components.roles" });
-  const theme = useTheme();
 
   if (![ROLES.EX_HELPER, ROLES.EX_VERIFIER, ROLES.EX_ADMIN].includes(account.role)) {
     return null;
@@ -421,16 +403,12 @@ function ExRoleLabel({ account }) {
     borderColor: "white",
   };
 
-  let icon = null;
   let text = null;
   if (account.role === ROLES.EX_HELPER) {
-    icon = <HelperIcon />;
     text = t("ex_helper");
   } else if (account.role === ROLES.EX_VERIFIER) {
-    icon = <VerifierIcon />;
     text = t("ex_verifier");
   } else if (account.role === ROLES.EX_ADMIN) {
-    icon = <AdminIcon />;
     text = t("ex_admin");
   }
 
@@ -613,7 +591,6 @@ function TimelineRatioSlider({ ratio, setRatio }) {
 }
 
 function BigTimelineLabel({ label, isLast = false, isNow = false }) {
-  const theme = useTheme();
   const lineColor = "#bdbdbd";
   return (
     <TimelineItem>
@@ -631,7 +608,7 @@ function BigTimelineLabel({ label, isLast = false, isNow = false }) {
   );
 }
 
-function TimelineDay({ key, date, submissions, isLast, groupCampaigns, showDifficulty }) {
+function TimelineDay({ date, submissions, isLast, groupCampaigns, showDifficulty }) {
   const dateStr = new Date(date).toLocaleDateString(navigator.language, { month: "short", day: "numeric" });
 
   const groupedByCampaign = [];
@@ -649,7 +626,7 @@ function TimelineDay({ key, date, submissions, isLast, groupCampaigns, showDiffi
   });
 
   return (
-    <TimelineItem key={key}>
+    <TimelineItem>
       <TimelineOppositeContent>
         <Typography variant="body1">{dateStr}</Typography>
       </TimelineOppositeContent>
@@ -684,11 +661,7 @@ function TimelineDay({ key, date, submissions, isLast, groupCampaigns, showDiffi
 }
 
 function TimelineSubmissionSingle({ submission, showDifficulty }) {
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-
   const challenge = submission.challenge;
-  const map = challenge.map;
-  const campaign = getChallengeCampaign(challenge);
   const showCampaignImage = showDifficulty ? challenge.difficulty.sort >= showDifficulty.sort : false;
 
   return (

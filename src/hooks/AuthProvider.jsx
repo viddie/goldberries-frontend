@@ -6,7 +6,6 @@ import { APP_URL, DISCORD_AUTH_URL, IS_DEBUG } from "../util/constants";
 import { getErrorMessage } from "../components/basic";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useMediaQuery } from "@mui/material";
 import { getDefaultSettings } from "./AppSettingsProvider";
 
 const AuthContext = createContext();
@@ -39,7 +38,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useLocalStorage("user", null);
 
   //For role override during dev settings
-  const [settings, setSettings] = useLocalStorage("app_settings", getDefaultSettings());
+  const [settings] = useLocalStorage("app_settings", getDefaultSettings());
   const roleOverride = settings?.dev?.roleOverride;
 
   const navigate = useNavigate();

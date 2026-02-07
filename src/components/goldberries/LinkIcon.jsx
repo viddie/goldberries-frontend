@@ -48,7 +48,7 @@ export function LinkIcon({ url }) {
   };
 
   let linkIconElement = null;
-  for (const [key, value] of Object.entries(LINK_ICONS)) {
+  for (const [, value] of Object.entries(LINK_ICONS)) {
     if (value.identifier.some((i) => url.includes(i))) {
       linkIconElement = <FontAwesomeIcon icon={value.icon} color={value.color} />;
       break;
@@ -71,7 +71,7 @@ export function LinkIcon({ url }) {
 export function getPlatformIcon(url) {
   if (url === null) return faQuestionCircle;
   let icon = faExternalLinkAlt;
-  for (const [key, value] of Object.entries(LINK_ICONS)) {
+  for (const [, value] of Object.entries(LINK_ICONS)) {
     if (value.identifier.some((i) => url.includes(i))) {
       icon = value.icon;
       break;

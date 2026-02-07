@@ -26,7 +26,7 @@ export function SuggestionsList({
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(defaultPerPage);
+  const [perPage] = useState(defaultPerPage);
 
   const query = useGetSuggestions(page, perPage, expired, null, filterType, search);
 

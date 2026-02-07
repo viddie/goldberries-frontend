@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { PlayerSelect } from "../goldberries";
 import {

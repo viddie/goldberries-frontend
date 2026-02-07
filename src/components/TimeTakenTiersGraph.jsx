@@ -1,11 +1,10 @@
-import { Checkbox, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -16,7 +15,7 @@ import {
 } from "recharts";
 import { useTheme } from "@emotion/react";
 import { ErrorDisplay, LoadingSpinner } from "./basic";
-import { getChallengeName, getChallengeNameClean, getDifficultyName } from "../util/data_util";
+import { getChallengeNameClean, getDifficultyName } from "../util/data_util";
 import { getNewDifficultyColors } from "../util/constants";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { CustomModal, ModalButtons } from "../hooks/useModal";

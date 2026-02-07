@@ -20,12 +20,10 @@ import { ChallengeInline } from "../../pages/Player";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { red } from "@mui/material/colors";
 
 const DEFAULT_SHOW_COUNT = 20;
 
 const reducedPadding = { px: 0.5 };
-const noPadding = { px: 0 };
 
 export function TabBiggestDifficultyGap() {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.biggest_difficulty_gap" });

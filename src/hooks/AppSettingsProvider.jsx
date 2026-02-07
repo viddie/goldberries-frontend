@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect } from "react";
-import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 const AppSettingsContext = createContext();
 
@@ -251,8 +251,6 @@ export const COLOR_PRESETS = [
 
 //Use this function to fix settings issues when a new version is released
 function fixSettings(settings, defaultSettings) {
-  const version = settings.general.settingsVersion;
-
   // // Initial Fix not necessary
   // if (version === undefined || version < 1) {
 

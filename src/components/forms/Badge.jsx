@@ -1,17 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { fetchBadge, postBadge } from "../../util/api";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEffect, useMemo, useState } from "react";
-import { DifficultySelectControlled, ObjectiveSelect, CampaignSelect, MapSelect } from "../goldberries";
+import { useEffect, useMemo } from "react";
 import { getQueryData, useGetBadge, usePostBadge } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
-import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "@emotion/react";
-import { useDebounce } from "@uidotdev/usehooks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { hasFlag, setFlag } from "../../pages/Account";
 import { MuiColorInput } from "mui-color-input";
 import { Badge } from "../badge";
@@ -67,7 +60,6 @@ export function FormBadgeWrapper({ id, onSave, ...props }) {
 export function FormBadge({ badge, onSave, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.badge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const theme = useTheme();
 
   const newBadge = badge.id === null;
 

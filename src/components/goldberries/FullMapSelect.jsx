@@ -1,11 +1,9 @@
 import { Stack } from "@mui/material";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { CampaignSelect } from "./CampaignSelect";
 import { MapSelect } from "./MapSelect";
 
 export function FullMapSelect({ value, setValue, disabled }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "components.full_map_select" });
   const [campaign, setCampaign] = useState(value?.campaign ?? null);
 
   const onCampaignSelect = (campaign) => {

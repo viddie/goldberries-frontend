@@ -1,19 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "@emotion/react";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Chip,
-  Divider,
-  Grid,
-  MenuItem,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Divider, Grid, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -36,8 +23,8 @@ import {
   usePostSuggestionVote,
 } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import { CustomizedMenu, ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic";
-import { DifficultyChip, PlayerChip } from "../goldberries";
+import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic";
+import { PlayerChip } from "../goldberries";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort } from "../../util/data_util";

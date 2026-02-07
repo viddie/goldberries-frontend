@@ -1,13 +1,7 @@
 import { useTranslation } from "react-i18next";
-import {
-  BasicContainerBox,
-  ErrorDisplay,
-  getErrorFromMultiple,
-  LoadingSpinner,
-  StyledExternalLink,
-} from "../components/basic";
+import { BasicContainerBox, ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../components/basic";
 import { getQueryData, useSearch } from "../hooks/useApi";
-import { SearchResultsCampaigns, SearchResultsMaps, SearchResultsSingleAuthor } from "./Search";
+import { SearchResultsCampaigns, SearchResultsMaps } from "./Search";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
@@ -32,7 +26,6 @@ export function PageAuthor() {
 
 function AuthorDisplay({ name }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const { t } = useTranslation(undefined, { keyPrefix: "author" });
 
   const query = useSearch(name, ["authors"], true);
   const response = getQueryData(query);

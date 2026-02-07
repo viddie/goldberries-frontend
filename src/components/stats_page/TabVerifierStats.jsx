@@ -19,7 +19,6 @@ import { PlayerChip } from "../goldberries";
 
 export function TabVerifierStats({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.verifier_stats" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const query = useGetVerifierStats();
 

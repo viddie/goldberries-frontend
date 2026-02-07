@@ -94,8 +94,6 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const mapCollectiblesModal = useModal(null, undefined, {
     actions: [ModalButtons.close],
   });
-  const theme = useTheme();
-  const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const { mutate: saveSubmission } = usePostSubmission((submission) => {
     toast.success(t("feedback.updated"));
@@ -152,7 +150,6 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const new_challenge_id = form.watch("new_challenge_id");
   const new_challenge = form.watch("new_challenge");
   const suggested_difficulty_id = form.watch("suggested_difficulty_id");
-  const frac = form.watch("frac");
 
   const markDateAchieved = shouldMarkSubmissionDateAchieved(submission);
 

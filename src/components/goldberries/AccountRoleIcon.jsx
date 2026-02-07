@@ -1,4 +1,4 @@
-import { faBan, faHammer, faHand, faNewspaper, faShield } from "@fortawesome/free-solid-svg-icons";
+import { faHammer, faHand, faNewspaper, faShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";

@@ -31,7 +31,7 @@ import {
   isMapSameNameAsCampaign,
 } from "../util/data_util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight, faBook } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -178,7 +178,7 @@ function MonthlyRecap({ month }) {
 
   const data = getQueryData(query);
   const { tier_clears, submissions_t0, challenge_changes, newly_cleared_t3 } = data;
-  const { overall, difficulty } = getQueryData(snapshotQuery);
+  const { difficulty } = getQueryData(snapshotQuery);
 
   return (
     <>

@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -42,6 +41,7 @@ export function PageRejectedChallenges() {
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 function RejectedMapsTable({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "rejected_maps" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -89,7 +89,6 @@ function RejectedMapsTable({}) {
 
 function RejectedChallengesTable() {
   const { t } = useTranslation(undefined, { keyPrefix: "rejected_challenges" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const query = useGetRejectedChallenges();
   const challenges = getQueryData(query);

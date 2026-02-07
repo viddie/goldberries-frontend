@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormOptions } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord, faRaspberryPi } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 import "@mui/material";
-import { Alert, Avatar, Box, Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
 import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
 import {
   useForgotPasswordRequest,

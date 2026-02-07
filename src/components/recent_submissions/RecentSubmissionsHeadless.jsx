@@ -38,7 +38,6 @@ export function RecentSubmissionsHeadless({
   hideIfEmpty = false,
   chipSx = {},
 }) {
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useLocalStorage(
     "recent_submissions_per_page_" + (playerId === null ? "general" : "player"),

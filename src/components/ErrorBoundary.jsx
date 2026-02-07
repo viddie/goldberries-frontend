@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { CodeBlock } from "../pages/Rules";
 import { useTheme } from "@emotion/react";
 import { StyledExternalLink } from "./basic";
@@ -25,7 +24,6 @@ export class ErrorBoundary extends React.Component {
 }
 
 function ErrorComponent({ message }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   return (
     <>

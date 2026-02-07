@@ -309,7 +309,6 @@ function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBa
   });
 
   const message = form.watch("message");
-  const url = form.watch("url");
   const canSubmit =
     !!selectedTopic &&
     (!topicConfig?.subTopics?.length || !!selectedSubTopic) &&

@@ -103,6 +103,8 @@ export function getGlobalNoticeSeverityInfo(theme, severity) {
       return { icon: faExclamationTriangle, color: theme.palette.error.main };
     case "success":
       return { icon: faCheckCircle, color: theme.palette.success.main };
+    default:
+      break;
   }
   return info;
 }

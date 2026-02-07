@@ -1,5 +1,4 @@
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import { Trans, useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/AuthProvider";
 import { StyledLink } from "./basic";
@@ -31,7 +30,7 @@ export function AlertBanner({
   const { t } = useTranslation(undefined, { keyPrefix: "components.alert_banner" });
 
   // Use state to trigger re-render when dismissed
-  const [dismissedVersion, setDismissedVersion] = useState(0);
+  const [, setDismissedVersion] = useState(0);
 
   const isDismissed = isAlertDismissed(alertId);
 
@@ -111,7 +110,6 @@ export function AlertBanner({
  * Alert reminding users to set their country and input method in account settings
  */
 export function ProfileSettingsAlert() {
-  const { t } = useTranslation(undefined, { keyPrefix: "components.alert_banner.profile_settings" });
   const auth = useAuth();
 
   // Only show if user is logged in and has a claimed player

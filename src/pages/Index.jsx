@@ -14,18 +14,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreativeCommonsBy, faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
   faCircleQuestion,
-  faCreditCard,
   faFileLines,
   faLegal,
   faMoneyBill1Wave,
-  faQuestion,
   faScaleBalanced,
   faScroll,
 } from "@fortawesome/free-solid-svg-icons";
 import { RecentSubmissions } from "../components/recent_submissions";
-import { DIFF_CONSTS, DISCORD_INVITE, getDifficultySubtierShares } from "../util/constants";
+import { DISCORD_INVITE, getDifficultySubtierShares } from "../util/constants";
 import { Trans, useTranslation } from "react-i18next";
-import { ErrorBoundary } from "../components/ErrorBoundary";
 import { PostIndexWidget } from "./Post";
 import { useAuth } from "../hooks/AuthProvider";
 

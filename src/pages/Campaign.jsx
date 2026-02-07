@@ -175,7 +175,6 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
 
 export function CampaignDetailsList({ campaign, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
-  const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const hasMajorSort = campaign.sort_major_name !== null;
@@ -428,7 +427,7 @@ function CampaignPlayerTableRow({ index, campaign, playerEntry, isSelf = false }
     palette: { campaignPage },
   } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const { player, stats, last_submission, highest_lobby_sweep, highest_lobby_sweep_fcs } = playerEntry;
+  const { player, stats, highest_lobby_sweep } = playerEntry;
   const validMaps = campaign.maps.filter(
     (map) => !map.is_archived && map.is_progress && mapHasValidChallenges(map),
   );
@@ -446,7 +445,6 @@ function CampaignPlayerTableRow({ index, campaign, playerEntry, isSelf = false }
   const sweepColor =
     campaign.sort_major_name !== null ? (campaign.sort_major_colors[highest_lobby_sweep] ?? "white") : null;
   const borderLeft = sweepColor ? "20px solid " + sweepColor : "none";
-  const selfStyle = isSelf ? { borderBottomWidth: "5px" } : {};
 
   const onClick = () => {
     setExpanded(!expanded);

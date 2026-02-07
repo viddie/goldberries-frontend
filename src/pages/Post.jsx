@@ -13,7 +13,6 @@ import {
   TableRow,
   TextField,
   Typography,
-  colors,
   useTheme,
 } from "@mui/material";
 import {
@@ -35,7 +34,7 @@ import {
   useGetPostPaginated,
 } from "../hooks/useApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight, faCalendar, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
 import { DifficultyChip, PlayerChip } from "../components/goldberries";
 import Markdown from "react-markdown";
@@ -65,7 +64,6 @@ export function PagePostList({ type }) {
 //#region Post List
 export function PostList({ type }) {
   const { t } = useTranslation(undefined, { keyPrefix: "post.list" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const [page, setPage] = useLocalStorage(`post_list_${type}_page`, 1);
   const perPage = 15;
@@ -657,6 +655,7 @@ function extractText(string, start, end) {
 }
 //This plugin works properly to split the text into text and emoji nodes
 //BUT react-markdown doesnt support custom components through its components prop i think?
+// eslint-disable-next-line no-unused-vars
 function pluginEmojis() {
   return (tree) => {
     visit(tree, "text", (node, position, parent) => {
@@ -797,11 +796,9 @@ function PostIndexWidgetList({ type }) {
   );
 }
 export function PostIndexWidgetPost({ post, isPreview = false }) {
-  const { t: t_pl } = useTranslation(undefined, { keyPrefix: "post.list" });
   const theme = useTheme();
   const content = post.content;
   const firstParagraph = content.split("\n\n")[0];
-  const hasMoreContent = content.length > firstParagraph.length;
 
   return (
     <StyledLink

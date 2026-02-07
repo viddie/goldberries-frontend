@@ -22,7 +22,7 @@ import {
   useGetChallengeLikes,
   usePostChallengeLike,
 } from "../../hooks/useApi";
-import { getErrorFromMultiple, getErrorMessage } from "../basic";
+import { getErrorFromMultiple } from "../basic";
 import { PlayerChip } from "../goldberries";
 import { toast } from "react-toastify";
 

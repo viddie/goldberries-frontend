@@ -9,7 +9,6 @@ import { DIFF_CONSTS } from "../../util/constants";
 
 export function FormCampaignMassAddMaps({ onSave }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.campaign_mass_add_maps" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const [formState, setFormState] = useState(0); // 0 = input map names, 1 = input additional map data
   const { mutateAsync: addMapAsync } = usePostMap();

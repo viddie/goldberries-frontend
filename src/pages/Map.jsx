@@ -20,7 +20,6 @@ import {
   faArrowRightToBracket,
   faEdit,
   faExclamationTriangle,
-  faInfoCircle,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,7 +36,6 @@ import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
 import {
   ChallengeFcIcon,
   DifficultyChip,
-  GamebananaEmbed,
   ObjectiveIcon,
   VerificationStatusChip,
 } from "../components/goldberries";

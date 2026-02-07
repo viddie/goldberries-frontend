@@ -1,12 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { fetchMap, postMap } from "../../util/api";
+import { useQuery } from "react-query";
+import { fetchMap } from "../../util/api";
 import {
   Button,
   Checkbox,
   Divider,
   FormControlLabel,
   FormHelperText,
-  Menu,
   MenuItem,
   Stack,
   TextField,
@@ -15,8 +14,8 @@ import {
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEffect, useMemo, useState } from "react";
-import { AnyImage, CampaignSelect, EmoteImage, MapSelect, OtherIcon } from "../goldberries";
+import { useEffect, useMemo } from "react";
+import { CampaignSelect, MapSelect, OtherIcon } from "../goldberries";
 import { FormOptions } from "../../util/constants";
 import { getQueryData, usePostMap } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
@@ -94,7 +93,6 @@ export function FormMapWrapper({
 export function FormMap({ map, onSave, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.map" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const { t: t_ch } = useTranslation(undefined, { keyPrefix: "forms.challenge" });
   const { t: t_ca } = useTranslation(undefined, { keyPrefix: "forms.campaign" });
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
   const theme = useTheme();

@@ -9,15 +9,13 @@ import {
   FormHelperText,
   Grid,
   IconButton,
-  Menu,
-  MenuItem,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
 import { FormOptions } from "../../util/constants";
 import {
@@ -450,7 +448,6 @@ function FormCampaignEditMaps({ campaign, onSave, ...props }) {
       mapsToDelete: [],
     },
   });
-  const errors = form.formState.errors;
   const onUpdateSubmit = form.handleSubmit((data) => {
     for (const map of data.maps) {
       if (map.sort_major !== "" && map.sort_major !== null)

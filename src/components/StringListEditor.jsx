@@ -1,6 +1,6 @@
 import { faArrowDown, faArrowUp, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Divider, Grid, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
 import { CustomIconButton } from "./basic";
 
 export function StringListEditor({

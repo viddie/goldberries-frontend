@@ -2,7 +2,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
   Grid,
   IconButton,
   Paper,
@@ -92,8 +91,6 @@ export function Changelog({ type, id, ...props }) {
 }
 
 function ChangelogEntry({ entry, deleteEntry, canManage = false }) {
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-
   if (entry.challenge_id !== null && entry.description.startsWith("Moved from"))
     return <ChangelogEntryMovedChallenge entry={entry} deleteEntry={deleteEntry} canManage={canManage} />;
 
@@ -128,7 +125,6 @@ function ChangelogEntry({ entry, deleteEntry, canManage = false }) {
 
 function ChangelogEntryMovedChallenge({ entry, deleteEntry, canManage = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.changelog" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const query = useGetAllDifficulties();
 
   if (query.isLoading) return <LoadingSpinner />;

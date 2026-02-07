@@ -9,7 +9,6 @@ import {
   BarChart,
   Cell,
   Legend,
-  Line,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -20,7 +19,6 @@ import {
 
 export function TabMisc({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.misc" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const query = useGetStatsMisc();
   const queryDiff = useGetAllDifficulties();

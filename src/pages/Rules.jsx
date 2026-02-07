@@ -5,7 +5,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -107,6 +106,7 @@ function RulesTOC({ allRules }) {
                     </ul>
                   );
                 }
+                return null;
               })}
             </li>
           );
@@ -144,6 +144,7 @@ function RulesSection({ sectionKey, section }) {
             />
           );
         }
+        return null;
       })}
     </>
   );
@@ -151,7 +152,7 @@ function RulesSection({ sectionKey, section }) {
 function RulesSubSection({ sectionKey, subSectionKey, subsection }) {
   const theme = useTheme();
   const { t } = useTranslation(undefined, { keyPrefix: "rules." + sectionKey + "." + subSectionKey });
-  const { type, count } = subsection;
+  const { type } = subsection;
   const entries = t("entries", { returnObjects: true });
   const tabelSize = subsection.size === "small" ? "small" : "medium";
   const hasExplanation = subsection.explanation === true;

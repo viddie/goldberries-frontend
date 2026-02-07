@@ -28,7 +28,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getNewDifficultyColors } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faLemon } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "@emotion/react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
@@ -320,7 +319,6 @@ const MemoDynamicRenderCampaignList = memo(DynamicRenderCampaignList, (prevProps
 
 function CampaignEntry({ campaign, type }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const theme = useTheme();
   const [selectedMapIndex, setSelectedMapIndex] = useState(0);
 
   return (
@@ -398,6 +396,7 @@ function CampaignEntry({ campaign, type }) {
 function LetterDivider({ letter }) {
   const backgroundColor = "rgba(0,0,0,0.5)";
   return (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
     <a id={letter}>
       <Divider sx={{ my: 0 }}>
         <Chip label={letter} sx={{ backgroundColor: backgroundColor }} />
@@ -435,7 +434,6 @@ function MapEntry({ campaign, map, type }) {
 }
 
 function ChallengeEntry({ challenge, type }) {
-  const s = challenge.submissions.length === 1 ? "" : "s";
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
       <Grid component={Stack} item xs={12} md={1} direction="row" gap={1}>

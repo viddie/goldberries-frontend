@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useAuth } from "../hooks/AuthProvider";
 import { Navigate, useParams } from "react-router-dom";
 

@@ -387,7 +387,6 @@ export function MapCampaignUrlInfoBox({ campaign, map = null }) {
   );
 }
 function MapCampaignUrlInfoBoxUrl({ url }) {
-  const theme = useTheme();
   const isMdScreen = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const modalHook = useModal();
   const { mutate: getLink } = useGetModDirectDownloadLink((data) => {

@@ -21,7 +21,6 @@ import { getCampaignName, getMapName } from "../../util/data_util";
 
 export function TabMostGoldened() {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.most_goldened" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const [date, setDate] = useState(new Date().toISOString());
   //Format date into a string like 2024-08-02
   const dateFormatted = date ? date.split("T")[0] : null;
@@ -68,7 +67,7 @@ function TabMostGoldenedCampaigns({ date }) {
     return <ErrorDisplay error={error} />;
   }
 
-  const { campaigns, maps } = getQueryData(query);
+  const { campaigns } = getQueryData(query);
   const campaignsSliced = expanded ? campaigns : campaigns.slice(0, SHOW_AMOUNT);
 
   return (
@@ -134,7 +133,7 @@ function TabMostGoldenedMaps({ date }) {
     return <ErrorDisplay error={error} />;
   }
 
-  const { campaigns, maps } = getQueryData(query);
+  const { maps } = getQueryData(query);
   const mapsSliced = expanded ? maps : maps.slice(0, SHOW_AMOUNT);
 
   return (

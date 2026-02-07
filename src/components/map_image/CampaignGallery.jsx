@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { StyledLink } from "../basic";
 import { getCampaignName, getMapName, isMapSameNameAsCampaign, mapIsSide } from "../../util/data_util";
 import { useTranslation } from "react-i18next";
@@ -37,7 +37,6 @@ function CampaignGalleryImages({ campaign, maps, ...props }) {
   );
 }
 export function CampaignGallerySingleImage({ campaign, map, isSearch = false, ...props }) {
-  const theme = useTheme();
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const hasMinorSort = campaign.sort_minor_name !== null;

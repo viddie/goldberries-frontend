@@ -409,6 +409,7 @@ function EntryDisplay({ entry, groupBy }) {
 }
 //#endregion
 
+// eslint-disable-next-line no-unused-vars
 function TotalClears({ groupBy }) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
   const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
