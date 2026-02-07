@@ -21,9 +21,7 @@ import { usePostUploadFile } from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
 import { FullMapSelect } from "../../components/goldberries";
-import { API_BASE_URL } from "../../util/constants";
-import { MapImageBanner } from "../../components/MapImage";
-import { getMapName } from "../../util/data_util";
+import { MapImageBanner } from "../../components/map_image";
 
 export function PageFileUpload() {
   const { t } = useTranslation(undefined, { keyPrefix: "file_upload" });

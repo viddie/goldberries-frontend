@@ -53,7 +53,7 @@ export function PageLogs() {
   };
 
   const handlePageChange = (newPage) => {
-    setFilter({ ...filter, page: 1, page: newPage });
+    setFilter({ ...filter, page: newPage });
   };
   const handlePerPageChange = (newPerPage) => {
     setFilter({ ...filter, page: 1, perPage: newPerPage });

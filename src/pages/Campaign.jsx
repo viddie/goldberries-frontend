@@ -63,7 +63,7 @@ import { useAuth } from "../hooks/AuthProvider";
 import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
-import { CampaignGallery } from "../components/MapImage";
+import { CampaignGallery } from "../components/map_image";
 import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PageCampaign() {

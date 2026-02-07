@@ -14,7 +14,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { hasFlag, setFlag } from "../../pages/Account";
 import { MuiColorInput } from "mui-color-input";
-import { Badge } from "../Badge";
+import { Badge } from "../badge";
 
 export const BADGE_FLAGS = {
   shiny: { key: "shiny", flag: 1 },

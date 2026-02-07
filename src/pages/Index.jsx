@@ -22,7 +22,7 @@ import {
   faScaleBalanced,
   faScroll,
 } from "@fortawesome/free-solid-svg-icons";
-import { RecentSubmissions } from "../components/RecentSubmissions";
+import { RecentSubmissions } from "../components/recent_submissions";
 import { DIFF_CONSTS, DISCORD_INVITE, getDifficultySubtierShares } from "../util/constants";
 import { Trans, useTranslation } from "react-i18next";
 import { ErrorBoundary } from "../components/ErrorBoundary";

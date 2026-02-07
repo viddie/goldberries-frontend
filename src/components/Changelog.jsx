@@ -91,7 +91,7 @@ export function Changelog({ type, id, ...props }) {
   );
 }
 
-export function ChangelogEntry({ entry, deleteEntry, canManage = false }) {
+function ChangelogEntry({ entry, deleteEntry, canManage = false }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   if (entry.challenge_id !== null && entry.description.startsWith("Moved from"))

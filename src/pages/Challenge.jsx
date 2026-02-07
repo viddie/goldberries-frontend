@@ -91,8 +91,8 @@ import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { useTheme } from "@emotion/react";
-import { MapImageBanner } from "../components/MapImage";
-import { LikeButton } from "../components/Likes";
+import { MapImageBanner } from "../components/map_image";
+import { LikeButton } from "../components/likes";
 
 const displayNoneOnMobile = {
   display: {

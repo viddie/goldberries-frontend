@@ -1,40 +1,8 @@
 import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
-import { MarkdownRenderer } from "../pages/Post";
-import { hasFlag } from "../pages/Account";
-import { BADGE_FLAGS } from "./forms/Badge";
+import { MarkdownRenderer } from "../../pages/Post";
+import { hasFlag } from "../../pages/Account";
+import { BADGE_FLAGS } from "../forms/Badge";
 import Color from "color";
-import { getQueryData, useGetBadge } from "../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "./basic";
-
-export function BadgeDisplay({ player }) {
-  const badges = player.data?.badges || [];
-  return (
-    <Stack direction="row" gap={1} alignItems="center">
-      {badges.map((badge) => (
-        <Badge key={badge.id} badge={badge} />
-      ))}
-    </Stack>
-  );
-}
-
-export function BadgeAsync({ id, inline = true }) {
-  const query = useGetBadge(id);
-
-  if (query.isLoading) return <LoadingSpinner />;
-  if (query.isError) return <ErrorDisplay error={query.error} />;
-
-  const badge = getQueryData(query);
-  return (
-    <Stack
-      direction="row"
-      sx={{ display: inline ? "inline-block" : undefined, verticalAlign: inline ? "middle" : undefined }}
-      justifyContent="space-around"
-      alignItems="center"
-    >
-      <Badge badge={badge} />
-    </Stack>
-  );
-}
 
 export function Badge({ badge }) {
   const theme = useTheme();
@@ -55,9 +23,6 @@ export function Badge({ badge }) {
       <Box height={32}>
         <BadgeImage badge={badge} />
       </Box>
-      {/* <Stack sx={{ maxWidth: "fit-content" }}>
-        <BadgeImage badge={badge} />
-      </Stack> */}
     </Tooltip>
   );
 }
@@ -76,9 +41,6 @@ function BadgeImage({ badge, full = false }) {
   const levelClass = level3Class || level2Class || level1Class || "";
   const fullClass = full ? " large" : "";
 
-  // var backgroundColor = "#000000";
-  // var backgroundColor = new Color(borderColor).darken(0.5).hex();
-  // var backgroundColor = new Color(borderColor).desaturate(0.5).darken(0.35).hex();
   var backgroundColor = new Color(borderColor).darken(0.45).desaturate(0.4).hex();
 
   return (

@@ -22,7 +22,7 @@ import {
   groupMapsByMajor,
 } from "../util/data_util";
 import { useTranslation } from "react-i18next";
-import { CampaignGallerySingleImage, CampaignImageFull } from "../components/MapImage";
+import { CampaignGallerySingleImage, CampaignImageFull } from "../components/map_image";
 import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function PageSearch({ isDirectSearch = false }) {

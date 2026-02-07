@@ -48,7 +48,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
 import { Controller, useForm } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { Badge } from "../../components/Badge";
+import { Badge } from "../../components/badge";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { FormBadgeWrapper } from "../../components/forms/Badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -49,7 +49,7 @@ import { useTranslation } from "react-i18next";
 import { memo, useEffect, useState } from "react";
 import { DIFFICULTIES } from "../util/constants";
 import { ChallengeInline } from "./Player";
-import { BadgeAsync } from "../components/Badge";
+import { BadgeAsync } from "../components/badge";
 
 export function PagePostList({ type }) {
   const { id } = useParams();

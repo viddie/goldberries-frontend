@@ -50,7 +50,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useTheme } from "@emotion/react";
-import { MapImageBanner } from "../components/MapImage";
+import { MapImageBanner } from "../components/map_image";
 
 export function PageMap() {
   const { id, challengeId } = useParams();

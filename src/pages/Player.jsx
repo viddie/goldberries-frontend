@@ -45,7 +45,7 @@ import {
   DifficultyChip,
   AnyImage,
 } from "../components/goldberries";
-import { RecentSubmissionsHeadless } from "../components/RecentSubmissions";
+import { RecentSubmissionsHeadless } from "../components/recent_submissions";
 import {
   API_BASE_URL,
   DIFFICULTIES,
@@ -83,7 +83,7 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
-import { BadgeDisplay } from "../components/Badge";
+import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { ExportTopGoldenListModal, PageTopGoldenList } from "./TopGoldenList";
 

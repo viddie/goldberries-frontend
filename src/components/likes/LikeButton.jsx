@@ -14,16 +14,16 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../hooks/AuthProvider";
+import { useAuth } from "../../hooks/AuthProvider";
 import {
   getQueryData,
   useDeleteChallengeLike,
   useGetChallenge,
   useGetChallengeLikes,
   usePostChallengeLike,
-} from "../hooks/useApi";
-import { getErrorFromMultiple, getErrorMessage } from "./basic";
-import { PlayerChip } from "./goldberries";
+} from "../../hooks/useApi";
+import { getErrorFromMultiple, getErrorMessage } from "../basic";
+import { PlayerChip } from "../goldberries";
 import { toast } from "react-toastify";
 
 export function LikeButton({ challengeId, sx }) {
@@ -258,14 +258,5 @@ export function LikeButton({ challengeId, sx }) {
         </Button>
       </Tooltip>
     </ButtonGroup>
-  );
-}
-
-export function LikeDisplay({ likes }) {
-  return (
-    <Stack direction="row" alignItems="center" gap={0.5}>
-      <FontAwesomeIcon icon={faHeart} />
-      <span>{likes}</span>
-    </Stack>
   );
 }
