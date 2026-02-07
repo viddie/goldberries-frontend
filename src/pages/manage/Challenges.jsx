@@ -36,7 +36,7 @@ import {
   ErrorDisplay,
   LoadingSpinner,
   HeadTitle,
-} from "../../components/basic_components";
+} from "../../components/basic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsSplitUpAndLeft,
@@ -62,7 +62,7 @@ import {
 import { FormCampaignWrapper } from "../../components/forms/Campaign";
 import { FormCampaignMassAddMaps } from "../../components/forms/CampaignMassAddMaps";
 import { FormCreateFullChallengeWrapper } from "../../components/forms/CreateFullChallenge";
-import { FullChallengeSelect } from "../../components/goldberries_components";
+import { FullChallengeSelect } from "../../components/goldberries";
 import { toast } from "react-toastify";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";

@@ -24,7 +24,7 @@ import {
   StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import { useParams } from "react-router-dom";
 import {
   getQueryData,
@@ -37,7 +37,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight, faCalendar, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
-import { DifficultyChip, PlayerChip } from "../components/goldberries_components";
+import { DifficultyChip, PlayerChip } from "../components/goldberries";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock } from "./Rules";

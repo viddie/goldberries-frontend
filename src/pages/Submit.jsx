@@ -41,7 +41,7 @@ import {
   ProofEmbed,
   StyledLink,
   TooltipInfoButton,
-} from "../components/basic_components";
+} from "../components/basic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -59,7 +59,7 @@ import {
   CampaignChallengeSelect,
   DateAchievedTimePicker,
   DifficultySelectControlled,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { usePostPlayer, usePostSubmission } from "../hooks/useApi";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { Trans, useTranslation } from "react-i18next";

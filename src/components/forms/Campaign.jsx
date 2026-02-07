@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic_components";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { Controller, set, useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
 import { FormOptions } from "../../util/constants";

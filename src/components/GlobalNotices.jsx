@@ -9,7 +9,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "react-markdown";
-import { StyledExternalLink } from "./basic_components";
+import { StyledExternalLink } from "./basic";
 
 export function GlobalNoticesIcon({}) {
   const query = useGetServerSettings();

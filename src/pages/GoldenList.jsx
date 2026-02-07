@@ -15,13 +15,7 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import "../css/GoldenList.css";
-import {
-  BasicBox,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-  StyledExternalLink,
-} from "../components/basic_components";
+import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner, StyledExternalLink } from "../components/basic";
 import {
   getChallengeSuffix,
   getDifficultyName,
@@ -29,12 +23,7 @@ import {
   getPlayerNameColorStyle,
 } from "../util/data_util";
 import { getQueryData, useGetGoldenList } from "../hooks/useApi";
-import {
-  CampaignIcon,
-  ChallengeFcIcon,
-  DifficultyChip,
-  SubmissionFcIcon,
-} from "../components/goldberries_components";
+import { CampaignIcon, ChallengeFcIcon, DifficultyChip, SubmissionFcIcon } from "../components/goldberries";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getNewDifficultyColors } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getQueryData, useGetStatsCollectibleCounts } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../../components/basic_components";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
 import {
   Stack,
   Table,
@@ -11,8 +11,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../../components/forms/Map";
-import { OtherIcon } from "../../components/goldberries_components";
+import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../forms/Map";
+import { OtherIcon } from "../goldberries";
 
 const reducePadding = { px: 0.5 };
 

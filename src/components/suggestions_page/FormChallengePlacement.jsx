@@ -4,8 +4,8 @@ import { Button, Chip, Divider, Grid, Stack, TextField, Typography } from "@mui/
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../basic_components";
-import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../goldberries_components";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
+import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../goldberries";
 import { DIFFICULTIES } from "../../util/constants";
 import { CharsCountLabel, DifficultyMoveDisplay } from "../../pages/Suggestions";
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";

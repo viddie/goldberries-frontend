@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic_components";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
 import { BigButtonGrid } from "../components/BigButtonGrid";
 import { usePostReport } from "../hooks/useApi";
 import { FormOptions } from "../util/constants";

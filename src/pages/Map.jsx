@@ -32,7 +32,7 @@ import {
   LoadingSpinner,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
 import {
   ChallengeFcIcon,
@@ -40,7 +40,7 @@ import {
   GamebananaEmbed,
   ObjectiveIcon,
   VerificationStatusChip,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { FormMapWrapper } from "../components/forms/Map";
 import { useAuth } from "../hooks/AuthProvider";
@@ -48,7 +48,7 @@ import { getQueryData, useGetMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats/Stats";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useTheme } from "@emotion/react";
 import { MapImageBanner } from "../components/MapImage";
 

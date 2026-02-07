@@ -99,12 +99,7 @@ import { useTranslation } from "react-i18next";
 import { ProfileSettingsAlert } from "./components/AlertBanner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";
-import {
-  CampaignIcon,
-  JournalIcon,
-  MemoWebsiteIcon,
-  ObjectiveIcon,
-} from "./components/goldberries_components";
+import { JournalIcon, MemoWebsiteIcon, ObjectiveIcon } from "./components/goldberries";
 import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
 import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
 import { useKeyboardShortcut } from "./hooks/useKeyboardShortcut";

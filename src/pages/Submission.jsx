@@ -35,7 +35,7 @@ import {
   VerificationStatusChip,
   PlayerChip,
   SubmissionFcIcon,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import {
   displayDate,
   getChallengeCampaign,
@@ -59,7 +59,7 @@ import {
   InfoBox,
   InfoBoxIconTextLine,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";

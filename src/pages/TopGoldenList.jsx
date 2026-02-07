@@ -21,7 +21,7 @@ import {
   LoadingSpinner,
   parseYouTubeUrl,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import {
   CampaignIcon,
   ChallengeFcIcon,
@@ -30,7 +30,7 @@ import {
   ObsoleteIcon,
   PlayerNotesTooltip,
   SubmissionFcIcon,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { useTranslation } from "react-i18next";
 import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
 import { useLocalStorage } from "@uidotdev/usehooks";

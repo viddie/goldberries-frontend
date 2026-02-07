@@ -22,7 +22,7 @@ import {
   TooltipLineBreaks,
   getErrorFromMultiple,
   parseYouTubeUrl,
-} from "../components/basic_components";
+} from "../components/basic";
 import {
   getQueryData,
   useGetAllDifficulties,
@@ -44,7 +44,7 @@ import {
   ChallengeFcIcon,
   DifficultyChip,
   AnyImage,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { RecentSubmissionsHeadless } from "../components/RecentSubmissions";
 import {
   API_BASE_URL,

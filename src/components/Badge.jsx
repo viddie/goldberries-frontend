@@ -4,7 +4,7 @@ import { hasFlag } from "../pages/Account";
 import { BADGE_FLAGS } from "./forms/Badge";
 import Color from "color";
 import { getQueryData, useGetBadge } from "../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "./basic_components";
+import { ErrorDisplay, LoadingSpinner } from "./basic";
 
 export function BadgeDisplay({ player }) {
   const badges = player.data?.badges || [];

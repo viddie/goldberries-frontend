@@ -5,7 +5,7 @@ import {
   HeadTitle,
   LoadingSpinner,
   TooltipLineBreaks,
-} from "../../components/basic_components";
+} from "../../components/basic";
 import { FormSubmissionWrapper, shouldMarkSubmissionDateAchieved } from "../../components/forms/Submission";
 import {
   Box,
@@ -38,7 +38,7 @@ import {
   usePostSubmission,
   usePostVerificationNotice,
 } from "../../hooks/useApi";
-import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries_components";
+import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { toast } from "react-toastify";
 import {

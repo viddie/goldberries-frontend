@@ -1,10 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  BasicContainerBox,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-} from "../../components/basic_components";
+import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import {
   Autocomplete,
   Button,

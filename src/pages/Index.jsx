@@ -6,10 +6,10 @@ import {
   LoadingSpinner,
   StyledExternalLink,
   StyledLink,
-} from "../components/basic_components";
+} from "../components/basic";
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import { getQueryData, useGetAllDifficulties, useGetStatsGlobal, useGetVerifierList } from "../hooks/useApi";
-import { DifficultyValueChip, PlayerChip } from "../components/goldberries_components";
+import { DifficultyValueChip, PlayerChip } from "../components/goldberries";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreativeCommonsBy, faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {

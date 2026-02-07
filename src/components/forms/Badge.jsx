@@ -1,16 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetchBadge, postBadge } from "../../util/api";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic_components";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo, useState } from "react";
-import {
-  DifficultySelectControlled,
-  ObjectiveSelect,
-  CampaignSelect,
-  MapSelect,
-} from "../goldberries_components";
+import { DifficultySelectControlled, ObjectiveSelect, CampaignSelect, MapSelect } from "../goldberries";
 import { getQueryData, useGetBadge, usePostBadge } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";

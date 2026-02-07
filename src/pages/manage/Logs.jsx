@@ -20,12 +20,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { jsonDateToJsDate } from "../../util/util";
-import {
-  BasicContainerBox,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-} from "../../components/basic_components";
+import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import { getQueryData, useDeleteLogEntry, useGetLogs } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
 

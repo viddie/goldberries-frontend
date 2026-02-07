@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from "react-i18next";
 import { getQueryData, useGetAllDifficulties, useGetStatsMisc } from "../../hooks/useApi";
-import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../../components/basic_components";
+import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../basic";
 import { Stack, Typography, useTheme } from "@mui/material";
 import { getDifficultyName } from "../../util/data_util";
 import { DIFF_CONSTS } from "../../util/constants";

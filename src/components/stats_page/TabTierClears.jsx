@@ -13,14 +13,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import {
-  CountrySelect,
-  ErrorDisplay,
-  getErrorFromMultiple,
-  LanguageFlag,
-  LoadingSpinner,
-} from "../../components/basic_components";
-import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../../components/goldberries_components";
+import { CountrySelect, ErrorDisplay, getErrorFromMultiple, LanguageFlag, LoadingSpinner } from "../basic";
+import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../goldberries";
 import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";

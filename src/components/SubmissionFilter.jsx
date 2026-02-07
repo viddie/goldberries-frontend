@@ -22,8 +22,8 @@ import {
   LoadingSpinner,
   TooltipLineBreaks,
   getErrorFromMultiple,
-} from "./basic_components";
-import { INPUT_METHOD_ICONS, InputMethodIcon } from "./goldberries_components";
+} from "./basic";
+import { INPUT_METHOD_ICONS, InputMethodIcon } from "./goldberries";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

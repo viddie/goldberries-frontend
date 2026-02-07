@@ -6,12 +6,12 @@ import {
   HeadTitle,
   LoadingSpinner,
   StyledLink,
-} from "../components/basic_components";
+} from "../components/basic";
 import { getQueryData, useSearch } from "../hooks/useApi";
 import { Box, Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
-import { PlayerChip } from "../components/goldberries_components";
+import { PlayerChip } from "../components/goldberries";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import {

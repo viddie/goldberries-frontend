@@ -1,11 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getQueryData, useGetStatsMostGoldened } from "../../hooks/useApi";
-import {
-  ErrorDisplay,
-  getErrorFromMultiple,
-  LoadingSpinner,
-  StyledLink,
-} from "../../components/basic_components";
+import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner, StyledLink } from "../basic";
 import {
   Button,
   Divider,
@@ -20,7 +15,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
-import { CampaignIcon } from "../../components/goldberries_components";
+import { CampaignIcon } from "../goldberries";
 import dayjs from "dayjs";
 import { getCampaignName, getMapName } from "../../util/data_util";
 

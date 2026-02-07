@@ -17,14 +17,14 @@ import {
 
 import { useDeleteSuggestion } from "../hooks/useApi";
 import { useAuth } from "../hooks/AuthProvider";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic_components";
-import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries_components";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
+import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../util/data_util";
 
-import { SuggestionsList, SuggestionsSearch } from "../components/suggestions/SuggestionsList";
-import { ViewSuggestionModal } from "../components/suggestions/ViewSuggestionModal";
-import { CreateSuggestionModal } from "../components/suggestions/CreateSuggestionModal";
+import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_page/SuggestionsList";
+import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
+import { CreateSuggestionModal } from "../components/suggestions_page/CreateSuggestionModal";
 
 //#region Main Page Component
 

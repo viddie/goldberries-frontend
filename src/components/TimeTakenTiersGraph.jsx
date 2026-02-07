@@ -15,7 +15,7 @@ import {
   ZAxis,
 } from "recharts";
 import { useTheme } from "@emotion/react";
-import { ErrorDisplay, LoadingSpinner } from "./basic_components";
+import { ErrorDisplay, LoadingSpinner } from "./basic";
 import { getChallengeName, getChallengeNameClean, getDifficultyName } from "../util/data_util";
 import { getNewDifficultyColors } from "../util/constants";
 import { useAppSettings } from "../hooks/AppSettingsProvider";

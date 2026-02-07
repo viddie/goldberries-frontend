@@ -1,7 +1,6 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getQueryData, useGetCampaignView, useGetCampaignViewPlayer } from "../hooks/useApi";
 import {
-  BasicBox,
   BasicContainerBox,
   BorderedBox,
   CustomIconButton,
@@ -10,16 +9,14 @@ import {
   InfoBox,
   InfoBoxIconTextLine,
   LoadingSpinner,
-  StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import {
   Box,
   Button,
   Divider,
   Grid,
-  IconButton,
   LinearProgress,
   Paper,
   Stack,
@@ -39,9 +36,6 @@ import {
   faBook,
   faCheckCircle,
   faEdit,
-  faExternalLink,
-  faFileExport,
-  faImagePortrait,
   faImages,
   faInfoCircle,
   faListDots,
@@ -50,7 +44,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/Campaign.css";
 import { memo, useEffect, useState } from "react";
-import { getCampaignName, getChallengeNameShort, getMapLobbyInfo, getMapName } from "../util/data_util";
+import { getCampaignName, getChallengeNameShort, getMapName } from "../util/data_util";
 import { Changelog } from "../components/Changelog";
 import {
   CampaignIcon,
@@ -60,46 +54,21 @@ import {
   ObjectiveIcon,
   PlayerLink,
   SubmissionFcIcon,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { useTheme } from "@emotion/react";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
-import { useLocalStorage } from "@uidotdev/usehooks";
-import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
 import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { CampaignGallery } from "../components/MapImage";
-import { ExportTopGoldenListModal, PageTopGoldenList } from "./TopGoldenList";
-
-const STYLE_CONSTS = {
-  player: {
-    width: 150,
-    height: 70,
-  },
-  submission: {
-    height: 50,
-  },
-  map: {
-    width: 250,
-    borderLeft: 25,
-    counter: 150,
-  },
-  total: {
-    height: 70,
-  },
-  lobby: {
-    width: 120,
-    fontSize: 75,
-  },
-};
+import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PageCampaign() {
   const { id, tab } = useParams();
   const navigate = useNavigate();
-  const { settings } = useAppSettings();
 
   const setTab = (newTab) => {
     if (newTab === "players") {
@@ -317,27 +286,18 @@ export function AuthorInfoBoxLine({ author_gb_id, author_gb_name }) {
   });
 
   return <InfoBoxIconTextLine text={<>{authorElementsWithSeparators}</>} isSecondary />;
-
-  // Old code
-  // if (author_gb_id === null) {
-  //   return <InfoBoxIconTextLine text={author_gb_name} isSecondary />;
-  // } else {
-  //   return (
-  //     <InfoBoxIconTextLine
-  //       text={<StyledLink to={"/author/" + encodeURIComponent(author_gb_name)}>{author_gb_name}</StyledLink>}
-  //       isSecondary
-  //     />
-  //   );
-  // }
 }
 
-// The name is a single string looking like:
-// - DeathKontrol
-// - voliver9 and Meario
-// - Appels, BossSauce, Crispybag, Freeka, Tear_, and tobyaaa
-// Parse the names of the authors from the string into an array of names
+/**
+ * Parse the names of the authors from the string into an array of names.
+ * The name is a single string looking like:
+ * - DeathKontrol
+ * - voliver9 and Meario
+ * - Appels, BossSauce, Crispybag, Freeka, Tear_, and tobyaaa
+ * @param {string} name The raw author name string from the campaign data
+ * @returns {string[]} An array of author names
+ */
 function parseAuthors(name) {
-  //First, replace " and " with ", ". Do remember the oxford comma for more than 2 authors.
   let parsedName = name.replace(/ and /g, ", ");
   return parsedName.split(",").map((author) => author.trim());
 }
@@ -572,7 +532,6 @@ function CampaignPlayerTableRowExpanded({ player, campaign }) {
 
   return (
     <Stack direction="column" gap={1}>
-      {/* <Typography variant="h6">Player Details</Typography> */}
       {hasMajorSort ? (
         campaign.sort_major_labels.map((major, index) => {
           const maps = validMaps.filter((map) => map.sort_major === index);

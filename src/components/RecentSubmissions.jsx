@@ -28,8 +28,8 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
-} from "./goldberries_components";
-import { ErrorDisplay, StyledLink } from "./basic_components";
+} from "./goldberries";
+import { ErrorDisplay, StyledLink } from "./basic";
 import { getChallengeCampaign, getChallengeSuffix, getMapName } from "../util/data_util";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";

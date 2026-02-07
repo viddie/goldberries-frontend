@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { BasicContainerBox, HeadTitle } from "../components/basic_components";
+import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 
 export function PageCredits() {

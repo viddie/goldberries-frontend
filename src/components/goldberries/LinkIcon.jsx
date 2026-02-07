@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
-import { StyledExternalLink } from "../basic_components/StyledExternalLink";
+import { StyledExternalLink } from "../basic/StyledExternalLink";
 
 const LINK_ICONS = {
   youtube: { icon: faYoutube, color: "red", identifier: ["youtu.be/", "youtube.com/"] },

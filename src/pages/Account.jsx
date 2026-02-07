@@ -23,7 +23,7 @@ import {
   LoadingSpinner,
   StyledExternalLink,
   StyledLink,
-} from "../components/basic_components";
+} from "../components/basic";
 import { useAuth } from "../hooks/AuthProvider";
 import {
   getQueryData,
@@ -45,7 +45,7 @@ import {
   PlayerSubmissionSelect,
   SubmissionEmbed,
   VerificationStatusChip,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import { useEffect, useState } from "react";
 import { API_URL, DISCORD_INVITE, FormOptions } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

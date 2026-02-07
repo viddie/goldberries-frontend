@@ -23,7 +23,7 @@ import {
   HeadTitle,
   LoadingSpinner,
   TooltipLineBreaks,
-} from "../../components/basic_components";
+} from "../../components/basic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
 import { forwardRef, useEffect, useState } from "react";

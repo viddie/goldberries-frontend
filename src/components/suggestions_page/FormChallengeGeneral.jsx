@@ -5,8 +5,8 @@ import { Button, Chip, Divider, FormHelperText, Grid, Stack, TextField } from "@
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../basic_components";
-import { FullChallengeSelect } from "../goldberries_components";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
+import { FullChallengeSelect } from "../goldberries";
 import { CharsCountLabel } from "../../pages/Suggestions";
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 

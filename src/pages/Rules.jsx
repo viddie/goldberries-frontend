@@ -9,7 +9,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle, StyledExternalLink, StyledLink } from "../components/basic_components";
+import { BasicContainerBox, HeadTitle, StyledExternalLink, StyledLink } from "../components/basic";
 import { Trans, useTranslation } from "react-i18next";
 import { NewRules } from "../util/other_data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

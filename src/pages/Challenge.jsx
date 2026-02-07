@@ -29,7 +29,7 @@ import {
   StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/basic_components";
+} from "../components/basic";
 import {
   ChallengeFcIcon,
   DifficultyChip,
@@ -41,7 +41,7 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
-} from "../components/goldberries_components";
+} from "../components/goldberries";
 import {
   getCalculatedFractionalTierData,
   getChallengeCampaign,
@@ -82,7 +82,7 @@ import {
   usePostMap,
 } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats/Stats";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";

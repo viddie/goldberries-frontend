@@ -1,6 +1,6 @@
 import { Button, Chip, Divider, FormHelperText, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { CampaignSelect, ObjectiveSelect } from "../goldberries_components";
+import { CampaignSelect, ObjectiveSelect } from "../goldberries";
 import { useState } from "react";
 import { usePostChallenge, usePostMap } from "../../hooks/useApi";
 import { toast } from "react-toastify";

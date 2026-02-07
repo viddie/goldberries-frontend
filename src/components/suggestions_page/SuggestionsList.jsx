@@ -9,8 +9,8 @@ import Color from "color";
 
 import { getQueryData, useGetSuggestions } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic_components";
-import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries_components";
+import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
+import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
 import { getSortedSuggestedDifficulties } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";

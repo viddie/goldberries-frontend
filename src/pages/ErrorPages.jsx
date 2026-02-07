@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { BasicContainerBox, StyledLink } from "../components/basic_components";
+import { BasicContainerBox, StyledLink } from "../components/basic";
 import { Trans, useTranslation } from "react-i18next";
 
 export function Page403({ message }) {
