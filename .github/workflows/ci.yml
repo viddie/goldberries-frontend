@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Lint (fail on warnings)
-        run: npx eslint src --max-warnings=0
+        run: npx eslint src --max-warnings=0 --ext .js,.jsx
 
       - name: Build (CRA)
         run: CI=true npm run build
