@@ -77,7 +77,7 @@ export function PageLogs() {
     );
   }
 
-  const { logs, max_count: maxCount, max_page: maxPage } = getQueryData(query);
+  const { logs, max_count: maxCount } = getQueryData(query);
 
   return (
     <BasicContainerBox maxWidth="lg">

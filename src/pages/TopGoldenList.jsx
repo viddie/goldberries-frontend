@@ -38,11 +38,8 @@ import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
-  faBackward,
   faChartBar,
   faClipboard,
-  faComment,
-  faExclamationTriangle,
   faEyeSlash,
   faFileExport,
   faFilter,
@@ -64,7 +61,6 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   API_BASE_URL,
   DIFF_CONSTS,
-  DIFFICULTIES,
   DIFFICULTY_STACKS,
   difficultyIdToSort,
   getNewDifficultyColors,
@@ -133,9 +129,6 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
       isCampaign: isCampaign,
     };
     modalRefs.map.show.current.open(data);
-  });
-  const openEditChallenge = useCallback((id) => {
-    modalRefs.challenge.edit.current.open({ id });
   });
   const openEditSubmission = useCallback((id) => {
     modalRefs.submission.edit.current.open({ id });
@@ -377,7 +370,6 @@ function TierStack({
 }) {
   const isCompact = options.compactMode;
 
-  const diffsString = tiers.map((t) => t.name).join(", ");
   useEffect(() => {
     if (render) onFinishRendering(index);
   }, [render]);
@@ -1144,7 +1136,6 @@ export function ExportTopGoldenListModal({ modalHook, type, id, filter, isPerson
   const { t } = useTranslation(undefined, { keyPrefix: "components.top_golden_list.export" });
   const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
   const topGoldenList = getQueryData(query);
-  const { settings } = useAppSettings();
   const [includeHeader, setIncludeHeader] = useLocalStorage("export_tgl_include_header", true);
   const [includeCount, setIncludeCount] = useLocalStorage("export_tgl_include_count", true);
   const [includeLink, setIncludeLink] = useLocalStorage("export_tgl_include_link", false);

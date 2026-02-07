@@ -26,14 +26,13 @@ import {
 } from "../../components/basic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getQueryData, useGetTrafficStatsGlobal, useGetTrafficStatsGlobalRequests } from "../../hooks/useApi";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
 
 //#region Page
 const defaultTab = "global";
@@ -44,8 +43,8 @@ export function PageTrafficAnalytics({}) {
   const navigate = useNavigate();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
 
-  const [now, setNow] = useState(getLast15MinuteStep());
-  const [next, setNext] = useState(getNext15MinuteStep());
+  const [now] = useState(getLast15MinuteStep());
+  const [next] = useState(getNext15MinuteStep());
   const [startDate, setStartDate] = useLocalStorage("traffic_analytics_start_date", null);
   const [endDate, setEndDate] = useLocalStorage("traffic_analytics_end_date", null);
   const [timeInterval, setTimeInterval] = useLocalStorage("traffic_analytics_time_interval", "all");
@@ -293,7 +292,15 @@ function BasicGlobalStatsSection({ data, isLoading, interval }) {
           <Grid item xs={12} sm={4} md={3} key={key}>
             <SimpleNumberDisplay
               label={types[key].label}
-              value={isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : data[key].toLocaleString()}
+              value={
+                isLoading ? (
+                  <FontAwesomeIcon icon={faSpinner} spin />
+                ) : data[key] ? (
+                  data[key].toLocaleString()
+                ) : (
+                  "-"
+                )
+              }
               unit={types[key].unit}
             />
           </Grid>

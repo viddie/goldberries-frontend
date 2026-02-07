@@ -1,4 +1,3 @@
-import { useNavigate, useParams } from "react-router-dom";
 import {
   BasicContainerBox,
   CustomIconButton,
@@ -7,46 +6,29 @@ import {
   LoadingSpinner,
 } from "../../components/basic";
 import {
-  Autocomplete,
   Button,
   ButtonGroup,
-  Checkbox,
   Divider,
-  FormControlLabel,
   Grid,
   Paper,
   Stack,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
-  TextField,
   Typography,
 } from "@mui/material";
 import {
   getQueryData,
   useDeleteBadge,
   useDeleteBadgePlayer,
-  useDeletePlayer,
-  useGetAllAccounts,
-  useGetAllPlayerClaims,
-  useGetAllPlayers,
   useGetBadgePlayers,
   useGetBadges,
-  usePostAccount,
   usePostBadgePlayer,
-  usePostPlayer,
 } from "../../hooks/useApi";
-import { getAccountName } from "../../util/data_util";
-import { useEffect, useState } from "react";
-import { FormAccountWrapper } from "../../components/forms/Account";
-import { toast } from "react-toastify";
-import { useAuth } from "../../hooks/AuthProvider";
-import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Badge } from "../../components/badge";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
@@ -57,7 +39,6 @@ import { PlayerChip, PlayerSelect } from "../../components/goldberries";
 
 export function PageManageBadges({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.badges" });
-  const navigate = useNavigate();
 
   return (
     <BasicContainerBox maxWidth="md">
@@ -71,7 +52,6 @@ export function PageManageBadges({}) {
 function ManageBadges() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.badges" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const navigate = useNavigate();
   const query = useGetBadges();
 
   const modalRefs = {

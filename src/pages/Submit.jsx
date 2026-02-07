@@ -61,7 +61,6 @@ import {
   DifficultySelectControlled,
 } from "../components/goldberries";
 import { usePostPlayer, usePostSubmission } from "../hooks/useApi";
-import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { Trans, useTranslation } from "react-i18next";
 import { FullChallengeDisplay } from "./Submission";
 import { NoteDisclaimer } from "./Challenge";
@@ -523,7 +522,6 @@ export function MultiUserSubmission() {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
   const { t: t_ts } = useTranslation(undefined, { keyPrefix: "submit.tabs.single" });
-  const { t: t_a } = useTranslation(undefined);
   const auth = useAuth();
 
   const [campaign, setCampaign] = useState(null);
@@ -1235,7 +1233,6 @@ export function MultiUserSubmissionMapRow({
   const { t } = useTranslation(undefined, { keyPrefix: "submit.tabs.multi" });
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
   const { t: t_a } = useTranslation(undefined);
-  const { settings } = useAppSettings();
   const [expanded, setExpanded] = useState(
     mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo,
   );

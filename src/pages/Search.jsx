@@ -8,7 +8,7 @@ import {
   StyledLink,
 } from "../components/basic";
 import { getQueryData, useSearch } from "../hooks/useApi";
-import { Box, Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import { PlayerChip } from "../components/goldberries";
@@ -30,7 +30,7 @@ export function PageSearch({ isDirectSearch = false }) {
   const { q } = useParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState(q || "");
-  const [tab, setTab] = useLocalStorage("search_selected_tab", "maps");
+  const [, setTab] = useLocalStorage("search_selected_tab", "maps");
 
   useEffect(() => {
     setTab("maps"); // Reset to maps tab once per opening the search

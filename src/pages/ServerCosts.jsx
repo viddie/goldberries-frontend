@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import {
   BasicContainerBox,
-  BorderedBox,
   HeadTitle,
   StyledExternalLink,
   StyledLink,

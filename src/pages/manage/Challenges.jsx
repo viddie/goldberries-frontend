@@ -22,14 +22,11 @@ import { useDebouncedCallback } from "use-debounce";
 import { useRef, useState } from "react";
 import {
   getCampaignName,
-  getChallengeCampaign,
   getChallengeInvertHierarchy,
   getChallengeName,
   getChallengeNameShort,
   getMapName,
 } from "../../util/data_util";
-import { fetchCampaignsPaginated } from "../../util/api";
-import { useQuery } from "react-query";
 import {
   CustomizedMenu,
   BasicContainerBox,
@@ -71,7 +68,7 @@ export function PageManageChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.challenges" });
   const [page, setPage] = useLocalStorage("manage_challenges_page", 1);
   const [perPage, setPerPage] = useLocalStorage("manage_challenges_perPage", 50);
-  const [searchInternal, setSearchInternal] = useLocalStorage("manage_challenges_search", "");
+  const [searchInternal] = useLocalStorage("manage_challenges_search", "");
   const [search, setSearch] = useState(searchInternal ?? "");
 
   const updateSearch = (value) => {
@@ -220,7 +217,7 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
     return <ErrorDisplay error={query.error} />;
   }
 
-  const { campaigns, max_page: maxPage, max_count: maxCount } = getQueryData(query);
+  const { campaigns, max_count: maxCount } = getQueryData(query);
 
   return (
     <>

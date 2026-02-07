@@ -1,20 +1,6 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  Button,
-  Chip,
-  Divider,
-  Grid,
-  MenuItem,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, Grid, MenuItem, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -39,8 +25,6 @@ import {
 import {
   displayDate,
   getChallengeCampaign,
-  getChallengeFlags,
-  getChallengeName,
   getChallengeNameShort,
   getMapName,
   getSubmissionVerifier,
@@ -55,7 +39,6 @@ import {
   ProofEmbed,
   HeadTitle,
   StyledExternalLink,
-  ShareButton,
   InfoBox,
   InfoBoxIconTextLine,
   TooltipLineBreaks,
@@ -63,7 +46,6 @@ import {
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
-import { API_BASE_URL } from "../util/constants";
 import { useTranslation } from "react-i18next";
 import { jsonDateToJsDate } from "../util/util";
 

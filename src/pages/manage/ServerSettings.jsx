@@ -14,12 +14,6 @@ import { getQueryData, useGetServerSettings, usePostServerSettings } from "../..
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { StringListEditor } from "../../components/StringListEditor";
-import {
-  faCheckCircle,
-  faExclamationCircle,
-  faExclamationTriangle,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
 import { getGlobalNoticeSeverityInfo } from "../../components/GlobalNotices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "@emotion/react";

@@ -35,7 +35,6 @@ import {
   useDeleteVerificationNotice,
   useGetSubmissionQueue,
   useMassVerifySubmissions,
-  usePostSubmission,
   usePostVerificationNotice,
 } from "../../hooks/useApi";
 import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries";
