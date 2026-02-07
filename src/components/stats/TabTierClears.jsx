@@ -19,8 +19,8 @@ import {
   getErrorFromMultiple,
   LanguageFlag,
   LoadingSpinner,
-} from "../../components/BasicComponents";
-import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../../components/GoldberriesComponents";
+} from "../../components/basic_components";
+import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../../components/goldberries_components";
 import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";

@@ -104,7 +104,7 @@ import {
   JournalIcon,
   MemoWebsiteIcon,
   ObjectiveIcon,
-} from "./components/GoldberriesComponents";
+} from "./components/goldberries_components";
 import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
 import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
 import { useKeyboardShortcut } from "./hooks/useKeyboardShortcut";

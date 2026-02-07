@@ -28,8 +28,8 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
-} from "./GoldberriesComponents";
-import { ErrorDisplay, StyledLink } from "./BasicComponents";
+} from "./goldberries_components";
+import { ErrorDisplay, StyledLink } from "./basic_components";
 import { getChallengeCampaign, getChallengeSuffix, getMapName } from "../util/data_util";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -99,7 +99,7 @@ export function RecentSubmissionsHeadless({
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useLocalStorage(
     "recent_submissions_per_page_" + (playerId === null ? "general" : "player"),
-    10
+    10,
   );
   const query = useGetRecentSubmissions(verified, page, perPage, null, playerId);
 

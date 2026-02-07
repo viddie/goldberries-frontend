@@ -1,7 +1,7 @@
 import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { API_BASE_URL } from "../util/constants";
-import { StyledLink } from "./BasicComponents";
+import { StyledLink } from "./basic_components";
 import { getCampaignName, getMapName, isMapSameNameAsCampaign, mapIsSide } from "../util/data_util";
 import { PlaceholderImage } from "./PlaceholderImage";
 import { useTranslation } from "react-i18next";

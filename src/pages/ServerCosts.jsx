@@ -16,11 +16,11 @@ import {
   StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams } from "react-router-dom";
-import { AnyImage, EmoteImage } from "../components/GoldberriesComponents";
+import { AnyImage, EmoteImage } from "../components/goldberries_components";
 import { Trans, useTranslation } from "react-i18next";
 import { PlayerChipAsync } from "./Post";
 

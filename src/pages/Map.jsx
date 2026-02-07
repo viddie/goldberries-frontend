@@ -32,7 +32,7 @@ import {
   LoadingSpinner,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
 import {
   ChallengeFcIcon,
@@ -40,7 +40,7 @@ import {
   GamebananaEmbed,
   ObjectiveIcon,
   VerificationStatusChip,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { FormMapWrapper } from "../components/forms/Map";
 import { useAuth } from "../hooks/AuthProvider";

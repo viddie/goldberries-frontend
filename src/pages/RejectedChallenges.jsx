@@ -16,13 +16,13 @@ import {
   LoadingSpinner,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { getQueryData, useGetRejectedChallenges, useGetRejectedMapList } from "../hooks/useApi";
 import { getCampaignName, getChallengeCampaign, getChallengeNameShort, getMapName } from "../util/data_util";
 import { Trans, useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { ProofExternalLinkButton } from "../components/GoldberriesComponents";
+import { ProofExternalLinkButton } from "../components/goldberries_components";
 
 export function PageRejectedChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "rejected_challenges" });

@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@mui/material";
 import { getChallengeNameShort, getMapName } from "../util/data_util";
-import { StyledLink } from "./BasicComponents";
+import { StyledLink } from "./basic_components";
 
 export function GoldberriesBreadcrumbs({ campaign, map, challenge, submission, ...props }) {
   return (

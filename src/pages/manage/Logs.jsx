@@ -20,7 +20,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { jsonDateToJsDate } from "../../util/util";
-import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/BasicComponents";
+import {
+  BasicContainerBox,
+  ErrorDisplay,
+  HeadTitle,
+  LoadingSpinner,
+} from "../../components/basic_components";
 import { getQueryData, useDeleteLogEntry, useGetLogs } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
 
@@ -44,7 +49,7 @@ export function PageLogs() {
     filter.topic === "" ? null : filter.topic,
     searchDebounced === "" ? null : searchDebounced,
     filter.startDate === "" ? null : filter.startDate,
-    filter.endDate === "" ? null : filter.endDate
+    filter.endDate === "" ? null : filter.endDate,
   );
   const { mutate: deleteLog } = useDeleteLogEntry();
 

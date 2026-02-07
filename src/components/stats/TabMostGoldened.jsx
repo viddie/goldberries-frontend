@@ -5,7 +5,7 @@ import {
   getErrorFromMultiple,
   LoadingSpinner,
   StyledLink,
-} from "../../components/BasicComponents";
+} from "../../components/basic_components";
 import {
   Button,
   Divider,
@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
-import { CampaignIcon } from "../../components/GoldberriesComponents";
+import { CampaignIcon } from "../../components/goldberries_components";
 import dayjs from "dayjs";
 import { getCampaignName, getMapName } from "../../util/data_util";
 

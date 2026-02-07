@@ -1,6 +1,6 @@
 import { Button, Chip, Divider, FormHelperText, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { CampaignSelect, ObjectiveSelect } from "../GoldberriesComponents";
+import { CampaignSelect, ObjectiveSelect } from "../goldberries_components";
 import { useState } from "react";
 import { usePostChallenge, usePostMap } from "../../hooks/useApi";
 import { toast } from "react-toastify";
@@ -61,7 +61,7 @@ export function FormCampaignMassAddMaps({ onSave }) {
               difficulty_id: DIFF_CONSTS.UNTIERED_ID,
               requires_fc: false,
               has_fc: false,
-            })
+            }),
           );
         } else {
           promises.push(
@@ -70,7 +70,7 @@ export function FormCampaignMassAddMaps({ onSave }) {
               objective_id: map.challenge_objective_id,
               difficulty_id: DIFF_CONSTS.UNTIERED_ID,
               has_fc: map.generate_challenges === "c_fc",
-            })
+            }),
           );
         }
         Promise.all(promises).then(() => {

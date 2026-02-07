@@ -15,8 +15,8 @@ import {
   useGetAllDifficulties,
   useGetChangelog,
 } from "../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "./BasicComponents";
-import { PlayerChip } from "./GoldberriesComponents";
+import { ErrorDisplay, LoadingSpinner } from "./basic_components";
+import { PlayerChip } from "./goldberries_components";
 import { extractDifficultiesFromChangelog } from "../util/data_util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faTrash } from "@fortawesome/free-solid-svg-icons";

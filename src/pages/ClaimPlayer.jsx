@@ -21,12 +21,12 @@ import {
   LoadingSpinner,
   ProofEmbed,
   StyledExternalLink,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { errorToast } from "../util/util";
-import { PlayerChip, PlayerSelect } from "../components/GoldberriesComponents";
+import { PlayerChip, PlayerSelect } from "../components/goldberries_components";
 import { useClaimPlayer } from "../hooks/useApi";
 import { Trans, useTranslation } from "react-i18next";
 import { DISCORD_INVITE } from "../util/constants";

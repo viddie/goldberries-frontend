@@ -35,7 +35,7 @@ import {
   VerificationStatusChip,
   PlayerChip,
   SubmissionFcIcon,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import {
   displayDate,
   getChallengeCampaign,
@@ -59,7 +59,7 @@ import {
   InfoBox,
   InfoBoxIconTextLine,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
@@ -100,7 +100,7 @@ export function SubmissionDisplay({ id, onDelete }) {
       if (cancelled) return;
       deleteSubmission(data.id);
     },
-    { actions: [ModalButtons.cancel, ModalButtons.delete] }
+    { actions: [ModalButtons.cancel, ModalButtons.delete] },
   );
 
   if (query.isLoading) {

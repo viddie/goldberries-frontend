@@ -8,14 +8,14 @@ import { faDiscord, faRaspberryPi } from "@fortawesome/free-brands-svg-icons";
 
 import "@mui/material";
 import { Alert, Avatar, Box, Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic_components";
 import {
   useForgotPasswordRequest,
   useForgotPasswordVerify,
   useRegister,
   useVerifyEmail,
 } from "../hooks/useApi";
-import { MemoWebsiteIcon } from "../components/GoldberriesComponents";
+import { MemoWebsiteIcon } from "../components/goldberries_components";
 import { useTranslation } from "react-i18next";
 
 export function PageLogin() {

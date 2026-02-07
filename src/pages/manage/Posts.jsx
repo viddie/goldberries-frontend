@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BasicContainerBox, ErrorDisplay } from "../../components/BasicComponents";
+import { BasicContainerBox, ErrorDisplay } from "../../components/basic_components";
 import { FormPostWrapper } from "../../components/forms/Post";
 
 export function PageManagePosts({}) {

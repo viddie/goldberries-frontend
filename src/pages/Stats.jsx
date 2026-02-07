@@ -1,7 +1,7 @@
 import { Chip, Stack, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle } from "../components/basic_components";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

@@ -15,7 +15,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/basic_components";
 import { Controller, set, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

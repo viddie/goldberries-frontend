@@ -36,8 +36,8 @@ import {
   usePostSuggestionVote,
 } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import { CustomizedMenu, ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../BasicComponents";
-import { DifficultyChip, PlayerChip } from "../GoldberriesComponents";
+import { CustomizedMenu, ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic_components";
+import { DifficultyChip, PlayerChip } from "../goldberries_components";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort } from "../../util/data_util";

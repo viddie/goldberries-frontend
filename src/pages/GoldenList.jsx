@@ -21,7 +21,7 @@ import {
   HeadTitle,
   LoadingSpinner,
   StyledExternalLink,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import {
   getChallengeSuffix,
   getDifficultyName,
@@ -34,7 +34,7 @@ import {
   ChallengeFcIcon,
   DifficultyChip,
   SubmissionFcIcon,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getNewDifficultyColors } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -178,9 +178,9 @@ export function GoldenList({ type, id = null, showArchived = false, showArbitrar
       acc +
       campaign.maps.reduce(
         (acc, map) => acc + map.challenges.reduce((acc, challenge) => acc + challenge.submissions.length, 0),
-        0
+        0,
       ),
-    0
+    0,
   );
 
   let lastCampaign = null;
@@ -218,7 +218,7 @@ export function GoldenList({ type, id = null, showArchived = false, showArbitrar
             {"abcdefghijklm".split("").map((l) => {
               const letter = l.toUpperCase();
               const countCampaigns = campaigns.filter(
-                (c) => c.name.toUpperCase().charAt(0) === letter
+                (c) => c.name.toUpperCase().charAt(0) === letter,
               ).length;
               return (
                 <StyledExternalLink
@@ -241,7 +241,7 @@ export function GoldenList({ type, id = null, showArchived = false, showArbitrar
             {"nopqrstuvwxyz".split("").map((l) => {
               const letter = l.toUpperCase();
               const countCampaigns = campaigns.filter(
-                (c) => c.name.toUpperCase().charAt(0) === letter
+                (c) => c.name.toUpperCase().charAt(0) === letter,
               ).length;
               return (
                 <StyledExternalLink
@@ -499,7 +499,7 @@ function CampaignGoldenDifficultiesBar({ campaign, sx = {}, ...props }) {
   //First, count all difficulties in all the campaign->maps->challenges
   //difficulty is an object with id, name and sort
   const difficulties = campaign.maps.flatMap((map) =>
-    map.challenges.map((challenge) => challenge.difficulty)
+    map.challenges.map((challenge) => challenge.difficulty),
   );
   const difficultiesList = difficulties.reduce((acc, difficulty) => {
     const existing = acc.find((d) => d.difficulty.id === difficulty.id);

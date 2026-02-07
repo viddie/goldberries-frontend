@@ -5,7 +5,7 @@ import {
   HeadTitle,
   LoadingSpinner,
   TooltipLineBreaks,
-} from "../../components/BasicComponents";
+} from "../../components/basic_components";
 import { FormSubmissionWrapper, shouldMarkSubmissionDateAchieved } from "../../components/forms/Submission";
 import {
   Box,
@@ -38,7 +38,7 @@ import {
   usePostSubmission,
   usePostVerificationNotice,
 } from "../../hooks/useApi";
-import { DifficultyChip, SubmissionFcIcon } from "../../components/GoldberriesComponents";
+import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries_components";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { toast } from "react-toastify";
 import {
@@ -243,7 +243,7 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
 
     const containsText = text.toLowerCase().includes(search.toLowerCase());
     const doesntContainExcluded = excludeTokens.every(
-      (token) => !text.toLowerCase().includes(token.toLowerCase())
+      (token) => !text.toLowerCase().includes(token.toLowerCase()),
     );
     return containsText && doesntContainExcluded;
   };
@@ -448,7 +448,7 @@ function SubmissionQueueTableRow({
       if (message === "") message = null;
       postNotice({ submission_id: submission.id, message: message });
     },
-    { actions: [ModalButtons.cancel, ModalButtons.submit] }
+    { actions: [ModalButtons.cancel, ModalButtons.submit] },
   );
 
   const onClickNotice = (event) => {

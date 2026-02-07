@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, CustomIconButton, HeadTitle } from "../../components/BasicComponents";
+import { BasicContainerBox, CustomIconButton, HeadTitle } from "../../components/basic_components";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +20,7 @@ import { MuiFileInput } from "mui-file-input";
 import { usePostUploadFile } from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
-import { FullMapSelect } from "../../components/GoldberriesComponents";
+import { FullMapSelect } from "../../components/goldberries_components";
 import { API_BASE_URL } from "../../util/constants";
 import { MapImageBanner } from "../../components/MapImage";
 import { getMapName } from "../../util/data_util";

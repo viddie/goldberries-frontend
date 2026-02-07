@@ -17,8 +17,8 @@ import {
 
 import { useDeleteSuggestion } from "../hooks/useApi";
 import { useAuth } from "../hooks/AuthProvider";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/BasicComponents";
-import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/GoldberriesComponents";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic_components";
+import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries_components";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../util/data_util";
 

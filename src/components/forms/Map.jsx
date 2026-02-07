@@ -12,11 +12,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../BasicComponents";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic_components";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo, useState } from "react";
-import { AnyImage, CampaignSelect, EmoteImage, MapSelect, OtherIcon } from "../GoldberriesComponents";
+import { AnyImage, CampaignSelect, EmoteImage, MapSelect, OtherIcon } from "../goldberries_components";
 import { FormOptions } from "../../util/constants";
 import { getQueryData, usePostMap } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";

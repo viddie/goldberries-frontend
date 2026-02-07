@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../BasicComponents";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic_components";
 import { Controller, set, useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
 import { FormOptions } from "../../util/constants";
@@ -154,7 +154,7 @@ export function FormCampaign({ campaign, onSave, ...props }) {
     },
     (error) => {
       setModFetchState(3);
-    }
+    },
   );
   const fetchModInfo = () => {
     setModFetchState(1);

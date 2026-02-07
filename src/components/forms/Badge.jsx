@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetchBadge, postBadge } from "../../util/api";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../BasicComponents";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic_components";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo, useState } from "react";
@@ -10,7 +10,7 @@ import {
   ObjectiveSelect,
   CampaignSelect,
   MapSelect,
-} from "../GoldberriesComponents";
+} from "../goldberries_components";
 import { getQueryData, useGetBadge, usePostBadge } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";

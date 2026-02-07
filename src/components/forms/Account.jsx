@@ -13,10 +13,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
+import { ErrorDisplay, LoadingSpinner } from "../basic_components";
 import { Controller, set, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { PlayerSelect } from "../GoldberriesComponents";
+import { PlayerSelect } from "../goldberries_components";
 import {
   getQueryData,
   useDeleteAccount,

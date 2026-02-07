@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CustomIconButton, ErrorDisplay, HeadTitle, LoadingSpinner, StyledLink } from "../BasicComponents";
+import { CustomIconButton, ErrorDisplay, HeadTitle, LoadingSpinner, StyledLink } from "../basic_components";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo, useRef } from "react";

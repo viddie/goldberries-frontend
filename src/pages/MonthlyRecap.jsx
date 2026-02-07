@@ -7,7 +7,7 @@ import {
   LoadingSpinner,
   StyledLink,
   getErrorFromMultiple,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { TiersCountDisplay } from "./Index";
 import {
   getQueryData,
@@ -21,7 +21,7 @@ import {
   DifficultyChip,
   DifficultySelectControlled,
   PlayerChip,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import {
   extractDifficultiesFromChangelog,
   getCampaignName,

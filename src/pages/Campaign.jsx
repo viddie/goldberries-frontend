@@ -13,7 +13,7 @@ import {
   StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import {
   Box,
   Button,
@@ -60,7 +60,7 @@ import {
   ObjectiveIcon,
   PlayerLink,
   SubmissionFcIcon,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import { useTheme } from "@emotion/react";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";

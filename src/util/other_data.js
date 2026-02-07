@@ -1,4 +1,4 @@
-import { CampaignIcon } from "../components/GoldberriesComponents";
+import { CampaignIcon } from "../components/goldberries_components";
 
 export const NewRules = {
   goldens: {

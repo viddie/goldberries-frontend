@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { Tooltip } from "@mui/material";
 import Color from "color";
-import { TooltipLineBreaks } from "./BasicComponents";
+import { TooltipLineBreaks } from "./basic_components";
 
 const heightMap = {
   small: 16,

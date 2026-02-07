@@ -22,8 +22,8 @@ import {
   useGetChallengeLikes,
   usePostChallengeLike,
 } from "../hooks/useApi";
-import { getErrorFromMultiple, getErrorMessage } from "./BasicComponents";
-import { PlayerChip } from "./GoldberriesComponents";
+import { getErrorFromMultiple, getErrorMessage } from "./basic_components";
+import { PlayerChip } from "./goldberries_components";
 import { toast } from "react-toastify";
 
 export function LikeButton({ challengeId, sx }) {

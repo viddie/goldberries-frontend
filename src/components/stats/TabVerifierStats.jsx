@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getQueryData, useGetVerifierStats } from "../../hooks/useApi";
-import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../BasicComponents";
+import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../basic_components";
 import {
   Grid,
   Paper,
@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
-import { PlayerChip } from "../GoldberriesComponents";
+import { PlayerChip } from "../goldberries_components";
 
 export function TabVerifierStats({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.verifier_stats" });

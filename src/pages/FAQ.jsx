@@ -16,13 +16,13 @@ import {
   HeadTitle,
   LoadingSpinner,
   StyledLink,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { Trans, useTranslation } from "react-i18next";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faChevronDown, faChevronUp, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { getQueryData, useGetAllDifficulties } from "../hooks/useApi";
-import { DifficultyChip } from "../components/GoldberriesComponents";
+import { DifficultyChip } from "../components/goldberries_components";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function PageFAQ() {

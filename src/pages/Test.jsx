@@ -10,7 +10,7 @@ import {
   Typography,
   darken,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle } from "../components/basic_components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";

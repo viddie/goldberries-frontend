@@ -5,7 +5,7 @@ import {
   getErrorFromMultiple,
   LoadingSpinner,
   StyledExternalLink,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import { getQueryData, useSearch } from "../hooks/useApi";
 import { SearchResultsCampaigns, SearchResultsMaps, SearchResultsSingleAuthor } from "./Search";
 import { useParams } from "react-router-dom";

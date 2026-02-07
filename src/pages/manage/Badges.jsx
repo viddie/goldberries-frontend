@@ -5,7 +5,7 @@ import {
   ErrorDisplay,
   HeadTitle,
   LoadingSpinner,
-} from "../../components/BasicComponents";
+} from "../../components/basic_components";
 import {
   Autocomplete,
   Button,
@@ -53,7 +53,7 @@ import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { FormBadgeWrapper } from "../../components/forms/Badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPlus, faTrash, faUserPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { PlayerChip, PlayerSelect } from "../../components/GoldberriesComponents";
+import { PlayerChip, PlayerSelect } from "../../components/goldberries_components";
 
 export function PageManageBadges({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.badges" });

@@ -3,7 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { CodeBlock } from "../pages/Rules";
 import { useTheme } from "@emotion/react";
-import { StyledExternalLink } from "./BasicComponents";
+import { StyledExternalLink } from "./basic_components";
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {

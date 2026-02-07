@@ -25,7 +25,7 @@ import {
   ProofEmbed,
   StyledLink,
   TooltipInfoButton,
-} from "../BasicComponents";
+} from "../basic_components";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -36,7 +36,7 @@ import {
   PlayerChip,
   DifficultySelectControlled,
   DateAchievedTimePicker,
-} from "../GoldberriesComponents";
+} from "../goldberries_components";
 import { jsonDateToJsDate } from "../../util/util";
 import { useDebounce } from "@uidotdev/usehooks";
 import { FormOptions } from "../../util/constants";

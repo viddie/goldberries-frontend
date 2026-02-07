@@ -18,8 +18,8 @@ import {
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
-import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../GoldberriesComponents";
+import { ErrorDisplay, LoadingSpinner } from "../basic_components";
+import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../goldberries_components";
 import { DIFFICULTIES } from "../../util/constants";
 import { CharsCountLabel } from "../../pages/Suggestions";
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";

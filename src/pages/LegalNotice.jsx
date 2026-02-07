@@ -1,4 +1,4 @@
-import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
+import { BasicContainerBox, HeadTitle } from "../components/basic_components";
 
 export function LegalNoticePage({}) {
   return (

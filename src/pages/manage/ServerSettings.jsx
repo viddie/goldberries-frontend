@@ -1,4 +1,9 @@
-import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/BasicComponents";
+import {
+  BasicContainerBox,
+  ErrorDisplay,
+  HeadTitle,
+  LoadingSpinner,
+} from "../../components/basic_components";
 import {
   Button,
   Checkbox,

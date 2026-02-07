@@ -12,7 +12,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useMemo, useState } from "react";
-import { DifficultySelectControlled, ObjectiveSelect } from "../GoldberriesComponents";
+import { DifficultySelectControlled, ObjectiveSelect } from "../goldberries_components";
 import {
   getQueryData,
   useGetModInfo,

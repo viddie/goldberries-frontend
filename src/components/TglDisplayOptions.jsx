@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { SettingsEntry } from "../pages/AppSettings";
 import { deepCompareObjects } from "../hooks/AppSettingsProvider";
 import { useAuth } from "../hooks/AuthProvider";
-import { PlayerIdSelect, PlayerSelect } from "./GoldberriesComponents";
+import { PlayerIdSelect, PlayerSelect } from "./goldberries_components";
 
 const sortOptions = [
   { value: "alphabetical", label: "alphabetical" },

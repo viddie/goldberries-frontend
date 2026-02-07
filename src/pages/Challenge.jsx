@@ -29,7 +29,7 @@ import {
   StyledExternalLink,
   StyledLink,
   TooltipLineBreaks,
-} from "../components/BasicComponents";
+} from "../components/basic_components";
 import {
   ChallengeFcIcon,
   DifficultyChip,
@@ -41,7 +41,7 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
-} from "../components/GoldberriesComponents";
+} from "../components/goldberries_components";
 import {
   getCalculatedFractionalTierData,
   getChallengeCampaign,
