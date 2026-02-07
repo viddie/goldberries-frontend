@@ -15,20 +15,18 @@ import {
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useDeleteSuggestion } from "../../hooks/useApi";
-import { useAuth } from "../../hooks/AuthProvider";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../../components/BasicComponents";
-import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../../components/GoldberriesComponents";
-import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
-import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../../util/data_util";
+import { useDeleteSuggestion } from "../hooks/useApi";
+import { useAuth } from "../hooks/AuthProvider";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/BasicComponents";
+import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/GoldberriesComponents";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
+import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../util/data_util";
 
-import { SuggestionsList, SuggestionsSearch } from "./SuggestionsList";
-import { ViewSuggestionModal } from "./ViewSuggestionModal";
-import { CreateSuggestionModal } from "./CreateSuggestionModal";
+import { SuggestionsList, SuggestionsSearch } from "../components/suggestions/SuggestionsList";
+import { ViewSuggestionModal } from "../components/suggestions/ViewSuggestionModal";
+import { CreateSuggestionModal } from "../components/suggestions/CreateSuggestionModal";
 
-// ============================================================================
-// Main Page Component
-// ============================================================================
+//#region Main Page Component
 
 export function PageSuggestions({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
@@ -117,9 +115,9 @@ export function PageSuggestions({}) {
   );
 }
 
-// ============================================================================
-// Modal Container
-// ============================================================================
+//#endregion
+
+//#region Modal Container
 
 function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.delete" });
@@ -165,9 +163,9 @@ function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
   );
 }
 
-// ============================================================================
-// Shared Components (used by multiple files)
-// ============================================================================
+//#endregion
+
+//#region Shared Components (used by multiple files)
 
 export function DifficultyMoveDisplay({ from, to, ...props }) {
   return (
@@ -290,9 +288,9 @@ export function SuggestionCommentDisplay({ comment, ...props }) {
   );
 }
 
-// ============================================================================
-// Helper Components
-// ============================================================================
+//#endregion
+
+//#region Helper Components
 
 function RadioButtonsGroup({ title, options, value, onChange, color = "primary", sx = {}, ...props }) {
   const variantUnselected = "outlined";
@@ -315,3 +313,4 @@ function RadioButtonsGroup({ title, options, value, onChange, color = "primary",
     </Stack>
   );
 }
+//#endregion

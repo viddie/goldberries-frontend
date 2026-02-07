@@ -1,10 +1,10 @@
 import { Chip, Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
-import { getNewDifficultyColors } from "../util/constants";
-import { getDifficultyName } from "../util/data_util";
+import { getNewDifficultyColors } from "../../util/constants";
+import { getDifficultyName } from "../../util/data_util";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { useState } from "react";
-import { DifficultyChip } from "./GoldberriesComponents";
-import { useAppSettings } from "../hooks/AppSettingsProvider";
+import { DifficultyChip } from "../GoldberriesComponents";
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
@@ -200,7 +200,7 @@ function getSuggestedDifficultyCounts(challenge) {
   //If neither, then populate only c and combined fields. all submissions are guaranteed to have is_fc = false
 
   let suggestingSubmissions = challenge.submissions.filter(
-    (submission) => submission.suggested_difficulty !== null && !submission.is_personal
+    (submission) => submission.suggested_difficulty !== null && !submission.is_personal,
   );
 
   let counts = { c: {}, fc: {}, combined: {} };

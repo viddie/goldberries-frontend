@@ -11,8 +11,8 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../../components/Stats";
-import { ChallengeSubmissionTable } from "../Challenge";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats/Stats";
+import { ChallengeSubmissionTable } from "../../pages/Challenge";
 
 import { GeneralSuggestionForm } from "./FormGeneral";
 import { FeatureSuggestionForm } from "./FormFeature";

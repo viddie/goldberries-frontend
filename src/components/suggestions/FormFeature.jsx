@@ -5,7 +5,7 @@ import { Alert, Button, FormHelperText, Grid, Stack, TextField } from "@mui/mate
 import { toast } from "react-toastify";
 
 import { usePostSuggestion } from "../../hooks/useApi";
-import { CharsCountLabel } from "./Suggestions";
+import { CharsCountLabel } from "../../pages/Suggestions";
 import { BackButton } from "./CreateSuggestionModal";
 
 export function FeatureSuggestionForm({ onSuccess, onBack }) {

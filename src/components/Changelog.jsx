@@ -23,7 +23,7 @@ import { faChevronDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
 import { toast } from "react-toastify";
-import { DifficultyMoveDisplay } from "../pages/suggestions/Suggestions";
+import { DifficultyMoveDisplay } from "../pages/Suggestions";
 import { useTranslation } from "react-i18next";
 import { DateWithTooltip } from "../pages/Submission";
 

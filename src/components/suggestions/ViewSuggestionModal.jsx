@@ -36,15 +36,10 @@ import {
   usePostSuggestionVote,
 } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import {
-  CustomizedMenu,
-  ErrorDisplay,
-  LoadingSpinner,
-  TooltipLineBreaks,
-} from "../../components/BasicComponents";
-import { DifficultyChip, PlayerChip } from "../../components/GoldberriesComponents";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../../components/Stats";
-import { ChallengeSubmissionTable } from "../Challenge";
+import { CustomizedMenu, ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../BasicComponents";
+import { DifficultyChip, PlayerChip } from "../GoldberriesComponents";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats/Stats";
+import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort } from "../../util/data_util";
 import { toast } from "react-toastify";
 import {
@@ -52,8 +47,8 @@ import {
   DifficultyMoveDisplay,
   SuggestionCommentDisplay,
   SuggestionName,
-} from "./Suggestions";
-import { CustomMenu } from "../../components/Menu";
+} from "../../pages/Suggestions";
+import { CustomMenu } from "../Menu";
 
 export function ViewSuggestionModal({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.view" });

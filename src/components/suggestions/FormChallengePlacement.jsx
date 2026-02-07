@@ -1,18 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { useTheme } from "@emotion/react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Chip, Divider, FormHelperText, Grid, Stack, TextField } from "@mui/material";
+import { Button, Chip, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../../components/BasicComponents";
-import { FullChallengeSelect } from "../../components/GoldberriesComponents";
-import { CharsCountLabel } from "./Suggestions";
+import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
+import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../GoldberriesComponents";
+import { DIFFICULTIES } from "../../util/constants";
+import { CharsCountLabel, DifficultyMoveDisplay } from "../../pages/Suggestions";
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
-export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
+export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
-  const theme = useTheme();
+  const { t: t_a } = useTranslation();
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
     toast.success(t("feedback.created"));
     if (onSuccess) onSuccess();
@@ -21,13 +21,15 @@ export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
   const form = useForm({
     defaultValues: {
       challenge: null,
+      suggested_difficulty_id: null,
       comment: "",
     },
   });
 
   const selectedChallenge = form.watch("challenge");
+  const selectedDifficulty = form.watch("suggested_difficulty_id");
   const comment = form.watch("comment");
-  const isDisabled = selectedChallenge === null || comment.length < 10;
+  const isDisabled = selectedChallenge === null || selectedDifficulty === null;
 
   const query = useGetChallenge(selectedChallenge?.id);
   const fetchedChallenge = getQueryData(query);
@@ -35,7 +37,7 @@ export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
   const onSubmit = form.handleSubmit((data) => {
     postSuggestion({
       challenge_id: data.challenge?.id,
-      suggested_difficulty_id: null,
+      suggested_difficulty_id: data.suggested_difficulty_id,
       comment: data.comment,
     });
   });
@@ -59,6 +61,54 @@ export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
 
       {query.isLoading && <LoadingSpinner />}
       {query.isError && <ErrorDisplay error={query.error} />}
+
+      {selectedChallenge !== null && (
+        <>
+          <Grid item xs={12}>
+            <Divider>
+              <Chip label={t("suggested_placement")} size="small" />
+            </Divider>
+          </Grid>
+          {fetchedChallenge && (
+            <Grid item xs={12}>
+              <Stack direction="row" gap={2} alignItems="center">
+                <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                  {t("current_difficulty")}:
+                </Typography>
+                <DifficultyChip difficulty={fetchedChallenge.difficulty} />
+              </Stack>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <Controller
+              name="suggested_difficulty_id"
+              control={form.control}
+              render={({ field }) => (
+                <DifficultySelectControlled
+                  label={t_a("components.difficulty_select.label")}
+                  fullWidth
+                  isSuggestion
+                  difficultyId={field.value}
+                  setDifficultyId={(d) => field.onChange(d)}
+                />
+              )}
+            />
+          </Grid>
+          {fetchedChallenge && selectedDifficulty && (
+            <Grid item xs={12}>
+              <DifficultyMoveDisplay
+                from={fetchedChallenge.difficulty}
+                to={
+                  DIFFICULTIES[selectedDifficulty]
+                    ? { id: selectedDifficulty, ...DIFFICULTIES[selectedDifficulty] }
+                    : null
+                }
+              />
+            </Grid>
+          )}
+        </>
+      )}
+
       {fetchedChallenge !== null && <ChallengeDetailsDisplay challenge={fetchedChallenge} t={t} />}
 
       <Grid item xs={12}>
@@ -69,16 +119,12 @@ export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
           fullWidth
           label={t("comment.label")}
           placeholder={t("comment.placeholder")}
-          required
           multiline
           minRows={3}
           variant="outlined"
           {...form.register("comment")}
         />
-        <CharsCountLabel text={comment} maxChars={1000} minChars={10} />
-        {comment.length < 10 && (
-          <FormHelperText sx={{ color: theme.palette.error.main }}>{t("comment.required")}</FormHelperText>
-        )}
+        <CharsCountLabel text={comment} maxChars={1000} />
       </Grid>
       <Grid item xs={12}>
         <Stack direction="row" gap={1} justifyContent="space-between">

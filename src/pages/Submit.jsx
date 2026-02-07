@@ -65,7 +65,7 @@ import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { Trans, useTranslation } from "react-i18next";
 import { FullChallengeDisplay } from "./Submission";
 import { NoteDisclaimer } from "./Challenge";
-import { CharsCountLabel } from "./suggestions/Suggestions";
+import { CharsCountLabel } from "./Suggestions";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "../components/forms/Map";
 import { StringListEditor } from "../components/StringListEditor";
 import { NOTIFICATIONS, hasFlag } from "./Account";

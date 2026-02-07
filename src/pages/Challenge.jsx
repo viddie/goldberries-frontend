@@ -82,7 +82,7 @@ import {
   usePostMap,
 } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/Stats";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";

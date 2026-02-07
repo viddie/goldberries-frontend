@@ -1,7 +1,7 @@
 import { Chip, Stack, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BasicContainerBox, HeadTitle } from "../../components/BasicComponents";
+import { BasicContainerBox, HeadTitle } from "../components/BasicComponents";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,13 +14,13 @@ import {
   faArrowsUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { TabMonthlyTierClears } from "./TabMonthlyTierClears";
-import { TabMostGoldened } from "./TabMostGoldened";
-import { TabMisc } from "./TabMisc";
-import { TabVerifierStats } from "./TabVerifierStats";
-import { TabTierClears } from "./TabTierClears";
-import { TabCollectibleCounts } from "./TabCollectibleCounts";
-import { TabBiggestDifficultyGap } from "./TabBiggestDifficultyGap";
+import { TabMonthlyTierClears } from "../components/stats/TabMonthlyTierClears";
+import { TabMostGoldened } from "../components/stats/TabMostGoldened";
+import { TabMisc } from "../components/stats/TabMisc";
+import { TabVerifierStats } from "../components/stats/TabVerifierStats";
+import { TabTierClears } from "../components/stats/TabTierClears";
+import { TabCollectibleCounts } from "../components/stats/TabCollectibleCounts";
+import { TabBiggestDifficultyGap } from "../components/stats/TabBiggestDifficultyGap";
 
 const STATS_TABS = [
   {

@@ -9,12 +9,12 @@ import Color from "color";
 
 import { getQueryData, useGetSuggestions } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
-import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/BasicComponents";
-import { DifficultyChip, OtherIcon, PlayerChip } from "../../components/GoldberriesComponents";
+import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../BasicComponents";
+import { DifficultyChip, OtherIcon, PlayerChip } from "../GoldberriesComponents";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
 import { getSortedSuggestedDifficulties } from "../../util/data_util";
-import { VotesBar } from "../../components/VotesBar";
-import { DifficultyMoveDisplay, SuggestionCommentDisplay, SuggestionName } from "./Suggestions";
+import { VotesBar } from "../VotesBar";
+import { DifficultyMoveDisplay, SuggestionCommentDisplay, SuggestionName } from "../../pages/Suggestions";
 
 export function SuggestionsList({
   expired,

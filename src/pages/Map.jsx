@@ -48,9 +48,8 @@ import { getQueryData, useGetMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/Stats";
+import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats/Stats";
 import { useTheme } from "@emotion/react";
-import { API_BASE_URL } from "../util/constants";
 import { MapImageBanner } from "../components/MapImage";
 
 export function PageMap() {

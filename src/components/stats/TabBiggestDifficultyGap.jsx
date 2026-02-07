@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../hooks/AuthProvider";
 import { getQueryData, useGetStatsBiggestDifficultyGap } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../../components/BasicComponents";
+import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
 import {
   Button,
   Stack,
@@ -15,8 +15,8 @@ import {
   Grid,
   useMediaQuery,
 } from "@mui/material";
-import { DifficultyChip, PlayerChip, PlayerIdSelect } from "../../components/GoldberriesComponents";
-import { ChallengeInline } from "../Player";
+import { DifficultyChip, PlayerChip, PlayerIdSelect } from "../GoldberriesComponents";
+import { ChallengeInline } from "../../pages/Player";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";

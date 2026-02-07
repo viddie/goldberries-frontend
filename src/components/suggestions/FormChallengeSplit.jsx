@@ -18,14 +18,10 @@ import {
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../../components/BasicComponents";
-import {
-  DifficultyChip,
-  DifficultySelectControlled,
-  FullChallengeSelect,
-} from "../../components/GoldberriesComponents";
+import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
+import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../GoldberriesComponents";
 import { DIFFICULTIES } from "../../util/constants";
-import { CharsCountLabel } from "./Suggestions";
+import { CharsCountLabel } from "../../pages/Suggestions";
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
 export function ChallengeSplitSuggestionForm({ onSuccess, onBack }) {

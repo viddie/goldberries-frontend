@@ -71,7 +71,7 @@ import { getPlayerNameColorStyle } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { SettingsEntry } from "./AppSettings";
 import { Trans, useTranslation } from "react-i18next";
-import { CharsCountLabel } from "./suggestions/Suggestions";
+import { CharsCountLabel } from "./Suggestions";
 
 export const NOTIFICATIONS = {
   sub_verified: { key: "sub_verified", flag: 1 },

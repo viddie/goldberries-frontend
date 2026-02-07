@@ -49,7 +49,7 @@ import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox } from "../../pages/Challenge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
-import { CharsCountLabel } from "../../pages/suggestions/Suggestions";
+import { CharsCountLabel } from "../../pages/Suggestions";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
 import { inputBaseClasses } from "@mui/material/InputBase";
 

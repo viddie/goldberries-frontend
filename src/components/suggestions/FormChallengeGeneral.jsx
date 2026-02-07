@@ -1,14 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
-import { useForm } from "react-hook-form";
-import { Button, FormHelperText, Grid, Stack, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { Button, Chip, Divider, FormHelperText, Grid, Stack, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 
-import { usePostSuggestion } from "../../hooks/useApi";
-import { CharsCountLabel } from "./Suggestions";
-import { BackButton } from "./CreateSuggestionModal";
+import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/useApi";
+import { ErrorDisplay, LoadingSpinner } from "../BasicComponents";
+import { FullChallengeSelect } from "../GoldberriesComponents";
+import { CharsCountLabel } from "../../pages/Suggestions";
+import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
-export function GeneralSuggestionForm({ onSuccess, onBack }) {
+export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
   const theme = useTheme();
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
@@ -18,16 +20,21 @@ export function GeneralSuggestionForm({ onSuccess, onBack }) {
 
   const form = useForm({
     defaultValues: {
+      challenge: null,
       comment: "",
     },
   });
 
+  const selectedChallenge = form.watch("challenge");
   const comment = form.watch("comment");
-  const isDisabled = comment.length < 10;
+  const isDisabled = selectedChallenge === null || comment.length < 10;
+
+  const query = useGetChallenge(selectedChallenge?.id);
+  const fetchedChallenge = getQueryData(query);
 
   const onSubmit = form.handleSubmit((data) => {
     postSuggestion({
-      challenge_id: null,
+      challenge_id: data.challenge?.id,
       suggested_difficulty_id: null,
       comment: data.comment,
     });
@@ -35,6 +42,28 @@ export function GeneralSuggestionForm({ onSuccess, onBack }) {
 
   return (
     <>
+      <Grid item xs={12}>
+        <Divider>
+          <Chip label={t("select_challenge")} size="small" />
+        </Divider>
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          name="challenge"
+          control={form.control}
+          render={({ field }) => (
+            <FullChallengeSelect challenge={field.value} setChallenge={(c) => field.onChange(c)} />
+          )}
+        />
+      </Grid>
+
+      {query.isLoading && <LoadingSpinner />}
+      {query.isError && <ErrorDisplay error={query.error} />}
+      {fetchedChallenge !== null && <ChallengeDetailsDisplay challenge={fetchedChallenge} t={t} />}
+
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
       <Grid item xs={12}>
         <TextField
           fullWidth
