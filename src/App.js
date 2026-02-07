@@ -46,7 +46,6 @@ import {
   faHome,
   faInbox,
   faMailBulk,
-  faMoon,
   faNewspaper,
   faNoteSticky,
   faPlayCircle,
@@ -57,7 +56,6 @@ import {
   faSignIn,
   faSignOut,
   faSquarePollHorizontal,
-  faSun,
   faTable,
   faUser,
   faUserAlt,
@@ -414,7 +412,6 @@ export default function App() {
 }
 
 export function ThemeWrapper({ children }) {
-  const { settings } = useAppSettings();
   return (
     <ThemeProvider theme={darkTheme}>
       {children}
@@ -882,7 +879,7 @@ function ModalContainer({ searchOpenRef, settingsOpenRef }) {
 function MobileDrawer({ leftMenu, rightMenu, userMenu, closeDrawer }) {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation" });
   const auth = useAuth();
-  const { settings, setSettings } = useAppSettings();
+  const { settings } = useAppSettings();
   const nameStyle = getPlayerNameColorStyle(auth.user?.player, settings);
 
   return (
@@ -1028,7 +1025,7 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation" });
   const auth = useAuth();
   const navigate = useNavigate();
-  const { settings, setSettings } = useAppSettings();
+  const { settings } = useAppSettings();
   const nameStyle = getPlayerNameColorStyle(auth.user?.player, settings);
 
   const shift = true;
