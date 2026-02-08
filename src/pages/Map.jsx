@@ -11,19 +11,34 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  AuthorValue,
   CalculatedFractionalTierChip,
-  ChallengeDetailsList,
   ChallengeSubmissionTable,
+  ChallengeUrlValue,
+  DetailsRow,
+  FadingMapBanner,
   NoteDisclaimer,
+  TwoColumnDetailsGrid,
 } from "./Challenge";
 import {
   faArrowRightToBracket,
+  faBasketShopping,
+  faBook,
   faEdit,
   faExclamationTriangle,
+  faExternalLink,
+  faInfoCircle,
   faPlus,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getCampaignName, getChallengeFcShort, getChallengeNameShort, getMapName } from "../util/data_util";
+import {
+  getCampaignName,
+  getChallengeFcShort,
+  getChallengeNameShort,
+  getMapLobbyInfo,
+  getMapName,
+} from "../util/data_util";
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -37,24 +52,42 @@ import {
   ChallengeFcIcon,
   DifficultyChip,
   ObjectiveIcon,
+  OtherIcon,
   VerificationStatusChip,
 } from "../components/goldberries";
 import { CustomModal, useModal } from "../hooks/useModal";
-import { FormMapWrapper } from "../components/forms/Map";
+import {
+  FormMapWrapper,
+  COLLECTIBLES,
+  getCollectibleIcon,
+  getCollectibleName,
+} from "../components/forms/Map";
 import { useAuth } from "../hooks/AuthProvider";
-import { getQueryData, useGetMap } from "../hooks/useApi";
+import { getQueryData, useGetMap, usePostMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useTheme } from "@emotion/react";
-import { MapImageBanner } from "../components/map_image";
+import { MapNoProgressTooltip } from "./Campaign";
+import { useAppSettings } from "../hooks/AppSettingsProvider";
+import { LobbyInfoSpan } from "./Challenge";
 
 export function PageMap() {
   const { id, challengeId } = useParams();
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#282828",
+        border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
       <MapDisplay id={parseInt(id)} challengeId={parseInt(challengeId)} />
     </BasicContainerBox>
   );
@@ -92,36 +125,60 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   const campaign = map.campaign;
   const title = getMapName(map, campaign) + " - " + getCampaignName(map.campaign, t_g);
 
+  const contentPadding = { px: isModal ? { xs: 1, sm: 1.5 } : { xs: 2, sm: 3 } };
+
   return (
-    <>
+    <Box sx={{ pb: { xs: 2, sm: 3 } }}>
       <HeadTitle title={title} />
-      <GoldberriesBreadcrumbs campaign={map.campaign} map={map} />
 
-      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ my: 1 }}>
-        <MapImageBanner id={map.id} alt={getMapName(map, campaign, false)} />
-      </Stack>
+      {/* Banner image - full width, fading into background */}
+      <FadingMapBanner id={map.id} alt={getMapName(map, campaign, false)} />
 
-      {auth.hasHelperPriv && (
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 1 }}>
-          <Button
-            onClick={editMapModal.open}
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faEdit} />}
-          >
-            {t("buttons.edit")}
-          </Button>
-        </Stack>
+      {/* Breadcrumbs */}
+      {/* <Box sx={{ ...contentPadding, mb: 1.5 }}>
+        <GoldberriesBreadcrumbs campaign={map.campaign} map={map} />
+      </Box> */}
+
+      {/* Map details grid */}
+      <Box sx={{ ...contentPadding }}>
+        <MapDetailsGrid map={map} />
+      </Box>
+
+      {map.note && (
+        <Box sx={{ ...contentPadding, mt: 1.5 }}>
+          <NoteDisclaimer note={map.note} title={"Map Note"} />
+        </Box>
       )}
-      <ChallengeDetailsList map={map} />
-      {map.note && <NoteDisclaimer note={map.note} title={"Map Note"} sx={{ mt: 1 }} />}
-      <Divider sx={{ my: 2 }}>
-        <Chip label="Challenges" size="small" />
-      </Divider>
+
+      {/* Edit button */}
+      {auth.hasHelperPriv && (
+        <Box sx={{ ...contentPadding, mt: 1.5 }}>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end">
+            <Button
+              onClick={editMapModal.open}
+              variant="outlined"
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faEdit} />}
+            >
+              {t("buttons.edit")}
+            </Button>
+          </Stack>
+        </Box>
+      )}
+
+      <Box sx={{ ...contentPadding }}>
+        <Divider sx={{ my: 2 }}>
+          <Chip label="Challenges" size="small" />
+        </Divider>
+      </Box>
+
       {selectedChallenge === null || selectedChallenge === undefined ? (
-        <Typography variant="body1">{t("no_challenges")}</Typography>
+        <Box sx={{ ...contentPadding }}>
+          <Typography variant="body1">{t("no_challenges")}</Typography>
+        </Box>
       ) : (
-        <>
-          <Box sx={{ mt: 1, p: 1, background: "rgba(0,0,0,0.2)", borderRadius: 1 }}>
+        <Box sx={{ ...contentPadding }}>
+          <Box sx={{ p: 1, background: "rgba(0,0,0,0.2)", borderRadius: 1 }}>
             <MapChallengeTabs
               selected={selectedChallenge.id}
               setSelected={updateSelectedChallenge}
@@ -135,7 +192,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
               sx={{ mt: 1, mb: 1 }}
             />
           )}
-          <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap" sx={{ m: 1 }}>
+          <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap" sx={{ my: 1 }}>
             <ObjectiveIcon
               objective={selectedChallenge.objective}
               challenge={selectedChallenge}
@@ -182,26 +239,209 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <SuggestedDifficultyChart challenge={selectedChallenge} />
           </div>
-          <SuggestedDifficultyTierCounts
-            challenge={selectedChallenge}
-            sx={{
-              mt: 2,
-            }}
-            hideIfEmpty
-          />
+          <SuggestedDifficultyTierCounts challenge={selectedChallenge} sx={{ mt: 2 }} hideIfEmpty />
           <Changelog type="challenge" id={selectedChallenge.id} sx={{ mt: 2 }} />
-        </>
+        </Box>
       )}
 
-      <Divider sx={{ my: 2 }} />
-      <Changelog type="map" id={id} />
+      <Box sx={{ ...contentPadding }}>
+        <Divider sx={{ my: 2 }} />
+        <Changelog type="map" id={id} />
+      </Box>
 
       <CustomModal modalHook={editMapModal} options={{ hideFooter: true }}>
         <FormMapWrapper id={id} onSave={editMapModal.close} />
       </CustomModal>
-    </>
+    </Box>
   );
 }
+
+//#region Map Details Grid
+function MapDetailsGrid({ map }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
+  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const campaign = map.campaign;
+
+  const lobbyInfo = getMapLobbyInfo(map);
+  const hasLobbyInfo = lobbyInfo !== null && (lobbyInfo.major !== undefined || lobbyInfo.minor !== undefined);
+  const mapHasAuthor = map.author_gb_name !== null;
+  const showMapRow = getMapName(map, campaign) !== campaign.name;
+
+  const leftItems = [];
+  const rightItems = [];
+
+  leftItems.push(
+    <DetailsRow
+      key="campaign"
+      label={t_g("campaign", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faBook} fixedWidth />}
+    >
+      <StyledLink to={"/campaign/" + campaign.id}>{campaign.name}</StyledLink>
+    </DetailsRow>,
+  );
+
+  if (showMapRow) {
+    leftItems.push(
+      <DetailsRow key="map" label={t_g("map", { count: 1 })}>
+        <Stack direction="row" alignItems="center" gap={0.75}>
+          <span>{getMapName(map, campaign)}</span>
+          {!map.is_progress && <MapNoProgressTooltip />}
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+
+  leftItems.push(<CollectiblesDetailsRow key="collectibles" map={map} collectibles={map.collectibles} />);
+
+  if (hasLobbyInfo) {
+    rightItems.push(
+      <DetailsRow key="lobby" label={t("lobby_info")}>
+        <LobbyInfoSpan lobbyInfo={lobbyInfo} />
+      </DetailsRow>,
+    );
+  }
+
+  rightItems.push(
+    <DetailsRow key="url" label={t_g("url")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />}>
+      <ChallengeUrlValue campaign={campaign} map={map} />
+    </DetailsRow>,
+  );
+
+  if (mapHasAuthor) {
+    rightItems.push(
+      <DetailsRow key="author" label={t_cib("author")} icon={<FontAwesomeIcon icon={faUser} fixedWidth />}>
+        <AuthorValue author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />
+      </DetailsRow>,
+    );
+  }
+
+  rightItems.push(<GoldenChangesDetailsRow key="goldenchanges" map={map} />);
+
+  return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
+}
+
+function CollectiblesDetailsRow({ map, collectibles }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map.info_boxes" });
+  const auth = useAuth();
+  const { mutate: postMap } = usePostMap();
+
+  const objectiveToCollectible = { 1: 0, 2: 1, 9: 5 };
+  const objectiveId = map?.challenges.length > 0 ? map?.challenges[0].objective_id : null;
+  const collectible = objectiveToCollectible[objectiveId];
+  const addDefaultCollectible = () => {
+    postMap({
+      ...map,
+      collectibles: [[collectible + "", "", "", "", ""]],
+    });
+  };
+
+  const content = [];
+  if (collectibles === null) {
+    content.push(
+      <Typography key="unknown" variant="body2" color="text.secondary">
+        {t("no_collectibles")}
+      </Typography>,
+    );
+    if (map && auth.hasHelperPriv) {
+      content.push(
+        <Button
+          key="add"
+          variant="outlined"
+          color="warning"
+          size="small"
+          onClick={addDefaultCollectible}
+          disabled={collectible === undefined}
+          sx={{ mt: 0.5 }}
+        >
+          Add default collectible
+        </Button>,
+      );
+    }
+  }
+  if (collectibles) {
+    collectibles.forEach((item, index) => {
+      const coll = COLLECTIBLES.find((c) => c.value === item[0]);
+      if (!coll) return;
+      let collectibleNote = item[2] ? item[2] : null;
+      if (item[4]) {
+        const append = t("meaningful_collectibles", { count: item[4] });
+        collectibleNote = collectibleNote ? collectibleNote + "\n" + append : append;
+      }
+      content.push(
+        <Stack key={index} direction="row" gap={1} alignItems="center">
+          <OtherIcon url={getCollectibleIcon(item[0], item[1])} />
+          <Typography variant="body2">
+            {getCollectibleName(item[0], item[1]) + " x" + (item[3] ? item[3] : "1")}
+          </Typography>
+          {collectibleNote && (
+            <TooltipLineBreaks title={collectibleNote}>
+              <FontAwesomeIcon icon={faInfoCircle} size="sm" />
+            </TooltipLineBreaks>
+          )}
+        </Stack>,
+      );
+    });
+  }
+
+  return (
+    <DetailsRow label={t("collectibles")} icon={<FontAwesomeIcon icon={faBasketShopping} fixedWidth />}>
+      <Stack direction="column" gap={0.25}>
+        {content}
+      </Stack>
+    </DetailsRow>
+  );
+}
+
+function GoldenChangesDetailsRow({ map }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map.info_boxes.golden_changes" });
+  const { settings } = useAppSettings();
+  const auth = useAuth();
+  const [open, setOpen] = useState(false);
+  const { mutate: postMap } = usePostMap();
+
+  const setNoChanges = () => {
+    postMap({
+      ...map,
+      golden_changes: null,
+    });
+  };
+
+  const showChanges = open || settings.general.alwaysShowGoldenChanges;
+
+  return (
+    <DetailsRow label={t("label")}>
+      {showChanges ? (
+        <Typography variant="body2" sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>
+          {map.golden_changes ?? t("no_changes")}
+        </Typography>
+      ) : (
+        <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setOpen(true)}
+            sx={{ py: 0, px: 1, minWidth: 0, fontSize: "0.8rem" }}
+          >
+            {t("show")}
+          </Button>
+          {auth.hasHelperPriv && map.golden_changes === "Unknown" && (
+            <Button
+              variant="outlined"
+              color="warning"
+              size="small"
+              onClick={setNoChanges}
+              sx={{ py: 0, px: 1, minWidth: 0, fontSize: "0.8rem" }}
+            >
+              Set to "No changes"
+            </Button>
+          )}
+        </Stack>
+      )}
+    </DetailsRow>
+  );
+}
+//#endregion
 
 //controlled property: selected challenge ID
 function MapChallengeTabs({ selected, setSelected, map }) {

@@ -1,6 +1,7 @@
 import {
   Alert,
   AlertTitle,
+  Box,
   Button,
   Chip,
   Divider,
@@ -33,7 +34,6 @@ import {
 import {
   ChallengeFcIcon,
   DifficultyChip,
-  GamebananaEmbed,
   ObjectiveIcon,
   OtherIcon,
   PlayerNotesIcon,
@@ -47,6 +47,7 @@ import {
   getChallengeCampaign,
   getChallengeNameShort,
   getChallengeSuffix,
+  getGamebananaEmbedUrl,
   getMapLobbyInfo,
   getMapName,
   getPlayerNameColorStyle,
@@ -66,8 +67,12 @@ import {
   faExclamationTriangle,
   faExternalLink,
   faFlagCheckered,
+  faGauge,
+  faGaugeSimpleHigh,
   faInfoCircle,
+  faMapLocation,
   faPlus,
+  faSignsPost,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
@@ -91,8 +96,9 @@ import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { useTheme } from "@emotion/react";
-import { MapImageBanner } from "../components/map_image";
 import { LikeButton } from "../components/likes";
+import { API_BASE_URL } from "../util/constants";
+import { PlaceholderImage } from "../components/PlaceholderImage";
 
 const displayNoneOnMobile = {
   display: {
@@ -105,13 +111,23 @@ export function PageChallenge({}) {
   const { id } = useParams();
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#282828",
+        border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
       <ChallengeDisplay id={parseInt(id)} />
     </BasicContainerBox>
   );
 }
 
-export function ChallengeDisplay({ id }) {
+export function ChallengeDisplay({ id, isCompact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
   const query = useGetChallenge(id);
@@ -129,68 +145,433 @@ export function ChallengeDisplay({ id }) {
   const campaign = getChallengeCampaign(challenge);
   const title = (map?.name ?? campaign.name) + " - " + getChallengeNameShort(challenge);
 
+  const contentPadding = { px: isCompact ? { xs: 1, sm: 1.5 } : { xs: 2, sm: 3 } };
+
   return (
-    <>
+    <Box sx={{ pb: { xs: 2, sm: 3 } }}>
       <HeadTitle title={title} />
-      <GoldberriesBreadcrumbs campaign={campaign} map={map} challenge={challenge} />
-      <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mb: 0, mt: 1 }}>
-        {map ? (
-          <MapImageBanner id={map.id} alt={getMapName(map, campaign, false)} />
-        ) : (
-          <GamebananaEmbed campaign={campaign} size="large" />
-        )}
-      </Stack>
-      {auth.hasPlayerClaimed && (
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
-          {!challenge.is_rejected && (
-            <Link to={"/submit/single-challenge/" + id}>
-              <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} sx={{ mt: 0, mb: 0 }}>
-                {t("buttons.submit")}
-              </Button>
-            </Link>
-          )}
-          {auth.hasHelperPriv && (
-            <Button
-              onClick={editChallengeModal.open}
-              variant="outlined"
-              sx={{ mr: 1, mt: 0 }}
-              startIcon={<FontAwesomeIcon icon={faEdit} />}
-            >
-              {t("buttons.edit")}
-            </Button>
+
+      {/* Banner image - full width, fading into background */}
+      {map ? (
+        <FadingMapBanner id={map.id} alt={getMapName(map, campaign, false)} />
+      ) : (
+        <FadingMapBanner alt={campaign.name} src={getGamebananaEmbedUrl(campaign.url, "large")} />
+      )}
+
+      {/* Breadcrumbs */}
+      {/* <Box sx={{ ...contentPadding, mb: 1.5 }}>
+        <GoldberriesBreadcrumbs campaign={campaign} map={map} challenge={challenge} />
+      </Box> */}
+
+      {/* Challenge details grid */}
+      <Box sx={{ ...contentPadding }}>
+        <ChallengeDetailsGrid map={challenge.map} challenge={challenge} />
+      </Box>
+
+      {challenge.description && (
+        <Box sx={{ ...contentPadding, mt: 1.5 }}>
+          <NoteDisclaimer title={t("description")} note={challenge.description} />
+        </Box>
+      )}
+
+      {/* Like button + Action buttons on the same line */}
+      <Box sx={{ ...contentPadding, mt: 1.5 }}>
+        <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
+          <LikeButton challengeId={challenge.id} />
+          {auth.hasPlayerClaimed && (
+            <Stack direction="row" alignItems="center" gap={1} sx={{ ml: { xs: 0, sm: "auto" } }}>
+              {!challenge.is_rejected && (
+                <Link to={"/submit/single-challenge/" + id}>
+                  <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} size="small">
+                    {t("buttons.submit")}
+                  </Button>
+                </Link>
+              )}
+              {auth.hasHelperPriv && (
+                <Button
+                  onClick={editChallengeModal.open}
+                  variant="outlined"
+                  size="small"
+                  startIcon={<FontAwesomeIcon icon={faEdit} />}
+                >
+                  {t("buttons.edit")}
+                </Button>
+              )}
+            </Stack>
           )}
         </Stack>
-      )}
-      <ChallengeDetailsList map={challenge.map} challenge={challenge} sx={{ mb: 1, mt: 0.5 }} />
-      {challenge.description && (
-        <NoteDisclaimer title={t("description")} note={challenge.description} sx={{ mb: 2, mt: 1 }} />
-      )}
-      <LikeButton challengeId={challenge.id} sx={{ mb: 2 }} />
-      <ChallengeSubmissionTable challenge={challenge} />
+      </Box>
 
-      <Divider sx={{ my: 2 }}>
-        <Chip label={t("difficulty_suggestions")} size="small" />
-      </Divider>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <SuggestedDifficultyChart challenge={challenge} />
-      </div>
-      <SuggestedDifficultyTierCounts
-        challenge={challenge}
-        sx={{
-          mt: 2,
-        }}
-        hideIfEmpty
-      />
+      {/* Submission table */}
+      <Box sx={{ ...contentPadding, mt: 2 }}>
+        <ChallengeSubmissionTable challenge={challenge} />
+      </Box>
 
-      <Divider sx={{ my: 2 }} />
-      <Changelog type="challenge" id={id} />
+      <Box sx={{ ...contentPadding }}>
+        <Divider sx={{ my: 2 }}>
+          <Chip label={t("difficulty_suggestions")} size="small" />
+        </Divider>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <SuggestedDifficultyChart challenge={challenge} />
+        </div>
+        <SuggestedDifficultyTierCounts challenge={challenge} sx={{ mt: 2 }} hideIfEmpty />
+
+        <Divider sx={{ my: 2 }} />
+        <Changelog type="challenge" id={id} />
+      </Box>
 
       <CustomModal modalHook={editChallengeModal} options={{ hideFooter: true }}>
         <FormChallengeWrapper id={id} onSave={editChallengeModal.close} />
       </CustomModal>
+    </Box>
+  );
+}
+
+//#region Fading Map Banner
+export function FadingMapBanner({ id, alt, src, href, sx }) {
+  const modalHook = useModal(id);
+  const imageSrc = src ?? API_BASE_URL + "/img/map/" + id + "&scale=2";
+  const isClickable = !!href || !!id;
+
+  const handleClick = () => {
+    if (href) {
+      window.open(href, "_blank", "noopener,noreferrer");
+    } else if (id) {
+      modalHook.open(id);
+    }
+  };
+
+  return (
+    <>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "6 / 1",
+          overflow: "hidden",
+          cursor: isClickable ? "pointer" : "default",
+          mb: 1.5,
+          ...sx,
+        }}
+        onClick={isClickable ? handleClick : undefined}
+      >
+        <PlaceholderImage
+          src={imageSrc}
+          alt={alt}
+          loading="lazy"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            display: "block",
+          }}
+        />
+        {/* Gradient fade at the bottom */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "60%",
+            background: "linear-gradient(to bottom, transparent 0%, #282828 100%)",
+            pointerEvents: "none",
+          }}
+        />
+      </Box>
+      {!href && (
+        <CustomModal modalHook={modalHook} maxWidth="lg" options={{ hideFooter: true }}>
+          <Box onClick={() => modalHook.close()}>
+            <PlaceholderImage src={imageSrc} alt={alt} style={{ width: "100%", borderRadius: "4px" }} />
+          </Box>
+        </CustomModal>
+      )}
     </>
   );
 }
+//#endregion
+
+//#region Challenge Details Grid
+function ChallengeDetailsGrid({ map, challenge }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
+  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const campaign = getChallengeCampaign(challenge);
+
+  const lobbyInfo = getMapLobbyInfo(map);
+  const hasLobbyInfo = lobbyInfo !== null && (lobbyInfo.major !== undefined || lobbyInfo.minor !== undefined);
+  const mapHasAuthor = map !== null && map.author_gb_name !== null;
+
+  const showMapRow = map !== null && getMapName(map, campaign) !== campaign.name;
+
+  // Build left and right column items
+  const leftItems = [];
+  const rightItems = [];
+
+  leftItems.push(
+    <DetailsRow
+      key="campaign"
+      label={t_g("campaign", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faBook} fixedWidth />}
+    >
+      <StyledLink to={"/campaign/" + campaign.id}>{campaign.name}</StyledLink>
+    </DetailsRow>,
+  );
+
+  if (showMapRow) {
+    leftItems.push(
+      <DetailsRow
+        key="map"
+        label={t_g("map", { count: 1 })}
+        icon={<FontAwesomeIcon icon={faMapLocation} fixedWidth />}
+      >
+        <Stack direction="row" alignItems="center" gap={0.75}>
+          <StyledLink to={"/map/" + map.id}>{getMapName(map, campaign)}</StyledLink>
+          {!map.is_progress && <MapNoProgressTooltip />}
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+
+  leftItems.push(
+    <DetailsRow
+      key="challenge"
+      label={t_g("challenge", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faFlagCheckered} fixedWidth />}
+    >
+      <Stack direction="row" alignItems="center" gap={0.5} flexWrap="wrap">
+        <span>{challenge.objective.name}</span>
+        <ObjectiveIcon objective={challenge.objective} challenge={challenge} />
+        <ChallengeFcIcon challenge={challenge} />
+        {getChallengeSuffix(challenge, true) !== null && (
+          <Typography variant="body2" color="text.secondary">
+            [{getChallengeSuffix(challenge, true)}]
+          </Typography>
+        )}
+      </Stack>
+    </DetailsRow>,
+  );
+
+  leftItems.push(
+    <DetailsRow
+      key="difficulty"
+      label={t_g("difficulty", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faGaugeSimpleHigh} fixedWidth />}
+    >
+      <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
+        <DifficultyChip difficulty={challenge.difficulty} />
+        <CalculatedFractionalTierChip challenge={challenge} />
+        {challenge.reject_note && !challenge.is_rejected && (
+          <TooltipLineBreaks title={challenge.reject_note}>
+            <FontAwesomeIcon icon={faExclamationTriangle} />
+          </TooltipLineBreaks>
+        )}
+      </Stack>
+    </DetailsRow>,
+  );
+
+  if (hasLobbyInfo) {
+    rightItems.push(
+      <DetailsRow
+        key="lobby"
+        label={t("lobby_info")}
+        icon={<FontAwesomeIcon icon={faSignsPost} fixedWidth />}
+      >
+        <LobbyInfoSpan lobbyInfo={lobbyInfo} variant="body2" />
+      </DetailsRow>,
+    );
+  }
+
+  rightItems.push(
+    <DetailsRow key="url" label={t_g("url")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />}>
+      <ChallengeUrlValue campaign={campaign} map={map} />
+    </DetailsRow>,
+  );
+
+  if (mapHasAuthor) {
+    rightItems.push(
+      <DetailsRow key="author" label={t_cib("author")} icon={<FontAwesomeIcon icon={faUser} fixedWidth />}>
+        <AuthorValue author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />
+      </DetailsRow>,
+    );
+  }
+
+  if (challenge.is_rejected) {
+    rightItems.push(
+      <DetailsRow key="status" label={t("status")}>
+        <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
+          <VerificationStatusChip isVerified={false} size="small" />
+          <Typography variant="body2" color="text.secondary">
+            {challenge.reject_note}
+          </Typography>
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+
+  return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
+}
+
+export function TwoColumnDetailsGrid({ leftItems, rightItems }) {
+  return (
+    <Grid container columnSpacing={0} rowSpacing={0}>
+      <Grid item xs={12} sm sx={{ pr: { sm: 1.5 } }}>
+        <DetailsGrid>{leftItems}</DetailsGrid>
+      </Grid>
+      <Grid item xs={12} sx={{ display: { xs: "block", sm: "none" } }}>
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", my: 0.5 }} />
+      </Grid>
+      <Grid item sx={{ display: { xs: "none", sm: "flex" }, alignItems: "stretch" }}>
+        <Divider orientation="vertical" flexItem sx={{ borderColor: "rgba(255,255,255,0.06)" }} />
+      </Grid>
+      <Grid item xs={12} sm sx={{ pl: { sm: 1.5 } }}>
+        <DetailsGrid>{rightItems}</DetailsGrid>
+      </Grid>
+    </Grid>
+  );
+}
+
+function DetailsGrid({ children }) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr",
+        columnGap: 1,
+        rowGap: 0.5,
+        alignItems: "baseline",
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+export function DetailsRow({ label, icon, children }) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "subgrid",
+        gridColumn: "1 / -1",
+        borderRadius: 1,
+        "&:not(:last-child)": {
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          alignSelf: "center",
+          gap: 0.75,
+          pl: 0.75,
+          pr: 1.25,
+          minHeight: 32,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {icon ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ width: 18, textAlign: "center", fontSize: "0.8rem" }}
+          >
+            {icon}
+          </Typography>
+        ) : (
+          <Box sx={{ width: 18 }} />
+        )}
+        <Typography variant="body2" color="text.secondary" fontWeight="bold" sx={{ fontSize: "0.85rem" }}>
+          {label}
+        </Typography>
+      </Box>
+      <Box sx={{ py: 0.75, minHeight: 32, display: "flex", alignItems: "center" }}>
+        <Typography variant="body2" component="div" sx={{ wordBreak: "break-word" }}>
+          {children}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+export function ChallengeUrlValue({ campaign, map }) {
+  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
+
+  const getMapUrls = (campaign, map) => {
+    if (campaign === null) throw new Error("Campaign is null");
+    if (map === null) {
+      if (campaign.url !== null) return [[campaign.url, ""]];
+      return null;
+    } else {
+      if (map.url !== null) return map.url;
+      if (campaign.url !== null) return [[campaign.url, ""]];
+      return null;
+    }
+  };
+  const mapUrls = getMapUrls(campaign, map);
+
+  if (mapUrls === null) {
+    return (
+      <Typography variant="body2" color="text.secondary">
+        {t_cib("no_download")}
+      </Typography>
+    );
+  }
+
+  return (
+    <Stack direction="column" gap={0.5}>
+      {mapUrls.map((item, index) => (
+        <Stack key={index} direction="row" gap={1} alignItems="center" flexWrap="wrap">
+          <MapCampaignUrlInfoBoxUrl url={item[0]} />
+          {item[1] && (
+            <Typography variant="body2" color="text.secondary">
+              {item[1]}
+            </Typography>
+          )}
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+
+export function AuthorValue({ author_gb_id, author_gb_name }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+
+  if (author_gb_id === null && author_gb_name === null) {
+    return (
+      <Typography variant="body2" color="text.secondary">
+        {t_g("unknown_author")}
+      </Typography>
+    );
+  }
+
+  const parsedName = author_gb_name.replace(/ and /g, ", ");
+  const authors = parsedName
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const authorElements = authors.map((author) => (
+    <StyledLink key={author} to={"/author/" + encodeURIComponent(author)}>
+      {author}
+    </StyledLink>
+  ));
+
+  const result = [];
+  authorElements.forEach((element, index) => {
+    result.push(element);
+    if (index < authorElements.length - 2) {
+      result.push(", ");
+    } else if (index === authorElements.length - 2) {
+      result.push(" and ");
+    }
+  });
+
+  return <>{result}</>;
+}
+//#endregion
 
 export function ChallengeDetailsListWrapper({ id }) {
   const query = useGetMap(id);
@@ -406,7 +787,7 @@ function MapCampaignUrlInfoBoxUrl({ url }) {
     <Stack direction="row" gap={0.25} alignItems="center">
       <StyledExternalLink href={url}>{isGamebananaUrl ? "GameBanana" : url}</StyledExternalLink>
       {isGamebananaUrl && isMdScreen && (
-        <IconButton onClick={modalHook.open}>
+        <IconButton onClick={modalHook.open} size="small" sx={{ p: 0.5 }}>
           <FontAwesomeIcon icon={faDownload} size="2xs" fixedWidth />
         </IconButton>
       )}
@@ -429,19 +810,19 @@ function MapCampaignUrlInfoBoxUrl({ url }) {
   );
 }
 
-function LobbyInfoSpan({ lobbyInfo }) {
+export function LobbyInfoSpan({ lobbyInfo, variant = "body1" }) {
   const textShadow =
     "black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px";
   return (
     <Stack direction="row" alignItems="center" gap={0.5}>
       {lobbyInfo.major && (
-        <Typography variant="body1" color={lobbyInfo.major.color} sx={{ textShadow: textShadow }}>
+        <Typography variant={variant} color={lobbyInfo.major.color} sx={{ textShadow: textShadow }}>
           {lobbyInfo.major.label}
         </Typography>
       )}
-      {lobbyInfo.major && lobbyInfo.minor && <FontAwesomeIcon icon={faArrowRight} />}
+      {lobbyInfo.major && lobbyInfo.minor && <FontAwesomeIcon icon={faArrowRight} fixedWidth />}
       {lobbyInfo.minor && (
-        <Typography variant="body1" color={lobbyInfo.minor.color} sx={{ textShadow: textShadow }}>
+        <Typography variant={variant} color={lobbyInfo.minor.color} sx={{ textShadow: textShadow }}>
           {lobbyInfo.minor.label}
         </Typography>
       )}

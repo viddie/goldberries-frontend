@@ -1299,11 +1299,17 @@ function TglModalContainer({ modalRefs }) {
         maxWidth={false}
         sx={{ maxWidth: "720px", margin: "auto" }}
         options={{ hideFooter: true }}
+        contentSx={{
+          p: 0,
+          px: 0,
+          py: 0,
+          backgroundColor: "#282828",
+        }}
       >
         {showMapModal.data?.id == null ? (
           <LoadingSpinner />
         ) : showMapModal.data?.isCampaign ? (
-          <ChallengeDisplay id={showMapModal.data.id} />
+          <ChallengeDisplay id={showMapModal.data.id} isCompact />
         ) : (
           <MapDisplay id={showMapModal.data.id} challengeId={showMapModal.data.challengeId} isModal />
         )}

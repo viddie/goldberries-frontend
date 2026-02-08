@@ -25,7 +25,7 @@ export function useModal(defaultData, onClose, options = { onOpen: undefined, ac
   return { isVisible, data, setData, open, close, cancel, options };
 }
 
-export function CustomModal({ modalHook, maxWidth = "sm", actions, children, options, ...props }) {
+export function CustomModal({ modalHook, maxWidth = "sm", actions, children, options, contentSx, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "general.modals.buttons" });
   const { isVisible, close, cancel } = modalHook;
 
@@ -45,7 +45,7 @@ export function CustomModal({ modalHook, maxWidth = "sm", actions, children, opt
       {...props}
     >
       {title !== null ? <DialogTitle>{title}</DialogTitle> : null}
-      <DialogContent dividers sx={{ px: { xs: 1.5, sm: 2 }, py: { xs: 1.5, sm: 3 } }}>
+      <DialogContent dividers sx={{ px: { xs: 1.5, sm: 2 }, py: { xs: 1.5, sm: 3 }, ...contentSx }}>
         {children}
       </DialogContent>
       {hideFooter ? null : (
