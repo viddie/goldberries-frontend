@@ -193,7 +193,7 @@ export function ChallengeDetailsDisplay({ challenge, t }) {
         </Divider>
       </Grid>
       <Grid item xs={12}>
-        <ChallengeSubmissionTable challenge={challenge} onlyShowFirstFew />
+        <ChallengeSubmissionTable challenge={challenge} onlyShowFirst={20} />
       </Grid>
       <Grid item xs={12}>
         <Divider />

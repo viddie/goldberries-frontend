@@ -389,7 +389,7 @@ export function ViewSuggestionModal({ id }) {
               </Divider>
             </Grid>
             <Grid item xs={12}>
-              <ChallengeSubmissionTable challenge={suggestion.challenge} onlyShowFirstFew />
+              <ChallengeSubmissionTable challenge={suggestion.challenge} onlyShowFirst={20} />
             </Grid>
             {relatedChallenges.length > 0 && (
               <>
@@ -402,7 +402,7 @@ export function ViewSuggestionModal({ id }) {
                   <>
                     <Grid item xs={12}>
                       <Typography variant="body1">{getChallengeNameShort(challenge)}</Typography>
-                      <ChallengeSubmissionTable challenge={challenge} onlyShowFirstFew />
+                      <ChallengeSubmissionTable challenge={challenge} onlyShowFirst={20} />
                     </Grid>
                   </>
                 ))}

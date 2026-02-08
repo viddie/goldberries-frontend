@@ -26,7 +26,7 @@ import {
   faImages,
   faInfoCircle,
   faListDots,
-  faUser,
+  faSignsPost,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/Campaign.css";
@@ -40,20 +40,18 @@ import {
   CampaignIcon,
   ChallengeFcIcon,
   DifficultyChip,
-  GamebananaEmbed,
   ObjectiveIcon,
   PlayerLink,
   SubmissionFcIcon,
 } from "../components/goldberries";
 import { Changelog } from "../components/Changelog";
-import { getCampaignName, getChallengeNameShort, getMapName } from "../util/data_util";
+import { getCampaignName, getChallengeNameShort, getGamebananaEmbedUrl, getMapName } from "../util/data_util";
 import {
   BasicContainerBox,
   BorderedBox,
   CustomIconButton,
   ErrorDisplay,
   HeadTitle,
-  InfoBox,
   InfoBoxIconTextLine,
   LoadingSpinner,
   StyledLink,
@@ -65,7 +63,15 @@ import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { CampaignGallery } from "../components/map_image";
 
-import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
+import {
+  AuthorDetailsRow,
+  CampaignDetailsRow,
+  DetailsRow,
+  FadingMapBanner,
+  NoteDisclaimer,
+  TwoColumnDetailsGrid,
+  UrlDetailsRow,
+} from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PageCampaign() {
@@ -85,7 +91,17 @@ export function PageCampaign() {
   }
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#282828",
+        border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
       <CampaignDisplay id={parseInt(id)} tab={tab ?? "players"} setTab={setTab} />
     </BasicContainerBox>
   );
@@ -101,9 +117,17 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
   const imageGalleryModal = useModal();
 
   if (query.isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LoadingSpinner />
+      </Box>
+    );
   } else if (query.isError) {
-    return <ErrorDisplay error={query.error} />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <ErrorDisplay error={query.error} />
+      </Box>
+    );
   }
 
   const response = getQueryData(query);
@@ -111,40 +135,60 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
   const title = getCampaignName(campaign, t_g);
   const hasFullGameChallenges = campaign.challenges.length > 0;
 
+  const contentPadding = { px: { xs: 2, sm: 3 } };
+
   return (
-    <>
+    <Box sx={{ pb: { xs: 2, sm: 3 } }}>
       <HeadTitle title={title} />
-      <Stack direction="row" alignItems="center" gap={1}>
-        {campaign.icon_url === null && <FontAwesomeIcon icon={faBook} size="2x" />}
-        <CampaignIcon campaign={campaign} height="1.7em" />
-        <Typography variant="h4">{campaign.name}</Typography>
-        <Box flexGrow={1} />
-        <CustomIconButton onClick={() => imageGalleryModal.open()} sx={{ alignSelf: "stretch" }}>
-          <FontAwesomeIcon icon={faImages} />
-        </CustomIconButton>
-      </Stack>
 
-      <Stack direction="row" alignItems="center" gap={1} justifyContent="space-around" sx={{ mt: 1 }}>
-        <GamebananaEmbed campaign={campaign} size="large" />
-      </Stack>
+      {/* Banner image - full width, fading into background */}
+      <FadingMapBanner
+        alt={campaign.name}
+        src={getGamebananaEmbedUrl(campaign.url, "large")}
+        sx={{ mb: 1 }}
+      />
 
-      {auth.hasHelperPriv && (
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <Button
-            onClick={editCampaignModal.open}
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faEdit} />}
-            sx={{ mb: 1 }}
-          >
-            {t("buttons.edit")}
-          </Button>
+      {/* Campaign icon + title + gallery button */}
+      <Box sx={{ ...contentPadding, mb: 1.5 }}>
+        <Stack direction="row" alignItems="center" gap={1}>
+          {campaign.icon_url === null && <FontAwesomeIcon icon={faBook} size="2x" />}
+          <CampaignIcon campaign={campaign} height="1.7em" />
+          <Typography variant="h5">{campaign.name}</Typography>
+          <Box flexGrow={1} />
+          <CustomIconButton onClick={() => imageGalleryModal.open()}>
+            <FontAwesomeIcon icon={faImages} />
+          </CustomIconButton>
         </Stack>
+      </Box>
+
+      {/* Campaign details grid */}
+      <Box sx={{ ...contentPadding }}>
+        <CampaignDetailsGrid campaign={campaign} />
+      </Box>
+
+      {campaign.note && (
+        <Box sx={{ ...contentPadding, mt: 1.5 }}>
+          <NoteDisclaimer note={campaign.note} title={t("note")} />
+        </Box>
       )}
 
-      <CampaignDetailsList campaign={campaign} sx={{ mt: 0 }} />
+      {/* Edit button */}
+      {auth.hasHelperPriv && (
+        <Box sx={{ ...contentPadding, mt: 1.5 }}>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end">
+            <Button
+              onClick={editCampaignModal.open}
+              variant="outlined"
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faEdit} />}
+            >
+              {t("buttons.edit")}
+            </Button>
+          </Stack>
+        </Box>
+      )}
 
-      {campaign.note && <NoteDisclaimer note={campaign.note} title={t("note")} sx={{ mt: 1 }} />}
-
+      {/* Tabs */}
       <Divider sx={{ mt: 2 }} />
 
       <Tabs variant="fullWidth" value={tab} onChange={(event, newTab) => setTab(newTab)} sx={{ mt: 0 }}>
@@ -152,16 +196,17 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
         <Tab label={t_g("map", { count: 30 })} value="maps" />
         {hasFullGameChallenges && <Tab label={t_g("challenge", { count: 30 })} value="challenges" />}
       </Tabs>
+
       <Divider sx={{ my: 0 }} />
 
-      {tab === "players" && <CampaignPlayerTable campaign={campaign} players={players} sx={{ mt: 2 }} />}
-      {tab === "maps" && <CampaignMapList campaign={campaign} sx={{ mt: 2 }}></CampaignMapList>}
-      {tab === "challenges" && (
-        <CampaignChallengeList campaign={campaign} sx={{ mt: 2 }}></CampaignChallengeList>
-      )}
+      <Box sx={{ ...contentPadding }}>
+        {tab === "players" && <CampaignPlayerTable campaign={campaign} players={players} sx={{ mt: 2 }} />}
+        {tab === "maps" && <CampaignMapList campaign={campaign} sx={{ mt: 2 }} />}
+        {tab === "challenges" && <CampaignChallengeList campaign={campaign} sx={{ mt: 2 }} />}
 
-      <Divider sx={{ my: 2 }} />
-      <Changelog type="campaign" id={id} />
+        <Divider sx={{ my: 2 }} />
+        <Changelog type="campaign" id={id} />
+      </Box>
 
       <CustomModal modalHook={editCampaignModal} options={{ hideFooter: true }}>
         <FormCampaignWrapper id={id} onSave={editCampaignModal.close} />
@@ -169,15 +214,14 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
       <CustomModal modalHook={imageGalleryModal} options={{ hideFooter: true }} maxWidth="lg">
         <CampaignGallery campaign={campaign} />
       </CustomModal>
-    </>
+    </Box>
   );
 }
 
 //#region Campaign Info
 
-export function CampaignDetailsList({ campaign, ...props }) {
+function CampaignDetailsGrid({ campaign }) {
   const { t } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
 
   const hasMajorSort = campaign.sort_major_name !== null;
   const hasMinorSort = campaign.sort_minor_name !== null;
@@ -190,66 +234,82 @@ export function CampaignDetailsList({ campaign, ...props }) {
       ? t("maps_archived", { count: validMaps.length, archived: archivedMapsCount })
       : t("maps", { count: validMaps.length });
 
-  return (
-    <Grid container columnSpacing={1} rowSpacing={1} {...props}>
-      <Grid item xs={12} sm={6} display="flex" flexDirection="column" rowGap={1}>
-        <InfoBox>
-          <InfoBoxIconTextLine
-            icon={<FontAwesomeIcon icon={faBook} />}
-            text={t_g("campaign", { count: 1 })}
-          />
-          <InfoBoxIconTextLine text={campaign.name} isSecondary />
-        </InfoBox>
-        <InfoBox>
-          <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faListDots} />} text={t("map_count")} />
-          <InfoBoxIconTextLine text={mapsCountStr} isSecondary />
-          {rejectedMapsCount > 0 && (
-            <InfoBoxIconTextLine text={t("maps_rejected", { count: rejectedMapsCount })} isSecondary />
-          )}
-        </InfoBox>
-        {(hasMajorSort || hasMinorSort) && (
-          <InfoBox>
-            {hasMajorSort && (
-              <>
-                <InfoBoxIconTextLine text={campaign.sort_major_name} />
-                <SortInfoBoxLine labels={campaign.sort_major_labels} colors={campaign.sort_major_colors} />
-              </>
-            )}
-            {hasMinorSort && (
-              <>
-                <InfoBoxIconTextLine text={campaign.sort_minor_name} />
-                <SortInfoBoxLine labels={campaign.sort_minor_labels} colors={campaign.sort_minor_colors} />
-              </>
-            )}
-          </InfoBox>
+  const leftItems = [];
+  const rightItems = [];
+
+  leftItems.push(<CampaignDetailsRow key="campaign">{campaign.name}</CampaignDetailsRow>);
+
+  leftItems.push(
+    <DetailsRow
+      key="map-count"
+      label={t("map_count")}
+      icon={<FontAwesomeIcon icon={faListDots} fixedWidth />}
+    >
+      <Stack direction="row" alignItems="center" gap={0.5} flexWrap="wrap">
+        <span>{mapsCountStr}</span>
+        {rejectedMapsCount > 0 && (
+          <Typography variant="body2" color="text.secondary">
+            {t("maps_rejected", { count: rejectedMapsCount })}
+          </Typography>
         )}
-      </Grid>
-      <Grid item xs={12} sm={6} display="flex" flexDirection="column" rowGap={1}>
-        <InfoBox>
-          <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faUser} />} text={t("author")} />
-          <AuthorInfoBoxLine author_gb_id={campaign.author_gb_id} author_gb_name={campaign.author_gb_name} />
-        </InfoBox>
-        <MapCampaignUrlInfoBox campaign={campaign} />
-      </Grid>
-    </Grid>
+      </Stack>
+    </DetailsRow>,
   );
+
+  if (hasMajorSort) {
+    leftItems.push(
+      <DetailsRow
+        key="sort-major"
+        label={campaign.sort_major_name}
+        icon={<FontAwesomeIcon icon={faSignsPost} fixedWidth />}
+      >
+        <SortLabels labels={campaign.sort_major_labels} colors={campaign.sort_major_colors} />
+      </DetailsRow>,
+    );
+  }
+
+  if (hasMinorSort) {
+    leftItems.push(
+      <DetailsRow
+        key="sort-minor"
+        label={campaign.sort_minor_name}
+        icon={<FontAwesomeIcon icon={faSignsPost} fixedWidth />}
+      >
+        <SortLabels labels={campaign.sort_minor_labels} colors={campaign.sort_minor_colors} />
+      </DetailsRow>,
+    );
+  }
+
+  rightItems.push(
+    <AuthorDetailsRow
+      key="author"
+      author_gb_id={campaign.author_gb_id}
+      author_gb_name={campaign.author_gb_name}
+    />,
+  );
+
+  rightItems.push(<UrlDetailsRow key="url" campaign={campaign} />);
+
+  rightItems.push(
+    <DetailsRow key="tgl" label="">
+      <StyledLink to={"/campaign/" + campaign.id + "/top-golden-list"}>{t("campaign_tgl")}</StyledLink>
+    </DetailsRow>,
+  );
+
+  return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
 }
-function SortInfoBoxLine({ labels, colors }) {
+
+function SortLabels({ labels, colors }) {
   const textShadow =
     "black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px";
   return (
-    <InfoBoxIconTextLine
-      text={
-        <Stack direction="row" alignItems="center" columnGap={1} rowGap={0} flexWrap="wrap">
-          {labels.map((label, index) => (
-            <Typography key={index} variant="body1" color={colors[index]} sx={{ textShadow }}>
-              {label}
-            </Typography>
-          ))}
-        </Stack>
-      }
-      isSecondary
-    />
+    <Stack direction="row" alignItems="center" columnGap={1} rowGap={0} flexWrap="wrap">
+      {labels.map((label, index) => (
+        <Typography key={index} variant="body2" color={colors[index]} sx={{ textShadow }}>
+          {label}
+        </Typography>
+      ))}
+    </Stack>
   );
 }
 export function AuthorInfoBoxLine({ author_gb_id, author_gb_name }) {

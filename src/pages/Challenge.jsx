@@ -135,9 +135,17 @@ export function ChallengeDisplay({ id, isCompact = false }) {
   const editChallengeModal = useModal();
 
   if (query.isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LoadingSpinner />
+      </Box>
+    );
   } else if (query.isError) {
-    return <ErrorDisplay error={query.error} />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <ErrorDisplay error={query.error} />
+      </Box>
+    );
   }
 
   const challenge = getQueryData(query);
@@ -295,7 +303,6 @@ export function FadingMapBanner({ id, alt, src, href, sx }) {
 //#region Challenge Details Grid
 function ChallengeDetailsGrid({ map, challenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
-  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const campaign = getChallengeCampaign(challenge);
 
@@ -310,27 +317,19 @@ function ChallengeDetailsGrid({ map, challenge }) {
   const rightItems = [];
 
   leftItems.push(
-    <DetailsRow
-      key="campaign"
-      label={t_g("campaign", { count: 1 })}
-      icon={<FontAwesomeIcon icon={faBook} fixedWidth />}
-    >
+    <CampaignDetailsRow key="campaign">
       <StyledLink to={"/campaign/" + campaign.id}>{campaign.name}</StyledLink>
-    </DetailsRow>,
+    </CampaignDetailsRow>,
   );
 
   if (showMapRow) {
     leftItems.push(
-      <DetailsRow
-        key="map"
-        label={t_g("map", { count: 1 })}
-        icon={<FontAwesomeIcon icon={faMapLocation} fixedWidth />}
-      >
+      <MapDetailsRow key="map">
         <Stack direction="row" alignItems="center" gap={0.75}>
           <StyledLink to={"/map/" + map.id}>{getMapName(map, campaign)}</StyledLink>
           {!map.is_progress && <MapNoProgressTooltip />}
         </Stack>
-      </DetailsRow>,
+      </MapDetailsRow>,
     );
   }
 
@@ -372,28 +371,14 @@ function ChallengeDetailsGrid({ map, challenge }) {
   );
 
   if (hasLobbyInfo) {
-    rightItems.push(
-      <DetailsRow
-        key="lobby"
-        label={t("lobby_info")}
-        icon={<FontAwesomeIcon icon={faSignsPost} fixedWidth />}
-      >
-        <LobbyInfoSpan lobbyInfo={lobbyInfo} variant="body2" />
-      </DetailsRow>,
-    );
+    rightItems.push(<LobbyDetailsRow key="lobby" lobbyInfo={lobbyInfo} />);
   }
 
-  rightItems.push(
-    <DetailsRow key="url" label={t_g("url")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />}>
-      <ChallengeUrlValue campaign={campaign} map={map} />
-    </DetailsRow>,
-  );
+  rightItems.push(<UrlDetailsRow key="url" campaign={campaign} map={map} />);
 
   if (mapHasAuthor) {
     rightItems.push(
-      <DetailsRow key="author" label={t_cib("author")} icon={<FontAwesomeIcon icon={faUser} fixedWidth />}>
-        <AuthorValue author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />
-      </DetailsRow>,
+      <AuthorDetailsRow key="author" author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />,
     );
   }
 
@@ -496,6 +481,61 @@ export function DetailsRow({ label, icon, children }) {
     </Box>
   );
 }
+
+//#region Shared Details Row Components
+export function CampaignDetailsRow({ children, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  return (
+    <DetailsRow
+      label={t_g("campaign", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faBook} fixedWidth />}
+      {...props}
+    >
+      {children}
+    </DetailsRow>
+  );
+}
+
+export function MapDetailsRow({ children, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  return (
+    <DetailsRow
+      label={t_g("map", { count: 1 })}
+      icon={<FontAwesomeIcon icon={faMapLocation} fixedWidth />}
+      {...props}
+    >
+      {children}
+    </DetailsRow>
+  );
+}
+
+export function LobbyDetailsRow({ lobbyInfo, ...props }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
+  return (
+    <DetailsRow label={t("lobby_info")} icon={<FontAwesomeIcon icon={faSignsPost} fixedWidth />} {...props}>
+      <LobbyInfoSpan lobbyInfo={lobbyInfo} variant="body2" />
+    </DetailsRow>
+  );
+}
+
+export function UrlDetailsRow({ campaign, map = null, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  return (
+    <DetailsRow label={t_g("url")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />} {...props}>
+      <ChallengeUrlValue campaign={campaign} map={map} />
+    </DetailsRow>
+  );
+}
+
+export function AuthorDetailsRow({ author_gb_id, author_gb_name, ...props }) {
+  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
+  return (
+    <DetailsRow label={t_cib("author")} icon={<FontAwesomeIcon icon={faUser} fixedWidth />} {...props}>
+      <AuthorValue author_gb_id={author_gb_id} author_gb_name={author_gb_name} />
+    </DetailsRow>
+  );
+}
+//#endregion
 
 export function ChallengeUrlValue({ campaign, map }) {
   const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
@@ -787,8 +827,8 @@ function MapCampaignUrlInfoBoxUrl({ url }) {
     <Stack direction="row" gap={0.25} alignItems="center">
       <StyledExternalLink href={url}>{isGamebananaUrl ? "GameBanana" : url}</StyledExternalLink>
       {isGamebananaUrl && isMdScreen && (
-        <IconButton onClick={modalHook.open} size="small" sx={{ p: 0.5 }}>
-          <FontAwesomeIcon icon={faDownload} size="2xs" fixedWidth />
+        <IconButton onClick={modalHook.open} size="small" sx={{ p: 0.25 }}>
+          <FontAwesomeIcon icon={faDownload} size="xs" fixedWidth />
         </IconButton>
       )}
       <CustomModal maxWidth="xs" modalHook={modalHook} options={{ hideFooter: true }}>
@@ -957,7 +997,7 @@ function MapGoldenChangesBox({ map }) {
   );
 }
 
-export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowFirstFew = false, ...props }) {
+export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowFirst = 100, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge.submission_table" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
@@ -966,9 +1006,11 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
   const [showAll, setShowAll] = useState(false);
 
   const allSubmissionsLength = challenge.submissions.length;
-  const showsTooMany = allSubmissionsLength > 20;
+  const showsTooMany = allSubmissionsLength > onlyShowFirst;
   const submissions =
-    showsTooMany && !showAll && onlyShowFirstFew ? challenge.submissions.slice(0, 15) : challenge.submissions;
+    showsTooMany && !showAll && onlyShowFirst
+      ? challenge.submissions.slice(0, onlyShowFirst)
+      : challenge.submissions;
 
   return (
     <TableContainer component={Paper} {...props}>
@@ -1031,7 +1073,7 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
               compact={compact}
             />
           ))}
-          {showsTooMany && onlyShowFirstFew && (
+          {showsTooMany && onlyShowFirst && (
             <TableRow>
               <TableCell colSpan={99}>
                 <Button variant="outlined" fullWidth onClick={() => setShowAll(!showAll)}>

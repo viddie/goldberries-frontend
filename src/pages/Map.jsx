@@ -13,13 +13,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   faArrowRightToBracket,
   faBasketShopping,
-  faBook,
   faEdit,
   faExclamationTriangle,
-  faExternalLink,
   faInfoCircle,
   faPlus,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
@@ -63,16 +60,18 @@ import { useAppSettings } from "../hooks/AppSettingsProvider";
 
 import { MapNoProgressTooltip } from "./Campaign";
 import {
-  AuthorValue,
+  AuthorDetailsRow,
   CalculatedFractionalTierChip,
+  CampaignDetailsRow,
   ChallengeSubmissionTable,
-  ChallengeUrlValue,
   DetailsRow,
   FadingMapBanner,
+  LobbyDetailsRow,
+  MapDetailsRow,
   NoteDisclaimer,
   TwoColumnDetailsGrid,
+  UrlDetailsRow,
 } from "./Challenge";
-import { LobbyInfoSpan } from "./Challenge";
 
 export function PageMap() {
   const { id, challengeId } = useParams();
@@ -115,9 +114,17 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   const editMapModal = useModal();
 
   if (query.isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LoadingSpinner />
+      </Box>
+    );
   } else if (query.isError) {
-    return <ErrorDisplay error={query.error} />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <ErrorDisplay error={query.error} />
+      </Box>
+    );
   }
 
   const map = getQueryData(query);
@@ -259,9 +266,6 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
 
 //#region Map Details Grid
 function MapDetailsGrid({ map }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
-  const { t: t_cib } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const campaign = map.campaign;
 
   const lobbyInfo = getMapLobbyInfo(map);
@@ -273,47 +277,33 @@ function MapDetailsGrid({ map }) {
   const rightItems = [];
 
   leftItems.push(
-    <DetailsRow
-      key="campaign"
-      label={t_g("campaign", { count: 1 })}
-      icon={<FontAwesomeIcon icon={faBook} fixedWidth />}
-    >
+    <CampaignDetailsRow key="campaign">
       <StyledLink to={"/campaign/" + campaign.id}>{campaign.name}</StyledLink>
-    </DetailsRow>,
+    </CampaignDetailsRow>,
   );
 
   if (showMapRow) {
     leftItems.push(
-      <DetailsRow key="map" label={t_g("map", { count: 1 })}>
+      <MapDetailsRow key="map">
         <Stack direction="row" alignItems="center" gap={0.75}>
           <span>{getMapName(map, campaign)}</span>
           {!map.is_progress && <MapNoProgressTooltip />}
         </Stack>
-      </DetailsRow>,
+      </MapDetailsRow>,
     );
   }
 
   leftItems.push(<CollectiblesDetailsRow key="collectibles" map={map} collectibles={map.collectibles} />);
 
   if (hasLobbyInfo) {
-    rightItems.push(
-      <DetailsRow key="lobby" label={t("lobby_info")}>
-        <LobbyInfoSpan lobbyInfo={lobbyInfo} />
-      </DetailsRow>,
-    );
+    rightItems.push(<LobbyDetailsRow key="lobby" lobbyInfo={lobbyInfo} />);
   }
 
-  rightItems.push(
-    <DetailsRow key="url" label={t_g("url")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />}>
-      <ChallengeUrlValue campaign={campaign} map={map} />
-    </DetailsRow>,
-  );
+  rightItems.push(<UrlDetailsRow key="url" campaign={campaign} map={map} />);
 
   if (mapHasAuthor) {
     rightItems.push(
-      <DetailsRow key="author" label={t_cib("author")} icon={<FontAwesomeIcon icon={faUser} fixedWidth />}>
-        <AuthorValue author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />
-      </DetailsRow>,
+      <AuthorDetailsRow key="author" author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />,
     );
   }
 
