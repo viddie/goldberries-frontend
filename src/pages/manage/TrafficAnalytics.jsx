@@ -1,9 +1,10 @@
-import { faChartPie, faCog, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faChartPie, faCog, faEye, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
   ButtonGroup,
   Divider,
   Grid,
+  MenuItem,
   Paper,
   Stack,
   Tab,
@@ -14,17 +15,20 @@ import {
   TableHead,
   TableRow,
   Tabs,
+  TextField,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { useTheme } from "@emotion/react";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 import { getQueryData, useGetTrafficStatsGlobal, useGetTrafficStatsGlobalRequests } from "../../hooks/useApi";
 import {
@@ -37,6 +41,24 @@ import {
 
 //#region Page
 const defaultTab = "global";
+
+const PRESETS = [
+  { label: "No Time Interval", short: "all", interval: "all" },
+  {
+    label: "Last 24 Hours, hourly",
+    short: "24h",
+    interval: "hour",
+    offsetFn: (d) => d.setDate(d.getDate() - 1),
+  },
+  { label: "Last Month, daily", short: "1m", interval: "day", offsetFn: (d) => d.setMonth(d.getMonth() - 1) },
+  {
+    label: "Last Year, monthly",
+    short: "1y",
+    interval: "month",
+    offsetFn: (d) => d.setFullYear(d.getFullYear() - 1),
+  },
+];
+
 export function PageTrafficAnalytics({}) {
   const theme = useTheme();
   const { tab } = useParams();
@@ -46,9 +68,34 @@ export function PageTrafficAnalytics({}) {
 
   const [now] = useState(getLast15MinuteStep());
   const [next] = useState(getNext15MinuteStep());
-  const [startDate, setStartDate] = useLocalStorage("traffic_analytics_start_date", null);
-  const [endDate, setEndDate] = useLocalStorage("traffic_analytics_end_date", null);
-  const [timeInterval, setTimeInterval] = useLocalStorage("traffic_analytics_time_interval", "all");
+  const [customMode, setCustomMode] = useLocalStorage("traffic_filter_custom_mode", false);
+  const [selectedPreset, setSelectedPreset] = useLocalStorage("traffic_analytics_preset", "all");
+  const [customStartDate, setCustomStartDate] = useLocalStorage("traffic_analytics_custom_start_date", null);
+  const [customEndDate, setCustomEndDate] = useLocalStorage("traffic_analytics_custom_end_date", null);
+  const [customInterval, setCustomInterval] = useLocalStorage("traffic_analytics_custom_interval", "all");
+
+  const { startDate, endDate, interval } = useMemo(() => {
+    if (customMode) {
+      return { startDate: customStartDate, endDate: customEndDate, interval: customInterval };
+    }
+    return getDateRangeForPreset(selectedPreset, now);
+  }, [customMode, selectedPreset, customStartDate, customEndDate, customInterval, now]);
+
+  const toggleCustomMode = () => {
+    if (!customMode && selectedPreset !== "all") {
+      const { startDate, endDate, interval } = getDateRangeForPreset(selectedPreset, now);
+      setCustomStartDate(startDate);
+      setCustomEndDate(endDate);
+      setCustomInterval(interval);
+    }
+    setCustomMode(!customMode);
+  };
+
+  const applyCustomFilter = (start, end, inv) => {
+    setCustomStartDate(start);
+    setCustomEndDate(end);
+    setCustomInterval(inv);
+  };
 
   const setTab = (tab) => {
     setSelectedTab(tab);
@@ -67,8 +114,6 @@ export function PageTrafficAnalytics({}) {
           <Tabs
             value={selectedTab}
             onChange={(e, tab) => setTab(tab)}
-            // variant="scrollable"
-            // scrollButtons="auto"
             orientation={isMdScreen ? "vertical" : "horizontal"}
             sx={{
               borderBottom: isMdScreen ? "" : "1px solid grey",
@@ -81,28 +126,28 @@ export function PageTrafficAnalytics({}) {
               value="global"
               label="Global Traffic"
               icon={<FontAwesomeIcon icon={faChartPie} size="sm" />}
-              // iconPosition="end"
               sx={{ minHeight: "40px" }}
             />
           </Tabs>
         </Grid>
         <Grid item xs>
-          <Stack direction="row" sx={{ mb: 2 }} justifyContent="space-between">
+          <Stack direction="row" sx={{ mb: 2 }} justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle2">
               Last refreshed: {now.toLocaleTimeString()} <MinuteCountdown next={next} />
             </Typography>
             <TrafficFilterSelector
-              now={now}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              timeInterval={timeInterval}
-              setTimeInterval={setTimeInterval}
+              customMode={customMode}
+              toggleCustomMode={toggleCustomMode}
+              selectedPreset={selectedPreset}
+              setSelectedPreset={setSelectedPreset}
+              customStartDate={customStartDate}
+              customEndDate={customEndDate}
+              customInterval={customInterval}
+              applyCustomFilter={applyCustomFilter}
             />
           </Stack>
           {selectedTab === "global" && (
-            <GlobalDataTab now={now} startDate={startDate} endDate={endDate} timeInterval={timeInterval} />
+            <GlobalDataTab now={now} startDate={startDate} endDate={endDate} timeInterval={interval} />
           )}
         </Grid>
       </Grid>
@@ -149,65 +194,99 @@ function MinuteCountdown({ next }) {
 }
 
 function TrafficFilterSelector({
-  now,
-  startDate,
-  setStartDate,
-  endDate,
-  setEndDate,
-  timeInterval,
-  setTimeInterval,
+  customMode,
+  toggleCustomMode,
+  selectedPreset,
+  setSelectedPreset,
+  customStartDate,
+  customEndDate,
+  customInterval,
+  applyCustomFilter,
 }) {
-  const [customMode, setCustomMode] = useLocalStorage("traffic_filter_custom_mode", false);
+  const [draftStart, setDraftStart] = useState(customStartDate);
+  const [draftEnd, setDraftEnd] = useState(customEndDate);
+  const [draftInterval, setDraftInterval] = useState(customInterval);
 
-  const presets = [
-    { label: "No Time Interval", value: 0, short: "all", interval: "all" },
-    { label: "Last 24 Hours, hourly", value: 1, short: "24h", interval: "hour" },
-    { label: "Last Month, daily", value: 2, short: "1m", interval: "day" },
-    { label: "Last Year, monthly", value: 3, short: "1y", interval: "month" },
+  // Keep draft in sync when the committed custom values change externally (e.g. prefill on mode switch)
+  useEffect(() => {
+    setDraftStart(customStartDate);
+    setDraftEnd(customEndDate);
+    setDraftInterval(customInterval);
+  }, [customStartDate, customEndDate, customInterval]);
+
+  const intervalOptions = [
+    { value: "all", label: "None" },
+    { value: "hour", label: "Hourly" },
+    { value: "day", label: "Daily" },
+    { value: "month", label: "Monthly" },
   ];
-  const getDataForPreset = (preset) => {
-    const end = new Date(now);
-    const start = new Date(now);
 
-    if (preset === 1) {
-      start.setDate(end.getDate() - 1);
-      return { startDate: start.toISOString(), endDate: end.toISOString(), interval: "hour" };
-    } else if (preset === 2) {
-      start.setMonth(end.getMonth() - 1);
-      return { startDate: start.toISOString(), endDate: end.toISOString(), interval: "day" };
-    } else if (preset === 3) {
-      start.setFullYear(end.getFullYear() - 1);
-      return { startDate: start.toISOString(), endDate: end.toISOString(), interval: "month" };
-    } else {
-      return { startDate: null, endDate: null, interval: "all" };
-    }
-  };
-
-  const clickedPreset = (preset) => {
-    const { startDate, endDate, interval } = getDataForPreset(preset);
-    setStartDate(startDate);
-    setEndDate(endDate);
-    setTimeInterval(interval);
-  };
+  const isDirty =
+    draftStart !== customStartDate || draftEnd !== customEndDate || draftInterval !== customInterval;
 
   return (
     <Stack direction="row" gap={2} alignItems="center">
       {customMode && (
-        <>
-          <Stack direction="column" gap={1} alignItems="center">
-            <Typography variant="subtitle1">Time Period (Custom Mode)</Typography>
-          </Stack>
-        </>
+        <Stack direction="row" gap={1} alignItems="center">
+          <DatePicker
+            label="Start"
+            value={draftStart ? dayjs(draftStart) : null}
+            onChange={(value) => {
+              if (value && value.isValid()) {
+                setDraftStart(value.toISOString());
+              } else {
+                setDraftStart(null);
+              }
+            }}
+            maxDate={dayjs(new Date())}
+            slotProps={{ textField: { size: "small", sx: { maxWidth: "160px" } } }}
+          />
+          <DatePicker
+            label="End"
+            value={draftEnd ? dayjs(draftEnd) : null}
+            onChange={(value) => {
+              if (value && value.isValid()) {
+                setDraftEnd(value.toISOString());
+              } else {
+                setDraftEnd(null);
+              }
+            }}
+            maxDate={dayjs(new Date())}
+            slotProps={{ textField: { size: "small", sx: { maxWidth: "160px" } } }}
+          />
+          <TextField
+            select
+            label="Interval"
+            value={draftInterval}
+            onChange={(e) => setDraftInterval(e.target.value)}
+            size="small"
+            sx={{ minWidth: "100px" }}
+            SelectProps={{ MenuProps: { disableScrollLock: true } }}
+          >
+            {intervalOptions.map((opt) => (
+              <MenuItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <CustomIconButton
+            variant="contained"
+            color={isDirty ? "primary" : "success"}
+            onClick={() => applyCustomFilter(draftStart, draftEnd, draftInterval)}
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </CustomIconButton>
+        </Stack>
       )}
       {!customMode && (
         <Stack direction="row" gap={2} alignItems="center">
           <Typography variant="subtitle1">Time Period</Typography>
           <ButtonGroup size="small">
-            {presets.map((preset) => (
+            {PRESETS.map((preset) => (
               <Button
-                key={preset.value}
-                variant={timeInterval === preset.interval ? "contained" : "outlined"}
-                onClick={() => clickedPreset(preset.value)}
+                key={preset.short}
+                variant={selectedPreset === preset.short ? "contained" : "outlined"}
+                onClick={() => setSelectedPreset(preset.short)}
               >
                 {preset.short}
               </Button>
@@ -215,10 +294,7 @@ function TrafficFilterSelector({
           </ButtonGroup>
         </Stack>
       )}
-      <CustomIconButton
-        variant={customMode ? "outlined" : "contained"}
-        onClick={() => setCustomMode(!customMode)}
-      >
+      <CustomIconButton variant={customMode ? "outlined" : "contained"} onClick={toggleCustomMode}>
         <FontAwesomeIcon icon={faCog} />
       </CustomIconButton>
     </Stack>
@@ -940,5 +1016,16 @@ function dateToLabel(date, interval) {
     return d.toLocaleDateString("default", { month: "short", year: "numeric" });
   }
   return date;
+}
+
+function getDateRangeForPreset(presetShort, now) {
+  const preset = PRESETS.find((p) => p.short === presetShort);
+  if (!preset || presetShort === "all") {
+    return { startDate: null, endDate: null, interval: "all" };
+  }
+  const end = new Date(now);
+  const start = new Date(now);
+  preset.offsetFn(start);
+  return { startDate: start.toISOString(), endDate: end.toISOString(), interval: preset.interval };
 }
 //#endregion
