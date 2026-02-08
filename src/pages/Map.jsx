@@ -11,16 +11,6 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  AuthorValue,
-  CalculatedFractionalTierChip,
-  ChallengeSubmissionTable,
-  ChallengeUrlValue,
-  DetailsRow,
-  FadingMapBanner,
-  NoteDisclaimer,
-  TwoColumnDetailsGrid,
-} from "./Challenge";
-import {
   faArrowRightToBracket,
   faBasketShopping,
   faBook,
@@ -32,6 +22,10 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { useTheme } from "@emotion/react";
+
 import {
   getCampaignName,
   getChallengeFcShort,
@@ -47,7 +41,6 @@ import {
   StyledLink,
   TooltipLineBreaks,
 } from "../components/basic";
-import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
 import {
   ChallengeFcIcon,
   DifficultyChip,
@@ -65,12 +58,20 @@ import {
 import { useAuth } from "../hooks/AuthProvider";
 import { getQueryData, useGetMap, usePostMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
-import { useTheme } from "@emotion/react";
-import { MapNoProgressTooltip } from "./Campaign";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
+
+import { MapNoProgressTooltip } from "./Campaign";
+import {
+  AuthorValue,
+  CalculatedFractionalTierChip,
+  ChallengeSubmissionTable,
+  ChallengeUrlValue,
+  DetailsRow,
+  FadingMapBanner,
+  NoteDisclaimer,
+  TwoColumnDetailsGrid,
+} from "./Challenge";
 import { LobbyInfoSpan } from "./Challenge";
 
 export function PageMap() {

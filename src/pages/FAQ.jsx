@@ -9,14 +9,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner, StyledLink } from "../components/basic";
 import { Trans, useTranslation } from "react-i18next";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faChevronDown, faChevronUp, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { getQueryData, useGetAllDifficulties } from "../hooks/useApi";
 import { DifficultyChip } from "../components/goldberries";
-import { useNavigate, useParams } from "react-router-dom";
+import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner, StyledLink } from "../components/basic";
 
 export function PageFAQ() {
   const { t } = useTranslation(undefined, { keyPrefix: "faq" });

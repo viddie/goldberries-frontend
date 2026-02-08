@@ -1,8 +1,9 @@
 import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import Color from "color";
+
 import { MarkdownRenderer } from "../../pages/Post";
 import { hasFlag } from "../../pages/Account";
 import { BADGE_FLAGS } from "../forms/Badge";
-import Color from "color";
 
 export function Badge({ badge }) {
   const theme = useTheme();

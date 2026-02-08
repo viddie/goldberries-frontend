@@ -1,6 +1,4 @@
 import { useQuery } from "react-query";
-import { useAuth } from "../../hooks/AuthProvider";
-import { fetchSubmission } from "../../util/api";
 import {
   Button,
   Checkbox,
@@ -18,6 +16,18 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
+import { inputBaseClasses } from "@mui/material/InputBase";
+
+import { useAuth } from "../../hooks/AuthProvider";
+import { fetchSubmission } from "../../util/api";
 import {
   CustomIconButton,
   ErrorDisplay,
@@ -26,9 +36,6 @@ import {
   StyledLink,
   TooltipInfoButton,
 } from "../basic";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
 import {
   FullChallengeSelect,
   VerificationStatusChip,
@@ -38,20 +45,14 @@ import {
   DateAchievedTimePicker,
 } from "../goldberries";
 import { jsonDateToJsDate } from "../../util/util";
-import { useDebounce } from "@uidotdev/usehooks";
 import { FormOptions } from "../../util/constants";
 import { FullChallengeDisplay } from "../../pages/Submission";
 import { getQueryData, usePostSubmission } from "../../hooks/useApi";
 import { CreateAnyButton } from "../../pages/manage/Challenges";
-import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox } from "../../pages/Challenge";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
 import { CharsCountLabel } from "../../pages/Suggestions";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
-import { inputBaseClasses } from "@mui/material/InputBase";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });

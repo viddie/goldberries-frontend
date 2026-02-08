@@ -1,7 +1,9 @@
 import { Typography } from "@mui/material";
 import React from "react";
-import { CodeBlock } from "../pages/Rules";
 import { useTheme } from "@emotion/react";
+
+import { CodeBlock } from "../pages/Rules";
+
 import { StyledExternalLink } from "./basic";
 
 export class ErrorBoundary extends React.Component {

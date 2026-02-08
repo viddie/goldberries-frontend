@@ -1,5 +1,6 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { getChallengeName } from "../../util/data_util";
 import { getQueryData, useGetAllChallengesInMap } from "../../hooks/useApi";
 

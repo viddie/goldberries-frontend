@@ -1,4 +1,5 @@
 import { Tooltip } from "@mui/material";
+
 import { COUNTRY_CODES } from "../../util/country_codes";
 
 export function LanguageFlag({ code, height = "20", style, showTooltip = false }) {

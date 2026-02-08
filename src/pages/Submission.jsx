@@ -15,6 +15,8 @@ import {
   faBook,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+
 import { useAuth } from "../hooks/AuthProvider";
 import {
   DifficultyChip,
@@ -46,7 +48,6 @@ import {
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
-import { useTranslation } from "react-i18next";
 import { jsonDateToJsDate } from "../util/util";
 
 export function PageSubmission({}) {

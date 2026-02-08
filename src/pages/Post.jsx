@@ -15,6 +15,28 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight, faEdit } from "@fortawesome/free-solid-svg-icons";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { visit } from "unist-util-visit";
+import emoji from "remark-emoji";
+import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
+import { useTranslation } from "react-i18next";
+import { memo, useEffect, useState } from "react";
+
+import { useAuth } from "../hooks/AuthProvider";
+import { DifficultyChip, PlayerChip } from "../components/goldberries";
+import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
+import {
+  getQueryData,
+  useGetAdjacentPosts,
+  useGetChallenge,
+  useGetPlayer,
+  useGetPost,
+  useGetPostPaginated,
+} from "../hooks/useApi";
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -24,31 +46,11 @@ import {
   StyledLink,
   TooltipLineBreaks,
 } from "../components/basic";
-import { useParams } from "react-router-dom";
-import {
-  getQueryData,
-  useGetAdjacentPosts,
-  useGetChallenge,
-  useGetPlayer,
-  useGetPost,
-  useGetPostPaginated,
-} from "../hooks/useApi";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
-import { DifficultyChip, PlayerChip } from "../components/goldberries";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { CodeBlock } from "./Rules";
-import { visit } from "unist-util-visit";
-import emoji from "remark-emoji";
-import { useAuth } from "../hooks/AuthProvider";
-import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
-import { useTranslation } from "react-i18next";
-import { memo, useEffect, useState } from "react";
 import { DIFFICULTIES } from "../util/constants";
-import { ChallengeInline } from "./Player";
 import { BadgeAsync } from "../components/badge";
+
+import { CodeBlock } from "./Rules";
+import { ChallengeInline } from "./Player";
 
 export function PagePostList({ type }) {
   const { id } = useParams();

@@ -13,19 +13,20 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { CountrySelect, ErrorDisplay, getErrorFromMultiple, LanguageFlag, LoadingSpinner } from "../basic";
-import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../goldberries";
-import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
-import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";
-import { getDifficultyName } from "../../util/data_util";
-import { useAppSettings } from "../../hooks/AppSettingsProvider";
-import { useAuth } from "../../hooks/AuthProvider";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useNavigate, useParams } from "react-router-dom";
 import Color from "color";
 import { useEffect, useState } from "react";
+
+import { CountrySelect, ErrorDisplay, getErrorFromMultiple, LanguageFlag, LoadingSpinner } from "../basic";
+import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../goldberries";
+import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
+import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";
+import { getDifficultyName } from "../../util/data_util";
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
+import { useAuth } from "../../hooks/AuthProvider";
 import { COUNTRY_CODES, COUNTRY_CODES_SHORT } from "../../util/country_codes";
 
 const reducedPadding = { px: 0.5 };

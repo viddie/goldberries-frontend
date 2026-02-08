@@ -1,5 +1,6 @@
-import { darkTheme } from "../App";
 import Color from "color";
+
+import { darkTheme } from "../App";
 
 export const APP_URL = process.env.REACT_APP_URL;
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;

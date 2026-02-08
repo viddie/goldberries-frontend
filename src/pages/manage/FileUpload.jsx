@@ -11,14 +11,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, CustomIconButton, HeadTitle } from "../../components/basic";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faFileUpload } from "@fortawesome/free-solid-svg-icons";
 import { MuiFileInput } from "mui-file-input";
-import { usePostUploadFile } from "../../hooks/useApi";
 import { toast } from "react-toastify";
+
+import { usePostUploadFile } from "../../hooks/useApi";
+import { BasicContainerBox, CustomIconButton, HeadTitle } from "../../components/basic";
 import { useAuth } from "../../hooks/AuthProvider";
 import { FullMapSelect } from "../../components/goldberries";
 import { MapImageBanner } from "../../components/map_image";

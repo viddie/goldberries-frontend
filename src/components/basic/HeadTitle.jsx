@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+
 import { APP_NAME_LONG, IS_DEBUG } from "../../util/constants";
 
 export function HeadTitle({ title }) {

@@ -1,13 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  BasicContainerBox,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-  TooltipLineBreaks,
-} from "../../components/basic";
-import { FormSubmissionWrapper, shouldMarkSubmissionDateAchieved } from "../../components/forms/Submission";
-import {
   Box,
   Button,
   Checkbox,
@@ -30,16 +22,14 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import {
-  getQueryData,
-  useDeleteVerificationNotice,
-  useGetSubmissionQueue,
-  useMassVerifySubmissions,
-  usePostVerificationNotice,
-} from "../../hooks/useApi";
-import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { GridArrowDownwardIcon, GridArrowUpwardIcon } from "@mui/x-data-grid";
+import { useTheme } from "@emotion/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
+
 import {
   getCampaignName,
   getChallengeCampaign,
@@ -47,11 +37,22 @@ import {
   getDifficultyName,
   getMapName,
 } from "../../util/data_util";
-import { useTranslation } from "react-i18next";
-import { GridArrowDownwardIcon, GridArrowUpwardIcon } from "@mui/x-data-grid";
-import { useTheme } from "@emotion/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
+import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries";
+import {
+  getQueryData,
+  useDeleteVerificationNotice,
+  useGetSubmissionQueue,
+  useMassVerifySubmissions,
+  usePostVerificationNotice,
+} from "../../hooks/useApi";
+import { FormSubmissionWrapper, shouldMarkSubmissionDateAchieved } from "../../components/forms/Submission";
+import {
+  BasicContainerBox,
+  ErrorDisplay,
+  HeadTitle,
+  LoadingSpinner,
+  TooltipLineBreaks,
+} from "../../components/basic";
 import { useAuth } from "../../hooks/AuthProvider";
 import { jsonDateToJsDate } from "../../util/util";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";

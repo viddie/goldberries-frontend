@@ -11,6 +11,22 @@ import {
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faChartBar,
+  faClipboard,
+  faEyeSlash,
+  faFileExport,
+  faFilter,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
+import { useTheme } from "@emotion/react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import Color from "color";
+
 import { CustomModal, ModalButtons } from "../hooks/useModal";
 import {
   BorderedBox,
@@ -31,21 +47,8 @@ import {
   PlayerNotesTooltip,
   SubmissionFcIcon,
 } from "../components/goldberries";
-import { useTranslation } from "react-i18next";
 import { SubmissionFilter, getDefaultFilter } from "../components/SubmissionFilter";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faChartBar,
-  faClipboard,
-  faEyeSlash,
-  faFileExport,
-  faFilter,
-  faUsers,
-} from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "@emotion/react";
 import {
   getCampaignName,
   getChallengeFcShort,
@@ -57,7 +60,6 @@ import {
 } from "../util/data_util";
 import { COUNTRY_CODES } from "../util/country_codes";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   API_BASE_URL,
   DIFF_CONSTS,
@@ -65,17 +67,17 @@ import {
   difficultyIdToSort,
   getNewDifficultyColors,
 } from "../util/constants";
-import Color from "color";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { useAuth } from "../hooks/AuthProvider";
 import { useOverflowX } from "../hooks/useOverflowX";
 import { getDefaultOptions, TglMoreButton } from "../components/TglDisplayOptions";
 import { useModal } from "../hooks/useModal";
 import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
-import { MapDisplay } from "./Map";
-import { ChallengeDisplay } from "./Challenge";
 import { FormChallengeWrapper } from "../components/forms/Challenge";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
+
+import { MapDisplay } from "./Map";
+import { ChallengeDisplay } from "./Challenge";
 
 const textEllipsisStyles = {
   whiteSpace: "nowrap",

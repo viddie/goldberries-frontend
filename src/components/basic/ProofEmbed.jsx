@@ -1,7 +1,9 @@
 import { Typography } from "@mui/material";
-import { TWITCH_EMBED_PARENT } from "../../util/constants";
-import { StyledExternalLink } from "./StyledExternalLink";
 import { useTranslation } from "react-i18next";
+
+import { TWITCH_EMBED_PARENT } from "../../util/constants";
+
+import { StyledExternalLink } from "./StyledExternalLink";
 
 export function ProofEmbed({ url, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components" });

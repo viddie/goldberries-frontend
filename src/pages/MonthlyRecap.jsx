@@ -1,38 +1,7 @@
 import { Checkbox, Chip, Divider, FormControlLabel, Grid, Stack, Typography } from "@mui/material";
-import {
-  BasicContainerBox,
-  CustomIconButton,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-  StyledLink,
-  getErrorFromMultiple,
-} from "../components/basic";
-import { TiersCountDisplay } from "./Index";
-import {
-  getQueryData,
-  useGetAllDifficulties,
-  useGetStatsGlobal,
-  useGetStatsMonthlyRecap,
-} from "../hooks/useApi";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  ChallengeFcIcon,
-  DifficultyChip,
-  DifficultySelectControlled,
-  PlayerChip,
-} from "../components/goldberries";
-import {
-  extractDifficultiesFromChangelog,
-  getCampaignName,
-  getChallengeCampaign,
-  getChallengeSuffix,
-  getMapName,
-  isMapSameNameAsCampaign,
-} from "../util/data_util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
@@ -42,11 +11,43 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent, { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { DifficultyMoveDisplay } from "./Suggestions";
 import { useTranslation } from "react-i18next";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+
+import {
+  extractDifficultiesFromChangelog,
+  getCampaignName,
+  getChallengeCampaign,
+  getChallengeSuffix,
+  getMapName,
+  isMapSameNameAsCampaign,
+} from "../util/data_util";
+import {
+  ChallengeFcIcon,
+  DifficultyChip,
+  DifficultySelectControlled,
+  PlayerChip,
+} from "../components/goldberries";
+import {
+  getQueryData,
+  useGetAllDifficulties,
+  useGetStatsGlobal,
+  useGetStatsMonthlyRecap,
+} from "../hooks/useApi";
+import {
+  BasicContainerBox,
+  CustomIconButton,
+  ErrorDisplay,
+  HeadTitle,
+  LoadingSpinner,
+  StyledLink,
+  getErrorFromMultiple,
+} from "../components/basic";
 import { DIFF_CONSTS } from "../util/constants";
+
+import { DifficultyMoveDisplay } from "./Suggestions";
+import { TiersCountDisplay } from "./Index";
 
 export function PageMonthlyRecap() {
   const { t } = useTranslation(undefined, { keyPrefix: "monthly_recap.settings" });

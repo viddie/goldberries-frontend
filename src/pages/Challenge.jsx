@@ -20,6 +20,32 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRight,
+  faBasketShopping,
+  faBook,
+  faCheckCircle,
+  faCircleExclamation,
+  faClock,
+  faComment,
+  faDownload,
+  faEdit,
+  faExclamationTriangle,
+  faExternalLink,
+  faFlagCheckered,
+  faGaugeSimpleHigh,
+  faInfoCircle,
+  faMapLocation,
+  faPlus,
+  faSignsPost,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { useTranslation } from "react-i18next";
+import { memo, useEffect, useState } from "react";
+import { useTheme } from "@emotion/react";
+
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -52,30 +78,6 @@ import {
   getMapName,
   getPlayerNameColorStyle,
 } from "../util/data_util";
-import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faBasketShopping,
-  faBook,
-  faCheckCircle,
-  faCircleExclamation,
-  faClock,
-  faComment,
-  faDownload,
-  faEdit,
-  faExclamationTriangle,
-  faExternalLink,
-  faFlagCheckered,
-  faGauge,
-  faGaugeSimpleHigh,
-  faInfoCircle,
-  faMapLocation,
-  faPlus,
-  faSignsPost,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
 import { FormChallengeWrapper } from "../components/forms/Challenge";
@@ -89,16 +91,14 @@ import {
 import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { useTranslation } from "react-i18next";
-import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";
-import { memo, useEffect, useState } from "react";
 import { jsonDateToJsDate } from "../util/util";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
-import { useTheme } from "@emotion/react";
 import { LikeButton } from "../components/likes";
 import { API_BASE_URL } from "../util/constants";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+
+import { AuthorInfoBoxLine, MapNoProgressTooltip } from "./Campaign";
 
 const displayNoneOnMobile = {
   display: {

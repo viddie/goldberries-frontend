@@ -1,17 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { getQueryData, useGetCampaignView, useGetCampaignViewPlayer } from "../hooks/useApi";
-import {
-  BasicContainerBox,
-  BorderedBox,
-  CustomIconButton,
-  ErrorDisplay,
-  HeadTitle,
-  InfoBox,
-  InfoBoxIconTextLine,
-  LoadingSpinner,
-  StyledLink,
-  TooltipLineBreaks,
-} from "../components/basic";
 import {
   Box,
   Button,
@@ -44,8 +31,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/Campaign.css";
 import { memo, useEffect, useState } from "react";
-import { getCampaignName, getChallengeNameShort, getMapName } from "../util/data_util";
-import { Changelog } from "../components/Changelog";
+import { useTheme } from "@emotion/react";
+import { useTranslation } from "react-i18next";
+
+import { getQueryData, useGetCampaignView, useGetCampaignViewPlayer } from "../hooks/useApi";
+import { useAppSettings } from "../hooks/AppSettingsProvider";
 import {
   CampaignIcon,
   ChallengeFcIcon,
@@ -55,15 +45,27 @@ import {
   PlayerLink,
   SubmissionFcIcon,
 } from "../components/goldberries";
-import { useTheme } from "@emotion/react";
-import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { useTranslation } from "react-i18next";
+import { Changelog } from "../components/Changelog";
+import { getCampaignName, getChallengeNameShort, getMapName } from "../util/data_util";
+import {
+  BasicContainerBox,
+  BorderedBox,
+  CustomIconButton,
+  ErrorDisplay,
+  HeadTitle,
+  InfoBox,
+  InfoBoxIconTextLine,
+  LoadingSpinner,
+  StyledLink,
+  TooltipLineBreaks,
+} from "../components/basic";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
 import { FormCampaignWrapper } from "../components/forms/Campaign";
-import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { CampaignGallery } from "../components/map_image";
+
+import { MapCampaignUrlInfoBox, NoteDisclaimer } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PageCampaign() {

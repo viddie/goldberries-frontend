@@ -48,7 +48,9 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.16.7"
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-unused-imports": "^4.3.0"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
@@ -59,16 +61,37 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "npx eslint src --max-warnings=0 --ext .js,.jsx"
+    "lint": "npx eslint src --max-warnings=0 --ext .js,.jsx",
+    "fix": "npx eslint src --fix --max-warnings=0 --ext .js,.jsx"
   },
   "eslintConfig": {
+    "plugins": [
+      "unused-imports",
+      "import"
+    ],
     "extends": [
       "react-app",
       "react-app/jest"
     ],
     "rules": {
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": "off",
       "no-empty-pattern": "off",
-      "react-hooks/exhaustive-deps": "off"
+      "react-hooks/exhaustive-deps": "off",
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index"
+          ],
+          "newlines-between": "always"
+        }
+      ]
     }
   },
   "browserslist": {

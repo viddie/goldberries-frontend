@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import { getGamebananaEmbedUrl } from "../../util/data_util";
 import { PlaceholderImage } from "../PlaceholderImage";
 

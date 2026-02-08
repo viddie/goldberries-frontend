@@ -1,12 +1,13 @@
 import { Button, Checkbox, Divider, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo } from "react";
-import { getQueryData, useGetBadge, usePostBadge } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
-import { hasFlag, setFlag } from "../../pages/Account";
 import { MuiColorInput } from "mui-color-input";
+
+import { getQueryData, useGetBadge, usePostBadge } from "../../hooks/useApi";
+import { hasFlag, setFlag } from "../../pages/Account";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { Badge } from "../badge";
 
 export const BADGE_FLAGS = {

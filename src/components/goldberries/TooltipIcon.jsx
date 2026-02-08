@@ -2,6 +2,7 @@ import { faCircleExclamation, faComment, faExclamationTriangle } from "@fortawes
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "@emotion/react";
 import { useTranslation } from "react-i18next";
+
 import { TooltipLineBreaks } from "../basic/TooltipLineBreaks";
 
 export function TooltipIcon({ title, icon, fontSize = "1em" }) {

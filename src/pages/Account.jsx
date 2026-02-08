@@ -13,6 +13,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowDown,
+  faArrowRightArrowLeft,
+  faArrowUp,
+  faCheckSquare,
+  faEdit,
+  faEnvelope,
+  faLink,
+  faLinkSlash,
+  faPlus,
+  faSave,
+  faTrash,
+  faUndo,
+} from "@fortawesome/free-solid-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useNavigate, useParams } from "react-router-dom";
+import { MuiColorInput } from "mui-color-input";
+import { Trans, useTranslation } from "react-i18next";
+
 import {
   BasicContainerBox,
   CopyToClipboardButton,
@@ -36,8 +59,6 @@ import {
   useRerollApiKey,
   useRevokeApiKey,
 } from "../hooks/useApi";
-import { toast } from "react-toastify";
-import { Controller, useForm } from "react-hook-form";
 import {
   INPUT_METHOD_ICONS,
   InputMethodIcon,
@@ -46,31 +67,12 @@ import {
   SubmissionEmbed,
   VerificationStatusChip,
 } from "../components/goldberries";
-import { useEffect, useState } from "react";
 import { API_URL, DISCORD_INVITE, FormOptions } from "../util/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowDown,
-  faArrowRightArrowLeft,
-  faArrowUp,
-  faCheckSquare,
-  faEdit,
-  faEnvelope,
-  faLink,
-  faLinkSlash,
-  faPlus,
-  faSave,
-  faTrash,
-  faUndo,
-} from "@fortawesome/free-solid-svg-icons";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { useNavigate, useParams } from "react-router-dom";
 import { isValidHttpUrl, jsonDateToJsDate } from "../util/util";
-import { MuiColorInput } from "mui-color-input";
 import { getPlayerNameColorStyle } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
+
 import { SettingsEntry } from "./AppSettings";
-import { Trans, useTranslation } from "react-i18next";
 import { CharsCountLabel } from "./Suggestions";
 
 export const NOTIFICATIONS = {

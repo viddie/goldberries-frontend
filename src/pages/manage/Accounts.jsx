@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import {
   Autocomplete,
   Button,
@@ -19,6 +18,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+
+import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import {
   getQueryData,
   useDeletePlayer,
@@ -29,12 +34,9 @@ import {
   usePostPlayer,
 } from "../../hooks/useApi";
 import { getAccountName } from "../../util/data_util";
-import { useEffect, useState } from "react";
 import { FormAccountWrapper } from "../../components/forms/Account";
-import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/AuthProvider";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+
 
 export function PageManageAccounts({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.accounts" });

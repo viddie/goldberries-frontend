@@ -1,12 +1,14 @@
 import { Chip, Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
-import { getNewDifficultyColors } from "../../util/constants";
-import { getDifficultyName } from "../../util/data_util";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { useState } from "react";
-import { DifficultyChip } from "../goldberries";
-import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
+
+import { getNewDifficultyColors } from "../../util/constants";
+import { getDifficultyName } from "../../util/data_util";
+import { DifficultyChip } from "../goldberries";
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
+
 
 export function SuggestedDifficultyChart({ challenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.stats" });

@@ -1,4 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+
 import {
   deleteCampaign,
   deleteChallenge,
@@ -103,7 +105,6 @@ import {
   deleteChallengeLike,
 } from "../util/api";
 import { errorToast } from "../util/util";
-import { toast } from "react-toastify";
 
 export function invalidateJointQueries(queryClient) {
   queryClient.invalidateQueries(["submission_queue"]);

@@ -2,6 +2,7 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Chip, Grid, Stack, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getDifficultyName } from "../../util/data_util";
 import { DIFF_CONSTS, getDifficultyChipName, getNewDifficultyColors } from "../../util/constants";

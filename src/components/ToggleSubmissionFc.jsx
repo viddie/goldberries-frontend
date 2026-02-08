@@ -1,8 +1,9 @@
 import { toast } from "react-toastify";
-import { usePostSubmission } from "../hooks/useApi";
 import { Button } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
+
+import { usePostSubmission } from "../hooks/useApi";
 
 export function ToggleSubmissionFcButton({ submission }) {
   const { mutate: updateSubmission } = usePostSubmission(() => {

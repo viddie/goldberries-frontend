@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material";
+
 import { Badge } from "./Badge";
 
 export function BadgeDisplay({ player }) {

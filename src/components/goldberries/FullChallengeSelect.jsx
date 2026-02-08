@@ -1,6 +1,7 @@
 import { Chip, Divider, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
 import { CampaignSelect } from "./CampaignSelect";
 import { MapSelect } from "./MapSelect";
 import { ChallengeSelect } from "./ChallengeSelect";

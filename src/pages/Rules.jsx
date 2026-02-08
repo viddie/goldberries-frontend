@@ -8,14 +8,15 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle, StyledExternalLink, StyledLink } from "../components/basic";
 import { Trans, useTranslation } from "react-i18next";
-import { NewRules } from "../util/other_data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faChain } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+
+import { NewRules } from "../util/other_data";
+import { BasicContainerBox, HeadTitle, StyledExternalLink, StyledLink } from "../components/basic";
 
 export function PageRules() {
   const { t } = useTranslation(undefined, { keyPrefix: "rules" });

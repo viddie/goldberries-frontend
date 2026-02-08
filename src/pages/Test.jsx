@@ -10,11 +10,12 @@ import {
   Typography,
   darken,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import Color from "color";
+
+import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { getNewDifficultyColors } from "../util/constants";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { ErrorBoundary } from "../components/ErrorBoundary";

@@ -1,8 +1,10 @@
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { Trans, useTranslation } from "react-i18next";
-import { useAuth } from "../hooks/AuthProvider";
-import { StyledLink } from "./basic";
 import { useState } from "react";
+
+import { useAuth } from "../hooks/AuthProvider";
+
+import { StyledLink } from "./basic";
 
 const ALERT_STORAGE_KEY = "dismissed_alerts";
 

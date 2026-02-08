@@ -15,6 +15,12 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import "../css/GoldenList.css";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle, faLemon } from "@fortawesome/free-solid-svg-icons";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { useTranslation } from "react-i18next";
+
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner, StyledExternalLink } from "../components/basic";
 import {
   getChallengeSuffix,
@@ -24,13 +30,8 @@ import {
 } from "../util/data_util";
 import { getQueryData, useGetGoldenList } from "../hooks/useApi";
 import { CampaignIcon, ChallengeFcIcon, DifficultyChip, SubmissionFcIcon } from "../components/goldberries";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { getNewDifficultyColors } from "../util/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faLemon } from "@fortawesome/free-solid-svg-icons";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { useTranslation } from "react-i18next";
 
 export function PageGoldenList({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "golden_list" });

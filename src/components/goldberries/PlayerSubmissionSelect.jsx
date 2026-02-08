@@ -1,5 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { getChallengeNameClean } from "../../util/data_util";
 import { getQueryData, useGetPlayerSubmissions } from "../../hooks/useApi";
 

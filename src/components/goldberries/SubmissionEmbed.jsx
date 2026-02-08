@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+
 import { API_BASE_URL } from "../../util/constants";
 import { PlaceholderImage } from "../PlaceholderImage";
 

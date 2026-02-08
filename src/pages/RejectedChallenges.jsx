@@ -8,6 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -18,9 +22,6 @@ import {
 } from "../components/basic";
 import { getQueryData, useGetRejectedChallenges, useGetRejectedMapList } from "../hooks/useApi";
 import { getCampaignName, getChallengeCampaign, getChallengeNameShort, getMapName } from "../util/data_util";
-import { Trans, useTranslation } from "react-i18next";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ProofExternalLinkButton } from "../components/goldberries";
 
 export function PageRejectedChallenges() {

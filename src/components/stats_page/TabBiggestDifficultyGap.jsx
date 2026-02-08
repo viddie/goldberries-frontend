@@ -1,7 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../hooks/AuthProvider";
-import { getQueryData, useGetStatsBiggestDifficultyGap } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../basic";
 import {
   Button,
   Stack,
@@ -15,11 +12,16 @@ import {
   Grid,
   useMediaQuery,
 } from "@mui/material";
-import { DifficultyChip, PlayerChip, PlayerIdSelect } from "../goldberries";
-import { ChallengeInline } from "../../pages/Player";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+import { useAuth } from "../../hooks/AuthProvider";
+import { getQueryData, useGetStatsBiggestDifficultyGap } from "../../hooks/useApi";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
+import { DifficultyChip, PlayerChip, PlayerIdSelect } from "../goldberries";
+import { ChallengeInline } from "../../pages/Player";
+
 
 const DEFAULT_SHOW_COUNT = 20;
 

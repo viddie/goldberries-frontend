@@ -8,23 +8,25 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
+import { extractDifficultiesFromChangelog } from "../util/data_util";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
+import { useAuth } from "../hooks/AuthProvider";
+import { DifficultyMoveDisplay } from "../pages/Suggestions";
 import {
   getQueryData,
   useDeleteChangelogEntry,
   useGetAllDifficulties,
   useGetChangelog,
 } from "../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "./basic";
-import { PlayerChip } from "./goldberries";
-import { extractDifficultiesFromChangelog } from "../util/data_util";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
-import { useAuth } from "../hooks/AuthProvider";
-import { toast } from "react-toastify";
-import { DifficultyMoveDisplay } from "../pages/Suggestions";
-import { useTranslation } from "react-i18next";
 import { DateWithTooltip } from "../pages/Submission";
+
+import { PlayerChip } from "./goldberries";
+import { ErrorDisplay, LoadingSpinner } from "./basic";
 
 export function Changelog({ type, id, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.changelog" });

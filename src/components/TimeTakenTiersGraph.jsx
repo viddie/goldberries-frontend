@@ -1,5 +1,4 @@
 import { Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
-import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
 import {
   Bar,
   BarChart,
@@ -14,13 +13,16 @@ import {
   ZAxis,
 } from "recharts";
 import { useTheme } from "@emotion/react";
-import { ErrorDisplay, LoadingSpinner } from "./basic";
+import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "@uidotdev/usehooks";
+
 import { getChallengeNameClean, getDifficultyName } from "../util/data_util";
 import { getNewDifficultyColors } from "../util/constants";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { CustomModal, ModalButtons } from "../hooks/useModal";
-import { useTranslation } from "react-i18next";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { getQueryData, useGetTopGoldenList } from "../hooks/useApi";
+
+import { ErrorDisplay, LoadingSpinner } from "./basic";
 
 export function TimeTakenTiersGraphModal({ modalHook, id, filter, useSuggested = false, options = {} }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.time_taken_graph" });

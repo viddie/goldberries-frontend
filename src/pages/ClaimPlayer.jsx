@@ -11,8 +11,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useAuth } from "../hooks/AuthProvider";
 import { useMutation, useQuery } from "react-query";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { Trans, useTranslation } from "react-i18next";
+
+import { useAuth } from "../hooks/AuthProvider";
 import { fetchAllPlayers, fetchGoldenList, fetchPlayerList, postPlayer } from "../util/api";
 import {
   BasicContainerBox,
@@ -22,13 +27,9 @@ import {
   ProofEmbed,
   StyledExternalLink,
 } from "../components/basic";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { errorToast } from "../util/util";
 import { PlayerChip, PlayerSelect } from "../components/goldberries";
 import { useClaimPlayer } from "../hooks/useApi";
-import { Trans, useTranslation } from "react-i18next";
 import { DISCORD_INVITE } from "../util/constants";
 
 export function PageClaimPlayer() {

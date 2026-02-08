@@ -25,14 +25,24 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "react-query";
-import { fetchChallenge } from "../util/api";
-import { durationToSeconds, getChallengeIsArbitrary, getMapLobbyInfo } from "../util/data_util";
 import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRight,
+  faChevronDown,
+  faChevronLeft,
+  faInfoCircle,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { Trans, useTranslation } from "react-i18next";
+
+import { fetchChallenge } from "../util/api";
+import { durationToSeconds, getChallengeIsArbitrary, getMapLobbyInfo } from "../util/data_util";
 import { DIFF_CONSTS, FormOptions, difficultyIdToSort } from "../util/constants";
 import { useAuth } from "../hooks/AuthProvider";
-import { useNavigate, useParams } from "react-router-dom";
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -42,14 +52,6 @@ import {
   StyledLink,
   TooltipInfoButton,
 } from "../components/basic";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faChevronDown,
-  faChevronLeft,
-  faInfoCircle,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
 import {
   CampaignSelect,
   MapSelect,
@@ -61,14 +63,15 @@ import {
   DifficultySelectControlled,
 } from "../components/goldberries";
 import { usePostPlayer, usePostSubmission } from "../hooks/useApi";
-import { Trans, useTranslation } from "react-i18next";
+import { getCollectibleOptions, getCollectibleVariantOptions } from "../components/forms/Map";
+import { StringListEditor } from "../components/StringListEditor";
+import { DifficultyFracGrid } from "../components/forms/Submission";
+
 import { FullChallengeDisplay } from "./Submission";
 import { NoteDisclaimer } from "./Challenge";
 import { CharsCountLabel } from "./Suggestions";
-import { getCollectibleOptions, getCollectibleVariantOptions } from "../components/forms/Map";
-import { StringListEditor } from "../components/StringListEditor";
 import { NOTIFICATIONS, hasFlag } from "./Account";
-import { DifficultyFracGrid } from "../components/forms/Submission";
+
 
 export function PageSubmit() {
   const { t } = useTranslation(undefined, { keyPrefix: "submit" });

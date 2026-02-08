@@ -1,5 +1,4 @@
 import { useTheme } from "@emotion/react";
-import { getQueryData, useGetServerSettings } from "../hooks/useApi";
 import { Stack, Tooltip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,6 +8,9 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "react-markdown";
+
+import { getQueryData, useGetServerSettings } from "../hooks/useApi";
+
 import { StyledExternalLink } from "./basic";
 
 export function GlobalNoticesIcon({}) {

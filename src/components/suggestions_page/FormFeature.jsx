@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { usePostSuggestion } from "../../hooks/useApi";
 import { CharsCountLabel } from "../../pages/Suggestions";
+
 import { BackButton } from "./CreateSuggestionModal";
 
 export function FeatureSuggestionForm({ onSuccess, onBack }) {

@@ -1,6 +1,7 @@
 import { CustomModal, useModal } from "../../hooks/useModal";
 import { API_BASE_URL } from "../../util/constants";
 import { PlaceholderImage } from "../PlaceholderImage";
+
 import { MapImageFull } from "./MapImageFull";
 
 const COMMON_STYLE = {

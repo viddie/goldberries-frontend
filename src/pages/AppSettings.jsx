@@ -15,18 +15,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/basic";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { MuiColorInput } from "mui-color-input";
+import { useTranslation } from "react-i18next";
+
+import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { IS_DEBUG, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
 import i18n, { LANGUAGES } from "../i18n/config";
-import { useTranslation } from "react-i18next";
+import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/basic";
 import { ROLES } from "../hooks/AuthProvider";
 
 export function PageAppSettings({ isModal = false }) {

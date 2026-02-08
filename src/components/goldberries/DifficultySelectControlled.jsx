@@ -1,5 +1,6 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getDifficultyName } from "../../util/data_util";
 import { DIFF_CONSTS, getOldDifficultyName } from "../../util/constants";

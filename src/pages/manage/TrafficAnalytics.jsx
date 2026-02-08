@@ -17,6 +17,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { LineChart } from "@mui/x-charts/LineChart";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { useTheme } from "@emotion/react";
+
+import { getQueryData, useGetTrafficStatsGlobal, useGetTrafficStatsGlobalRequests } from "../../hooks/useApi";
 import {
   BasicContainerBox,
   CustomIconButton,
@@ -24,15 +34,6 @@ import {
   LoadingSpinner,
   TooltipLineBreaks,
 } from "../../components/basic";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getQueryData, useGetTrafficStatsGlobal, useGetTrafficStatsGlobalRequests } from "../../hooks/useApi";
-import { useLocalStorage } from "@uidotdev/usehooks";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { LineChart } from "@mui/x-charts/LineChart";
-import { axisClasses } from "@mui/x-charts/ChartsAxis";
-import { useTheme } from "@emotion/react";
 
 //#region Page
 const defaultTab = "global";

@@ -1,7 +1,9 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
-import { VerificationStatusChip } from "../goldberries";
 import { useTranslation } from "react-i18next";
+
+import { VerificationStatusChip } from "../goldberries";
+
 import { RecentSubmissionsHeadless } from "./RecentSubmissionsHeadless";
 
 export function RecentSubmissions({ playerId = null }) {

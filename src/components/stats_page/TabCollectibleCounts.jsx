@@ -1,6 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { getQueryData, useGetStatsCollectibleCounts } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner } from "../basic";
 import {
   Stack,
   Table,
@@ -11,6 +9,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+
+import { getQueryData, useGetStatsCollectibleCounts } from "../../hooks/useApi";
+import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../forms/Map";
 import { OtherIcon } from "../goldberries";
 

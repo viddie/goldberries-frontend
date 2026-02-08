@@ -15,9 +15,11 @@ import {
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useTranslation } from "react-i18next";
+
 import { SettingsEntry } from "../pages/AppSettings";
 import { deepCompareObjects } from "../hooks/AppSettingsProvider";
 import { useAuth } from "../hooks/AuthProvider";
+
 import { PlayerIdSelect } from "./goldberries";
 
 const sortOptions = [

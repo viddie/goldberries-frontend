@@ -1,4 +1,22 @@
 import { useEffect, useState } from "react";
+import { Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDebouncedCallback } from "use-debounce";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "@uidotdev/usehooks";
+
+import {
+  getCampaignName,
+  getMapLobbyInfo,
+  getMapName,
+  getMapNameClean,
+  groupMapsByMajor,
+} from "../util/data_util";
+import { CampaignGallerySingleImage, CampaignImageFull } from "../components/map_image";
+import { PlayerChip } from "../components/goldberries";
+import { getQueryData, useSearch } from "../hooks/useApi";
 import {
   BasicBox,
   BasicContainerBox,
@@ -7,23 +25,6 @@ import {
   LoadingSpinner,
   StyledLink,
 } from "../components/basic";
-import { getQueryData, useSearch } from "../hooks/useApi";
-import { Divider, Grid, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useDebouncedCallback } from "use-debounce";
-import { PlayerChip } from "../components/goldberries";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook } from "@fortawesome/free-solid-svg-icons";
-import {
-  getCampaignName,
-  getMapLobbyInfo,
-  getMapName,
-  getMapNameClean,
-  groupMapsByMajor,
-} from "../util/data_util";
-import { useTranslation } from "react-i18next";
-import { CampaignGallerySingleImage, CampaignImageFull } from "../components/map_image";
-import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function PageSearch({ isDirectSearch = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "search" });

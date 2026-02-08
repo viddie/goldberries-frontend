@@ -15,15 +15,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getQueryData, useGetObjectiveSubmissionCount, useGetObjectives } from "../hooks/useApi";
-import {
-  CountrySelect,
-  ErrorDisplay,
-  LoadingSpinner,
-  TooltipLineBreaks,
-  getErrorFromMultiple,
-} from "./basic";
-import { INPUT_METHOD_ICONS, InputMethodIcon } from "./goldberries";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -38,7 +29,18 @@ import {
 import { useTranslation } from "react-i18next";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+
+import { getQueryData, useGetObjectiveSubmissionCount, useGetObjectives } from "../hooks/useApi";
 import { DIFFICULTIES, DIFF_CONSTS, sortToDifficulty, sortToDifficultyId } from "../util/constants";
+
+import { INPUT_METHOD_ICONS, InputMethodIcon } from "./goldberries";
+import {
+  CountrySelect,
+  ErrorDisplay,
+  LoadingSpinner,
+  TooltipLineBreaks,
+  getErrorFromMultiple,
+} from "./basic";
 
 /*
   filter structure:

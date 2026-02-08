@@ -1,10 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { BasicContainerBox, ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../components/basic";
-import { getQueryData, useSearch } from "../hooks/useApi";
-import { SearchResultsCampaigns, SearchResultsMaps } from "./Search";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+
+import { BasicContainerBox, ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../components/basic";
+import { getQueryData, useSearch } from "../hooks/useApi";
+
+import { SearchResultsCampaigns, SearchResultsMaps } from "./Search";
 
 export function PageAuthor() {
   const { name, tab } = useParams();

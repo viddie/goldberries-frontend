@@ -1,15 +1,4 @@
-import {
-  BorderedBox,
-  ErrorDisplay,
-  HeadTitle,
-  LanguageFlag,
-  LoadingSpinner,
-  StyledExternalLink,
-  StyledLink,
-} from "../components/basic";
 import { Container, Grid, Stack, Typography } from "@mui/material";
-import { getQueryData, useGetAllDifficulties, useGetStatsGlobal, useGetVerifierList } from "../hooks/useApi";
-import { DifficultyValueChip, PlayerChip } from "../components/goldberries";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreativeCommonsBy, faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -20,11 +9,24 @@ import {
   faScaleBalanced,
   faScroll,
 } from "@fortawesome/free-solid-svg-icons";
+import { Trans, useTranslation } from "react-i18next";
+
+import {
+  BorderedBox,
+  ErrorDisplay,
+  HeadTitle,
+  LanguageFlag,
+  LoadingSpinner,
+  StyledExternalLink,
+  StyledLink,
+} from "../components/basic";
+import { getQueryData, useGetAllDifficulties, useGetStatsGlobal, useGetVerifierList } from "../hooks/useApi";
+import { DifficultyValueChip, PlayerChip } from "../components/goldberries";
 import { RecentSubmissions } from "../components/recent_submissions";
 import { DISCORD_INVITE, getDifficultySubtierShares } from "../util/constants";
-import { Trans, useTranslation } from "react-i18next";
-import { PostIndexWidget } from "./Post";
 import { useAuth } from "../hooks/AuthProvider";
+
+import { PostIndexWidget } from "./Post";
 
 export function PageIndex() {
   const auth = useAuth();

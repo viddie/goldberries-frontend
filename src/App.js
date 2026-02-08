@@ -8,20 +8,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import { PageIndex } from "./pages/Index";
-
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider, useAuth } from "./hooks/AuthProvider";
-import { Page403, Page404, PageNoPlayerClaimed } from "./pages/ErrorPages";
-import { PageForgotPassword, PageLogin, PageRegister, PageVerifyEmail } from "./pages/Login";
-import { PagePostOAuthLogin } from "./pages/PostOAuthLogin";
-import { PageLogs } from "./pages/manage/Logs";
-import { API_URL, CURRENT_VERSION } from "./util/constants";
-
 import { useTheme } from "@emotion/react";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -94,6 +85,14 @@ import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import HoverMenu from "material-ui-popup-state/HoverMenu";
 import { createRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { API_URL, CURRENT_VERSION } from "./util/constants";
+import { PageLogs } from "./pages/manage/Logs";
+import { PagePostOAuthLogin } from "./pages/PostOAuthLogin";
+import { PageForgotPassword, PageLogin, PageRegister, PageVerifyEmail } from "./pages/Login";
+import { Page403, Page404, PageNoPlayerClaimed } from "./pages/ErrorPages";
+import { AuthProvider, useAuth } from "./hooks/AuthProvider";
+import { PageIndex } from "./pages/Index";
 import { ProfileSettingsAlert } from "./components/AlertBanner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";

@@ -1,5 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { StyledLink } from "../basic/StyledLink";
+
 import { getPlatformIcon } from "./LinkIcon";
 
 export function ProofExternalLinkButton({ url }) {

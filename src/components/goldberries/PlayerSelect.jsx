@@ -1,7 +1,8 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useQuery } from "react-query";
-import { fetchAllPlayers, fetchPlayerList } from "../../util/api";
 import { useTranslation } from "react-i18next";
+
+import { fetchAllPlayers, fetchPlayerList } from "../../util/api";
 import { getQueryData } from "../../hooks/useApi";
 
 export function PlayerSelect({ type, value, onChange, label, ...props }) {

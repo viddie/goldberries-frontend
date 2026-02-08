@@ -1,4 +1,5 @@
 import { Tooltip } from "@mui/material";
+
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getChallengeFcLong, getChallengeFcShort, getSubmissionFcShort } from "../../util/data_util";
 

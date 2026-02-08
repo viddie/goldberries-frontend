@@ -2,6 +2,7 @@ import { faHammer, faHand, faNewspaper, faShield } from "@fortawesome/free-solid
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { isAdmin, isHelper, isNewsWriter, isVerifier } from "../../hooks/AuthProvider";
 
 export function AccountRoleIcon({ account }) {

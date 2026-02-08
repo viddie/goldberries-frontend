@@ -1,6 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { getQueryData, useGetStatsMostGoldened } from "../../hooks/useApi";
-import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner, StyledLink } from "../basic";
 import {
   Button,
   Divider,
@@ -15,8 +13,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
-import { CampaignIcon } from "../goldberries";
 import dayjs from "dayjs";
+
+import { CampaignIcon } from "../goldberries";
+import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner, StyledLink } from "../basic";
+import { getQueryData, useGetStatsMostGoldened } from "../../hooks/useApi";
 import { getCampaignName, getMapName } from "../../util/data_util";
 
 export function TabMostGoldened() {

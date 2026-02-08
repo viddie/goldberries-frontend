@@ -1,6 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { getQueryData, useGetVerifierStats } from "../../hooks/useApi";
-import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../basic";
 import {
   Grid,
   Paper,
@@ -15,6 +13,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
+
+import { getQueryData, useGetVerifierStats } from "../../hooks/useApi";
+import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../basic";
 import { PlayerChip } from "../goldberries";
 
 export function TabVerifierStats({}) {

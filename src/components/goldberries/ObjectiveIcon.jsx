@@ -1,6 +1,7 @@
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
+
 import { getChallengeIcon } from "../../util/data_util";
 
 export function ObjectiveIcon({ objective, challenge = null, height = "1em", style = {} }) {

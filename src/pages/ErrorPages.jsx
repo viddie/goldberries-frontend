@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
-import { BasicContainerBox, StyledLink } from "../components/basic";
 import { Trans, useTranslation } from "react-i18next";
+
+import { BasicContainerBox, StyledLink } from "../components/basic";
 
 export function Page403({ message }) {
   const { t } = useTranslation(undefined, { keyPrefix: "error_pages" });

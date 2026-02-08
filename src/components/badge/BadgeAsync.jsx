@@ -1,6 +1,8 @@
 import { Stack } from "@mui/material";
+
 import { getQueryData, useGetBadge } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
+
 import { Badge } from "./Badge";
 
 export function BadgeAsync({ id, inline = true }) {

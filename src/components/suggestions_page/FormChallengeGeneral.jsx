@@ -8,6 +8,7 @@ import { getQueryData, useGetChallenge, usePostSuggestion } from "../../hooks/us
 import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { FullChallengeSelect } from "../goldberries";
 import { CharsCountLabel } from "../../pages/Suggestions";
+
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
 export function ChallengeGeneralSuggestionForm({ onSuccess, onBack }) {

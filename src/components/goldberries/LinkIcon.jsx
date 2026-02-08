@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
+
 import { StyledExternalLink } from "../basic/StyledExternalLink";
 
 const LINK_ICONS = {

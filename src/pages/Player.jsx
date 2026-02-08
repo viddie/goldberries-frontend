@@ -9,52 +9,9 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import {
-  BasicContainerBox,
-  ErrorDisplay,
-  HeadTitle,
-  LanguageFlag,
-  LoadingSpinner,
-  StyledExternalLink,
-  StyledLink,
-  getErrorFromMultiple,
-  parseYouTubeUrl,
-} from "../components/basic";
-import {
-  getQueryData,
-  useGetAllDifficulties,
-  useGetPlayer,
-  useGetPlayerStats,
-  useGetShowcaseSubmissions,
-  useGetTopGoldenList,
-} from "../hooks/useApi";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  InputMethodIcon,
-  LinkIcon,
-  SubmissionEmbed,
-  SuspendedIcon,
-  AccountRoleIcon,
-  ChallengeFcIcon,
-  DifficultyChip,
-} from "../components/goldberries";
-import { RecentSubmissionsHeadless } from "../components/recent_submissions";
-import { API_BASE_URL, DIFF_CONSTS, getNewDifficultyColors } from "../util/constants";
-import {
-  getCampaignName,
-  getChallengeCampaign,
-  getChallengeSuffix,
-  getDifficultyNameShort,
-  getMapName,
-  getPlayerNameColorStyle,
-  isMapSameNameAsCampaign,
-} from "../util/data_util";
 import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
-import { Changelog } from "../components/Changelog";
-import { useAppSettings } from "../hooks/AppSettingsProvider";
-import { ROLES, useAuth } from "../hooks/AuthProvider";
 import { useTranslation } from "react-i18next";
-import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
 import { useTheme } from "@emotion/react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -66,8 +23,53 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
+
+import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
+import { ROLES, useAuth } from "../hooks/AuthProvider";
+import { useAppSettings } from "../hooks/AppSettingsProvider";
+import { Changelog } from "../components/Changelog";
+import {
+  getCampaignName,
+  getChallengeCampaign,
+  getChallengeSuffix,
+  getDifficultyNameShort,
+  getMapName,
+  getPlayerNameColorStyle,
+  isMapSameNameAsCampaign,
+} from "../util/data_util";
+import { API_BASE_URL, DIFF_CONSTS, getNewDifficultyColors } from "../util/constants";
+import { RecentSubmissionsHeadless } from "../components/recent_submissions";
+import {
+  InputMethodIcon,
+  LinkIcon,
+  SubmissionEmbed,
+  SuspendedIcon,
+  AccountRoleIcon,
+  ChallengeFcIcon,
+  DifficultyChip,
+} from "../components/goldberries";
+import {
+  getQueryData,
+  useGetAllDifficulties,
+  useGetPlayer,
+  useGetPlayerStats,
+  useGetShowcaseSubmissions,
+  useGetTopGoldenList,
+} from "../hooks/useApi";
+import {
+  BasicContainerBox,
+  ErrorDisplay,
+  HeadTitle,
+  LanguageFlag,
+  LoadingSpinner,
+  StyledExternalLink,
+  StyledLink,
+  getErrorFromMultiple,
+  parseYouTubeUrl,
+} from "../components/basic";
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+
 import { PageTopGoldenList } from "./TopGoldenList";
 
 export function PagePlayer() {

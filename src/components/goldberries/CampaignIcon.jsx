@@ -1,6 +1,7 @@
 import { Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import { getCampaignName } from "../../util/data_util";
 
 export function CampaignIcon({ campaign, height = "1.3em", doLink = false, style = {} }) {

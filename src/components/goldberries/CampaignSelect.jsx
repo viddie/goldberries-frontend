@@ -1,5 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 import { getCampaignName } from "../../util/data_util";
 import { getQueryData, useGetAllCampaigns } from "../../hooks/useApi";
 

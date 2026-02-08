@@ -12,15 +12,17 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useMemo, useState } from "react";
-import { DifficultySelectControlled, ObjectiveSelect } from "../goldberries";
-import { useGetModInfo, usePostCampaign, usePostChallenge, usePostMap } from "../../hooks/useApi";
-import { DIFF_CONSTS, FormOptions } from "../../util/constants";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faDownload, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
+
+import { DifficultySelectControlled, ObjectiveSelect } from "../goldberries";
+import { useGetModInfo, usePostCampaign, usePostChallenge, usePostMap } from "../../hooks/useApi";
+import { DIFF_CONSTS, FormOptions } from "../../util/constants";
+import { StringListEditor } from "../StringListEditor";
+
 import { SameCampaignNameIndicator } from "./Campaign";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
-import { StringListEditor } from "../StringListEditor";
 
 export function FormCreateFullChallengeWrapper({
   onSuccess,

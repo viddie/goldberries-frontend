@@ -1,5 +1,4 @@
 import { useTheme } from "@emotion/react";
-import { getQueryData, useGetRecentSubmissions } from "../../hooks/useApi";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import {
@@ -17,6 +16,9 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import {
   CampaignIcon,
   DifficultyChip,
@@ -28,8 +30,7 @@ import {
 } from "../goldberries";
 import { ErrorDisplay, StyledLink } from "../basic";
 import { getChallengeCampaign, getChallengeSuffix, getMapName } from "../../util/data_util";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { getQueryData, useGetRecentSubmissions } from "../../hooks/useApi";
 
 export function RecentSubmissionsHeadless({
   verified,

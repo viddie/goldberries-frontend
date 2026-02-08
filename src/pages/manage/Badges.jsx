@@ -1,11 +1,4 @@
 import {
-  BasicContainerBox,
-  CustomIconButton,
-  ErrorDisplay,
-  HeadTitle,
-  LoadingSpinner,
-} from "../../components/basic";
-import {
   Button,
   ButtonGroup,
   Divider,
@@ -20,6 +13,18 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faPlus, faTrash, faUserPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+
+import {
+  BasicContainerBox,
+  CustomIconButton,
+  ErrorDisplay,
+  HeadTitle,
+  LoadingSpinner,
+} from "../../components/basic";
 import {
   getQueryData,
   useDeleteBadge,
@@ -28,13 +33,9 @@ import {
   useGetBadges,
   usePostBadgePlayer,
 } from "../../hooks/useApi";
-import { useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
 import { Badge } from "../../components/badge";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { FormBadgeWrapper } from "../../components/forms/Badge";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlus, faTrash, faUserPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PlayerChip, PlayerSelect } from "../../components/goldberries";
 
 export function PageManageBadges({}) {

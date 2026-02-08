@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
+
+import { BasicContainerBox, HeadTitle } from "../components/basic";
 
 export function PageCredits() {
   const { t } = useTranslation(undefined, { keyPrefix: "credits" });

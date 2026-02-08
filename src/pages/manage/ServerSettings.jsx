@@ -1,4 +1,3 @@
-import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import {
   Button,
   Checkbox,
@@ -10,13 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { getQueryData, useGetServerSettings, usePostServerSettings } from "../../hooks/useApi";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { StringListEditor } from "../../components/StringListEditor";
-import { getGlobalNoticeSeverityInfo } from "../../components/GlobalNotices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "@emotion/react";
+
+import { StringListEditor } from "../../components/StringListEditor";
+import { getGlobalNoticeSeverityInfo } from "../../components/GlobalNotices";
+import { getQueryData, useGetServerSettings, usePostServerSettings } from "../../hooks/useApi";
+import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 
 export function PageManageServerSettings({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.server_settings" });

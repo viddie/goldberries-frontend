@@ -1,7 +1,9 @@
 import { Chip, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
+
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getPlayerNameColorStyle } from "../../util/data_util";
+
 import { AccountRoleIcon } from "./AccountRoleIcon";
 import { SuspendedIcon } from "./SuspendedIcon";
 

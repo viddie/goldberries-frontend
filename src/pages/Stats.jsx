@@ -1,7 +1,6 @@
 import { Chip, Stack, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,6 +13,7 @@ import {
   faArrowsUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { BasicContainerBox, HeadTitle } from "../components/basic";
 import { TabMonthlyTierClears } from "../components/stats_page/TabMonthlyTierClears";
 import { TabMostGoldened } from "../components/stats_page/TabMostGoldened";
 import { TabMisc } from "../components/stats_page/TabMisc";

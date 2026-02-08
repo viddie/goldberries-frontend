@@ -3,13 +3,14 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation, Trans } from "react-i18next";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
 import { BigButtonGrid } from "../components/BigButtonGrid";
 import { usePostReport } from "../hooks/useApi";
 import { FormOptions } from "../util/constants";
-import { useTranslation, Trans } from "react-i18next";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/AuthProvider";
 
 // Topic structure with sub-topics

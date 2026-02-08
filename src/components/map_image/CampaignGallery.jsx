@@ -1,7 +1,9 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
 import { StyledLink } from "../basic";
 import { getCampaignName, getMapName, isMapSameNameAsCampaign, mapIsSide } from "../../util/data_util";
-import { useTranslation } from "react-i18next";
+
 import { MapImageFull } from "./MapImageFull";
 
 export function CampaignGallery({ campaign, ...props }) {

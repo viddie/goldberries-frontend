@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-import { fetchMap } from "../../util/api";
 import {
   Button,
   Checkbox,
@@ -11,19 +10,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect, useMemo } from "react";
-import { CampaignSelect, MapSelect, OtherIcon } from "../goldberries";
-import { FormOptions } from "../../util/constants";
-import { getQueryData, usePostMap } from "../../hooks/useApi";
 import { useTranslation } from "react-i18next";
-import { StringListEditor } from "../StringListEditor";
 import { useDebounce } from "@uidotdev/usehooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
+
+import { StringListEditor } from "../StringListEditor";
+import { getQueryData, usePostMap } from "../../hooks/useApi";
+import { FormOptions } from "../../util/constants";
+import { CampaignSelect, MapSelect, OtherIcon } from "../goldberries";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
+import { fetchMap } from "../../util/api";
 
 export function FormMapWrapper({
   id,

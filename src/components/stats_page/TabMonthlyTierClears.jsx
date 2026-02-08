@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { Divider, Stack, Typography, useTheme } from "@mui/material";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 import { getQueryData, useGetAllDifficulties, useGetStatsMonthlyTierClears } from "../../hooks/useApi";
 import { ErrorDisplay, getErrorFromMultiple, LoadingSpinner } from "../basic";
-import { Divider, Stack, Typography, useTheme } from "@mui/material";
 import { getDifficultyName } from "../../util/data_util";
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getNewDifficultyColors } from "../../util/constants";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 
 export function TabMonthlyTierClears() {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.historical_clears" });

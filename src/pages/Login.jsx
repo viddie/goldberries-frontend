@@ -1,22 +1,22 @@
 import { useParams } from "react-router-dom";
-import { useAuth } from "../hooks/AuthProvider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FormOptions } from "../util/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-
 import "@mui/material";
 import { Alert, Box, Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
+import { useTranslation } from "react-i18next";
+
+import { useAuth } from "../hooks/AuthProvider";
+import { MemoWebsiteIcon } from "../components/goldberries";
 import {
   useForgotPasswordRequest,
   useForgotPasswordVerify,
   useRegister,
   useVerifyEmail,
 } from "../hooks/useApi";
-import { MemoWebsiteIcon } from "../components/goldberries";
-import { useTranslation } from "react-i18next";
+import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
+import { FormOptions } from "../util/constants";
 
 export function PageLogin() {
   const { t } = useTranslation(undefined, { keyPrefix: "login.login" });

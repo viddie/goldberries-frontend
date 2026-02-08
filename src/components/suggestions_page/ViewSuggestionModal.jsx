@@ -14,6 +14,7 @@ import {
   faThumbsUp,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 import {
   getQueryData,
@@ -28,7 +29,6 @@ import { PlayerChip } from "../goldberries";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort } from "../../util/data_util";
-import { toast } from "react-toastify";
 import {
   CharsCountLabel,
   DifficultyMoveDisplay,

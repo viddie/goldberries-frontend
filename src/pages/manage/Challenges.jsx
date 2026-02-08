@@ -20,6 +20,19 @@ import {
 } from "@mui/material";
 import { useDebouncedCallback } from "use-debounce";
 import { useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowsSplitUpAndLeft,
+  faArrowsToDot,
+  faEdit,
+  faMarker,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { Trans, useTranslation } from "react-i18next";
+import { useLocalStorage } from "@uidotdev/usehooks";
+
 import {
   getCampaignName,
   getChallengeInvertHierarchy,
@@ -34,15 +47,6 @@ import {
   LoadingSpinner,
   HeadTitle,
 } from "../../components/basic";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowsSplitUpAndLeft,
-  faArrowsToDot,
-  faEdit,
-  faMarker,
-  faPlus,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { FormChallengeWrapper } from "../../components/forms/Challenge";
 import { FormMapWrapper } from "../../components/forms/Map";
@@ -60,9 +64,7 @@ import { FormCampaignWrapper } from "../../components/forms/Campaign";
 import { FormCampaignMassAddMaps } from "../../components/forms/CampaignMassAddMaps";
 import { FormCreateFullChallengeWrapper } from "../../components/forms/CreateFullChallenge";
 import { FullChallengeSelect } from "../../components/goldberries";
-import { toast } from "react-toastify";
-import { Trans, useTranslation } from "react-i18next";
-import { useLocalStorage } from "@uidotdev/usehooks";
+
 
 export function PageManageChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.challenges" });

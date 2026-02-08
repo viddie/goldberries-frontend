@@ -14,19 +14,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
-import { FormOptions } from "../../util/constants";
-import {
-  getQueryData,
-  useDeleteMap,
-  useGetModInfo,
-  usePostCampaign,
-  usePostMap,
-  useSearch,
-} from "../../hooks/useApi";
-import { fetchCampaign } from "../../util/api";
 import { MuiColorInput } from "mui-color-input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -41,10 +30,22 @@ import {
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
-import { getCampaignName } from "../../util/data_util";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useTheme } from "@emotion/react";
+
+import { getCampaignName } from "../../util/data_util";
+import { fetchCampaign } from "../../util/api";
+import {
+  getQueryData,
+  useDeleteMap,
+  useGetModInfo,
+  usePostCampaign,
+  usePostMap,
+  useSearch,
+} from "../../hooks/useApi";
+import { FormOptions } from "../../util/constants";
+import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 
 export function FormCampaignWrapper({
   id,

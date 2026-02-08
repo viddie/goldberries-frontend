@@ -1,5 +1,4 @@
 import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
-import { useAuth } from "../../hooks/AuthProvider";
 import {
   Box,
   Button,
@@ -19,10 +18,13 @@ import {
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+
+import { useAuth } from "../../hooks/AuthProvider";
 import { jsonDateToJsDate } from "../../util/util";
 import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import { getQueryData, useDeleteLogEntry, useGetLogs } from "../../hooks/useApi";
-import { useTranslation } from "react-i18next";
+
 
 export function PageLogs() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.logs" });

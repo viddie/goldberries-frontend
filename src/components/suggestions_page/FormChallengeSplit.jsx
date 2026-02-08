@@ -22,6 +22,7 @@ import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../goldberries";
 import { DIFFICULTIES } from "../../util/constants";
 import { CharsCountLabel } from "../../pages/Suggestions";
+
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
 export function ChallengeSplitSuggestionForm({ onSuccess, onBack }) {

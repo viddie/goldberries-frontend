@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+
 import { useAuth } from "../../hooks/AuthProvider";
 import {
   getQueryData,
@@ -24,7 +26,6 @@ import {
 } from "../../hooks/useApi";
 import { getErrorFromMultiple } from "../basic";
 import { PlayerChip } from "../goldberries";
-import { toast } from "react-toastify";
 
 export function LikeButton({ challengeId, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes" });
