@@ -780,3 +780,13 @@ export function deleteChallengeLike(id) {
   });
 }
 //#endregion
+
+//#region /player/get-likes
+export function fetchPlayerLikes(playerId) {
+  return axios.get("/player/get-likes", {
+    params: {
+      player_id: playerId,
+    },
+  });
+}
+//#endregion

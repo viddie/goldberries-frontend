@@ -578,7 +578,14 @@
     "wishlist": "Add to wishlist",
     "completed": "Completed",
     "not_completed": "Not Completed",
-    "no_likes": "None"
+    "no_likes": "None",
+    "state": {
+      "none": "No Status",
+      "current": "Current",
+      "on_hold": "On Hold",
+      "soon": "Soon",
+      "backlog": "Backlog"
+    }
   },
   "hooks": {
     "auth": {

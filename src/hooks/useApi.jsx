@@ -104,6 +104,7 @@ import {
   fetchChallengeLikes,
   postChallengeLike,
   deleteChallengeLike,
+  fetchPlayerLikes,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -1205,6 +1206,17 @@ export function useDeleteChallengeLike(onSuccess) {
       if (onSuccess) onSuccess(response);
     },
     onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /player/get-likes
+export function useGetPlayerLikes(playerId) {
+  return useQuery({
+    queryKey: ["player_likes", playerId],
+    queryFn: () => fetchPlayerLikes(playerId),
+    onError: errorToast,
+    enabled: !!playerId,
   });
 }
 //#endregion

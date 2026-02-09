@@ -11,6 +11,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,13 +28,18 @@ import {
 import { getErrorFromMultiple } from "../basic";
 import { PlayerChip } from "../goldberries";
 
+import { LikeStateSelect } from "./LikeStateSelect";
+
 export function LikeButton({ challengeId, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes" });
   const auth = useAuth();
+  const isSmScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   const [localWishlist, setLocalWishlist] = useState(null);
+  const [localState, setLocalState] = useState(null);
   const wishlistInitialized = useRef(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [selectOpen, setSelectOpen] = useState(false);
 
   const challengeQuery = useGetChallenge(challengeId);
   const likesQuery = useGetChallengeLikes(challengeId);
@@ -49,19 +55,18 @@ export function LikeButton({ challengeId, sx }) {
 
   const ownLike = likes.find((like) => auth.isPlayerWithId(like.player_id));
   const hasLiked = !!ownLike;
-  const ownCompleted = challenge?.submissions?.some((submission) =>
-    auth.isPlayerWithId(submission.player_id),
-  );
 
-  // Initialize local wishlist state when ownLike is available
+  // Initialize local wishlist and state when ownLike is available
   useEffect(() => {
     if (ownLike && !wishlistInitialized.current) {
       setLocalWishlist(ownLike.is_wishlist ?? false);
+      setLocalState(ownLike.state ?? null);
       wishlistInitialized.current = true;
     }
     if (!ownLike) {
       wishlistInitialized.current = false;
       setLocalWishlist(null);
+      setLocalState(null);
     }
   }, [ownLike]);
 
@@ -76,24 +81,31 @@ export function LikeButton({ challengeId, sx }) {
   };
 
   const handleWishlistChange = (event) => {
-    setLocalWishlist(event.target.checked);
+    const checked = event.target.checked;
+    setLocalWishlist(checked);
+    if (!checked) {
+      setLocalState(null);
+    }
   };
 
-  // Send wishlist update when tooltip closes, if value changed
+  // Send wishlist and state update when tooltip closes, if values changed
   const handleTooltipClose = () => {
     if (!ownLike || localWishlist === null) return;
 
-    const serverValue = ownLike.is_wishlist ?? false;
-    if (localWishlist !== serverValue) {
+    const serverWishlist = ownLike.is_wishlist ?? false;
+    const serverState = ownLike.state ?? null;
+    if (localWishlist !== serverWishlist || localState !== serverState) {
       postLikeMutation.mutate({
         id: ownLike.id,
         challenge_id: challengeId,
         is_wishlist: localWishlist,
+        state: localState,
       });
     }
   };
 
   const closeTooltip = () => {
+    if (selectOpen) return;
     if (infoOpen) {
       handleTooltipClose();
       setInfoOpen(false);
@@ -131,61 +143,76 @@ export function LikeButton({ challengeId, sx }) {
     return (
       <ClickAwayListener onClickAway={closeTooltip}>
         <Stack direction="column" gap={1} sx={{ p: 1 }}>
-          {hasLiked && !ownCompleted && (
+          {hasLiked && (
             <>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={localWishlist ?? false}
-                    onChange={handleWishlistChange}
-                    size="small"
-                    sx={{ color: "inherit", "&.Mui-checked": { color: "inherit" } }}
-                  />
-                }
-                label={t("wishlist")}
-                sx={{ mr: 0 }}
-              />
+              <Stack
+                direction={isSmScreen ? "row" : "column"}
+                gap={1}
+                alignItems={isSmScreen ? "center" : "flex-start"}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={localWishlist ?? false}
+                      onChange={handleWishlistChange}
+                      size="small"
+                      sx={{ color: "inherit", "&.Mui-checked": { color: "inherit" } }}
+                    />
+                  }
+                  label={t("wishlist")}
+                  sx={{ mr: 0 }}
+                />
+                <LikeStateSelect
+                  value={localState}
+                  onChange={setLocalState}
+                  disabled={!localWishlist}
+                  onOpen={() => setSelectOpen(true)}
+                  onClose={() => setSelectOpen(false)}
+                />
+              </Stack>
               <Divider sx={{ borderColor: "rgba(255,255,255,0.3)" }} />
             </>
           )}
 
-          <Stack direction="row" gap={2}>
-            {/* Completed column */}
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
-                {t("completed")} ({likesFromCompleted.length}/{challenge?.submissions?.length || 0})
-              </Typography>
-              <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
-                {likesFromCompleted.length === 0 ? (
-                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-                    {t("no_likes")}
-                  </Typography>
-                ) : (
-                  likesFromCompleted.map((like) => (
-                    <PlayerChip key={like.id} player={like.player} size="small" />
-                  ))
-                )}
-              </Stack>
-            </Box>
+          <Box sx={{ maxHeight: 250, overflowY: "auto", overflowX: "hidden" }}>
+            <Stack direction="row" gap={2}>
+              {/* Completed column */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
+                  {t("completed")} ({likesFromCompleted.length}/{challenge?.submissions?.length || 0})
+                </Typography>
+                <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
+                  {likesFromCompleted.length === 0 ? (
+                    <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                      {t("no_likes")}
+                    </Typography>
+                  ) : (
+                    likesFromCompleted.map((like) => (
+                      <PlayerChip key={like.id} player={like.player} size="small" />
+                    ))
+                  )}
+                </Stack>
+              </Box>
 
-            {/* Not completed column */}
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
-                {t("not_completed")} ({likesFromNotCompleted.length})
-              </Typography>
-              <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
-                {likesFromNotCompleted.length === 0 ? (
-                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-                    {t("no_likes")}
-                  </Typography>
-                ) : (
-                  likesFromNotCompleted.map((like) => (
-                    <PlayerChip key={like.id} player={like.player} size="small" />
-                  ))
-                )}
-              </Stack>
-            </Box>
-          </Stack>
+              {/* Not completed column */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
+                  {t("not_completed")} ({likesFromNotCompleted.length})
+                </Typography>
+                <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
+                  {likesFromNotCompleted.length === 0 ? (
+                    <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                      {t("no_likes")}
+                    </Typography>
+                  ) : (
+                    likesFromNotCompleted.map((like) => (
+                      <PlayerChip key={like.id} player={like.player} size="small" />
+                    ))
+                  )}
+                </Stack>
+              </Box>
+            </Stack>
+          </Box>
         </Stack>
       </ClickAwayListener>
     );
@@ -247,9 +274,6 @@ export function LikeButton({ challengeId, sx }) {
               "& .MuiTooltip-arrow": {
                 color: "rgba(30, 30, 30, 1)",
               },
-              maxHeight: 300,
-              overflowY: "auto",
-              overflowX: "hidden",
             },
           },
         }}
