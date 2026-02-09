@@ -407,6 +407,12 @@ export function fetchServerSettings() {
   return axios.get("/server-settings");
 }
 
+export function fetchAdminAction(action, params = {}) {
+  return axios.get("/admin/actions.php", {
+    params: { action, ...params },
+  });
+}
+
 export function fetchBadges() {
   return axios.get("/badge", {
     params: {

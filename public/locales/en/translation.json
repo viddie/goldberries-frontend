@@ -802,6 +802,11 @@
         "buttons": {
           "update": "Update Server Settings"
         }
+      },
+      "admin_actions": {
+        "title": "Admin Actions",
+        "confirm": "Are you sure?",
+        "last_result": "Last Action Result"
       }
     },
     "badges": {

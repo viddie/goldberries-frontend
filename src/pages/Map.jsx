@@ -271,7 +271,6 @@ function MapDetailsGrid({ map }) {
   const lobbyInfo = getMapLobbyInfo(map);
   const hasLobbyInfo = lobbyInfo !== null && (lobbyInfo.major !== undefined || lobbyInfo.minor !== undefined);
   const mapHasAuthor = map.author_gb_name !== null;
-  const showMapRow = getMapName(map, campaign) !== campaign.name;
 
   const leftItems = [];
   const rightItems = [];
@@ -282,16 +281,14 @@ function MapDetailsGrid({ map }) {
     </CampaignDetailsRow>,
   );
 
-  if (showMapRow) {
-    leftItems.push(
-      <MapDetailsRow key="map">
-        <Stack direction="row" alignItems="center" gap={0.75}>
-          <span>{getMapName(map, campaign)}</span>
-          {!map.is_progress && <MapNoProgressTooltip />}
-        </Stack>
-      </MapDetailsRow>,
-    );
-  }
+  leftItems.push(
+    <MapDetailsRow key="map">
+      <Stack direction="row" alignItems="center" gap={0.75}>
+        <span>{getMapName(map, campaign)}</span>
+        {!map.is_progress && <MapNoProgressTooltip />}
+      </Stack>
+    </MapDetailsRow>,
+  );
 
   leftItems.push(<CollectiblesDetailsRow key="collectibles" map={map} collectibles={map.collectibles} />);
 

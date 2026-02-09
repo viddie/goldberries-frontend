@@ -74,6 +74,7 @@ import {
   fetchTopGoldenList,
   fetchServerSettings,
   postServerSettings,
+  fetchAdminAction,
   fetchAllCampaigns,
   fetchAllMapsInCampaign,
   fetchAllChallengesInCampaign,
@@ -1202,6 +1203,18 @@ export function useDeleteChallengeLike(onSuccess) {
     onSuccess: (response, { id, challengeId }) => {
       queryClient.invalidateQueries(["challenge_likes", challengeId]);
       if (onSuccess) onSuccess(response);
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region Admin Actions
+export function useRunAdminAction(onSuccess) {
+  return useMutation({
+    mutationFn: ({ action, params }) => fetchAdminAction(action, params),
+    onSuccess: (response, variables) => {
+      if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
   });

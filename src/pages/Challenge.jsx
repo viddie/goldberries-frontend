@@ -92,7 +92,6 @@ import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { jsonDateToJsDate } from "../util/util";
-import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { LikeButton } from "../components/likes";
 import { API_BASE_URL } from "../util/constants";
@@ -1001,7 +1000,6 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
   const { t } = useTranslation(undefined, { keyPrefix: "challenge.submission_table" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
-  const auth = useAuth();
 
   const [showAll, setShowAll] = useState(false);
 
@@ -1021,9 +1019,6 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
             <TableCell width={compact ? 1 : undefined} sx={{ pl: 1.5, pr: 0.5 }}>
               {t_g("player", { count: 1 })}
             </TableCell>
-            {!compact && auth.hasHelperPriv && (
-              <TableCell width={1} sx={{ ...displayNoneOnMobile, px: 0 }}></TableCell>
-            )}
             {!compact && (
               <TableCell width={1} align="center" sx={{ pl: 1.5, pr: 0.5 }}>
                 <Tooltip arrow placement="top" title={t_fs("verifier_notes")}>
@@ -1094,7 +1089,6 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
 }
 
 export function ChallengeSubmissionRow({ submission, index, compact }) {
-  const auth = useAuth();
   const { settings } = useAppSettings();
   const theme = useTheme();
   const nameStyle = getPlayerNameColorStyle(submission.player, settings);
@@ -1135,11 +1129,6 @@ export function ChallengeSubmissionRow({ submission, index, compact }) {
           </Stack>
         </Link>
       </TableCell>
-      {!compact && auth.hasHelperPriv && (
-        <TableCell width={1} align="center" sx={{ ...displayNoneOnMobile, p: 0 }}>
-          <ToggleSubmissionFcButton submission={submission} />
-        </TableCell>
-      )}
       {!compact && (
         <TableCell width={1} align="center" sx={{ p: 0 }}>
           <Link
