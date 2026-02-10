@@ -235,10 +235,17 @@ export function ChallengeDisplay({ id, isCompact = false }) {
 }
 
 //#region Fading Map Banner
-export function FadingMapBanner({ id, alt, src, href, sx }) {
+export function FadingMapBanner({ id, alt, src, href, sx, size = "medium" }) {
   const modalHook = useModal(id);
   const imageSrc = src ?? API_BASE_URL + "/img/map/" + id + "&scale=2";
   const isClickable = !!href || !!id;
+
+  const aspectMap = {
+    small: "9 / 1",
+    medium: "6 / 1",
+    large: "4 / 1",
+  };
+  const aspectRatio = aspectMap[size] || aspectMap["medium"];
 
   const handleClick = () => {
     if (href) {
@@ -254,7 +261,7 @@ export function FadingMapBanner({ id, alt, src, href, sx }) {
         sx={{
           position: "relative",
           width: "100%",
-          aspectRatio: "6 / 1",
+          aspectRatio: aspectRatio,
           overflow: "hidden",
           cursor: isClickable ? "pointer" : "default",
           mb: 1.5,

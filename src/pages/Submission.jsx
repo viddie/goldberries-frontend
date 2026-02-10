@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Divider, Grid, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRight,
   faClock,
   faComment,
   faEdit,
@@ -14,6 +15,9 @@ import {
   faFlagCheckered,
   faBook,
   faCalendar,
+  faGaugeSimpleHigh,
+  faMapLocation,
+  faWorm,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 
@@ -28,13 +32,13 @@ import {
   displayDate,
   getChallengeCampaign,
   getChallengeNameShort,
+  getGamebananaEmbedUrl,
   getMapName,
   getSubmissionVerifier,
   secondsToDuration,
 } from "../util/data_util";
 import { GoldberriesBreadcrumbs } from "../components/Breadcrumb";
 import {
-  CustomizedMenu,
   BasicContainerBox,
   ErrorDisplay,
   LoadingSpinner,
@@ -45,17 +49,30 @@ import {
   InfoBoxIconTextLine,
   TooltipLineBreaks,
 } from "../components/basic";
+import { CustomMenu } from "../components/Menu";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
 import { jsonDateToJsDate } from "../util/util";
+
+import { FadingMapBanner } from "./Challenge";
 
 export function PageSubmission({}) {
   const { id } = useParams();
   const navigate = useNavigate();
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#282828",
+        border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
       <SubmissionDisplay
         id={parseInt(id)}
         onDelete={() => {
@@ -68,7 +85,6 @@ export function PageSubmission({}) {
 
 export function SubmissionDisplay({ id, onDelete }) {
   const { t } = useTranslation(undefined, { keyPrefix: "submission" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const auth = useAuth();
   const query = useGetSubmission(id);
   const { mutate: deleteSubmission } = useDeleteSubmission((submission) => {
@@ -87,9 +103,17 @@ export function SubmissionDisplay({ id, onDelete }) {
   );
 
   if (query.isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LoadingSpinner />
+      </Box>
+    );
   } else if (query.isError) {
-    return <ErrorDisplay error={query.error} />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <ErrorDisplay error={query.error} />
+      </Box>
+    );
   }
 
   const submission = getQueryData(query);
@@ -108,54 +132,63 @@ export function SubmissionDisplay({ id, onDelete }) {
     title = t("title", { challenge: challengeName, player: submission.player.name });
   }
 
+  const contentPadding = { px: { xs: 2, sm: 3 } };
+
   return (
-    <>
+    <Box sx={{ pb: { xs: 2, sm: 3 } }}>
       <HeadTitle title={title} />
-      {submission.challenge !== null && (
-        <>
-          <GoldberriesBreadcrumbs
-            campaign={campaign}
-            map={map}
-            challenge={challenge}
-            submission={submission}
-          />
-          <Divider sx={{ my: 2 }}></Divider>
-        </>
-      )}
-      <Grid container spacing={1} sx={{ mb: 1 }} alignItems="center">
-        <Grid item xs={12} sm>
+
+      {/* Banner image - full width, fading into background */}
+      {map ? (
+        <FadingMapBanner id={map.id} alt={getMapName(map, campaign, false)} size="small" />
+      ) : campaign ? (
+        <FadingMapBanner
+          alt={campaign.name}
+          src={getGamebananaEmbedUrl(campaign.url, "large")}
+          size="small"
+        />
+      ) : null}
+
+      {/* Breadcrumbs + modify button */}
+      {challenge !== null && (
+        <Box sx={{ ...contentPadding, mb: 1.5 }}>
           <Stack direction="row" alignItems="center" gap={1}>
-            <Typography variant="h4">{t_g("submission", { count: 1 })}</Typography>
-            <SubmissionFcIcon submission={submission} height="1.7rem" />
+            <GoldberriesBreadcrumbs
+              campaign={campaign}
+              map={map}
+              challenge={challenge}
+              submission={submission}
+            />
+            <Box flexGrow={1} />
+            {(isHelper || isOwnSubmission) && (
+              <CustomMenu
+                title={t("buttons.modify")}
+                variant="outlined"
+                items={[
+                  { icon: faEdit, text: t("buttons.edit"), onClick: () => editModal.open(submission) },
+                  { divider: true },
+                  {
+                    icon: faTrash,
+                    text: t("buttons.delete"),
+                    color: "error",
+                    onClick: () => deleteModal.open(submission),
+                  },
+                ]}
+              />
+            )}
           </Stack>
-        </Grid>
-        <Grid item xs={12} sm="auto">
-          <Stack direction="row" gap={1}>
-            {isHelper || isOwnSubmission ? (
-              <CustomizedMenu title={t("buttons.modify")}>
-                <MenuItem disableRipple onClick={() => editModal.open(submission)}>
-                  <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faEdit} />
-                  {t("buttons.edit")}
-                </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                <MenuItem disableRipple disableGutters sx={{ py: 0 }}>
-                  <Button
-                    onClick={() => deleteModal.open(submission)}
-                    color="error"
-                    disableRipple
-                    sx={{ px: "16px" }}
-                  >
-                    <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faTrash} />
-                    {t("buttons.delete")}
-                  </Button>
-                </MenuItem>
-              </CustomizedMenu>
-            ) : null}
-          </Stack>
-        </Grid>
-      </Grid>
-      <ProofEmbed url={submission.proof_url} />
-      <SubmissionDetailsDisplay submission={submission} sx={{ mt: 0 }} />
+        </Box>
+      )}
+
+      {/* Video embed - full width */}
+      <Box sx={{ "& iframe": { border: "none" } }}>
+        <ProofEmbed url={submission.proof_url} />
+      </Box>
+
+      {/* Details grid */}
+      <Box sx={{ ...contentPadding, mt: 2 }}>
+        <SubmissionDetailsGrid submission={submission} />
+      </Box>
 
       <CustomModal modalHook={editModal} options={{ hideFooter: true }}>
         <FormSubmissionWrapper id={editModal.data?.id} onSave={() => editModal.close()} />
@@ -166,7 +199,7 @@ export function SubmissionDisplay({ id, onDelete }) {
           {t("delete_modal.description")}
         </Typography>
       </CustomModal>
-    </>
+    </Box>
   );
 }
 
@@ -193,190 +226,248 @@ export function FullChallengeDisplay({
   );
 }
 
-export function SubmissionDetailsDisplay({ submission, challenge = null, ...props }) {
+//#region Submission Details Grid
+function SubmissionDetailsGrid({ submission }) {
   const { t } = useTranslation(undefined, { keyPrefix: "submission.details" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_a } = useTranslation();
   const verifier = getSubmissionVerifier(submission);
-  challenge = challenge ?? submission.challenge;
+  const challenge = submission.challenge;
   const newChallenge = submission.new_challenge;
 
   return (
-    <Grid container columnSpacing={1} rowSpacing={1} {...props}>
-      <Grid item xs={12} sm={4} display="flex" flexDirection="column" rowGap={1}>
+    <Grid container columnSpacing={1.5} rowSpacing={1.5}>
+      {/* Column 1: Challenge / New Challenge Info */}
+      <Grid item xs={12} sm={4} display="flex" flexDirection="column" gap={1}>
         <Typography
-          variant="body1"
-          textTransform="uppercase"
-          color={(t) => t.palette.text.secondary}
-          fontSize="90%"
+          variant="overline"
+          color="text.secondary"
+          sx={{ fontSize: "0.7rem", letterSpacing: "0.08em", lineHeight: 1.5 }}
+          textAlign="center"
         >
           {challenge === null ? t("new_challenge") : t_g("map", { count: 1 })}
         </Typography>
         {challenge !== null ? (
-          <ChallengeInfoBoxes challenge={challenge} />
+          <ChallengeDetailCells challenge={challenge} submission={submission} />
         ) : (
           <>
-            <InfoBox>
-              <InfoBoxIconTextLine
-                icon={<FontAwesomeIcon icon={faExternalLink} />}
-                text={t_a("forms.create_full_challenge.campaign.url")}
-              />
-              <InfoBoxIconTextLine
-                text={<StyledExternalLink href={newChallenge.url}>{newChallenge.url}</StyledExternalLink>}
-                isSecondary
-              />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine text={t_g("map", { count: 1 })} />
-              <InfoBoxIconTextLine text={newChallenge.name} isSecondary />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine text={t_g("description")} />
-              <InfoBoxIconTextLine text={newChallenge.description ?? "-"} isSecondary />
-            </InfoBox>
+            <DetailCell label={t_a("forms.create_full_challenge.campaign.url")}>
+              <StyledExternalLink href={newChallenge.url}>{newChallenge.url}</StyledExternalLink>
+            </DetailCell>
+            <DetailCell label={t_g("map", { count: 1 })}>{newChallenge.name}</DetailCell>
+            <DetailCell label={t_g("description")}>{newChallenge.description ?? "-"}</DetailCell>
           </>
         )}
       </Grid>
-      <Grid item xs={12} sm={4} display="flex" flexDirection="column" rowGap={1}>
+
+      {/* Column 2: Submission Info */}
+      <Grid item xs={12} sm={4} display="flex" flexDirection="column" gap={1}>
         <Typography
-          variant="body1"
-          textTransform="uppercase"
-          color={(t) => t.palette.text.secondary}
-          fontSize="90%"
+          variant="overline"
+          color="text.secondary"
+          sx={{ fontSize: "0.7rem", letterSpacing: "0.08em", lineHeight: 1.5 }}
+          textAlign="center"
         >
           {t_g("submission", { count: 1 })}
         </Typography>
-        <InfoBox>
-          <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faUser} />} text={t_g("player", { count: 1 })} />
-          <InfoBoxIconTextLine text={<PlayerChip player={submission.player} size="small" />} isSecondary />
-        </InfoBox>
-        <InfoBox>
-          <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faCalendar} />} text={t("achieved")} />
-          <InfoBoxIconTextLine
-            text={
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                flexWrap="wrap"
-                columnGap={1}
-              >
-                <DateWithTooltip date={submission.date_achieved} />
-                {submission.time_taken && (
-                  <Stack direction="row" alignItems="center" gap={0.5}>
-                    <span>{secondsToDuration(submission.time_taken)}</span>
-                    <TooltipLineBreaks title={t("time_taken_explanation")}>
-                      <FontAwesomeIcon icon={faClock} size="sm" />
-                    </TooltipLineBreaks>
-                  </Stack>
-                )}
+        <DetailCell label={t_g("player", { count: 1 })} icon={<FontAwesomeIcon icon={faUser} fixedWidth />}>
+          <PlayerChip player={submission.player} size="small" />
+        </DetailCell>
+        <DetailCell label={t("achieved")} icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            columnGap={1}
+          >
+            <DateWithTooltip date={submission.date_achieved} />
+            {submission.time_taken && (
+              <Stack direction="row" alignItems="center" gap={0.5} sx={{ whiteSpace: "nowrap" }}>
+                <span style={{ lineHeight: 1 }}>{secondsToDuration(submission.time_taken)}</span>
+                <TooltipLineBreaks title={t("time_taken_explanation")}>
+                  <FontAwesomeIcon icon={faClock} size="sm" style={{ verticalAlign: "middle" }} />
+                </TooltipLineBreaks>
               </Stack>
-            }
-            isSecondary
-          />
-        </InfoBox>
-        <InfoBox>
-          <InfoBoxIconTextLine
-            icon={<FontAwesomeIcon icon={faComment} />}
-            text={t_a("forms.submission.player_notes")}
-          />
-          <InfoBoxIconTextLine text={submission.player_notes ?? "-"} isSecondary />
-        </InfoBox>
-        <InfoBox>
-          <InfoBoxIconTextLine
-            icon={<FontAwesomeIcon icon={faShield} />}
-            text={t_a("components.difficulty_select.label")}
-          />
-          <InfoBoxIconTextLine
-            text={
-              submission.suggested_difficulty === null ? (
-                "-"
-              ) : (
-                <DifficultyChip
-                  difficulty={submission.suggested_difficulty}
-                  frac={submission.frac ?? 50}
-                  isPersonal={submission.is_personal}
-                />
-              )
-            }
-            isSecondary
-          />
-        </InfoBox>
-        <InfoBox>
-          <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faExternalLink} />} text={t("links")} />
-          <InfoBoxIconTextLine
-            text={
-              <Stack direction="row" gap={2}>
-                <StyledExternalLink href={submission.proof_url}>{t("video")}</StyledExternalLink>
-                {submission.raw_session_url !== null && (
-                  <StyledExternalLink href={submission.raw_session_url}>
-                    {t("raw_session")}
-                  </StyledExternalLink>
-                )}
-              </Stack>
-            }
-            isSecondary
-          />
-        </InfoBox>
+            )}
+          </Stack>
+        </DetailCell>
+        <DetailCell
+          label={t_a("forms.submission.player_notes")}
+          icon={<FontAwesomeIcon icon={faComment} fixedWidth />}
+        >
+          {submission.player_notes ?? "-"}
+        </DetailCell>
+        <DetailCell
+          label={t_a("components.difficulty_select.label")}
+          icon={<FontAwesomeIcon icon={faGaugeSimpleHigh} fixedWidth />}
+        >
+          {submission.suggested_difficulty === null ? (
+            "-"
+          ) : (
+            <DifficultyChip
+              difficulty={submission.suggested_difficulty}
+              frac={submission.frac ?? 50}
+              isPersonal={submission.is_personal}
+            />
+          )}
+        </DetailCell>
+        <DetailCell label={t("links")} icon={<FontAwesomeIcon icon={faExternalLink} fixedWidth />}>
+          <Stack direction="row" gap={2}>
+            <StyledExternalLink href={submission.proof_url}>{t("video")}</StyledExternalLink>
+            {submission.raw_session_url !== null && (
+              <StyledExternalLink href={submission.raw_session_url}>{t("raw_session")}</StyledExternalLink>
+            )}
+          </Stack>
+        </DetailCell>
       </Grid>
-      <Grid item xs={12} sm={4} display="flex" flexDirection="column" rowGap={1}>
+
+      {/* Column 3: Verification Info */}
+      <Grid item xs={12} sm={4} display="flex" flexDirection="column" gap={1}>
         <Typography
-          variant="body1"
-          textTransform="uppercase"
-          color={(t) => t.palette.text.secondary}
-          fontSize="90%"
+          variant="overline"
+          color="text.secondary"
+          sx={{ fontSize: "0.7rem", letterSpacing: "0.08em", lineHeight: 1.5 }}
+          textAlign="center"
         >
           {t("verification")}
         </Typography>
         {submission.is_verified !== null ? (
           <>
-            <InfoBox>
-              <InfoBoxIconTextLine
-                icon={<FontAwesomeIcon icon={faUser} />}
-                text={t_a("forms.submission.verifier")}
-              />
-              <InfoBoxIconTextLine
-                text={verifier.id ? <PlayerChip player={submission.verifier} size="small" /> : verifier.name}
-                isSecondary
-              />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faCalendar} />} text={t("submitted")} />
-              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_created} />} isSecondary />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine
-                icon={<FontAwesomeIcon icon={faComment} />}
-                text={t_a("forms.submission.verifier_notes")}
-              />
-              <InfoBoxIconTextLine text={submission.verifier_notes ?? "-"} isSecondary />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine
-                text={<VerificationStatusChip isVerified={submission.is_verified} size="small" />}
-              />
-              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_verified} />} isSecondary />
-            </InfoBox>
+            <DetailCell
+              label={t_a("forms.submission.verifier")}
+              icon={<FontAwesomeIcon icon={faUser} fixedWidth />}
+            >
+              {verifier.id ? <PlayerChip player={submission.verifier} size="small" /> : verifier.name}
+            </DetailCell>
+            <DetailCell label={t("submitted")} icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}>
+              <DateWithTooltip date={submission.date_created} />
+            </DetailCell>
+            <DetailCell
+              label={t_a("forms.submission.verifier_notes")}
+              icon={<FontAwesomeIcon icon={faComment} fixedWidth />}
+            >
+              {submission.verifier_notes ?? "-"}
+            </DetailCell>
+            <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
+              <Stack direction="column" gap={0.5} alignItems="flex-start">
+                <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                <DateWithTooltip
+                  date={submission.date_verified}
+                  style={{ fontSize: "0.8rem", opacity: 0.7 }}
+                />
+              </Stack>
+            </DetailCell>
           </>
         ) : (
           <>
-            <InfoBox>
-              <InfoBoxIconTextLine text={t("status")} />
-              <InfoBoxIconTextLine
-                text={<VerificationStatusChip isVerified={submission.is_verified} size="small" />}
-                isSecondary
-              />
-            </InfoBox>
-            <InfoBox>
-              <InfoBoxIconTextLine icon={<FontAwesomeIcon icon={faClock} />} text={t("submitted")} />
-              <InfoBoxIconTextLine text={<DateWithTooltip date={submission.date_created} />} isSecondary />
-            </InfoBox>
+            <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
+              <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+            </DetailCell>
+            <DetailCell label={t("submitted")} icon={<FontAwesomeIcon icon={faClock} fixedWidth />}>
+              <DateWithTooltip date={submission.date_created} />
+            </DetailCell>
           </>
         )}
       </Grid>
     </Grid>
   );
 }
+
+function DetailCell({ label, icon, children }) {
+  return (
+    <Box
+      sx={{
+        p: 1.25,
+        borderRadius: 1,
+        border: "1px solid rgba(255,255,255,0.08)",
+        transition: "background-color 0.15s ease",
+        minHeight: 70,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.03)",
+        },
+      }}
+    >
+      <Stack direction="row" alignItems="center" gap={0.75} sx={{ mb: 0.5 }}>
+        {icon && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: "0.75rem", width: 16, textAlign: "center" }}
+          >
+            {icon}
+          </Typography>
+        )}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          fontWeight="bold"
+          sx={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.03em" }}
+        >
+          {label}
+        </Typography>
+      </Stack>
+      <Typography
+        variant="body2"
+        component="div"
+        sx={{ wordBreak: "break-word", whiteSpace: "pre-line", pl: icon ? "24px" : 0 }}
+      >
+        {children}
+      </Typography>
+    </Box>
+  );
+}
+
+function ChallengeDetailCells({ challenge, submission }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const { t: t_a } = useTranslation();
+  const map = challenge.map;
+  const campaign = getChallengeCampaign(challenge);
+  return (
+    <>
+      <DetailCell label={t_g("campaign", { count: 1 })} icon={<FontAwesomeIcon icon={faBook} fixedWidth />}>
+        {campaign.name}
+      </DetailCell>
+      {map !== null && getMapName(map, campaign) !== campaign.name && (
+        <DetailCell
+          label={t_g("map", { count: 1 })}
+          icon={<FontAwesomeIcon icon={faMapLocation} fixedWidth />}
+        >
+          {getMapName(map, campaign)}
+        </DetailCell>
+      )}
+      {map === null && (
+        <DetailCell label={t_a("challenge.is_full_game")} icon={<FontAwesomeIcon icon={faWorm} fixedWidth />}>
+          <FontAwesomeIcon icon={faCheckCircle} color="green" />
+        </DetailCell>
+      )}
+      <DetailCell
+        label={t_g("challenge", { count: 1 })}
+        icon={<FontAwesomeIcon icon={faFlagCheckered} fixedWidth />}
+      >
+        <Stack direction="row" alignItems="center" gap={0.75}>
+          <span>{getChallengeNameShort(challenge)}</span>
+          {submission.is_fc && (
+            <>
+              <FontAwesomeIcon icon={faArrowRight} size="xs" style={{ opacity: 0.5 }} />
+              <SubmissionFcIcon submission={submission} height="1.2em" />
+            </>
+          )}
+        </Stack>
+      </DetailCell>
+      <DetailCell
+        label={t_g("difficulty", { count: 1 })}
+        icon={<FontAwesomeIcon icon={faGaugeSimpleHigh} fixedWidth />}
+      >
+        <DifficultyChip difficulty={challenge.difficulty} />
+      </DetailCell>
+    </>
+  );
+}
+//#endregion
 
 function ChallengeInfoBoxes({ challenge, map, campaign, hideMap = false, showObjective = false }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });

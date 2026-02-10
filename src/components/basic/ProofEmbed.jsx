@@ -25,7 +25,7 @@ export function ProofEmbed({ url, ...props }) {
 
     return (
       <div {...props}>
-        <div style={{ position: "relative", width: "100%", paddingBottom: "56.55%" }}>
+        <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>
           <iframe
             src={embedUrl}
             title="YouTube video player"
@@ -42,7 +42,7 @@ export function ProofEmbed({ url, ...props }) {
 
     return (
       <div {...props}>
-        <div style={{ position: "relative", width: "100%", paddingBottom: "56.55%" }}>
+        <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>
           <iframe
             src={url}
             title="Bilibili video player"
@@ -57,7 +57,7 @@ export function ProofEmbed({ url, ...props }) {
     const embedUrl = `https://player.twitch.tv/?video=${id}&parent=${TWITCH_EMBED_PARENT}`;
     return (
       <div {...props}>
-        <div style={{ position: "relative", width: "100%", paddingBottom: "56.55%" }}>
+        <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>
           <iframe
             src={embedUrl}
             title="Twitch Video Player"
