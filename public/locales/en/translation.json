@@ -616,6 +616,7 @@
       "logs": "Logs",
       "submission_queue": "Submission Queue",
       "manage_challenges": "Manage Challenges",
+      "actions": "Actions",
       "manage_accounts": "Manage Accounts",
       "manage_badges": "Manage Badges",
       "file_upload": "File Upload",
@@ -809,12 +810,15 @@
         "buttons": {
           "update": "Update Server Settings"
         }
-      },
-      "admin_actions": {
-        "title": "Admin Actions",
-        "confirm": "Are you sure?",
-        "last_result": "Last Action Result"
       }
+    },
+    "actions": {
+      "title": "Actions",
+      "verifier_section": "Verifier Actions",
+      "admin_section": "Admin Actions",
+      "confirm": "Are you sure?",
+      "cancel": "Cancel",
+      "last_result": "Last Action Result"
     },
     "badges": {
       "title": "Manage Badges",

@@ -130,6 +130,7 @@ import { PageManageChallenges } from "./pages/manage/Challenges";
 import { PageFileUpload } from "./pages/manage/FileUpload";
 import { PageManagePosts } from "./pages/manage/Posts";
 import { PageManageServerSettings } from "./pages/manage/ServerSettings";
+import { PageManageActions } from "./pages/manage/Actions";
 import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
@@ -203,6 +204,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute needsAdmin redirect="manage/server-settings">
                 <PageManageServerSettings />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "actions",
+            element: (
+              <ProtectedRoute needsHelper redirect="manage/actions">
+                <PageManageActions />
               </ProtectedRoute>
             ),
           },
@@ -593,6 +602,11 @@ export function Layout() {
           name: t("internal_menu.manage_challenges"),
           path: "/manage/challenges",
           icon: <FontAwesomeIcon icon={faEdit} />,
+        },
+        {
+          name: t("internal_menu.actions"),
+          path: "/manage/actions",
+          icon: <FontAwesomeIcon icon={faCogs} />,
         },
         {
           name: t("internal_menu.test"),
