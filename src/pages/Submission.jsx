@@ -245,7 +245,7 @@ function SubmissionDetailsGrid({ submission }) {
           sx={{ fontSize: "0.7rem", letterSpacing: "0.08em", lineHeight: 1.5 }}
           textAlign="center"
         >
-          {challenge === null ? t("new_challenge") : t_g("map", { count: 1 })}
+          {challenge === null ? t("new_challenge") : t_g("challenge", { count: 1 })}
         </Typography>
         {challenge !== null ? (
           <ChallengeDetailCells challenge={challenge} submission={submission} />
@@ -276,17 +276,17 @@ function SubmissionDetailsGrid({ submission }) {
         <DetailCell label={t("achieved")} icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}>
           <Stack
             direction="row"
-            alignItems="center"
+            alignItems="baseline"
             justifyContent="space-between"
             flexWrap="wrap"
             columnGap={1}
           >
             <DateWithTooltip date={submission.date_achieved} />
             {submission.time_taken && (
-              <Stack direction="row" alignItems="center" gap={0.5} sx={{ whiteSpace: "nowrap" }}>
-                <span style={{ lineHeight: 1 }}>{secondsToDuration(submission.time_taken)}</span>
+              <Stack direction="row" alignItems="baseline" gap={0.5} sx={{ whiteSpace: "nowrap" }}>
+                <Typography variant="body2">{secondsToDuration(submission.time_taken)}</Typography>
                 <TooltipLineBreaks title={t("time_taken_explanation")}>
-                  <FontAwesomeIcon icon={faClock} size="sm" style={{ verticalAlign: "middle" }} />
+                  <FontAwesomeIcon icon={faClock} size="sm" />
                 </TooltipLineBreaks>
               </Stack>
             )}
@@ -450,7 +450,7 @@ function ChallengeDetailCells({ challenge, submission }) {
       >
         <Stack direction="row" alignItems="center" gap={0.75}>
           <span>{getChallengeNameShort(challenge)}</span>
-          {submission.is_fc && (
+          {submission.is_fc && challenge.has_fc && (
             <>
               <FontAwesomeIcon icon={faArrowRight} size="xs" style={{ opacity: 0.5 }} />
               <SubmissionFcIcon submission={submission} height="1.2em" />

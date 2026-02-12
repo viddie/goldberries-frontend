@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { TWITCH_EMBED_PARENT } from "../../util/constants";
@@ -9,9 +9,9 @@ export function ProofEmbed({ url, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components" });
   if (url === undefined || url === null || url === "") {
     return (
-      <div {...props}>
+      <Box {...props} sx={{ px: { xs: 2, sm: 3 }, ...props.sx }}>
         <Typography color="text.secondary">No clear video attached.</Typography>
-      </div>
+      </Box>
     );
   }
 
@@ -70,11 +70,11 @@ export function ProofEmbed({ url, ...props }) {
   }
 
   return (
-    <div {...props}>
+    <Box {...props} sx={{ px: { xs: 2, sm: 3 }, ...props.sx }}>
       <Typography color="text.secondary">
         {t("video_embed.error")} <StyledExternalLink href={url}>{url}</StyledExternalLink>
       </Typography>
-    </div>
+    </Box>
   );
 }
 
