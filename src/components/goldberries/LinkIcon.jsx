@@ -19,7 +19,7 @@ import { StyledExternalLink } from "../basic/StyledExternalLink";
 
 const LINK_ICONS = {
   youtube: { icon: faYoutube, color: "red", identifier: ["youtu.be/", "youtube.com/"] },
-  twitch: { icon: faTwitch, color: "purple", identifier: ["twitch.tv/"] },
+  twitch: { icon: faTwitch, color: "#9147ff", identifier: ["twitch.tv/"] },
   discord: { icon: faDiscord, color: "#5460ef", identifier: ["discord.gg/"] },
   twitter: {
     icon: faXTwitter,

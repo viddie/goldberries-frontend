@@ -782,10 +782,11 @@ export function deleteChallengeLike(id) {
 //#endregion
 
 //#region /player/get-likes
-export function fetchPlayerLikes(playerId) {
+export function fetchPlayerLikes(playerId, wishlistOnly) {
   return axios.get("/player/get-likes", {
     params: {
       player_id: playerId,
+      wishlist_only: wishlistOnly,
     },
   });
 }

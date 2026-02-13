@@ -32,7 +32,6 @@ import {
   faGamepad,
   faGaugeSimpleHigh,
   faLink,
-  faList,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
@@ -59,6 +58,7 @@ import {
   AccountRoleIcon,
   ChallengeFcIcon,
   DifficultyChip,
+  ObjectiveIcon,
 } from "../components/goldberries";
 import {
   getQueryData,
@@ -108,7 +108,7 @@ export function PagePlayer() {
       maxWidth="md"
       sx={{
         // backgroundColor: "rgba(40, 40, 40, 0.5)",
-        backgroundColor: "#282828",
+        backgroundColor: "#262626ff",
         // border: "none",
         p: 0,
         pt: 0,
@@ -169,7 +169,16 @@ export function PlayerDisplay({ id, tab, setTab }) {
       <HeadTitle title={title} />
 
       {/* Section 1: Player Header */}
-      <Box sx={{ ...contentPadding, pt: { xs: 2, sm: 3 } }}>
+      <Box
+        sx={{
+          ...contentPadding,
+          pt: { xs: 2, sm: 3 },
+          pb: 2,
+          backgroundColor: "rgba(255,255,255,0.06)",
+          // borderBottom: "1px solid rgba(255,255,255,0.06)",
+          // boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.2)",
+        }}
+      >
         {/* Name + badges row */}
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
           <Typography
@@ -207,9 +216,9 @@ export function PlayerDisplay({ id, tab, setTab }) {
       {/* Section 2: Tabs */}
       <Box
         sx={{
-          mt: 2,
-          backgroundColor: "rgba(255,255,255,0.1)",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+          mt: 0,
+          backgroundColor: "rgba(255,255,255,0.15)",
+          boxShadow: "0 4px 4px rgba(0,0,0,0.3)",
         }}
       >
         <Tabs
@@ -399,7 +408,17 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
     <DetailsRow
       key="personal-tgl"
       label={t("personal_tgl")}
-      icon={<FontAwesomeIcon icon={faList} fixedWidth />}
+      icon={
+        <ObjectiveIcon
+          objective={{
+            name: "Personal Top Golden List",
+            description: "Personal Top Golden List",
+            icon_url: "/icons/goldenberry-8x.png",
+          }}
+          height="14px"
+          style={{ marginBottom: "-2px" }}
+        />
+      }
     >
       <StyledLink to={`/player/${player.id}/top-golden-list`}>
         <FontAwesomeIcon icon={faGaugeSimpleHigh} fixedWidth /> View

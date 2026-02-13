@@ -1211,10 +1211,10 @@ export function useDeleteChallengeLike(onSuccess) {
 //#endregion
 
 //#region /player/get-likes
-export function useGetPlayerLikes(playerId) {
+export function useGetPlayerLikes(playerId, wishlistOnly = false) {
   return useQuery({
-    queryKey: ["player_likes", playerId],
-    queryFn: () => fetchPlayerLikes(playerId),
+    queryKey: ["player_likes", playerId, wishlistOnly],
+    queryFn: () => fetchPlayerLikes(playerId, wishlistOnly),
     onError: errorToast,
     enabled: !!playerId,
   });
