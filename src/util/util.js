@@ -14,7 +14,7 @@ export function jsonDateToJsDate(jsonDate) {
   return new Date(jsonDate);
 }
 
-export function dateToTimeAgoString(date) {
+export function dateToTimeAgoString(date, t_g) {
   //Output: "15 minutes ago", "2 hours ago", "3 days ago", "1 month ago", "1 year ago"
 
   const now = new Date();
@@ -28,17 +28,17 @@ export function dateToTimeAgoString(date) {
   const years = Math.floor(months / 12);
 
   if (years > 0) {
-    return years === 1 ? "1 year ago" : `${years} years ago`;
+    return t_g("time_ago.years", { count: years });
   } else if (months > 0) {
-    return months === 1 ? "1 month ago" : `${months} months ago`;
+    return t_g("time_ago.months", { count: months });
   } else if (days > 0) {
-    return days === 1 ? "1 day ago" : `${days} days ago`;
+    return t_g("time_ago.days", { count: days });
   } else if (hours > 0) {
-    return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    return t_g("time_ago.hours", { count: hours });
   } else if (minutes > 0) {
-    return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+    return t_g("time_ago.minutes", { count: minutes });
   } else {
-    return seconds === 1 ? "1 second ago" : `${seconds} seconds ago`;
+    return t_g("time_ago.seconds", { count: seconds });
   }
 }
 

@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useLocalStorage } from "@uidotdev/usehooks";
@@ -15,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useState } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import TimelineOppositeContent, { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -23,6 +24,16 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineConnector from "@mui/lab/TimelineConnector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendar,
+  faClock,
+  faFlag,
+  faGamepad,
+  faGaugeSimpleHigh,
+  faLink,
+  faList,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { SubmissionFilterUncontrolled, getDefaultFilter } from "../components/SubmissionFilter";
 import { ROLES, useAuth } from "../hooks/AuthProvider";
@@ -36,6 +47,7 @@ import {
   getMapName,
   getPlayerNameColorStyle,
   isMapSameNameAsCampaign,
+  secondsToDuration,
 } from "../util/data_util";
 import { API_BASE_URL, DIFF_CONSTS, getNewDifficultyColors } from "../util/constants";
 import { RecentSubmissionsHeadless } from "../components/recent_submissions";
@@ -69,8 +81,11 @@ import {
 } from "../components/basic";
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+import { COUNTRY_CODES_SHORT } from "../util/country_codes";
 
+import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
+import { TimeDiffWithTooltip } from "./Submission";
 
 export function PagePlayer() {
   const { id, tab } = useParams();
@@ -89,7 +104,18 @@ export function PagePlayer() {
   }
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        // backgroundColor: "rgba(40, 40, 40, 0.5)",
+        backgroundColor: "#282828",
+        // border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
       <PlayerDisplay id={parseInt(id)} tab={selectedTab} setTab={setSelectedTab} />
     </BasicContainerBox>
   );
@@ -97,18 +123,26 @@ export function PagePlayer() {
 
 export function PlayerDisplay({ id, tab, setTab }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player" });
-  const { t: t_a } = useTranslation();
-  const { t: t_ap } = useTranslation(undefined, { keyPrefix: "account.tabs.profile" });
   const { settings } = useAppSettings();
+  const theme = useTheme();
+  const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const query = useGetPlayer(id);
   const statsQuery = useGetPlayerStats(id);
   const navigate = useNavigate();
 
   if (query.isLoading || statsQuery.isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LoadingSpinner />
+      </Box>
+    );
   } else if (query.isError || statsQuery.isError) {
     const error = getErrorFromMultiple(query, statsQuery);
-    return <ErrorDisplay error={error} />;
+    return (
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <ErrorDisplay error={error} />
+      </Box>
+    );
   }
 
   const navigateToTab = (newTab) => {
@@ -125,20 +159,25 @@ export function PlayerDisplay({ id, tab, setTab }) {
   const stats = getQueryData(statsQuery);
 
   const nameStyle = getPlayerNameColorStyle(player, settings);
-  const aboutMeSplit = player.account.about_me?.split("\n") || [];
 
   const title = `${player.name} - ` + t("title");
 
+  const contentPadding = { px: { xs: 2, sm: 3 } };
+
   return (
-    <>
+    <Box sx={{ pb: { xs: 2, sm: 3 } }}>
       <HeadTitle title={title} />
-      <Stack direction="column" gap={1}>
+
+      {/* Section 1: Player Header */}
+      <Box sx={{ ...contentPadding, pt: { xs: 2, sm: 3 } }}>
+        {/* Name + badges row */}
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
           <Typography
             variant="h4"
             sx={{
               textDecoration: suspended ? "line-through" : "inherit",
               color: suspended ? "grey" : "inherit",
+              fontWeight: "bold",
               ...nameStyle,
             }}
           >
@@ -146,61 +185,241 @@ export function PlayerDisplay({ id, tab, setTab }) {
           </Typography>
           {player.account.is_suspended && <SuspendedIcon reason={player.account.suspension_reason} />}
           <AccountRoleIcon account={player.account} />
-          {player.account.country && <LanguageFlag code={player.account.country} showTooltip height="24px" />}
           <ExRoleLabel account={player.account} />
-          <Box flexGrow={1} />
-          <StyledLink to={`/player/${id}/top-golden-list`}>{t("personal_tgl")}</StyledLink>
-        </Stack>
-        <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
-          {player.account?.links ? (
-            <Stack direction="row" gap={1}>
-              {player.account.links.map((link) => (
-                <LinkIcon url={link} />
-              ))}
-            </Stack>
-          ) : null}
-          <Box flexGrow={1} />
+          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
           <BadgeDisplay player={player} />
         </Stack>
 
-        {player.account.about_me && (
-          <>
-            <Typography variant="h6">{t_ap("about_me.label")}</Typography>
-            {aboutMeSplit.map((line) => (
-              <Typography variant="body1">{line}</Typography>
-            ))}
-          </>
-        )}
+        {/* Main content: About Me + Details Table side by side on desktop */}
+        <Grid container spacing={2} sx={{ mt: 0.0 }}>
+          {/* Left side: About Me */}
+          <Grid xs={12} md>
+            <PlayerAboutMe aboutMe={player.account.about_me} />
+          </Grid>
 
-        {player.account.input_method && (
-          <Stack direction="row" alignItems="center" gap={1} sx={{ mt: 2 }}>
-            <Typography variant="body1">
-              {t_a("components.input_methods.label", { count: 1 })}:{" "}
-              {t_a("components.input_methods." + player.account.input_method)}
-            </Typography>
-            <InputMethodIcon method={player.account.input_method} />
-          </Stack>
-        )}
-      </Stack>
+          {/* Right side: Details Table */}
+          <Grid xs={12} md="auto">
+            <PlayerDetailsTable player={player} stats={stats} isMdScreen={isMdScreen} />
+          </Grid>
+        </Grid>
+      </Box>
 
-      <Tabs
-        variant="fullWidth"
-        value={tab}
-        onChange={(event, newTab) => navigateToTab(newTab)}
-        sx={{ mt: 0.5 }}
+      {/* Section 2: Tabs */}
+      <Box
+        sx={{
+          mt: 2,
+          backgroundColor: "rgba(255,255,255,0.1)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        }}
       >
-        <Tab label={t("tabs.info.label")} value="info" />
-        <Tab label={t("tabs.timeline.label")} value="timeline" />
-      </Tabs>
+        <Tabs
+          variant="fullWidth"
+          value={tab}
+          onChange={(event, newTab) => navigateToTab(newTab)}
+          sx={{
+            "& .MuiTabs-indicator": {
+              top: 0,
+              bottom: "auto",
+            },
+          }}
+        >
+          <Tab label={t("tabs.info.label")} value="info" />
+          <Tab label={t("tabs.timeline.label")} value="timeline" />
+        </Tabs>
+      </Box>
 
-      <Divider sx={{ mt: 0, mb: 1 }} />
+      {/* Section 3: Tab Content */}
+      <Box sx={{ ...contentPadding, mt: 2 }}>
+        {tab === "info" && <PlayerInfo id={id} stats={stats} />}
+        {tab === "timeline" && <PlayerTimeline id={id} />}
+      </Box>
+    </Box>
+  );
+}
 
-      {tab === "info" && <PlayerInfo id={id} stats={stats} />}
-      {tab === "timeline" && <PlayerTimeline id={id} />}
+const ABOUT_ME_MAX_HEIGHT = 120;
 
-      {/* <Divider sx={{ my: 2 }} />
-      <PlayerInfo id={id} stats={stats} /> */}
-    </>
+function PlayerAboutMe({ aboutMe }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "player.about_me" });
+  const { t: t_ap } = useTranslation(undefined, { keyPrefix: "account.tabs.profile" });
+  const contentRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const hasContent = aboutMe && aboutMe.trim().length > 0;
+  const aboutMeSplit = hasContent ? aboutMe.split("\n") : [];
+
+  const checkOverflow = useCallback(() => {
+    if (contentRef.current) {
+      setIsOverflowing(contentRef.current.scrollHeight > ABOUT_ME_MAX_HEIGHT);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkOverflow();
+  }, [aboutMe, checkOverflow]);
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 2,
+        p: 2,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
+        {t_ap("about_me.label")}
+      </Typography>
+      <Box
+        ref={contentRef}
+        sx={{
+          maxHeight: !isExpanded ? ABOUT_ME_MAX_HEIGHT : "none",
+          overflow: "hidden",
+          transition: "max-height 0.3s ease",
+          position: "relative",
+          flexGrow: 1,
+        }}
+      >
+        {hasContent ? (
+          aboutMeSplit.map((line, i) => (
+            <Typography key={i} variant="body2">
+              {line || "\u00A0"}
+            </Typography>
+          ))
+        ) : (
+          <Typography variant="body2" color="text.disabled" sx={{ fontStyle: "italic" }}>
+            {t("no_about_me")}
+          </Typography>
+        )}
+      </Box>
+      {isOverflowing && (
+        <Typography
+          variant="body2"
+          color="primary"
+          onClick={() => setIsExpanded((prev) => !prev)}
+          textAlign="center"
+          sx={{
+            cursor: "pointer",
+            mt: 0.5,
+            fontWeight: "bold",
+            "&:hover": { textDecoration: "underline" },
+          }}
+        >
+          {isExpanded ? t("show_less") : t("show_all")}
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
+function PlayerDetailsTable({ player, stats, isMdScreen }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "player.details" });
+  const { t: t_a } = useTranslation();
+
+  const items = [];
+
+  if (player.account.country) {
+    items.push(
+      <DetailsRow key="country" label={t("country")} icon={<FontAwesomeIcon icon={faFlag} fixedWidth />}>
+        <Stack direction="row" alignItems="center" gap={0.75}>
+          {COUNTRY_CODES_SHORT[player.account.country] || player.account.country}
+          <LanguageFlag code={player.account.country} showTooltip height="16px" />
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+
+  if (player.account.input_method) {
+    items.push(
+      <DetailsRow
+        key="input-method"
+        label={t("input_method")}
+        icon={<FontAwesomeIcon icon={faGamepad} fixedWidth />}
+      >
+        <Stack direction="row" alignItems="center" gap={0.75}>
+          <span>{t_a("components.input_methods." + player.account.input_method)}</span>
+          <InputMethodIcon method={player.account.input_method} />
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+
+  if (stats?.first_submission_date) {
+    items.push(
+      <DetailsRow
+        key="first-golden"
+        label={t("first_golden")}
+        icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}
+      >
+        {new Date(stats.first_submission_date).toLocaleDateString(navigator.language, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
+      </DetailsRow>,
+    );
+  }
+
+  // Stats
+  items.push(
+    <DetailsRow key="total-time" label={t("total_time")} icon={<FontAwesomeIcon icon={faClock} fixedWidth />}>
+      {secondsToDuration(stats.total_time)}
+    </DetailsRow>,
+  );
+
+  if (stats.account.date_created) {
+    items.push(
+      <DetailsRow
+        key="date-created"
+        label={t("date_created")}
+        icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}
+      >
+        <TimeDiffWithTooltip date={stats.account.date_created} />
+      </DetailsRow>,
+    );
+  }
+
+  // Links
+  if (player.account?.links && player.account.links.length > 0) {
+    items.push(
+      <DetailsRow key="links" label={t("links")} icon={<FontAwesomeIcon icon={faLink} fixedWidth />}>
+        <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
+          {player.account.links.map((link) => (
+            <LinkIcon url={link} />
+          ))}
+        </Stack>
+      </DetailsRow>,
+    );
+  }
+  items.push(
+    <DetailsRow
+      key="personal-tgl"
+      label={t("personal_tgl")}
+      icon={<FontAwesomeIcon icon={faList} fixedWidth />}
+    >
+      <StyledLink to={`/player/${player.id}/top-golden-list`}>
+        <FontAwesomeIcon icon={faGaugeSimpleHigh} fixedWidth /> View
+      </StyledLink>
+    </DetailsRow>,
+  );
+
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr",
+        columnGap: 1,
+        rowGap: 0.5,
+        alignItems: "baseline",
+        minWidth: isMdScreen ? 270 : undefined,
+      }}
+    >
+      {items}
+    </Box>
   );
 }
 
@@ -263,7 +482,14 @@ function SubmissionShowcase({ id }) {
             mdOffset={getOffset(index, submissions.length)}
           >
             <StyledLink to={`/submission/${submission.id}`}>
-              <SubmissionEmbed submission={submission} style={{ width: "100%", maxWidth: "540px" }} />
+              <SubmissionEmbed
+                submission={submission}
+                style={{
+                  width: "100%",
+                  maxWidth: "540px",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              />
             </StyledLink>
           </Grid>
         ))}

@@ -312,8 +312,9 @@ function PostAuthor({ post, noEdited = false, isPreview = false }) {
 }
 
 export function DateRelativeTooltip({ date, variant = "body2", formatter = null, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const dateObj = jsonDateToJsDate(date);
-  const timeAgo = dateToTimeAgoString(dateObj);
+  const timeAgo = dateToTimeAgoString(dateObj, t_g);
   const str = formatter ? formatter(timeAgo) : timeAgo;
   return (
     <TooltipLineBreaks title={dateObj.toLocaleString()}>

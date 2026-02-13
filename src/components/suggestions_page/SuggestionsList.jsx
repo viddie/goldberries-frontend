@@ -98,6 +98,7 @@ export const SuggestionsSearch = memo(function SuggestionsSearch({ search, setSe
 function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
   const { t: t_sv } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const auth = useAuth();
 
@@ -221,7 +222,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
                 arrow
                 placement="top"
               >
-                <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created))}</span>
+                <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created), t_g)}</span>
               </Tooltip>
             </Typography>
           </Stack>

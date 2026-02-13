@@ -52,6 +52,20 @@
       "header": "Something went wrong!",
       "default": "Try refreshing your browser's cache (Ctrl + F5) or ask in #gb-report if the problem persists.",
       "404": "The requested content was not found."
+    },
+    "time_ago": {
+      "years_one": "{{count}} year ago",
+      "years_other": "{{count}} years ago",
+      "months_one": "{{count}} month ago",
+      "months_other": "{{count}} months ago",
+      "days_one": "{{count}} day ago",
+      "days_other": "{{count}} days ago",
+      "hours_one": "{{count}} hour ago",
+      "hours_other": "{{count}} hours ago",
+      "minutes_one": "{{count}} minute ago",
+      "minutes_other": "{{count}} minutes ago",
+      "seconds_one": "{{count}} second ago",
+      "seconds_other": "{{count}} seconds ago"
     }
   },
   "components": {
@@ -1270,6 +1284,22 @@
   "player": {
     "title": "Profile",
     "personal_tgl": "Personal Top Golden List",
+    "details": {
+      "country": "Country",
+      "input_method": "Input Method",
+      "total_goldens": "Total Goldens",
+      "hardest_tier": "Hardest Tier",
+      "first_golden": "First Golden",
+      "personal_tgl": "Personal TGL",
+      "links": "Links",
+      "date_created": "Joined",
+      "total_time": "Total Time"
+    },
+    "about_me": {
+      "no_about_me": "This player hasn't written an about me yet, but I'm sure they are up to some really cool stuff!",
+      "show_all": "Show All",
+      "show_less": "Show Less"
+    },
     "tabs": {
       "info": {
         "label": "Player Info",

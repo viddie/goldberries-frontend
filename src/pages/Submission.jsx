@@ -53,7 +53,7 @@ import { CustomMenu } from "../components/Menu";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getQueryData, useDeleteSubmission, useGetSubmission } from "../hooks/useApi";
-import { jsonDateToJsDate } from "../util/util";
+import { dateToTimeAgoString, jsonDateToJsDate } from "../util/util";
 
 import { FadingMapBanner } from "./Challenge";
 
@@ -523,6 +523,17 @@ export function DateWithTooltip({ date, ...props }) {
   return (
     <TooltipLineBreaks title={tooltip}>
       <span {...props}>{displayDate(date, t_g)}</span>
+    </TooltipLineBreaks>
+  );
+}
+
+export function TimeDiffWithTooltip({ date, ...props }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const jsDate = jsonDateToJsDate(date);
+  const tooltip = date === null || date === undefined ? "" : jsDate.toLocaleString(navigator.language);
+  return (
+    <TooltipLineBreaks title={tooltip}>
+      <span {...props}>{dateToTimeAgoString(jsDate, t_g)}</span>
     </TooltipLineBreaks>
   );
 }
