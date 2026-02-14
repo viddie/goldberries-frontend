@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { usePostChallengeLike } from "../../hooks/useApi";
 import { FormOptions } from "../../util/constants";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
+import { SkullIcon } from "../goldberries";
 
 export function FormWishlistLike({ like, onSave, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.wishlist_like" });
@@ -22,11 +23,13 @@ export function FormWishlistLike({ like, onSave, ...props }) {
       comment: like.comment ?? "",
       time_taken: like.time_taken ? secondsToDuration(like.time_taken) : "",
       state: like.state ?? null,
+      low_death: like.low_death ?? null,
     },
   });
 
   const progress = form.watch("progress");
   const state = form.watch("state");
+  const lowDeath = form.watch("low_death");
 
   const onUpdateSubmit = form.handleSubmit((data) => {
     const timeTakenSeconds = data.time_taken ? durationToSeconds(data.time_taken) : null;
@@ -38,6 +41,7 @@ export function FormWishlistLike({ like, onSave, ...props }) {
       progress: data.progress,
       comment: data.comment.trim() || null,
       time_taken: timeTakenSeconds,
+      low_death: data.progress !== null ? data.low_death : null,
     });
   });
 
@@ -50,7 +54,13 @@ export function FormWishlistLike({ like, onSave, ...props }) {
       progress: null,
       comment: null,
       time_taken: null,
+      low_death: null,
     });
+  };
+
+  const onRemoveProgress = () => {
+    form.setValue("progress", null);
+    form.setValue("low_death", null);
   };
 
   return (
@@ -74,26 +84,24 @@ export function FormWishlistLike({ like, onSave, ...props }) {
           {t("add_progress")}
         </Button>
       ) : (
-        <Stack direction="row" alignItems="center" gap={2} sx={{ mt: 0.5, ml: 1.0 }}>
-          <Slider
-            value={progress}
-            onChange={(_, value) => form.setValue("progress", value)}
-            valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `${value}%`}
-            step={1}
-            min={0}
-            max={100}
-            sx={{ flex: 1 }}
-          />
-          <Typography variant="body2" sx={{ fontWeight: "bold", minWidth: "36px", textAlign: "right" }}>
-            {progress}%
-          </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            color="error"
-            onClick={() => form.setValue("progress", null)}
-          >
+        <Stack direction="column" gap={1} sx={{ mt: 0.5 }}>
+          <Stack direction="row" alignItems="center" gap={2} sx={{ ml: 1.0 }}>
+            <Slider
+              value={progress}
+              onChange={(_, value) => form.setValue("progress", value)}
+              valueLabelDisplay="auto"
+              valueLabelFormat={(value) => `${value}%`}
+              step={1}
+              min={0}
+              max={100}
+              sx={{ flex: 1 }}
+            />
+            <Typography variant="body2" sx={{ fontWeight: "bold", minWidth: "36px", textAlign: "right" }}>
+              {progress}%
+            </Typography>
+            <LowDeathInput value={lowDeath} onChange={(value) => form.setValue("low_death", value)} />
+          </Stack>
+          <Button variant="text" size="small" color="error" fullWidth onClick={onRemoveProgress}>
             {t("remove_progress")}
           </Button>
         </Stack>
@@ -143,12 +151,6 @@ export function FormWishlistLike({ like, onSave, ...props }) {
 
 //#region Constants
 const LIKE_STATES = ["current", "soon", "on_hold", "backlog"];
-const WISHLIST_STATE_COLORS = {
-  current: "#42a5f5",
-  on_hold: "#ef5350",
-  soon: "#d4a000",
-  backlog: "#484848",
-};
 const WISHLIST_STATE_COLORS_ALT = {
   current: "#42a5f5",
   on_hold: "#ef5350",
@@ -187,6 +189,36 @@ function WishlistStateButtons({ value, onChange }) {
           </Button>
         );
       })}
+    </Stack>
+  );
+}
+//#endregion
+
+//#region LowDeathInput
+function LowDeathInput({ value, onChange }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "forms.wishlist_like" });
+
+  return (
+    <Stack direction="row" alignItems="center" gap={0.5}>
+      <SkullIcon height="18px" />
+      <TextField
+        value={value ?? ""}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "") {
+            onChange(null);
+            return;
+          }
+          const parsed = parseInt(raw, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            onChange(parsed);
+          }
+        }}
+        size="small"
+        placeholder={t("low_death_placeholder")}
+        inputProps={{ min: 0, style: { width: "60px", textAlign: "center" } }}
+        sx={{ "& .MuiInputBase-input": { py: 0.5 } }}
+      />
     </Stack>
   );
 }

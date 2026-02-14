@@ -597,6 +597,7 @@
       "remove_progress": "Remove Progress",
       "comment": "Comment",
       "time_taken": "Total Grind Time",
+      "low_death_placeholder": "PB",
       "save": "Save",
       "remove_wishlist": "Remove from Wishlist",
       "feedback": {
@@ -619,7 +620,8 @@
     },
     "wishlist_card": {
       "comment": "Comment"
-    }
+    },
+    "low_death": "{{count}}"
   },
   "hooks": {
     "auth": {

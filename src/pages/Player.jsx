@@ -85,8 +85,7 @@ import {
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
-import { WishlistCard } from "../components/likes";
-import { FormWishlistLike } from "../components/forms/WishlistLike";
+import { WishlistCard, FormWishlistLike } from "../components/likes";
 import { useModal, CustomModal } from "../hooks/useModal";
 
 import { DetailsRow } from "./Challenge";

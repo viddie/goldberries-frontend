@@ -25,6 +25,7 @@ export { ArbitraryIcon } from "./ArbitraryIcon";
 export { ObjectiveIcon } from "./ObjectiveIcon";
 export { EMOTES, WebsiteIcon, MemoWebsiteIcon } from "./WebsiteIcon";
 export { JournalIcon } from "./JournalIcon";
+export { SkullIcon } from "./SkullIcon";
 export { SubmissionEmbed } from "./SubmissionEmbed";
 export { GamebananaEmbed } from "./GamebananaEmbed";
 export { EmoteImage, AnyImage } from "./AnyImage";

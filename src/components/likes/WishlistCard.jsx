@@ -8,7 +8,7 @@ import { getChallengeCampaign, getGamebananaEmbedUrl, secondsToDuration } from "
 import { API_BASE_URL } from "../../util/constants";
 import { PlaceholderImage } from "../PlaceholderImage";
 import { CollapsibleText } from "../basic";
-import { DifficultyChip, ObjectiveIcon } from "../goldberries";
+import { DifficultyChip, ObjectiveIcon, SkullIcon } from "../goldberries";
 import { ChallengeInline } from "../../pages/Player";
 import { useAuth } from "../../hooks/AuthProvider";
 
@@ -66,7 +66,9 @@ export function WishlistCard({ like, onEdit }) {
       {/* Section 3: Progress + Comment */}
       {(like.progress !== null || like.comment) && (
         <Box sx={{ px: 1.5, py: 1 }}>
-          {like.progress !== null && <WishlistProgressBar progress={like.progress} stateColor={stateColor} />}
+          {like.progress !== null && (
+            <WishlistProgressBar progress={like.progress} stateColor={stateColor} lowDeath={like.low_death} />
+          )}
           {like.comment && (
             <Box
               sx={{
@@ -209,39 +211,51 @@ function WishlistBanner({
 //#endregion
 
 //#region WishlistProgressBar
-function WishlistProgressBar({ progress, stateColor }) {
+function WishlistProgressBar({ progress, stateColor, lowDeath }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "likes" });
   const isComplete = progress >= 100;
+  const showLowDeath = lowDeath !== null && lowDeath !== undefined && !isComplete;
 
   return (
-    <Stack direction="row" alignItems="center" gap={1}>
-      <Typography variant="body2" sx={{ fontWeight: "bold", minWidth: "32px", textAlign: "right" }}>
-        {progress}%
-      </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={progress}
-        sx={{
-          flex: 1,
-          height: 8,
-          borderRadius: 4,
-          backgroundColor: "#3d3d3d",
-          "& .MuiLinearProgress-bar": {
-            backgroundColor: stateColor,
+    <Stack direction="row" alignItems="center" gap={2}>
+      <Stack direction="row" alignItems="center" gap={1} sx={{ flex: 1 }}>
+        <Typography variant="body2" sx={{ fontWeight: "bold", minWidth: "32px", textAlign: "right" }}>
+          {progress}%
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            flex: 1,
+            height: 8,
             borderRadius: 4,
-          },
-        }}
-      />
-      {isComplete ? (
-        <ObjectiveIcon
-          objective={{
-            name: "Golden Berry",
-            description: "Golden Berry",
-            icon_url: "/icons/goldenberry-8x.png",
+            backgroundColor: "#3d3d3d",
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: stateColor,
+              borderRadius: 4,
+            },
           }}
-          height="16px"
         />
-      ) : (
-        <FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: "14px", opacity: 0.6 }} />
+        {isComplete ? (
+          <ObjectiveIcon
+            objective={{
+              name: "Golden Berry",
+              description: "Golden Berry",
+              icon_url: "/icons/goldenberry-8x.png",
+            }}
+            height="16px"
+          />
+        ) : (
+          <FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: "14px", opacity: 0.6 }} />
+        )}
+      </Stack>
+      {showLowDeath && (
+        <Stack direction="row" alignItems="center" gap={0.5}>
+          <SkullIcon height="16px" />
+          <Typography variant="body2" sx={{ fontWeight: "bold", fontSize: "0.8rem" }}>
+            {t("low_death", { count: lowDeath })}
+          </Typography>
+        </Stack>
       )}
     </Stack>
   );
