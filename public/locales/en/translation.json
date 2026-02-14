@@ -66,7 +66,9 @@
       "minutes_other": "{{count}} minutes ago",
       "seconds_one": "{{count}} second ago",
       "seconds_other": "{{count}} seconds ago"
-    }
+    },
+    "show_all": "Show All",
+    "show_less": "Show Less"
   },
   "components": {
     "difficulty_select": {
@@ -599,6 +601,9 @@
       "on_hold": "On Hold",
       "soon": "Soon",
       "backlog": "Backlog"
+    },
+    "wishlist_card": {
+      "comment": "Comment"
     }
   },
   "hooks": {
@@ -1284,6 +1289,7 @@
   "player": {
     "title": "Profile",
     "personal_tgl": "Personal Top Golden List",
+    "wishlist": "Wishlist",
     "details": {
       "country": "Country",
       "input_method": "Input Method",

@@ -16,3 +16,4 @@ export { LanguageFlag } from "./LanguageFlag";
 export { CustomIconButton } from "./CustomIconButton";
 export { TooltipLineBreaks } from "./TooltipLineBreaks";
 export { CountrySelect } from "./CountrySelect";
+export { CollapsibleText } from "./CollapsibleText";

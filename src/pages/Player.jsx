@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TimelineOppositeContent, { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -41,6 +41,7 @@ import { Changelog } from "../components/Changelog";
 import {
   getCampaignName,
   getChallengeCampaign,
+  getChallengeNameShort,
   getChallengeSuffix,
   getDifficultyNameShort,
   getMapName,
@@ -64,12 +65,14 @@ import {
   getQueryData,
   useGetAllDifficulties,
   useGetPlayer,
+  useGetPlayerLikes,
   useGetPlayerStats,
   useGetShowcaseSubmissions,
   useGetTopGoldenList,
 } from "../hooks/useApi";
 import {
   BasicContainerBox,
+  CollapsibleText,
   ErrorDisplay,
   HeadTitle,
   LanguageFlag,
@@ -82,6 +85,7 @@ import {
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
+import { WishlistCard } from "../components/likes";
 
 import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
@@ -108,7 +112,7 @@ export function PagePlayer() {
       maxWidth="md"
       sx={{
         // backgroundColor: "rgba(40, 40, 40, 0.5)",
-        backgroundColor: "#262626ff",
+        backgroundColor: "#262626",
         // border: "none",
         p: 0,
         pt: 0,
@@ -174,9 +178,7 @@ export function PlayerDisplay({ id, tab, setTab }) {
           ...contentPadding,
           pt: { xs: 2, sm: 3 },
           pb: 2,
-          backgroundColor: "rgba(255,255,255,0.06)",
-          // borderBottom: "1px solid rgba(255,255,255,0.06)",
-          // boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.2)",
+          backgroundColor: "#333333",
         }}
       >
         {/* Name + badges row */}
@@ -213,11 +215,14 @@ export function PlayerDisplay({ id, tab, setTab }) {
         </Grid>
       </Box>
 
+      {/* Wishlist section */}
+      <PlayerWishlist id={id} sx={contentPadding} />
+
       {/* Section 2: Tabs */}
       <Box
         sx={{
           mt: 0,
-          backgroundColor: "rgba(255,255,255,0.15)",
+          backgroundColor: "#464646",
           boxShadow: "0 4px 4px rgba(0,0,0,0.3)",
         }}
       >
@@ -251,22 +256,8 @@ const ABOUT_ME_MAX_HEIGHT = 120;
 function PlayerAboutMe({ aboutMe }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player.about_me" });
   const { t: t_ap } = useTranslation(undefined, { keyPrefix: "account.tabs.profile" });
-  const contentRef = useRef(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const hasContent = aboutMe && aboutMe.trim().length > 0;
-  const aboutMeSplit = hasContent ? aboutMe.split("\n") : [];
-
-  const checkOverflow = useCallback(() => {
-    if (contentRef.current) {
-      setIsOverflowing(contentRef.current.scrollHeight > ABOUT_ME_MAX_HEIGHT);
-    }
-  }, []);
-
-  useEffect(() => {
-    checkOverflow();
-  }, [aboutMe, checkOverflow]);
 
   return (
     <Box
@@ -280,46 +271,17 @@ function PlayerAboutMe({ aboutMe }) {
         flexDirection: "column",
       }}
     >
-      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-        {t_ap("about_me.label")}
-      </Typography>
-      <Box
-        ref={contentRef}
-        sx={{
-          maxHeight: !isExpanded ? ABOUT_ME_MAX_HEIGHT : "none",
-          overflow: "hidden",
-          transition: "max-height 0.3s ease",
-          position: "relative",
-          flexGrow: 1,
-        }}
-      >
-        {hasContent ? (
-          aboutMeSplit.map((line, i) => (
-            <Typography key={i} variant="body2">
-              {line || "\u00A0"}
-            </Typography>
-          ))
-        ) : (
+      {hasContent ? (
+        <CollapsibleText text={aboutMe} label={t_ap("about_me.label")} maxHeight={ABOUT_ME_MAX_HEIGHT} />
+      ) : (
+        <>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
+            {t_ap("about_me.label")}
+          </Typography>
           <Typography variant="body2" color="text.disabled" sx={{ fontStyle: "italic" }}>
             {t("no_about_me")}
           </Typography>
-        )}
-      </Box>
-      {isOverflowing && (
-        <Typography
-          variant="body2"
-          color="primary"
-          onClick={() => setIsExpanded((prev) => !prev)}
-          textAlign="center"
-          sx={{
-            cursor: "pointer",
-            mt: 0.5,
-            fontWeight: "bold",
-            "&:hover": { textDecoration: "underline" },
-          }}
-        >
-          {isExpanded ? t("show_less") : t("show_all")}
-        </Typography>
+        </>
       )}
     </Box>
   );
@@ -438,6 +400,33 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
       }}
     >
       {items}
+    </Box>
+  );
+}
+
+function PlayerWishlist({ id, sx }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "player" });
+  const wishlistQuery = useGetPlayerLikes(id, true);
+  const wishlistData = getQueryData(wishlistQuery);
+
+  if (wishlistQuery.isLoading) return null;
+  if (wishlistQuery.isError) return null;
+
+  const likes = wishlistData ?? [];
+  if (likes.length === 0) return null;
+
+  return (
+    <Box sx={{ ...sx, pb: 2, backgroundColor: "#333333" }}>
+      <Typography variant="h6" sx={{ mb: 1.5 }}>
+        {t("wishlist")}
+      </Typography>
+      <Grid container spacing={2}>
+        {likes.map((like) => (
+          <Grid key={like.id} xs={12} sm={6}>
+            <WishlistCard like={like} onEdit={() => {}} />
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 }
@@ -1000,7 +989,13 @@ export function TimelineSubmissionPreviewImage({
   );
 }
 
-export function ChallengeInline({ challenge, submission, separateChallenge = false, ...props }) {
+export function ChallengeInline({
+  challenge,
+  submission,
+  separateChallenge = false,
+  showChallenge,
+  ...props
+}) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const map = challenge.map;
   const campaign = getChallengeCampaign(challenge);
@@ -1023,21 +1018,31 @@ export function ChallengeInline({ challenge, submission, separateChallenge = fal
           <StyledLink to={"/map/" + map.id}>{getMapName(map, campaign, false)}</StyledLink>
         </>
       )}
-      {separateChallenge && "/"}
-      {getChallengeSuffix(challenge) !== null && (
-        <Typography variant="body2" color="textSecondary">
-          [{getChallengeSuffix(challenge)}]
-        </Typography>
-      )}
-      {submission ? (
-        <StyledLink to={"/submission/" + submission.id} style={{ lineHeight: "1" }}>
-          <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.3em" />
-        </StyledLink>
-      ) : (
-        <StyledLink to={"/challenge/" + challenge.id} style={{ lineHeight: "0" }}>
-          <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.3em" />
-        </StyledLink>
-      )}
+      {(showChallenge || separateChallenge) && "/"}
+      <Stack direction="row" alignItems="center" columnGap={0.5}>
+        {showChallenge && (
+          <StyledLink to={"/challenge/" + challenge.id}>
+            {getChallengeNameShort(challenge, false, false)}
+          </StyledLink>
+        )}
+        {getChallengeSuffix(challenge) !== null && (
+          <Typography variant="body2" color="textSecondary">
+            [{getChallengeSuffix(challenge)}]
+          </Typography>
+        )}
+        {showChallenge && (
+          <ObjectiveIcon objective={challenge.objective} height="1.1em" style={{ marginBottom: "-2px" }} />
+        )}
+        {submission ? (
+          <StyledLink to={"/submission/" + submission.id} style={{ lineHeight: "1" }}>
+            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
+          </StyledLink>
+        ) : (
+          <StyledLink to={"/challenge/" + challenge.id} style={{ lineHeight: "0" }}>
+            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
+          </StyledLink>
+        )}
+      </Stack>
     </Stack>
   );
 }
