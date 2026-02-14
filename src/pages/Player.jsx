@@ -86,6 +86,8 @@ import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
 import { WishlistCard } from "../components/likes";
+import { FormWishlistLike } from "../components/forms/WishlistLike";
+import { useModal, CustomModal } from "../hooks/useModal";
 
 import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
@@ -408,6 +410,7 @@ function PlayerWishlist({ id, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player" });
   const wishlistQuery = useGetPlayerLikes(id, true);
   const wishlistData = getQueryData(wishlistQuery);
+  const editWishlistModal = useModal();
 
   if (wishlistQuery.isLoading) return null;
   if (wishlistQuery.isError) return null;
@@ -423,10 +426,16 @@ function PlayerWishlist({ id, sx }) {
       <Grid container spacing={2}>
         {likes.map((like) => (
           <Grid key={like.id} xs={12} sm={6}>
-            <WishlistCard like={like} onEdit={() => {}} />
+            <WishlistCard like={like} onEdit={() => editWishlistModal.open(like)} />
           </Grid>
         ))}
       </Grid>
+
+      <CustomModal modalHook={editWishlistModal} options={{ hideFooter: true }}>
+        {editWishlistModal.data && (
+          <FormWishlistLike like={editWishlistModal.data} onSave={() => editWishlistModal.close()} />
+        )}
+      </CustomModal>
     </Box>
   );
 }

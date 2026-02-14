@@ -588,6 +588,21 @@
         "updated": "Badge updated",
         "deleted": "Badge deleted"
       }
+    },
+    "wishlist_like": {
+      "title": "Edit Wishlist Entry",
+      "state": "Status",
+      "progress": "Progress",
+      "add_progress": "Add Progress",
+      "remove_progress": "Remove Progress",
+      "comment": "Comment",
+      "time_taken": "Total Grind Time",
+      "save": "Save",
+      "remove_wishlist": "Remove from Wishlist",
+      "feedback": {
+        "updated": "Wishlist entry updated",
+        "removed": "Wishlist entry removed"
+      }
     }
   },
   "likes": {

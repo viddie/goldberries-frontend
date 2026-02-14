@@ -1191,6 +1191,7 @@ export function usePostChallengeLike(onSuccess) {
     mutationFn: (data) => postChallengeLike(data),
     onSuccess: (response, data) => {
       queryClient.invalidateQueries(["challenge_likes", data.challenge_id]);
+      queryClient.invalidateQueries(["player_likes"]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,

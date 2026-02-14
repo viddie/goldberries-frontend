@@ -1,10 +1,15 @@
 import { MenuItem, Select } from "@mui/material";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const LIKE_STATES = ["current", "on_hold", "soon", "backlog"];
 
 export function LikeStateSelect({ value, onChange, disabled, onOpen, onClose }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes.state" });
+
+  useEffect(() => {
+    if (!value) onChange("backlog");
+  }, []);
 
   return (
     <Select
@@ -30,7 +35,7 @@ export function LikeStateSelect({ value, onChange, disabled, onOpen, onClose }) 
         sx: { zIndex: 1600 },
       }}
     >
-      <MenuItem value="">{t("none")}</MenuItem>
+      {/* <MenuItem value="">{t("none")}</MenuItem> */}
       {LIKE_STATES.map((state) => (
         <MenuItem key={state} value={state}>
           {t(state)}
