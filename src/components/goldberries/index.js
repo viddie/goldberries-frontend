@@ -38,3 +38,4 @@ export {
 } from "./TooltipIcon";
 export { DateAchievedTimePicker } from "./DateAchievedTimePicker";
 export { ProofExternalLinkButton } from "./ProofExternalLinkButton";
+export { ChallengeInline } from "./ChallengeInline";

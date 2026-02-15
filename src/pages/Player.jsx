@@ -41,12 +41,8 @@ import { Changelog } from "../components/Changelog";
 import {
   getCampaignName,
   getChallengeCampaign,
-  getChallengeNameShort,
-  getChallengeSuffix,
   getDifficultyNameShort,
-  getMapName,
   getPlayerNameColorStyle,
-  isMapSameNameAsCampaign,
   secondsToDuration,
 } from "../util/data_util";
 import { API_BASE_URL, DIFF_CONSTS, getNewDifficultyColors } from "../util/constants";
@@ -57,9 +53,9 @@ import {
   SubmissionEmbed,
   SuspendedIcon,
   AccountRoleIcon,
-  ChallengeFcIcon,
   DifficultyChip,
   ObjectiveIcon,
+  ChallengeInline,
 } from "../components/goldberries";
 import {
   getQueryData,
@@ -92,6 +88,7 @@ import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
 import { TimeDiffWithTooltip } from "./Submission";
 
+//#region PagePlayer
 export function PagePlayer() {
   const { id, tab } = useParams();
   const [selectedTab, setSelectedTab] = useState(tab || "info");
@@ -125,7 +122,9 @@ export function PagePlayer() {
     </BasicContainerBox>
   );
 }
+//#endregion
 
+//#region PlayerDisplay
 export function PlayerDisplay({ id, tab, setTab }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player" });
   const { settings } = useAppSettings();
@@ -253,7 +252,9 @@ export function PlayerDisplay({ id, tab, setTab }) {
     </Box>
   );
 }
+//#endregion
 
+//#region Player Header Components
 const ABOUT_ME_MAX_HEIGHT = 120;
 
 function PlayerAboutMe({ aboutMe }) {
@@ -406,7 +407,9 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
     </Box>
   );
 }
+//#endregion
 
+//#region Wishlist
 const WISHLIST_STATE_SORT_ORDER = { current: 0, soon: 1, on_hold: 2, backlog: 3 };
 const WISHLIST_PROMINENT_MAX = 4;
 
@@ -486,7 +489,9 @@ function PlayerWishlistTab({ id }) {
 
   return <WishlistTable likes={tabLikes} />;
 }
+//#endregion
 
+//#region Player Info Tab
 function PlayerInfo({ id, stats }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player.tabs.info" });
   return (
@@ -598,7 +603,7 @@ function PlayerRecentSubmissions({ id }) {
   );
 }
 
-export function DifficultyCountChart({ difficulty_counts }) {
+function DifficultyCountChart({ difficulty_counts }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player.tabs.info.chart" });
   const { settings } = useAppSettings();
   const theme = useTheme();
@@ -688,7 +693,9 @@ export function DifficultyCountChart({ difficulty_counts }) {
     </Stack>
   );
 }
+//#endregion
 
+//#region ExRoleLabel
 function ExRoleLabel({ account }) {
   //A small, fancy label for ex-roles
   const { t } = useTranslation(undefined, { keyPrefix: "components.roles" });
@@ -726,8 +733,9 @@ function ExRoleLabel({ account }) {
     </Stack>
   );
 }
+//#endregion
 
-//#region TIMELINE
+//#region Timeline
 function PlayerTimeline({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player.tabs.timeline" });
   const [filter, setFilter] = useLocalStorage("player_timeline_filter", getDefaultFilter(false));
@@ -1016,7 +1024,7 @@ function TimelineCampaignMultiSubmissions({ campaign, submissions }) {
   );
 }
 
-export function TimelineSubmissionPreviewImage({
+function TimelineSubmissionPreviewImage({
   submission,
   challenge = null,
   campaign = null,
@@ -1055,64 +1063,6 @@ export function TimelineSubmissionPreviewImage({
     <StyledExternalLink href={submission.proof_url} style={linkStyle}>
       {image}
     </StyledExternalLink>
-  );
-}
-
-export function ChallengeInline({
-  challenge,
-  submission,
-  separateChallenge = false,
-  showChallenge,
-  ...props
-}) {
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
-  const map = challenge.map;
-  const campaign = getChallengeCampaign(challenge);
-
-  const nameIsSame = isMapSameNameAsCampaign(map, campaign);
-
-  return (
-    <Stack
-      display={"inline-flex"}
-      direction="row"
-      alignItems="center"
-      columnGap={1}
-      flexWrap="wrap"
-      {...props}
-    >
-      <StyledLink to={"/campaign/" + campaign.id}>{getCampaignName(campaign, t_g, true)}</StyledLink>
-      {!nameIsSame && map && (
-        <>
-          {"/"}
-          <StyledLink to={"/map/" + map.id}>{getMapName(map, campaign, false)}</StyledLink>
-        </>
-      )}
-      {(showChallenge || separateChallenge) && "/"}
-      <Stack direction="row" alignItems="center" columnGap={0.5}>
-        {showChallenge && (
-          <StyledLink to={"/challenge/" + challenge.id}>
-            {getChallengeNameShort(challenge, false, false)}
-          </StyledLink>
-        )}
-        {getChallengeSuffix(challenge) !== null && (
-          <Typography variant="body2" color="textSecondary">
-            [{getChallengeSuffix(challenge)}]
-          </Typography>
-        )}
-        {showChallenge && (
-          <ObjectiveIcon objective={challenge.objective} height="1.1em" style={{ marginBottom: "-2px" }} />
-        )}
-        {submission ? (
-          <StyledLink to={"/submission/" + submission.id} style={{ lineHeight: "1" }}>
-            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-          </StyledLink>
-        ) : (
-          <StyledLink to={"/challenge/" + challenge.id} style={{ lineHeight: "0" }}>
-            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-          </StyledLink>
-        )}
-      </Stack>
-    </Stack>
   );
 }
 

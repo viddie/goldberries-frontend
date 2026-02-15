@@ -9,7 +9,7 @@ import { API_BASE_URL } from "../../util/constants";
 import { PlaceholderImage } from "../PlaceholderImage";
 import { CollapsibleText } from "../basic";
 import { DifficultyChip, ObjectiveIcon, SkullIcon } from "../goldberries";
-import { ChallengeInline } from "../../pages/Player";
+import { ChallengeInline } from "../goldberries";
 import { useAuth } from "../../hooks/AuthProvider";
 
 //#region Constants

@@ -20,8 +20,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { getQueryData, useGetStatsBiggestDifficultyGap } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
 import { DifficultyChip, PlayerChip, PlayerIdSelect } from "../goldberries";
-import { ChallengeInline } from "../../pages/Player";
-
+import { ChallengeInline } from "../goldberries";
 
 const DEFAULT_SHOW_COUNT = 20;
 

@@ -24,7 +24,7 @@ import { getChallengeCampaign, getGamebananaEmbedUrl, secondsToDuration } from "
 import { API_BASE_URL } from "../../util/constants";
 import { PlaceholderImage } from "../PlaceholderImage";
 import { DifficultyChip, SkullIcon } from "../goldberries";
-import { ChallengeInline } from "../../pages/Player";
+import { ChallengeInline } from "../goldberries";
 import { useAuth } from "../../hooks/AuthProvider";
 import { CustomModal, useModal } from "../../hooks/useModal";
 

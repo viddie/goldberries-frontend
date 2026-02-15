@@ -48,9 +48,9 @@ import {
 } from "../components/basic";
 import { DIFFICULTIES } from "../util/constants";
 import { BadgeAsync } from "../components/badge";
+import { ChallengeInline } from "../components/goldberries";
 
 import { CodeBlock } from "./Rules";
-import { ChallengeInline } from "./Player";
 
 export function PagePostList({ type }) {
   const { id } = useParams();
