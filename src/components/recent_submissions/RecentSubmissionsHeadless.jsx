@@ -37,6 +37,7 @@ export function RecentSubmissionsHeadless({
   playerId,
   showChip = false,
   hideIfEmpty = false,
+  paginationOptional = false,
   chipSx = {},
 }) {
   const [page, setPage] = useState(1);
@@ -81,20 +82,31 @@ export function RecentSubmissionsHeadless({
           setPage={setPage}
           setPerPage={setPerPage}
           hasPlayer={playerId !== null}
+          paginationOptional={paginationOptional}
         />
       )}
     </>
   );
 }
-function RecentSubmissionsTable({ verified, data, page, perPage, setPage, setPerPage, hasPlayer = false }) {
+function RecentSubmissionsTable({
+  verified,
+  data,
+  page,
+  perPage,
+  setPage,
+  setPerPage,
+  hasPlayer = false,
+  paginationOptional = false,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const noFoundStr = verified === null ? t("no_pending") : verified ? t("no_verified") : t("no_rejected");
-  const hasMoreThanOnePage = data.max_count > perPage;
+  const hasSubmissions = data.submissions !== null && data.submissions.length > 0;
+  const hasMoreThanOnePage = data.max_count !== null && data.max_count > perPage;
   return (
     <TableContainer component={Paper}>
       <Table size="small">
-        {data.submissions !== null && data.submissions.length !== 0 && (
+        {hasSubmissions && (
           <TableHead>
             <TableRow>
               <TableCell sx={{ pl: 1.5, pr: 0.5 }}>{t_g("submission", { count: 1 })}</TableCell>
@@ -114,7 +126,7 @@ function RecentSubmissionsTable({ verified, data, page, perPage, setPage, setPer
             Array.from({ length: perPage }).map((_, index) => (
               <RecentSubmissionsTableRowFakeout key={index} hasPlayer={hasPlayer} />
             ))
-          ) : data.submissions.length === 0 ? (
+          ) : !hasSubmissions ? (
             <>
               <TableRow>
                 <TableCell colSpan={hasPlayer ? 4 : 3} align="center">
@@ -129,7 +141,7 @@ function RecentSubmissionsTable({ verified, data, page, perPage, setPage, setPer
           )}
         </TableBody>
       </Table>
-      {data.submissions !== null && data.submissions.length !== 0 && (hasMoreThanOnePage || perPage > 15) && (
+      {hasSubmissions && (!paginationOptional || hasMoreThanOnePage || perPage > 25) && (
         <TablePagination
           component="div"
           count={data.max_count ?? -1}

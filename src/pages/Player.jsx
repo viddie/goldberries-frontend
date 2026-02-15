@@ -85,7 +85,7 @@ import {
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
-import { WishlistCard, FormWishlistLike } from "../components/likes";
+import { WishlistCard, WishlistTable, FormWishlistLike } from "../components/likes";
 import { useModal, CustomModal } from "../hooks/useModal";
 
 import { DetailsRow } from "./Challenge";
@@ -240,6 +240,7 @@ export function PlayerDisplay({ id, tab, setTab }) {
         >
           <Tab label={t("tabs.info.label")} value="info" />
           <Tab label={t("tabs.timeline.label")} value="timeline" />
+          <Tab label={t("tabs.wishlist.label")} value="wishlist" />
         </Tabs>
       </Box>
 
@@ -247,6 +248,7 @@ export function PlayerDisplay({ id, tab, setTab }) {
       <Box sx={{ ...contentPadding, mt: 2 }}>
         {tab === "info" && <PlayerInfo id={id} stats={stats} />}
         {tab === "timeline" && <PlayerTimeline id={id} />}
+        {tab === "wishlist" && <PlayerWishlistTab id={id} />}
       </Box>
     </Box>
   );
@@ -405,6 +407,30 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
   );
 }
 
+const WISHLIST_STATE_SORT_ORDER = { current: 0, soon: 1, on_hold: 2, backlog: 3 };
+const WISHLIST_PROMINENT_MAX = 4;
+
+function sortWishlistLikes(likes) {
+  return [...likes].sort((a, b) => {
+    const stateA = WISHLIST_STATE_SORT_ORDER[a.state] ?? 99;
+    const stateB = WISHLIST_STATE_SORT_ORDER[b.state] ?? 99;
+    if (stateA !== stateB) return stateA - stateB;
+    return new Date(b.date_updated) - new Date(a.date_updated);
+  });
+}
+
+function getProminentWishlistLikes(likes) {
+  const sorted = sortWishlistLikes(likes);
+  const nonBacklog = sorted.filter((l) => l.state !== "backlog");
+  return nonBacklog.slice(0, WISHLIST_PROMINENT_MAX);
+}
+
+function getWishlistTabLikes(likes) {
+  const sorted = sortWishlistLikes(likes);
+  const prominentIds = new Set(getProminentWishlistLikes(likes).map((l) => l.id));
+  return sorted.filter((l) => !prominentIds.has(l.id));
+}
+
 function PlayerWishlist({ id, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player" });
   const wishlistQuery = useGetPlayerLikes(id, true);
@@ -415,7 +441,8 @@ function PlayerWishlist({ id, sx }) {
   if (wishlistQuery.isError) return null;
 
   const likes = wishlistData ?? [];
-  if (likes.length === 0) return null;
+  const prominentLikes = getProminentWishlistLikes(likes);
+  if (prominentLikes.length === 0) return null;
 
   return (
     <Box sx={{ ...sx, pb: 2, backgroundColor: "#333333" }}>
@@ -423,7 +450,7 @@ function PlayerWishlist({ id, sx }) {
         {t("wishlist")}
       </Typography>
       <Grid container spacing={2}>
-        {likes.map((like) => (
+        {prominentLikes.map((like) => (
           <Grid key={like.id} xs={12} sm={6}>
             <WishlistCard like={like} onEdit={() => editWishlistModal.open(like)} />
           </Grid>
@@ -437,6 +464,27 @@ function PlayerWishlist({ id, sx }) {
       </CustomModal>
     </Box>
   );
+}
+
+function PlayerWishlistTab({ id }) {
+  const wishlistQuery = useGetPlayerLikes(id, true);
+  const wishlistData = getQueryData(wishlistQuery);
+
+  if (wishlistQuery.isLoading) return <LoadingSpinner />;
+  if (wishlistQuery.isError) return <ErrorDisplay error={wishlistQuery.error} />;
+
+  const likes = wishlistData ?? [];
+  const tabLikes = getWishlistTabLikes(likes);
+
+  if (tabLikes.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+        No additional wishlist entries.
+      </Typography>
+    );
+  }
+
+  return <WishlistTable likes={tabLikes} />;
 }
 
 function PlayerInfo({ id, stats }) {
@@ -525,12 +573,25 @@ function PlayerRecentSubmissions({ id }) {
       <Typography variant="h5" gutterBottom>
         {t("title")}
       </Typography>
-      <RecentSubmissionsHeadless verified={null} playerId={id} showChip hideIfEmpty />
-      <RecentSubmissionsHeadless verified={true} playerId={id} showChip chipSx={{ mt: 2 }} />
+      <RecentSubmissionsHeadless verified={null} playerId={id} showChip hideIfEmpty paginationOptional />
+      <RecentSubmissionsHeadless
+        verified={true}
+        playerId={id}
+        showChip
+        chipSx={{ mt: 2 }}
+        paginationOptional
+      />
 
       {showRejected && (
         <>
-          <RecentSubmissionsHeadless verified={false} playerId={id} showChip hideIfEmpty chipSx={{ mt: 2 }} />
+          <RecentSubmissionsHeadless
+            verified={false}
+            playerId={id}
+            showChip
+            hideIfEmpty
+            chipSx={{ mt: 2 }}
+            paginationOptional
+          />
         </>
       )}
     </>

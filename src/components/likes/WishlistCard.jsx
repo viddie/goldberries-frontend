@@ -13,7 +13,7 @@ import { ChallengeInline } from "../../pages/Player";
 import { useAuth } from "../../hooks/AuthProvider";
 
 //#region Constants
-const WISHLIST_STATE_COLORS = {
+export const WISHLIST_STATE_COLORS = {
   current: "#42a5f5",
   on_hold: "#ef5350",
   soon: "#d4a000",

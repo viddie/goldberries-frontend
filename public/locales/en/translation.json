@@ -1338,6 +1338,9 @@
         "description": "Here is a timeline of everything this player has done!",
         "group_campaigns": "Group submissions from the same campaign",
         "show_difficulty_ratio": "Show thumbnails for this % of visible submissions"
+      },
+      "wishlist": {
+        "label": "Wishlist"
       }
     }
   },
