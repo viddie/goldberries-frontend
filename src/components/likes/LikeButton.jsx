@@ -94,7 +94,9 @@ export function LikeButton({ challengeId, sx }) {
 
     const serverWishlist = ownLike.is_wishlist ?? false;
     const serverState = ownLike.state ?? null;
-    if (localWishlist !== serverWishlist || localState !== serverState) {
+    const wishlistChanged = localWishlist !== serverWishlist;
+    const stateChanged = localState !== serverState;
+    if (wishlistChanged || (localWishlist && stateChanged)) {
       postLikeMutation.mutate({
         id: ownLike.id,
         challenge_id: challengeId,
