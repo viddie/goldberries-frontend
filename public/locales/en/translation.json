@@ -1446,6 +1446,7 @@
         "date_created": "[Verifier Only] Date Created",
         "date_achieved": "Date Achieved",
         "date_achieved_note": "If not set, the current time will be taken as the date that you achieved this challenge. If you enter a very old date here verifiers might request proof for your claim.",
+        "like_challenge": "Did you like the challenge?",
         "button": "Submit",
         "cfc_selector": {
           "regular_clear": "Regular Clear",

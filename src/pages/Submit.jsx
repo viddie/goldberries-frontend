@@ -72,7 +72,6 @@ import { NoteDisclaimer } from "./Challenge";
 import { CharsCountLabel } from "./Suggestions";
 import { NOTIFICATIONS, hasFlag } from "./Account";
 
-
 export function PageSubmit() {
   const { t } = useTranslation(undefined, { keyPrefix: "submit" });
   const { tab, challengeId } = useParams();
@@ -179,6 +178,7 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
       is_personal: false,
       time_taken: "",
       date_achieved: new Date().toISOString(),
+      like_challenge: false,
     },
   });
   const onSubmit = form.handleSubmit((data) => {
@@ -193,6 +193,7 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
       player_id: selectedPlayer.id,
       ...data,
       time_taken: durationToSeconds(data.time_taken),
+      like_challenge: data.like_challenge,
     });
   });
   const errors = form.formState.errors;
@@ -469,12 +470,11 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={12} sm={6} sx={{ mt: 2 }}>
             <TextField
               {...form.register("time_taken", FormOptions.TimeTaken(t_ff))}
               label={t_fs("time_taken")}
               fullWidth
-              sx={{ mt: 2 }}
               InputLabelProps={{ shrink: true }}
               placeholder="(hh:)mm:ss"
               error={!!errors.time_taken}
@@ -484,6 +484,20 @@ export function SingleUserSubmission({ defaultCampaign, defaultMap, defaultChall
                 {errors.time_taken.message}
               </Typography>
             )}
+          </Grid>
+          <Grid item xs={12} sm={6} display="flex" alignItems="center" sx={{ mt: { xs: 0, sm: 2 } }}>
+            <Controller
+              control={form.control}
+              name="like_challenge"
+              render={({ field }) => (
+                <FormControlLabel
+                  onChange={field.onChange}
+                  label={t("like_challenge")}
+                  checked={field.value}
+                  control={<Checkbox />}
+                />
+              )}
+            />
           </Grid>
           <Grid item xs>
             <Controller
