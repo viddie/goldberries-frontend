@@ -73,6 +73,7 @@ import {
   UrlDetailsRow,
 } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
+import { LikesDetailsRow } from "./Map";
 
 export function PageCampaign() {
   const { id, tab } = useParams();
@@ -234,6 +235,20 @@ function CampaignDetailsGrid({ campaign }) {
       ? t("maps_archived", { count: validMaps.length, archived: archivedMapsCount })
       : t("maps", { count: validMaps.length });
 
+  // Count all challenge.likes from every map in the campaign
+  let totalChallenges =
+    campaign.challenges.length + campaign.maps.reduce((sum, map) => sum + map.challenges.length, 0);
+  let totalLikes = campaign.maps.reduce((sum, map) => {
+    const mapLikes = map.challenges.reduce((challengeSum, challenge) => {
+      return challengeSum + challenge.likes;
+    }, 0);
+    return sum + mapLikes;
+  }, 0);
+  totalLikes += campaign.challenges.reduce((challengeSum, challenge) => {
+    return challengeSum + challenge.likes;
+  }, 0);
+  const avgLikes = totalLikes > 0 ? (totalLikes / totalChallenges).toFixed(1) : 0;
+
   const leftItems = [];
   const rightItems = [];
 
@@ -289,6 +304,8 @@ function CampaignDetailsGrid({ campaign }) {
   );
 
   rightItems.push(<UrlDetailsRow key="url" campaign={campaign} />);
+
+  rightItems.push(<LikesDetailsRow key="likes" total={totalLikes} average={avgLikes} />);
 
   rightItems.push(
     <DetailsRow key="tgl" label="">

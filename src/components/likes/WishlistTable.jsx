@@ -47,7 +47,7 @@ export function WishlistTable({ likes }) {
       <TableContainer component={Paper} sx={{ backgroundColor: "transparent" }}>
         <TablePagination
           labelRowsPerPage={t_g("table_rows_per_page")}
-          rowsPerPageOptions={[10, 25, 50, 100]}
+          rowsPerPageOptions={[5, 10, 25, 50]}
           component="div"
           count={likes.length}
           rowsPerPage={rowsPerPage}
@@ -98,7 +98,6 @@ function WishlistTableRow({ like, canEdit, onEdit }) {
   const challenge = like.challenge;
   const map = challenge?.map ?? null;
   const campaign = getChallengeCampaign(challenge);
-  const stateColor = WISHLIST_STATE_COLORS[like.state] ?? "grey";
 
   const bannerSrc = map
     ? API_BASE_URL + "/img/map/" + map.id + "&scale=2"

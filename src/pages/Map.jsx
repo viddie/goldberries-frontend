@@ -15,6 +15,7 @@ import {
   faBasketShopping,
   faEdit,
   faExclamationTriangle,
+  faHeart,
   faInfoCircle,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -57,6 +58,7 @@ import { getQueryData, useGetMap, usePostMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
+import { LikeButton } from "../components/likes";
 
 import { MapNoProgressTooltip } from "./Campaign";
 import {
@@ -186,7 +188,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
         </Box>
       ) : (
         <Box sx={{ ...contentPadding }}>
-          <Box sx={{ p: 1, background: "rgba(0,0,0,0.2)", borderRadius: 1 }}>
+          <Box sx={{ p: 1, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 1 }}>
             <MapChallengeTabs
               selected={selectedChallenge.id}
               setSelected={updateSelectedChallenge}
@@ -221,12 +223,13 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
                 </TooltipLineBreaks>
               </>
             )}
+            <LikeButton challengeId={selectedChallenge.id} />
             {!selectedChallenge.is_rejected && (
               <StyledLink
                 to={"/submit/single-challenge/" + selectedChallenge.id}
                 style={{ marginLeft: "auto", display: isMdScreen ? "block" : "none" }}
               >
-                <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />}>
+                <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} size="small">
                   {t("buttons.submit")}
                 </Button>
               </StyledLink>
@@ -235,7 +238,11 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
               to={"/challenge/" + selectedChallenge.id}
               style={{ marginLeft: isMdScreen && !selectedChallenge.is_rejected ? "0" : "auto" }}
             >
-              <Button variant="text" startIcon={<FontAwesomeIcon icon={faArrowRightToBracket} />}>
+              <Button
+                variant="text"
+                startIcon={<FontAwesomeIcon icon={faArrowRightToBracket} />}
+                size="small"
+              >
                 {t("buttons.view_challenge")}
               </Button>
             </StyledLink>
@@ -272,6 +279,9 @@ function MapDetailsGrid({ map }) {
   const hasLobbyInfo = lobbyInfo !== null && (lobbyInfo.major !== undefined || lobbyInfo.minor !== undefined);
   const mapHasAuthor = map.author_gb_name !== null;
 
+  const totalLikes = map.challenges.reduce((sum, challenge) => sum + challenge.likes, 0);
+  const avgLikes = map.challenges.length > 0 ? (totalLikes / map.challenges.length).toFixed(1) : 0;
+
   const leftItems = [];
   const rightItems = [];
 
@@ -305,8 +315,45 @@ function MapDetailsGrid({ map }) {
   }
 
   rightItems.push(<GoldenChangesDetailsRow key="goldenchanges" map={map} />);
+  rightItems.push(<LikesDetailsRow key="likes" total={totalLikes} average={avgLikes} />);
 
   return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
+}
+
+// challenge.likes -> this displays the total and avg likes for all challenges in the map
+export function LikesDetailsRow({ total, average }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map.info_boxes" });
+
+  const avgIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width="16"
+      height="16"
+    >
+      <circle cx="12" cy="12" r="6" />
+      <line x1="6" y1="18" x2="18" y2="6" />
+    </svg>
+  );
+
+  return (
+    <DetailsRow label={t("total_likes")} icon={<FontAwesomeIcon icon={faHeart} fixedWidth />}>
+      <Stack direction="row" alignItems="center" gap={0.5}>
+        <Typography variant="body2">{total}</Typography>
+        <Stack direction="row" alignItems="center" gap={0.0} sx={{ color: "text.secondary" }}>
+          <Typography variant="body2">(</Typography>
+          {avgIcon}
+          <Typography variant="body2">{average}</Typography>
+          <Typography variant="body2">)</Typography>
+        </Stack>
+      </Stack>
+    </DetailsRow>
+  );
 }
 
 function CollectiblesDetailsRow({ map, collectibles }) {
@@ -398,7 +445,7 @@ function GoldenChangesDetailsRow({ map }) {
   const showChanges = open || settings.general.alwaysShowGoldenChanges;
 
   return (
-    <DetailsRow label={t("label")}>
+    <DetailsRow label={t("label")} icon={<FontAwesomeIcon icon={faInfoCircle} fixedWidth />}>
       {showChanges ? (
         <Typography variant="body2" sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>
           {map.golden_changes ?? t("no_changes")}

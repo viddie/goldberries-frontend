@@ -1300,7 +1300,8 @@
         "label": "Golden Changes",
         "no_changes": "No golden changes",
         "show": "Show"
-      }
+      },
+      "total_likes": "Likes"
     }
   },
   "player": {

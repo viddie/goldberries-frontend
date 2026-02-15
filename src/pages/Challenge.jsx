@@ -316,7 +316,7 @@ function ChallengeDetailsGrid({ map, challenge }) {
   const hasLobbyInfo = lobbyInfo !== null && (lobbyInfo.major !== undefined || lobbyInfo.minor !== undefined);
   const mapHasAuthor = map !== null && map.author_gb_name !== null;
 
-  const showMapRow = map !== null && getMapName(map, campaign) !== campaign.name;
+  const showMapRow = map !== null;
 
   // Build left and right column items
   const leftItems = [];
@@ -390,7 +390,12 @@ function ChallengeDetailsGrid({ map, challenge }) {
 
   if (challenge.is_rejected) {
     rightItems.push(
-      <DetailsRow key="status" label={t("status")}>
+      <DetailsRow
+        key="status"
+        label={t("status")}
+        icon={<FontAwesomeIcon icon={faCircleExclamation} fixedWidth />}
+        sx={{ color: "error.main" }}
+      >
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
           <VerificationStatusChip isVerified={false} size="small" />
           <Typography variant="body2" color="text.secondary">
