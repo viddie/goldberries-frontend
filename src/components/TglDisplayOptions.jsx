@@ -198,6 +198,12 @@ export function TglMoreButton({
               />
             )}
             <BoolOption
+              tKey="show_like_counts"
+              value={localOptions.showLikeCounts}
+              setValue={(newValue) => changedOption("showLikeCounts", newValue)}
+              noNote
+            />
+            <BoolOption
               tKey="stack_tiers"
               value={localOptions.stackTiers}
               setValue={(newValue) => changedOption("stackTiers", newValue)}
@@ -294,6 +300,7 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,
+    showLikeCounts: false,
     highlightPlayerId: playerId,
     version: 3,
   };

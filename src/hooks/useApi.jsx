@@ -1204,6 +1204,7 @@ export function useDeleteChallengeLike(onSuccess) {
     mutationFn: ({ id, challengeId }) => deleteChallengeLike(id),
     onSuccess: (response, { id, challengeId }) => {
       queryClient.invalidateQueries(["challenge_likes", challengeId]);
+      queryClient.invalidateQueries(["player_likes"]);
       if (onSuccess) onSuccess(response);
     },
     onError: errorToast,

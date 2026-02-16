@@ -75,6 +75,7 @@ import { useModal } from "../hooks/useModal";
 import { TimeTakenTiersGraphModal } from "../components/TimeTakenTiersGraph";
 import { FormChallengeWrapper } from "../components/forms/Challenge";
 import { FormSubmissionWrapper } from "../components/forms/Submission";
+import { QuickLikeButton } from "../components/likes";
 
 import { MapDisplay } from "./Map";
 import { ChallengeDisplay } from "./Challenge";
@@ -561,6 +562,7 @@ function ChallengeInfoBox({
 
   const compactMode = options.compactMode;
   const showFractionalTiers = options.showFractionalTiers;
+  const showLikeCounts = options.showLikeCounts;
   const colors = getNewDifficultyColors(settings, tier.id);
 
   const challengeLabel = getChallengeName(challenge, false);
@@ -580,7 +582,7 @@ function ChallengeInfoBox({
   const hideGrindTime = isPlayer && !options.showTimeTaken;
   let columnCount = 3;
   if (hideGrindTime || !isPlayer) columnCount--;
-  if (!showFractionalTiers) columnCount--;
+  if (!showFractionalTiers && !showLikeCounts) columnCount--;
   const columnWidth = 12 / columnCount;
 
   const hideImage = !options.showImages;
@@ -594,6 +596,8 @@ function ChallengeInfoBox({
       }
     }
   };
+
+  const likeReadonly = isPlayer && !auth.isPlayerWithId(firstSubmission.player_id);
 
   let borderColor = new Color(colors.color).alpha(0.6).string();
   let borderColorHover = new Color(colors.color).alpha(1).string();
@@ -699,6 +703,16 @@ function ChallengeInfoBox({
             )}
           </Stack>
           <Box sx={{ flexGrow: 1 }} />
+          {showLikeCounts && (
+            <QuickLikeButton
+              challengeId={challenge.id}
+              likeCount={challenge.likes}
+              readonly={likeReadonly}
+              sx={{ flexShrink: 0 }}
+              adjustLikeCount
+              compact
+            />
+          )}
           {isPlayer && !hideGrindTime && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
           {showFractionalTiers && <DifficultyNumber {...difficultyNumberProps} isCompact />}
           {!isPlayer && <ClearCountLabel number={challenge.data.submission_count} isCompact />}
@@ -767,9 +781,19 @@ function ChallengeInfoBox({
                   {isPlayer && hasGrindTime && <GrindTimeLabel timeTaken={timeTaken} isCompact />}
                 </Grid>
               )}
-              {showFractionalTiers && (
+              {(showFractionalTiers || showLikeCounts) && (
                 <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-                  <DifficultyNumber {...difficultyNumberProps} />
+                  <Stack direction="row" gap={0.5} alignItems="center">
+                    {showLikeCounts && (
+                      <QuickLikeButton
+                        challengeId={challenge.id}
+                        likeCount={challenge.likes}
+                        readonly={likeReadonly}
+                        adjustLikeCount
+                      />
+                    )}
+                    {showFractionalTiers && <DifficultyNumber {...difficultyNumberProps} />}
+                  </Stack>
                 </Grid>
               )}
             </Grid>

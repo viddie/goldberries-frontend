@@ -641,7 +641,7 @@ export const COLLECTIBLES = [
         displayName: "Xaphan Upgrade",
         icon: "/icons/xaphan-upgrade.png",
       },
-      { value: "15", name: "GlyphD Coin", displayName: "GlyphD Coin", icon: "/icons/coin_glyphd.png" },
+      { value: "15", name: "GlyphD Coin", icon: "/icons/coin_glyphd.png" },
       {
         value: "16",
         name: "Guitar Hands",

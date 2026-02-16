@@ -332,6 +332,9 @@
         },
         "highlight_player": {
           "label": "Highlight Player"
+        },
+        "show_like_counts": {
+          "label": "Show Like Counts"
         }
       }
     }
@@ -611,6 +614,7 @@
     "completed": "Completed",
     "not_completed": "Not Completed",
     "no_likes": "None",
+    "sign_in_to_like": "You need to sign in and claim a player to like challenges",
     "state": {
       "none": "No Status",
       "current": "Current",
