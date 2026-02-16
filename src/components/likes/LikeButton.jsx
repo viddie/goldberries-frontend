@@ -1,4 +1,4 @@
-import { faHeart, faInfoCircle, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faInfoCircle, faSpinner, faStarOfLife, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -29,7 +29,9 @@ import { getErrorFromMultiple } from "../basic";
 import { PlayerChip } from "../goldberries";
 
 import { LikeStateSelect } from "./LikeStateSelect";
+import { WISHLIST_STATE_COLORS } from "./WishlistCard";
 
+//#region LikeButton
 export function LikeButton({ challengeId, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes" });
   const auth = useAuth();
@@ -144,7 +146,7 @@ export function LikeButton({ challengeId, sx }) {
     if (isError) return getErrorFromMultiple(challengeQuery, likesQuery);
     return (
       <ClickAwayListener onClickAway={closeTooltip}>
-        <Stack direction="column" gap={1} sx={{ p: 1 }}>
+        <Stack direction="column" gap={1} sx={{ p: 1, width: "fit-content" }}>
           {hasLiked && (
             <>
               <Stack
@@ -176,45 +178,21 @@ export function LikeButton({ challengeId, sx }) {
             </>
           )}
 
-          <Box sx={{ maxHeight: 250, overflowY: "auto", overflowX: "hidden" }}>
-            <Stack direction="row" gap={2}>
-              {/* Completed column */}
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
-                  {t("completed")} ({likesFromCompleted.length}/{challenge?.submissions?.length || 0})
-                </Typography>
-                <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
-                  {likesFromCompleted.length === 0 ? (
-                    <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-                      {t("no_likes")}
-                    </Typography>
-                  ) : (
-                    likesFromCompleted.map((like) => (
-                      <PlayerChip key={like.id} player={like.player} size="small" />
-                    ))
-                  )}
-                </Stack>
-              </Box>
+          <Stack direction="row" gap={2} alignItems="flex-start">
+            {/* Completed column */}
+            <LikeColumn
+              label={`${t("completed")} (${likesFromCompleted.length}/${challenge?.submissions?.length || 0})`}
+              likes={likesFromCompleted}
+              emptyLabel={t("no_likes")}
+            />
 
-              {/* Not completed column */}
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
-                  {t("not_completed")} ({likesFromNotCompleted.length})
-                </Typography>
-                <Stack direction="column" gap={0.5} sx={{ mt: 1 }}>
-                  {likesFromNotCompleted.length === 0 ? (
-                    <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-                      {t("no_likes")}
-                    </Typography>
-                  ) : (
-                    likesFromNotCompleted.map((like) => (
-                      <PlayerChip key={like.id} player={like.player} size="small" />
-                    ))
-                  )}
-                </Stack>
-              </Box>
-            </Stack>
-          </Box>
+            {/* Not completed column */}
+            <LikeColumn
+              label={`${t("not_completed")} (${likesFromNotCompleted.length})`}
+              likes={likesFromNotCompleted}
+              emptyLabel={t("no_likes")}
+            />
+          </Stack>
         </Stack>
       </ClickAwayListener>
     );
@@ -287,3 +265,45 @@ export function LikeButton({ challengeId, sx }) {
     </ButtonGroup>
   );
 }
+//#endregion
+
+//#region LikeColumn
+function LikeColumn({ label, likes, emptyLabel }) {
+  return (
+    <Box>
+      <Typography variant="subtitle2" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
+        {label}
+      </Typography>
+      <Box sx={{ maxHeight: 250, overflowY: "auto", scrollbarGutter: "stable", mt: 1 }}>
+        <Stack direction="column" gap={0.5}>
+          {likes.length === 0 ? (
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+              {emptyLabel}
+            </Typography>
+          ) : (
+            likes.map((like) => <LikePlayerChip key={like.id} like={like} />)
+          )}
+        </Stack>
+      </Box>
+    </Box>
+  );
+}
+//#endregion
+
+//#region LikePlayerChip
+function LikePlayerChip({ like }) {
+  const color = WISHLIST_STATE_COLORS[like.state] ?? "#ffffff";
+  return (
+    <Stack direction="row" alignItems="center" gap={0.5}>
+      <PlayerChip player={like.player} size="small" />
+      {like.is_wishlist && (
+        <FontAwesomeIcon
+          icon={faStarOfLife}
+          size="xs"
+          style={{ color: color, flexShrink: 0, marginRight: 1.0 }}
+        />
+      )}
+    </Stack>
+  );
+}
+//#endregion

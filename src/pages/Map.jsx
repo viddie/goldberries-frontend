@@ -294,7 +294,7 @@ function MapDetailsGrid({ map }) {
   leftItems.push(
     <MapDetailsRow key="map">
       <Stack direction="row" alignItems="center" gap={0.75}>
-        <span>{getMapName(map, campaign)}</span>
+        <span>{getMapName(map, campaign, false)}</span>
         {!map.is_progress && <MapNoProgressTooltip />}
       </Stack>
     </MapDetailsRow>,
