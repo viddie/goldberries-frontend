@@ -103,6 +103,7 @@ export function MultiSubmission() {
         proof_url: mapData.proof_url !== "" ? mapData.proof_url : data.proof_url,
         date_achieved: mapData.date_achieved,
         time_taken: timeTakenFormatted,
+        like_challenge: mapData.like_challenge,
       })
         .then(() => {
           toast.update(toastId, {
@@ -175,6 +176,7 @@ export function MultiSubmission() {
           suggested_difficulty_id: null,
           date_achieved: new Date().toISOString(),
           time_taken: "",
+          like_challenge: false,
         });
       });
     }
@@ -571,7 +573,7 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
                 >
                   <TableCell colSpan={99}>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <DateAchievedTimePicker
                           value={mapData.date_achieved}
                           onChange={(value) => {
@@ -579,7 +581,7 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <TextField
                           value={mapData.time_taken}
                           onChange={(e) =>
@@ -590,6 +592,14 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
                           InputLabelProps={{ shrink: true }}
                           placeholder="(hh:)mm:ss"
                           error={!validTimeTaken}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4} display="flex" alignItems="center">
+                        <FormControlLabel
+                          control={<Checkbox />}
+                          checked={mapData.like_challenge}
+                          onChange={(e, v) => updateMapDataRow(index, { ...mapData, like_challenge: v })}
+                          label={t("liked_challenge")}
                         />
                       </Grid>
                     </Grid>
@@ -635,6 +645,7 @@ const MemoMultiSubmissionMapRow = memo(MultiSubmissionMapRow, (prevProps, newPro
     prevProps.mapData.proof_url === newProps.mapData.proof_url &&
     prevProps.mapData.date_achieved === newProps.mapData.date_achieved &&
     prevProps.mapData.time_taken === newProps.mapData.time_taken &&
+    prevProps.mapData.like_challenge === newProps.mapData.like_challenge &&
     prevProps.multiVideo === newProps.multiVideo &&
     prevProps.index === newProps.index;
   return propsEqual;

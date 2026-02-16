@@ -64,7 +64,7 @@ export function FormWishlistLike({ like, onSave, ...props }) {
   };
 
   return (
-    <form {...props}>
+    <form {...props} onSubmit={onUpdateSubmit}>
       <Typography variant="h6" gutterBottom>
         {t("title")}
       </Typography>
@@ -135,7 +135,14 @@ export function FormWishlistLike({ like, onSave, ...props }) {
       )}
 
       {/* Save Button */}
-      <Button variant="contained" fullWidth color="primary" onClick={onUpdateSubmit} sx={{ mt: 2 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        color="primary"
+        onClick={onUpdateSubmit}
+        sx={{ mt: 2 }}
+      >
         {t("save")}
       </Button>
 

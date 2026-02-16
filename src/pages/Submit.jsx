@@ -1,4 +1,4 @@
-﻿import { Tab, Tabs } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
