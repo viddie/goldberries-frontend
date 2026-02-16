@@ -326,6 +326,7 @@ export const COLLECTIBLES = [
       { value: "18", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
       { value: "19", name: "Rift Golden", icon: "/icons/strawberry-rift.png" },
       { value: "20", name: "Glitchtophen Golden", icon: "/icons/golden-glitchtophen.png" },
+      { value: "21", name: "Neon Birb Golden", icon: "/icons/golden_neonbirb.png" },
     ],
   },
   {
@@ -640,6 +641,15 @@ export const COLLECTIBLES = [
         displayName: "Xaphan Upgrade",
         icon: "/icons/xaphan-upgrade.png",
       },
+      { value: "15", name: "GlyphD Coin", displayName: "GlyphD Coin", icon: "/icons/coin_glyphd.png" },
+      {
+        value: "16",
+        name: "Guitar Hands",
+        displayName: "Guitar Hands",
+        icon: "/icons/haolk-guitarhands.png",
+      },
+      { value: "17", name: "Lost Bib", displayName: "Lost Bib", icon: "/icons/haolk-lostbib.png" },
+      { value: "18", name: "Moon Shoes", displayName: "Moon Shoes", icon: "/icons/haolk-moonshoes.png" },
     ],
   },
 ];
