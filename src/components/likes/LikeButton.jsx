@@ -42,6 +42,7 @@ export function LikeButton({ challengeId, sx }) {
   const wishlistInitialized = useRef(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [selectOpen, setSelectOpen] = useState(false);
+  const likeButtonRef = useRef(null);
 
   const challengeQuery = useGetChallenge(challengeId);
   const likesQuery = useGetChallengeLikes(challengeId);
@@ -108,10 +109,15 @@ export function LikeButton({ challengeId, sx }) {
     }
   };
 
-  const closeTooltip = () => {
+  const closeTooltip = (event) => {
     if (selectOpen) return;
+    // If the click landed on the like button, skip saving wishlist changes
+    // because the like is about to be toggled (potentially deleted)
+    const clickedLikeButton = event && likeButtonRef.current?.contains(event.target);
     if (infoOpen) {
-      handleTooltipClose();
+      if (!clickedLikeButton) {
+        handleTooltipClose();
+      }
       setInfoOpen(false);
     }
   };
@@ -231,6 +237,7 @@ export function LikeButton({ challengeId, sx }) {
   return (
     <ButtonGroup variant={buttonVariant} color={buttonColor} size="small" sx={sx}>
       <Button
+        ref={likeButtonRef}
         onClick={onLikeButtonClick}
         disabled={isLikeButtonDisabled}
         startIcon={<FontAwesomeIcon icon={faHeart} />}

@@ -24,13 +24,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 
-import {
-  getCampaignName,
-  getChallengeFcShort,
-  getChallengeNameShort,
-  getMapLobbyInfo,
-  getMapName,
-} from "../util/data_util";
+import { getCampaignName, getChallengeNameShort, getMapLobbyInfo, getMapName } from "../util/data_util";
 import {
   BasicContainerBox,
   ErrorDisplay,
@@ -209,7 +203,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
               height="1.3em"
             />
             <ChallengeFcIcon challenge={selectedChallenge} showClear height="1.3em" />
-            <span>{getChallengeFcShort(selectedChallenge)}</span>
+            {/* <span>{getChallengeFcShort(selectedChallenge)}</span> */}
             <DifficultyChip difficulty={selectedChallenge.difficulty} />
             <CalculatedFractionalTierChip challenge={selectedChallenge} />
             {selectedChallenge.reject_note && (
