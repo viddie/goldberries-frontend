@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton, useTheme } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -27,7 +27,6 @@ export function QuickLikeButton({
   sx,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes" });
-  const theme = useTheme();
   const auth = useAuth();
 
   playerId = playerId ?? auth.user?.player_id;
@@ -68,49 +67,48 @@ export function QuickLikeButton({
 
   const icon = hasLiked ? faHeart : faHeartOutline;
   color = color ?? LIKE_COLOR;
-  const textColor = hasLiked ? theme.palette.getContrastText(color) : color;
   const disabled = readonly ? false : isMutating || playerLikesQuery.isLoading;
 
   const displayCount = (likeCount ?? 0) + likeAdjustment;
 
   const size = compact ? "22px" : "26px";
   const iconSize = compact ? "1.0rem" : "1.25rem";
-  const fontSize = compact ? "0.45rem" : "0.50rem";
-  const mt = compact ? "-1px" : "0px";
 
   return (
-    <IconButton
-      size="small"
-      onClick={handleClick}
-      disabled={disabled}
-      sx={{
-        position: "relative",
-        width: size,
-        height: size,
-        p: 0,
-        cursor: readonly ? "default" : "pointer",
-        color: color,
-        "&:hover": readonly ? { backgroundColor: "transparent" } : undefined,
-        ...sx,
+    <Tooltip
+      title={t("quick_like_label", { count: displayCount })}
+      arrow
+      placement="top"
+      slotProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: "rgba(30, 30, 30, 1)",
+            "& .MuiTooltip-arrow": {
+              color: "rgba(30, 30, 30, 1)",
+            },
+            position: "relative",
+            top: "8px",
+          },
+        },
       }}
     >
-      <FontAwesomeIcon icon={icon} style={{ fontSize: iconSize }} />
-      <span
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          fontSize: fontSize,
-          fontWeight: "bold",
-          lineHeight: 1,
-          color: textColor,
-          pointerEvents: "none",
-          marginTop: mt,
+      <IconButton
+        size="small"
+        onClick={handleClick}
+        disabled={disabled}
+        sx={{
+          position: "relative",
+          width: size,
+          height: size,
+          p: 0,
+          cursor: readonly ? "default" : "pointer",
+          color: color,
+          "&:hover": readonly ? { backgroundColor: "transparent" } : undefined,
+          ...sx,
         }}
       >
-        {displayCount}
-      </span>
-    </IconButton>
+        <FontAwesomeIcon icon={icon} style={{ fontSize: iconSize }} />
+      </IconButton>
+    </Tooltip>
   );
 }

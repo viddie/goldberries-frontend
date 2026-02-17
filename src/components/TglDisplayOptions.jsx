@@ -300,7 +300,7 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,
-    showLikeCounts: false,
+    showLikeCounts: true,
     highlightPlayerId: playerId,
     version: 3,
   };

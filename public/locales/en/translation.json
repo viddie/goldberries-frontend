@@ -625,7 +625,8 @@
     "wishlist_card": {
       "comment": "Comment"
     },
-    "low_death": "{{count}}"
+    "low_death": "{{count}}",
+    "quick_like_label": "Total Likes: {{count}}"
   },
   "hooks": {
     "auth": {
