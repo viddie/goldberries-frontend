@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -18,16 +18,19 @@ const LIKE_COLOR = "#5c9eff";
 
 export function QuickLikeButton({
   challengeId,
+  playerId = null,
   likeCount,
+  color = null,
   readonly = false,
   adjustLikeCount = false,
   compact = false,
   sx,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "likes" });
+  const theme = useTheme();
   const auth = useAuth();
 
-  const playerId = auth.user?.player_id;
+  playerId = playerId ?? auth.user?.player_id;
   const playerLikesQuery = useGetPlayerLikes(playerId, false);
   const playerLikes = getQueryData(playerLikesQuery) ?? [];
 
@@ -64,8 +67,8 @@ export function QuickLikeButton({
   };
 
   const icon = hasLiked ? faHeart : faHeartOutline;
-  const heartColor = LIKE_COLOR;
-  const textColor = hasLiked ? "#fff" : LIKE_COLOR;
+  color = color ?? LIKE_COLOR;
+  const textColor = hasLiked ? theme.palette.getContrastText(color) : color;
   const disabled = readonly ? false : isMutating || playerLikesQuery.isLoading;
 
   const displayCount = (likeCount ?? 0) + likeAdjustment;
@@ -73,11 +76,12 @@ export function QuickLikeButton({
   const size = compact ? "22px" : "26px";
   const iconSize = compact ? "1.0rem" : "1.25rem";
   const fontSize = compact ? "0.45rem" : "0.50rem";
+  const mt = compact ? "-1px" : "0px";
 
   return (
     <IconButton
       size="small"
-      onClick={readonly ? undefined : handleClick}
+      onClick={handleClick}
       disabled={disabled}
       sx={{
         position: "relative",
@@ -85,7 +89,7 @@ export function QuickLikeButton({
         height: size,
         p: 0,
         cursor: readonly ? "default" : "pointer",
-        color: heartColor,
+        color: color,
         "&:hover": readonly ? { backgroundColor: "transparent" } : undefined,
         ...sx,
       }}
@@ -102,7 +106,7 @@ export function QuickLikeButton({
           lineHeight: 1,
           color: textColor,
           pointerEvents: "none",
-          // marginTop: "-1px",
+          marginTop: mt,
         }}
       >
         {displayCount}

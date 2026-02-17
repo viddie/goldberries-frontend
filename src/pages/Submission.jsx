@@ -150,35 +150,35 @@ export function SubmissionDisplay({ id, onDelete }) {
       ) : null}
 
       {/* Breadcrumbs + modify button */}
-      {challenge !== null && (
-        <Box sx={{ ...contentPadding, mb: 1.5 }}>
-          <Stack direction="row" alignItems="center" gap={1}>
+      <Box sx={{ ...contentPadding, mb: 1.5 }}>
+        <Stack direction="row" alignItems="center" gap={1}>
+          {challenge !== null && (
             <GoldberriesBreadcrumbs
               campaign={campaign}
               map={map}
               challenge={challenge}
               submission={submission}
             />
-            <Box flexGrow={1} />
-            {(isHelper || isOwnSubmission) && (
-              <CustomMenu
-                title={t("buttons.modify")}
-                variant="outlined"
-                items={[
-                  { icon: faEdit, text: t("buttons.edit"), onClick: () => editModal.open(submission) },
-                  { divider: true },
-                  {
-                    icon: faTrash,
-                    text: t("buttons.delete"),
-                    color: "error",
-                    onClick: () => deleteModal.open(submission),
-                  },
-                ]}
-              />
-            )}
-          </Stack>
-        </Box>
-      )}
+          )}
+          <Box flexGrow={1} />
+          {(isHelper || isOwnSubmission) && (
+            <CustomMenu
+              title={t("buttons.modify")}
+              variant="outlined"
+              items={[
+                { icon: faEdit, text: t("buttons.edit"), onClick: () => editModal.open(submission) },
+                { divider: true },
+                {
+                  icon: faTrash,
+                  text: t("buttons.delete"),
+                  color: "error",
+                  onClick: () => deleteModal.open(submission),
+                },
+              ]}
+            />
+          )}
+        </Stack>
+      </Box>
 
       {/* Video embed - full width */}
       <Box sx={{ "& iframe": { border: "none" } }}>

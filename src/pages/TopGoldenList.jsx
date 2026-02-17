@@ -706,7 +706,9 @@ function ChallengeInfoBox({
           {showLikeCounts && (
             <QuickLikeButton
               challengeId={challenge.id}
+              playerId={isPlayer ? firstSubmission.player_id : null}
               likeCount={challenge.likes}
+              color={colors.color}
               readonly={likeReadonly}
               sx={{ flexShrink: 0 }}
               adjustLikeCount
@@ -783,11 +785,13 @@ function ChallengeInfoBox({
               )}
               {(showFractionalTiers || showLikeCounts) && (
                 <Grid item xs={columnWidth} display="flex" alignItems="flex-end" justifyContent="flex-end">
-                  <Stack direction="row" gap={0.5} alignItems="center">
+                  <Stack direction="row" gap={1} alignItems="center">
                     {showLikeCounts && (
                       <QuickLikeButton
                         challengeId={challenge.id}
+                        playerId={isPlayer ? firstSubmission.player_id : null}
                         likeCount={challenge.likes}
+                        color={colors.color}
                         readonly={likeReadonly}
                         adjustLikeCount
                       />
