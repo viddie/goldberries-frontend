@@ -224,6 +224,7 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
         text += " " + getMapName(challenge.map, campaign);
       }
       text += " " + getCampaignName(campaign, t_g, true);
+      text += " " + challenge.objective.name;
     } else {
       difficulty = submission.suggested_difficulty;
       text += "New Challenge: " + submission.new_challenge.name;
