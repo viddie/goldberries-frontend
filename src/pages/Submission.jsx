@@ -150,7 +150,7 @@ export function SubmissionDisplay({ id, onDelete }) {
       ) : null}
 
       {/* Breadcrumbs + modify button */}
-      <Box sx={{ ...contentPadding, mb: 1.5 }}>
+      <Box sx={{ ...contentPadding, mb: 1.5, mt: challenge === null ? 1.5 : 0 }}>
         <Stack direction="row" alignItems="center" gap={1}>
           {challenge !== null && (
             <GoldberriesBreadcrumbs
@@ -159,6 +159,11 @@ export function SubmissionDisplay({ id, onDelete }) {
               challenge={challenge}
               submission={submission}
             />
+          )}
+          {challenge === null && (
+            <Typography variant="h6" component="h1" sx={{ fontWeight: "bold" }}>
+              {t("details.new_challenge")}
+            </Typography>
           )}
           <Box flexGrow={1} />
           {(isHelper || isOwnSubmission) && (
