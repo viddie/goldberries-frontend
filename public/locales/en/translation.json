@@ -334,7 +334,7 @@
           "label": "Highlight Player"
         },
         "show_like_counts": {
-          "label": "Show Like Counts"
+          "label": "Show Like Button"
         }
       }
     }

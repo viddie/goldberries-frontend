@@ -29,6 +29,7 @@ export const getDefaultSettings = () => {
         showOutline: true,
       },
       difficultyColors: {
+        26: "",
         25: "",
         24: "",
         2: "",
@@ -106,6 +107,7 @@ export const COLOR_PRESETS = [
     name: "Default",
     disabled: false,
     colors: {
+      26: "",
       25: "",
       24: "",
       2: "",
@@ -135,6 +137,7 @@ export const COLOR_PRESETS = [
     name: "Alternate Colors",
     disabled: false,
     colors: {
+      26: "",
       25: "",
       24: "#ff76cc",
       2: "#ff97d8",
@@ -164,6 +167,7 @@ export const COLOR_PRESETS = [
     name: "Protanopia",
     disabled: true,
     colors: {
+      26: "",
       25: "",
       24: "",
       2: "",
@@ -193,6 +197,7 @@ export const COLOR_PRESETS = [
     name: "Deuteranopia",
     disabled: true,
     colors: {
+      26: "",
       25: "",
       24: "",
       2: "",
@@ -222,6 +227,7 @@ export const COLOR_PRESETS = [
     name: "Triatanopia",
     disabled: true,
     colors: {
+      26: "",
       25: "",
       24: "",
       2: "",

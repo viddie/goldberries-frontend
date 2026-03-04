@@ -141,6 +141,14 @@ export function SubmissionFilter({
         filter.filter_version = 3;
       }
 
+      if (filter.filter_version === 3) {
+        console.log("Updating filter from version 3 to 4");
+        if (filter.max_diff_id === 25) {
+          filter.max_diff_id = 26;
+        }
+        filter.filter_version = 4;
+      }
+
       filter.filter_version = defaultFilter.filter_version;
       setFilter({ ...filter });
     }
@@ -454,6 +462,6 @@ export function getDefaultFilter(isOverall) {
     end_date: null,
     country: null,
     input_method: null,
-    filter_version: 3, //Version of the filter structure, used for future changes
+    filter_version: 4, //Version of the filter structure, used for future changes
   };
 }

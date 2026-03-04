@@ -98,11 +98,24 @@ export const FormOptions = {
   }),
 };
 
+/*
+Future colors:
+t23: #a15eff
+t24: #845bff
+*/
 export const DIFFICULTIES = {
+  26: {
+    color: "#bd60ff",
+    name: "Tier 22",
+    sort: 22,
+    old_name: "",
+    old_name_label_color: "#ffffff",
+    shares: 4,
+  },
   25: {
     color: "#d863ff",
-    name: "Tier 21+",
-    fractional_name_override: "Tier 21",
+    name: "Tier 21",
+    // fractional_name_override: "Tier 21",
     sort: 21,
     old_name: "",
     old_name_label_color: "#ffffff",
@@ -299,7 +312,7 @@ export const DIFFICULTIES = {
     sort: 0,
     old_name: "Trivial",
     old_name_label_color: "#6f6f6f",
-    shares: 6,
+    shares: 4,
   },
 
   //Undetermined
@@ -309,7 +322,7 @@ export const DIFFICULTIES = {
     sort: -1,
     old_name: "Undetermined",
     old_name_label_color: "#6f6f6f",
-    shares: 6,
+    shares: 4,
   },
 };
 
@@ -343,7 +356,7 @@ export function getDifficultySubtierShares(id) {
 //Some difficulty details being used in the frontend
 const DIFF_CONSTS_ = {
   //Difficulty ID constants
-  HIGHEST_TIER_ID: 25,
+  HIGHEST_TIER_ID: 26,
   TRIVIAL_ID: 20,
   UNTIERED_ID: 19,
   TIER_4_ID: 17,
@@ -353,7 +366,7 @@ const DIFF_CONSTS_ = {
   TIERED_SORT_START: 1,
   OLD_TIERED_SORT_START: 4,
   UNTIERED_SORT: 0,
-  MAX_SORT: 21,
+  MAX_SORT: 22,
   MIN_SORT: -1,
 
   //References, added here for intellisense
@@ -411,7 +424,7 @@ export function getDifficultiesSorted() {
 }
 
 export const DIFFICULTY_STACKS = [
-  [25, 24, 2, 3, 23],
+  [26, 25, 24, 2, 3, 23],
   [4, 5, 6],
   [7, 8, 9],
   [10, 11, 12],
