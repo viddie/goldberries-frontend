@@ -6,6 +6,7 @@ import {
   faArrowRightArrowLeft,
   faBan,
   faBroom,
+  faCodeMerge,
   faSpinner,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +14,7 @@ import {
 import { useRunAdminAction } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
 import { BasicContainerBox, HeadTitle } from "../../components/basic";
+import { PlayerIdSelect } from "../../components/goldberries";
 
 export function PageManageActions() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.actions" });
@@ -154,7 +156,25 @@ const HELPER_ACTIONS = [
   },
 ];
 
-const VERIFIER_ACTIONS = [];
+const VERIFIER_ACTIONS = [
+  {
+    category: "players",
+    actions: [
+      {
+        key: "merge_players",
+        name: "Merge Players",
+        description:
+          "Merge all submissions from one player into a base player, then delete the merge player.",
+        icon: faCodeMerge,
+        dangerous: true,
+        params: [
+          { key: "base_player_id", label: "Base Player", type: "player" },
+          { key: "merge_player_id", label: "Merge Player", type: "player" },
+        ],
+      },
+    ],
+  },
+];
 
 const ADMIN_ACTIONS = [
   {
@@ -284,18 +304,31 @@ function AdminActionButton({ action, onRun, disabled }) {
       </Stack>
       {showParams && (
         <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ pl: 1 }}>
-          {action.params.map((param) => (
-            <TextField
-              key={param.key}
-              label={param.label}
-              size="small"
-              type={param.type === "number" ? "number" : "text"}
-              value={paramValues[param.key] ?? ""}
-              onChange={(e) => handleParamChange(param.key, e.target.value)}
-              disabled={isConfirming}
-              sx={{ minWidth: 120 }}
-            />
-          ))}
+          {action.params.map((param) =>
+            param.type === "player" ? (
+              <PlayerIdSelect
+                key={param.key}
+                type="all"
+                label={param.label}
+                value={paramValues[param.key] ?? null}
+                onChange={(e, newValue) => handleParamChange(param.key, newValue)}
+                disabled={isConfirming}
+                size="small"
+                sx={{ minWidth: 200 }}
+              />
+            ) : (
+              <TextField
+                key={param.key}
+                label={param.label}
+                size="small"
+                type={param.type === "number" ? "number" : "text"}
+                value={paramValues[param.key] ?? ""}
+                onChange={(e) => handleParamChange(param.key, e.target.value)}
+                disabled={isConfirming}
+                sx={{ minWidth: 120 }}
+              />
+            ),
+          )}
         </Stack>
       )}
     </Stack>
