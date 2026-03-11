@@ -491,6 +491,11 @@ export const COLLECTIBLES = [
         name: "Megalophobia White Heart",
         icon: "/icons/crystal-heart-megalophobia-white.png",
       },
+      {
+        value: "12",
+        name: "CTSE Heart",
+        icon: "/icons/crystal-heart-ctse.png",
+      },
     ],
   },
   {
@@ -565,6 +570,12 @@ export const COLLECTIBLES = [
         name: "Death Pon",
         displayName: "Death Pon",
         icon: "/icons/deathpon.png",
+      },
+      {
+        value: "16",
+        name: "Redless Berry",
+        displayName: "Redless Berry",
+        icon: "/icons/redless_berry.png",
       },
     ],
   },
@@ -650,6 +661,7 @@ export const COLLECTIBLES = [
       },
       { value: "17", name: "Lost Bib", displayName: "Lost Bib", icon: "/icons/haolk-lostbib.png" },
       { value: "18", name: "Moon Shoes", displayName: "Moon Shoes", icon: "/icons/haolk-moonshoes.png" },
+      { value: "19", name: "X-ray Visor", displayName: "X-ray Visor", icon: "/icons/haolk-xrayvisor.png" },
     ],
   },
 ];
