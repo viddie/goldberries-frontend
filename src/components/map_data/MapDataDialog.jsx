@@ -1,8 +1,51 @@
-import { Box, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tabs,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getQueryData, useGetMapData } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
+
+import { MapDataMinimap } from "./MapDataMinimap";
+
+//#region Collectible definitions
+const COLLECTIBLE_DEFS = [
+  {
+    name: "Golden Berry",
+    entityName: "goldenBerry",
+    match: () => true,
+  },
+  {
+    name: "Strawberry",
+    entityName: "strawberry",
+    match: (attr) => !attr.moon && !attr.winged,
+  },
+  {
+    name: "Moon Berry",
+    entityName: "strawberry",
+    match: (attr) => !!attr.moon && !attr.winged,
+  },
+  {
+    name: "Winged Golden",
+    entityName: "strawberry",
+    match: (attr) => !attr.moon && !!attr.winged,
+  },
+];
+//#endregion
 
 export function MapDataDialog({ mapId, hash, campaignId }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data" });
@@ -10,29 +53,474 @@ export function MapDataDialog({ mapId, hash, campaignId }) {
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
 
+  const { rooms, collectibles } = useMemo(() => {
+    if (!mapData) return { rooms: [], collectibles: [] };
+    return {
+      rooms: extractRooms(mapData),
+      collectibles: extractCollectibles(mapData),
+    };
+  }, [mapData]);
+
   return (
     <Stack spacing={2}>
       <Typography variant="h6">{t("title")}</Typography>
 
       {query.isLoading && <LoadingSpinner />}
       {query.isError && <ErrorDisplay error={query.error} />}
+
       {mapData && (
-        <Box
-          component="pre"
-          sx={{
-            p: 1.5,
-            borderRadius: 1,
-            backgroundColor: "rgba(0,0,0,0.3)",
-            overflow: "auto",
-            maxHeight: 500,
-            fontSize: "0.8rem",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-          }}
-        >
-          {JSON.stringify(mapData, null, 2)}
-        </Box>
+        <>
+          {/* Minimap */}
+          <MapDataMinimap mapData={mapData} />
+
+          {/* Room List */}
+          <RoomListSection rooms={rooms} />
+
+          {/* Collectibles */}
+          <CollectiblesTable collectibles={collectibles} />
+        </>
       )}
     </Stack>
   );
 }
+
+//#region Room List
+function RoomListSection({ rooms }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.rooms" });
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
+  if (rooms.length === 0) return null;
+
+  const selectedRoom = selectedIndex !== null ? rooms[selectedIndex] : null;
+
+  return (
+    <Box>
+      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5 }}>
+        {t("title", { count: rooms.length })}
+      </Typography>
+      <Stack direction="row" gap={2} alignItems="flex-start">
+        <TableContainer
+          sx={{
+            width: "fit-content",
+            flexShrink: 0,
+            borderRadius: 1,
+            backgroundColor: "rgba(0,0,0,0.2)",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t("col_name")}</TableCell>
+                <TableCell>{t("col_position")}</TableCell>
+                <TableCell>{t("col_size")}</TableCell>
+                <TableCell align="right">{t("col_entities")}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rooms.map((room, index) => (
+                <TableRow
+                  key={index}
+                  hover
+                  selected={selectedIndex === index}
+                  onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
+                      {room.name}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+                      {room.x}, {room.y}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+                      {room.width}×{room.height}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">{room.entityCount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {selectedRoom && <RoomDetailsPanel room={selectedRoom} />}
+      </Stack>
+    </Box>
+  );
+}
+//#endregion
+
+//#region Room Details Panel
+function RoomDetailsPanel({ room }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.room_details" });
+  const [tab, setTab] = useState("entities");
+
+  return (
+    <Box
+      sx={{
+        flex: 1,
+        minWidth: 0,
+        borderRadius: 1,
+        backgroundColor: "rgba(0,0,0,0.2)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        overflow: "hidden",
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-around"
+        sx={{ p: 1, borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <SolidTilesCanvas solidsText={room.solidsText} roomWidth={room.width} />
+      </Stack>
+
+      <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth" sx={{ minHeight: 36 }}>
+        <Tab label={t("tab_entities")} value="entities" sx={{ minHeight: 36, py: 0 }} />
+        <Tab label={t("tab_triggers")} value="triggers" sx={{ minHeight: 36, py: 0 }} />
+      </Tabs>
+      <Box sx={{ p: 1 }}>
+        {tab === "entities" && <EntitiesTab entities={room.entities} />}
+        {tab === "triggers" && <TriggersTab triggers={room.triggers} />}
+      </Box>
+    </Box>
+  );
+}
+
+function EntitiesTab({ entities }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.room_details" });
+
+  if (entities.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ p: 1 }}>
+        {t("no_entities")}
+      </Typography>
+    );
+  }
+
+  return (
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>{t("col_name")}</TableCell>
+            <TableCell>{t("col_position")}</TableCell>
+            <TableCell width={1}></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {entities.map((e, i) => (
+            <EntityRow key={i} entity={e} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function EntityRow({ entity }) {
+  const { x, y, ...rest } = entity.attributes;
+  // Remove id and position from extra attributes
+  const { id: _id, ...extra } = rest;
+  const hasExtra = Object.keys(extra).length > 0;
+
+  const tooltipContent = hasExtra
+    ? Object.entries(extra)
+        .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+        .join("\n")
+    : "";
+
+  return (
+    <TableRow>
+      <TableCell sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.8rem" }}>
+          {entity.name}
+        </Typography>
+      </TableCell>
+      <TableCell sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+          {x ?? "?"}, {y ?? "?"}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        {hasExtra && (
+          <Tooltip
+            title={
+              <span style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                {tooltipContent}
+              </span>
+            }
+            arrow
+          >
+            <span style={{ display: "inline-flex", cursor: "help", opacity: 0.6 }}>
+              <FontAwesomeIcon icon={faInfoCircle} size="sm" />
+            </span>
+          </Tooltip>
+        )}
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function TriggersTab({ triggers }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.room_details" });
+
+  if (triggers.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ p: 1 }}>
+        {t("no_triggers")}
+      </Typography>
+    );
+  }
+
+  return (
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>{t("col_name")}</TableCell>
+            <TableCell>{t("col_position")}</TableCell>
+            <TableCell>{t("col_size")}</TableCell>
+            <TableCell width={1}></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {triggers.map((e, i) => (
+            <TriggerRow key={i} trigger={e} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function TriggerRow({ trigger }) {
+  const { x, y, width, height, ...rest } = trigger.attributes;
+  const { id: _id, ...extra } = rest;
+  const hasExtra = Object.keys(extra).length > 0;
+
+  const tooltipContent = hasExtra
+    ? Object.entries(extra)
+        .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+        .join("\n")
+    : "";
+
+  return (
+    <TableRow>
+      <TableCell sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.8rem" }}>
+          {trigger.name}
+        </Typography>
+      </TableCell>
+      <TableCell sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+          {x ?? "?"}, {y ?? "?"}
+        </Typography>
+      </TableCell>
+      <TableCell sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+          {width ?? "?"}×{height ?? "?"}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        {hasExtra && (
+          <Tooltip
+            title={
+              <span style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                {tooltipContent}
+              </span>
+            }
+            arrow
+          >
+            <span style={{ display: "inline-flex", cursor: "help", opacity: 0.6 }}>
+              <FontAwesomeIcon icon={faInfoCircle} size="sm" />
+            </span>
+          </Tooltip>
+        )}
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function SolidTilesCanvas({ solidsText, roomWidth, scale = 4 }) {
+  const canvasRef = useRef(null);
+  const TILE_SIZE = 8;
+
+  // Room width is in pixels; each tile is 8px wide in Celeste
+  const tilesWide = Math.ceil(roomWidth / TILE_SIZE);
+
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !solidsText) return;
+
+    const rows = solidsText.split("\n");
+    const tileRows = rows.length;
+    const tileCols = tilesWide;
+
+    canvas.width = tileCols * scale;
+    canvas.height = tileRows * scale;
+
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let r = 0; r < tileRows; r++) {
+      const row = rows[r] || "";
+      for (let c = 0; c < tileCols; c++) {
+        const ch = c < row.length ? row[c] : "0";
+        if (ch !== "0" && ch !== "") {
+          ctx.fillStyle = "#b0b0b0";
+        } else {
+          ctx.fillStyle = "#1a1a2e";
+        }
+        ctx.fillRect(c * scale, r * scale, scale, scale);
+      }
+    }
+  }, [solidsText, tilesWide]);
+
+  useEffect(() => {
+    draw();
+  }, [draw]);
+
+  if (!solidsText) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ p: 1 }}>
+        No solid tile data available.
+      </Typography>
+    );
+  }
+
+  return (
+    <Box>
+      <canvas
+        ref={canvasRef}
+        style={{
+          imageRendering: "pixelated",
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      />
+    </Box>
+  );
+}
+//#endregion
+
+//#region Collectibles
+function CollectiblesTable({ collectibles }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.collectibles" });
+
+  if (collectibles.length === 0) return null;
+
+  return (
+    <Box>
+      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5 }}>
+        {t("title", { count: collectibles.length })}
+      </Typography>
+      <TableContainer
+        sx={{
+          width: "fit-content",
+          borderRadius: 1,
+          backgroundColor: "rgba(0,0,0,0.2)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t("col_type")}</TableCell>
+              <TableCell>{t("col_room")}</TableCell>
+              <TableCell>{t("col_position")}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {collectibles.map((c, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ whiteSpace: "nowrap" }}>{c.name}</TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                  <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
+                    {c.room}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                  <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+                    {c.x}, {c.y}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
+//#endregion
+
+//#region Data extraction utilities
+function extractRooms(mapData) {
+  const levelsNode = mapData.children?.find((c) => c.name === "levels");
+  if (!levelsNode) return [];
+
+  return levelsNode.children
+    .filter((level) => {
+      // Filter out filler rooms (rooms without a player entity)
+      const entitiesNode = level.children?.find((c) => c.name === "entities");
+      return entitiesNode?.children?.some((e) => e.name === "player") ?? false;
+    })
+    .map((level) => {
+      const attr = level.attributes || {};
+      const entitiesNode = level.children?.find((c) => c.name === "entities");
+      const triggersNode = level.children?.find((c) => c.name === "triggers");
+      const solidsNode = level.children?.find((c) => c.name === "solids");
+
+      const entities = entitiesNode?.children ?? [];
+      const triggers = triggersNode?.children ?? [];
+      const solidsText = solidsNode?.attributes?.innerText ?? null;
+
+      return {
+        name: attr.name ?? "?",
+        x: attr.x ?? 0,
+        y: attr.y ?? 0,
+        width: attr.width ?? 0,
+        height: attr.height ?? 0,
+        entityCount: entities.length,
+        entities,
+        triggers,
+        solidsText,
+      };
+    });
+}
+
+function extractCollectibles(mapData) {
+  const levelsNode = mapData.children?.find((c) => c.name === "levels");
+  if (!levelsNode) return [];
+
+  const results = [];
+
+  for (const level of levelsNode.children) {
+    const roomName = level.attributes?.name ?? "?";
+    const entitiesNode = level.children?.find((c) => c.name === "entities");
+    if (!entitiesNode) continue;
+
+    for (const entity of entitiesNode.children) {
+      for (const def of COLLECTIBLE_DEFS) {
+        if (entity.name === def.entityName && def.match(entity.attributes || {})) {
+          results.push({
+            name: def.name,
+            room: roomName,
+            x: entity.attributes?.x ?? 0,
+            y: entity.attributes?.y ?? 0,
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  return results;
+}
+//#endregion

@@ -1,24 +1,33 @@
 import {
+  Autocomplete,
   Box,
+  Button,
   Collapse,
+  Divider,
   IconButton,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { faDatabase, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faQuestionCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 import { useAuth } from "../../hooks/AuthProvider";
-import { getQueryData, useGetCampaignData, useGetCampaignDataMapping } from "../../hooks/useApi";
+import {
+  getQueryData,
+  useGetCampaignData,
+  useGetCampaignDataMapping,
+  usePostCampaignDataMapping,
+} from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { CustomModal, useModal } from "../../hooks/useModal";
 import { getMapName } from "../../util/data_util";
@@ -49,9 +58,6 @@ export function CampaignDataDialog({ campaignId, campaign }) {
 
       {/* Structure (index.json) */}
       <Box>
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-          {t("structure_title")}
-        </Typography>
         {dataQuery.isLoading && <LoadingSpinner />}
         {dataQuery.isError && <ErrorDisplay error={dataQuery.error} />}
         {campaignData && (
@@ -65,44 +71,29 @@ export function CampaignDataDialog({ campaignId, campaign }) {
       </Box>
 
       {/* Mapping (mapping.json) - Helper+ only */}
-      <Collapse in={auth.hasHelperPriv}>
-        <Box>
-          <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-            {t("mapping_title")}
-          </Typography>
-          {mappingQuery.isLoading && <LoadingSpinner />}
-          {mappingQuery.isError && (
-            <Typography variant="body2" color="text.secondary">
-              No mapping file available for this campaign.
-            </Typography>
-          )}
-          {mappingData && (
-            <Box
-              component="pre"
-              sx={{
-                p: 1.5,
-                borderRadius: 1,
-                backgroundColor: "rgba(0,0,0,0.3)",
-                overflow: "auto",
-                maxHeight: 400,
-                fontSize: "0.8rem",
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              }}
-            >
-              {JSON.stringify(mappingData, null, 2)}
-            </Box>
-          )}
-        </Box>
-      </Collapse>
+      {auth.hasHelperPriv && (
+        <MappingEditor
+          campaignId={campaignId}
+          campaign={campaign}
+          campaignData={campaignData}
+          mappingData={mappingData}
+          mappingQuery={mappingQuery}
+          mapsById={mapsById}
+        />
+      )}
     </Stack>
   );
 }
 
+//#region Structure Table
 function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.structure" });
   const mapDataModal = useModal();
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const [showUnmatched, setShowUnmatched] = useState(false);
+
+  const matchedEntries = entries.filter((e) => !!e.map_id);
+  const unmatchedEntries = entries.filter((e) => !e.map_id);
 
   const openMapData = (entry) => {
     setSelectedEntry(entry);
@@ -111,29 +102,55 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
 
   return (
     <>
-      <TableContainer sx={{ maxHeight: 500 }}>
-        <Table size="small" stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t("col_name")}</TableCell>
-              <TableCell>{t("col_path")}</TableCell>
-              <TableCell width={1}></TableCell>
-            </TableRow>
-          </TableHead>
+      <TableContainer
+        sx={{
+          maxHeight: 500,
+          borderRadius: 1,
+          backgroundColor: "rgba(0,0,0,0.2)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <Table size="small">
           <TableBody>
-            {entries.map((entry, index) => (
+            {matchedEntries.map((entry, index) => (
               <CampaignStructureRow
-                key={index}
+                key={`matched-${index}`}
                 entry={entry}
                 mapsById={mapsById}
                 campaign={campaign}
-                onOpenMapData={openMapData}
+                onClick={() => openMapData(entry)}
               />
             ))}
+            {unmatchedEntries.length > 0 && (
+              <TableRow>
+                <TableCell colSpan={2} sx={{ py: 0.5, borderBottom: showUnmatched ? undefined : "none" }}>
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={() => setShowUnmatched(!showUnmatched)}
+                    sx={{ textTransform: "none", fontSize: "0.8rem" }}
+                  >
+                    {showUnmatched
+                      ? t("hide_unmatched")
+                      : t("show_unmatched", { count: unmatchedEntries.length })}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+            {showUnmatched &&
+              unmatchedEntries.map((entry, index) => (
+                <CampaignStructureRow
+                  key={`unmatched-${index}`}
+                  entry={entry}
+                  mapsById={mapsById}
+                  campaign={campaign}
+                  onClick={() => openMapData(entry)}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth="md">
+      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth="lg">
         {selectedEntry && (
           <MapDataDialog
             mapId={selectedEntry.map_id ?? null}
@@ -146,7 +163,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
   );
 }
 
-function CampaignStructureRow({ entry, mapsById, campaign, onOpenMapData }) {
+function CampaignStructureRow({ entry, mapsById, campaign, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.structure" });
   const isMatched = !!entry.map_id;
   const dbMap = isMatched ? mapsById[entry.map_id] : null;
@@ -155,11 +172,20 @@ function CampaignStructureRow({ entry, mapsById, campaign, onOpenMapData }) {
   const displayName = dbMap ? getMapName(dbMap, campaign) : entry.name || t("unknown_map");
 
   return (
-    <TableRow sx={{ opacity: isMatched ? 1 : 0.7 }}>
+    <TableRow
+      hover
+      onClick={onClick}
+      sx={{
+        cursor: "pointer",
+        opacity: isMatched ? 1 : 0.7,
+      }}
+    >
       <TableCell>
         <Stack direction="row" alignItems="center" gap={0.5}>
           {isMatched ? (
-            <StyledLink to={"/map/" + entry.map_id}>{displayName}</StyledLink>
+            <StyledLink to={"/map/" + entry.map_id} onClick={(e) => e.stopPropagation()}>
+              {displayName}
+            </StyledLink>
           ) : (
             <>
               <Typography variant="body2">{displayName}</Typography>
@@ -172,16 +198,189 @@ function CampaignStructureRow({ entry, mapsById, campaign, onOpenMapData }) {
           )}
         </Stack>
       </TableCell>
-      <TableCell>
+      <TableCell align="right">
         <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
           {entry.path}
         </Typography>
       </TableCell>
-      <TableCell>
-        <IconButton size="small" onClick={() => onOpenMapData(entry)}>
-          <FontAwesomeIcon icon={faDatabase} size="xs" />
-        </IconButton>
-      </TableCell>
     </TableRow>
   );
 }
+//#endregion
+
+//#region Mapping Editor
+function MappingEditor({ campaignId, campaign, campaignData, mappingData, mappingQuery, mapsById }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.mapping" });
+  const [expanded, setExpanded] = useState(false);
+
+  // Local state for the editable mapping: { "path": mapId, ... }
+  const [localMapping, setLocalMapping] = useState(null);
+  const [dirty, setDirty] = useState(false);
+
+  // Initialize local mapping from server data when it arrives
+  const effectiveMapping = localMapping ?? mappingData ?? {};
+
+  const { mutate: saveMappingToServer, isLoading: isSaving } = usePostCampaignDataMapping(() => {
+    setDirty(false);
+    toast.success(t("save_success"));
+  });
+
+  // Get all bin paths from campaignData
+  const allPaths = campaignData ? campaignData.map((e) => e.path) : [];
+
+  // Paths already in the mapping
+  const mappedPaths = Object.keys(effectiveMapping);
+
+  // Map IDs already assigned in the mapping
+  const mappedMapIds = new Set(Object.values(effectiveMapping));
+
+  // Paths not yet in the mapping
+  const unmappedPaths = allPaths.filter((p) => !mappedPaths.includes(p));
+
+  // Maps from the campaign not yet assigned
+  const availableMaps = campaign?.maps?.filter((m) => !mappedMapIds.has(m.id)) ?? [];
+
+  const updateMapping = (newMapping) => {
+    setLocalMapping(newMapping);
+    setDirty(true);
+  };
+
+  const removeMapping = (path) => {
+    const next = { ...effectiveMapping };
+    delete next[path];
+    updateMapping(next);
+  };
+
+  const addMapping = (path, mapId) => {
+    const next = { ...effectiveMapping };
+    next[path] = mapId;
+    updateMapping(next);
+  };
+
+  const handleSave = () => {
+    saveMappingToServer({ id: campaignId, data: effectiveMapping });
+  };
+
+  return (
+    <Box>
+      <Button
+        size="small"
+        variant="text"
+        onClick={() => setExpanded(!expanded)}
+        startIcon={<FontAwesomeIcon icon={expanded ? faChevronDown : faChevronRight} size="xs" />}
+        sx={{ textTransform: "none", mb: 0.5 }}
+      >
+        {t("toggle_label")}
+      </Button>
+      <Collapse in={expanded}>
+        <Stack
+          spacing={1.5}
+          sx={{
+            p: 1.5,
+            borderRadius: 1,
+            backgroundColor: "rgba(0,0,0,0.2)",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          {mappingQuery.isLoading && <LoadingSpinner />}
+          {mappingQuery.isError && (
+            <Typography variant="body2" color="text.secondary">
+              No mapping file exists yet. Add entries below to create one.
+            </Typography>
+          )}
+
+          {/* Current mappings list */}
+          {mappedPaths.length > 0 && (
+            <Table size="small">
+              <TableBody>
+                {mappedPaths.map((path) => {
+                  const mapId = effectiveMapping[path];
+                  const map = mapsById[mapId];
+                  const mapName = map ? getMapName(map, campaign) : `Map #${mapId}`;
+                  return (
+                    <TableRow key={path}>
+                      <TableCell sx={{ py: 0.5, fontSize: "0.8rem", color: "text.secondary" }}>
+                        {path}
+                      </TableCell>
+                      <TableCell sx={{ py: 0.5 }}>→</TableCell>
+                      <TableCell sx={{ py: 0.5, fontSize: "0.8rem" }}>{mapName}</TableCell>
+                      <TableCell sx={{ py: 0.5 }} width={1}>
+                        <IconButton size="small" onClick={() => removeMapping(path)} color="error">
+                          <FontAwesomeIcon icon={faTrash} size="xs" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+
+          {mappedPaths.length === 0 && !mappingQuery.isLoading && (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
+              {t("no_entries")}
+            </Typography>
+          )}
+
+          <Divider />
+
+          {/* Add new mapping row */}
+          <MappingAddRow
+            unmappedPaths={unmappedPaths}
+            availableMaps={availableMaps}
+            campaign={campaign}
+            onAdd={addMapping}
+          />
+
+          {/* Save button */}
+          <Button variant="contained" size="small" onClick={handleSave} disabled={!dirty || isSaving}>
+            {isSaving ? t("saving") : t("save")}
+          </Button>
+        </Stack>
+      </Collapse>
+    </Box>
+  );
+}
+
+function MappingAddRow({ unmappedPaths, availableMaps, campaign, onAdd }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.mapping" });
+  const [selectedPath, setSelectedPath] = useState(null);
+  const [selectedMap, setSelectedMap] = useState(null);
+
+  const handleAdd = () => {
+    if (!selectedPath || !selectedMap) return;
+    onAdd(selectedPath, selectedMap.id);
+    setSelectedPath(null);
+    setSelectedMap(null);
+  };
+
+  return (
+    <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+      <Autocomplete
+        size="small"
+        sx={{ minWidth: 200, flex: 1 }}
+        options={unmappedPaths}
+        value={selectedPath}
+        onChange={(_, v) => setSelectedPath(v)}
+        renderInput={(params) => <TextField {...params} label={t("select_bin")} />}
+      />
+      <Autocomplete
+        size="small"
+        sx={{ minWidth: 200, flex: 1 }}
+        options={availableMaps}
+        getOptionKey={(map) => map.id}
+        getOptionLabel={(map) => {
+          const oldPrefix = map.is_archived ? "[Old] " : "";
+          return oldPrefix + map.name;
+        }}
+        value={selectedMap}
+        onChange={(_, v) => setSelectedMap(v)}
+        renderInput={(params) => <TextField {...params} label={t("select_map")} />}
+      />
+      <Button variant="outlined" size="small" onClick={handleAdd} disabled={!selectedPath || !selectedMap}>
+        {t("add")}
+      </Button>
+    </Stack>
+  );
+}
+//#endregion

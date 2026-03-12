@@ -27,7 +27,6 @@ import {
   faSpinner,
   faTrash,
   faXmark,
-  faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -334,7 +333,7 @@ export function SameCampaignNameIndicator({ name }) {
         nameDebounced.length > 0 &&
         (sameNameExists ? (
           <>
-            <FontAwesomeIcon icon={faXmarkCircle} fontSize=".8em" color={theme.palette.error.main} />
+            <FontAwesomeIcon icon={faExclamationTriangle} fontSize=".8em" color={theme.palette.error.main} />
             <Typography variant="caption" color="error">
               {t("duplicate")}
             </Typography>

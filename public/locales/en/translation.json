@@ -2245,17 +2245,48 @@
   "map_data": {
     "campaign_data": {
       "title": "Campaign Data",
-      "structure_title": "Structure (index.json)",
-      "mapping_title": "Mapping (mapping.json)",
       "structure": {
-        "col_name": "Name",
-        "col_path": "Path",
         "unknown_map": "Unknown Map",
-        "unmatched_tooltip": "This .bin file has not been matched to a map in the database. It may be a lobby, an old version of a map, or simply have a different name to the map in the database."
+        "unmatched_tooltip": "This .bin file has not been matched to a map in the database. It may be a lobby, an old version of a map, or simply have a different name to the map in the database.",
+        "show_unmatched": "Show {{count}} unmatched .bin files",
+        "hide_unmatched": "Hide unmatched .bin files"
+      },
+      "mapping": {
+        "toggle_label": "Mapping File",
+        "no_entries": "No mappings defined yet.",
+        "select_bin": ".bin file",
+        "select_map": "Map",
+        "add": "Add",
+        "save": "Save",
+        "saving": "Saving...",
+        "save_success": "Mapping saved successfully."
       }
     },
     "map_data": {
-      "title": "Map Data"
+      "title": "Map Data",
+      "rooms": {
+        "title": "Rooms ({{count}})",
+        "col_name": "Name",
+        "col_position": "Position",
+        "col_size": "Size",
+        "col_entities": "Entities"
+      },
+      "room_details": {
+        "tab_entities": "Entities",
+        "tab_triggers": "Triggers",
+        "tab_solids": "Solid Tiles",
+        "col_name": "Name",
+        "col_position": "Position",
+        "col_size": "Size",
+        "no_entities": "No entities in this room.",
+        "no_triggers": "No triggers in this room."
+      },
+      "collectibles": {
+        "title": "Collectibles ({{count}})",
+        "col_type": "Type",
+        "col_room": "Room",
+        "col_position": "Position"
+      }
     }
   }
 }
