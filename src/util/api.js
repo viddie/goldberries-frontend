@@ -434,6 +434,21 @@ export function fetchBadgePlayers(badgeId) {
     },
   });
 }
+
+export function fetchCampaignData(id) {
+  return axios.get("/campaign/data", { params: { id } });
+}
+export function fetchCampaignDataMapping(id) {
+  return axios.get("/campaign/data-mapping", { params: { id } });
+}
+export function fetchMapData(id, { campaignId, hash, checkExists } = {}) {
+  const params = {};
+  if (id) params.id = id;
+  if (hash) params.hash = hash;
+  if (campaignId) params.campaign_id = campaignId;
+  if (checkExists) params.check_exists = true;
+  return axios.get("/map/data", { params });
+}
 //#endregion
 
 //#region == POST ==
@@ -553,6 +568,16 @@ export function postBadgePlayer(data) {
 
 export function postReport(data) {
   return axios.post("/util/post-report", formatDataForApi(data));
+}
+
+export function postCampaignData(id, data) {
+  return axios.post("/campaign/data", data, { params: { id } });
+}
+export function postCampaignDataMapping(id, data) {
+  return axios.post("/campaign/data-mapping", data, { params: { id } });
+}
+export function postMapData(id, data) {
+  return axios.post("/map/data", data, { params: { id } });
 }
 //#endregion
 

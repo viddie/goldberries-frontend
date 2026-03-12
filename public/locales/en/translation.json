@@ -1294,7 +1294,9 @@
     "buttons": {
       "edit": "Edit Map",
       "view_challenge": "View Challenge",
-      "submit": "Submit a run"
+      "submit": "Submit a run",
+      "map_data_view": "View Data",
+      "map_data_unavailable": "Data for this map is not yet available."
     },
     "no_challenges": "There are currently no challenges for this map.",
     "info_boxes": {
@@ -1306,7 +1308,8 @@
         "no_changes": "No golden changes",
         "show": "Show"
       },
-      "total_likes": "Likes"
+      "total_likes": "Likes",
+      "map_data": "Map Data"
     }
   },
   "player": {
@@ -1675,7 +1678,8 @@
   "campaign": {
     "note": "Campaign Note",
     "buttons": {
-      "edit": "Edit Campaign"
+      "edit": "Edit Campaign",
+      "campaign_data": "Campaign Data"
     },
     "info_boxes": {
       "author": "Author",
@@ -2237,5 +2241,21 @@
     "view_on_gamebanana": "View Profile on GameBanana",
     "maps_text": "All maps made by this author in a campaign of someone else.",
     "campaigns_text": "All campaigns made by this author."
+  },
+  "map_data": {
+    "campaign_data": {
+      "title": "Campaign Data",
+      "structure_title": "Structure (index.json)",
+      "mapping_title": "Mapping (mapping.json)",
+      "structure": {
+        "col_name": "Name",
+        "col_path": "Path",
+        "unknown_map": "Unknown Map",
+        "unmatched_tooltip": "This .bin file has not been matched to a map in the database. It may be a lobby, an old version of a map, or simply have a different name to the map in the database."
+      }
+    },
+    "map_data": {
+      "title": "Map Data"
+    }
   }
 }

@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
   faCheckCircle,
+  faDatabase,
   faEdit,
   faImages,
   faInfoCircle,
@@ -62,6 +63,7 @@ import { useAuth } from "../hooks/AuthProvider";
 import { FormCampaignWrapper } from "../components/forms/Campaign";
 import { ToggleSubmissionFcButton } from "../components/ToggleSubmissionFc";
 import { CampaignGallery } from "../components/map_image";
+import { CampaignDataDialog } from "../components/map_data/CampaignDataDialog";
 
 import {
   AuthorDetailsRow,
@@ -116,6 +118,7 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
 
   const editCampaignModal = useModal();
   const imageGalleryModal = useModal();
+  const campaignDataModal = useModal();
 
   if (query.isLoading) {
     return (
@@ -149,13 +152,16 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
         sx={{ mb: 1 }}
       />
 
-      {/* Campaign icon + title + gallery button */}
+      {/* Campaign icon + title + gallery button + data button */}
       <Box sx={{ ...contentPadding, mb: 1.5 }}>
         <Stack direction="row" alignItems="center" gap={1}>
           {campaign.icon_url === null && <FontAwesomeIcon icon={faBook} size="2x" />}
           <CampaignIcon campaign={campaign} height="1.7em" />
           <Typography variant="h5">{campaign.name}</Typography>
           <Box flexGrow={1} />
+          <CustomIconButton onClick={campaignDataModal.open}>
+            <FontAwesomeIcon icon={faDatabase} />
+          </CustomIconButton>
           <CustomIconButton onClick={() => imageGalleryModal.open()}>
             <FontAwesomeIcon icon={faImages} />
           </CustomIconButton>
@@ -214,6 +220,9 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
       </CustomModal>
       <CustomModal modalHook={imageGalleryModal} options={{ hideFooter: true }} maxWidth="lg">
         <CampaignGallery campaign={campaign} />
+      </CustomModal>
+      <CustomModal modalHook={campaignDataModal} options={{ hideFooter: true }} maxWidth="md">
+        <CampaignDataDialog campaignId={id} campaign={campaign} />
       </CustomModal>
     </Box>
   );

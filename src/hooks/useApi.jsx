@@ -105,6 +105,12 @@ import {
   postChallengeLike,
   deleteChallengeLike,
   fetchPlayerLikes,
+  fetchCampaignData,
+  fetchCampaignDataMapping,
+  fetchMapData,
+  postCampaignData,
+  postCampaignDataMapping,
+  postMapData,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -540,6 +546,39 @@ export function useGetBadgePlayers(badgeId) {
   });
 }
 
+export function useGetCampaignData(id) {
+  return useQuery({
+    queryKey: ["campaign_data", id],
+    queryFn: () => fetchCampaignData(id),
+    onError: errorToast,
+    enabled: !!id,
+  });
+}
+export function useGetCampaignDataMapping(id) {
+  return useQuery({
+    queryKey: ["campaign_data_mapping", id],
+    queryFn: () => fetchCampaignDataMapping(id),
+    retry: false,
+    enabled: !!id,
+  });
+}
+export function useGetMapData(id, { campaignId, hash, checkExists } = {}) {
+  return useQuery({
+    queryKey: ["map_data", id, campaignId, hash, checkExists],
+    queryFn: () => fetchMapData(id, { campaignId, hash, checkExists }),
+    onError: checkExists ? undefined : errorToast,
+    enabled: !!(id || hash),
+  });
+}
+export function useCheckMapDataExists(id) {
+  return useQuery({
+    queryKey: ["map_data_exists", id],
+    queryFn: () => fetchMapData(id, { checkExists: true }),
+    enabled: !!id,
+    retry: false,
+  });
+}
+
 //#endregion
 
 //#region == POST ==
@@ -865,6 +904,41 @@ export function usePostReport(onSuccess) {
   return useMutation({
     mutationFn: (data) => postReport(data),
     onSuccess: (response, data) => {
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+
+export function usePostCampaignData(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => postCampaignData(id, data),
+    onSuccess: (response, { id }) => {
+      queryClient.invalidateQueries(["campaign_data", id]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function usePostCampaignDataMapping(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => postCampaignDataMapping(id, data),
+    onSuccess: (response, { id }) => {
+      queryClient.invalidateQueries(["campaign_data_mapping", id]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function usePostMapData(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => postMapData(id, data),
+    onSuccess: (response, { id }) => {
+      queryClient.invalidateQueries(["map_data", id]);
+      queryClient.invalidateQueries(["map_data_exists", id]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,

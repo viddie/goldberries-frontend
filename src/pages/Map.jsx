@@ -2,10 +2,12 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
   MenuItem,
   Select,
   Stack,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -13,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   faArrowRightToBracket,
   faBasketShopping,
+  faDatabase,
   faEdit,
   faExclamationTriangle,
   faHeart,
@@ -48,11 +51,12 @@ import {
   getCollectibleName,
 } from "../components/forms/Map";
 import { useAuth } from "../hooks/AuthProvider";
-import { getQueryData, useGetMap, usePostMap } from "../hooks/useApi";
+import { getQueryData, useCheckMapDataExists, useGetMap, usePostMap } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { LikeButton } from "../components/likes";
+import { MapDataDialog } from "../components/map_data/MapDataDialog";
 
 import { MapNoProgressTooltip } from "./Campaign";
 import {
@@ -98,6 +102,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
   const query = useGetMap(id);
+  const mapDataExistsQuery = useCheckMapDataExists(id);
   const [selectedChallengeId, setSelectedChallengeId] = useState(challengeId ?? null);
 
   const updateSelectedChallenge = (challengeId) => {
@@ -108,6 +113,10 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   };
 
   const editMapModal = useModal();
+  const mapDataModal = useModal();
+
+  const mapDataExists = mapDataExistsQuery.isSuccess;
+  const mapDataLoading = mapDataExistsQuery.isLoading;
 
   if (query.isLoading) {
     return (
@@ -145,7 +154,12 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
 
       {/* Map details grid */}
       <Box sx={{ ...contentPadding }}>
-        <MapDetailsGrid map={map} />
+        <MapDetailsGrid
+          map={map}
+          mapDataExists={mapDataExists}
+          mapDataLoading={mapDataLoading}
+          onMapDataClick={mapDataModal.open}
+        />
       </Box>
 
       {map.note && (
@@ -261,12 +275,45 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
       <CustomModal modalHook={editMapModal} options={{ hideFooter: true }}>
         <FormMapWrapper id={id} onSave={editMapModal.close} />
       </CustomModal>
+      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth="md">
+        <MapDataDialog mapId={id} campaignId={campaign?.id} />
+      </CustomModal>
     </Box>
   );
 }
 
+function MapDataDetailsRow({ mapDataExists, mapDataLoading, onClick }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map" });
+
+  const button = (
+    <span>
+      <Button
+        onClick={mapDataExists ? onClick : undefined}
+        variant="outlined"
+        size="small"
+        disabled={!mapDataExists && !mapDataLoading}
+        startIcon={mapDataLoading ? <CircularProgress size={14} /> : <FontAwesomeIcon icon={faDatabase} />}
+      >
+        {t("buttons.map_data_view")}
+      </Button>
+    </span>
+  );
+
+  return (
+    <DetailsRow label={t("info_boxes.map_data")} icon={<FontAwesomeIcon icon={faDatabase} fixedWidth />}>
+      {!mapDataExists && !mapDataLoading ? (
+        <Tooltip title={t("buttons.map_data_unavailable")} arrow>
+          {button}
+        </Tooltip>
+      ) : (
+        button
+      )}
+    </DetailsRow>
+  );
+}
+
 //#region Map Details Grid
-function MapDetailsGrid({ map }) {
+function MapDetailsGrid({ map, mapDataExists, mapDataLoading, onMapDataClick }) {
   const campaign = map.campaign;
 
   const lobbyInfo = getMapLobbyInfo(map);
@@ -310,6 +357,14 @@ function MapDetailsGrid({ map }) {
 
   rightItems.push(<GoldenChangesDetailsRow key="goldenchanges" map={map} />);
   rightItems.push(<LikesDetailsRow key="likes" total={totalLikes} average={avgLikes} />);
+  rightItems.push(
+    <MapDataDetailsRow
+      key="mapdata"
+      mapDataExists={mapDataExists}
+      mapDataLoading={mapDataLoading}
+      onClick={onMapDataClick}
+    />,
+  );
 
   return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
 }
