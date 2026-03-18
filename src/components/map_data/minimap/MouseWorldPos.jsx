@@ -54,11 +54,11 @@ export function MouseWorldPos() {
 
       {/* Small arrows to indicate X and Y directions, with labels */}
       <group position={[-size.width / 2 + 15, size.height / 2 - 40, 0]}>
-        <Arrow from={{ x: 0, y: 0 }} to={{ x: 50, y: 0 }} color="red" />
+        <Arrow from={{ x: 0, y: 0 }} to={{ x: 50, y: 0 }} color="red" thickness={2} />
         <Text position={[55, 0, 0]} fontSize={12} color="red" anchorX="left" anchorY="middle">
           X
         </Text>
-        <Arrow from={{ x: 0, y: 0 }} to={{ x: 0, y: -50 }} color="green" />
+        <Arrow from={{ x: 0, y: 0 }} to={{ x: 0, y: -50 }} color="green" thickness={2} />
         <Text position={[0, -55, 0]} fontSize={12} color="green" anchorX="center" anchorY="top">
           Y
         </Text>

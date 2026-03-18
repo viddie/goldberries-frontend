@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePixelTexture } from "../../usePixelTexture";
-import { LAYERS } from "../../MapDataMinimap";
+import { LAYERS } from "../entity_definitions";
 
 import { InstancedPlane } from "./InstancedPlane";
 
@@ -37,7 +37,7 @@ export function SpikeRenderer({ entities }) {
           results.push({
             x: e.attributes.x + offset[0] + (isHorizontal ? i * 8 : 0),
             y: -e.attributes.y + offset[1] - (isHorizontal ? 0 : i * 8),
-            z: LAYERS.ENTITIES,
+            z: LAYERS.COMMON_ENTITIES,
             scaleX: 8,
             scaleY: 8,
           });

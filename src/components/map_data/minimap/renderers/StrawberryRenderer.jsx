@@ -1,8 +1,9 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 
 import { usePixelTexture } from "../../usePixelTexture";
-import { LAYERS } from "../../MapDataMinimap";
-import { useMinimapStore } from "../useMinimapStore";
+import { LAYERS } from "../entity_definitions";
+
+import { HighlightableEntity } from "./HighlightableEntity";
 
 export function StrawberryRenderer({ entity }) {
   const moon = entity.attributes.moon;
@@ -14,25 +15,18 @@ export function StrawberryRenderer({ entity }) {
       ? "/icons/winged-strawberry.png"
       : "/icons/strawberry.png";
   const texture = usePixelTexture(path);
-  const selectEntity = useMinimapStore((s) => s.selectEntity);
   const position = useMemo(
     () => [entity.attributes.x, -entity.attributes.y, LAYERS.IMPORTANT_ENTITIES],
     [entity.attributes.x, entity.attributes.y],
   );
-  const handleClick = useCallback(
-    (e) => {
-      e.stopPropagation();
-      selectEntity(entity);
-    },
-    [entity, selectEntity],
-  );
 
   const size = moon ? [24, 16] : winged ? [40, 24] : [18, 16];
+  const highlightRadius = moon ? 16 : winged ? 24 : 14;
 
   return (
-    <mesh position={position} onClick={handleClick}>
+    <HighlightableEntity entity={entity} position={position} highlightRadius={highlightRadius}>
       <planeGeometry args={size} />
-      <meshBasicMaterial map={texture} transparent />
-    </mesh>
+      <meshBasicMaterial map={texture} transparent depthWrite={false} />
+    </HighlightableEntity>
   );
 }

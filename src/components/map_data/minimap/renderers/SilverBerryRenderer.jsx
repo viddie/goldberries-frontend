@@ -1,28 +1,21 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 
 import { usePixelTexture } from "../../usePixelTexture";
-import { LAYERS } from "../../MapDataMinimap";
-import { useMinimapStore } from "../useMinimapStore";
+import { LAYERS } from "../entity_definitions";
+
+import { HighlightableEntity } from "./HighlightableEntity";
 
 export function SilverBerryRenderer({ entity }) {
   const texture = usePixelTexture("/icons/silverberry.png");
-  const selectEntity = useMinimapStore((s) => s.selectEntity);
   const position = useMemo(
     () => [entity.attributes.x, -entity.attributes.y, LAYERS.IMPORTANT_ENTITIES],
     [entity.attributes.x, entity.attributes.y],
   );
-  const handleClick = useCallback(
-    (e) => {
-      e.stopPropagation();
-      selectEntity(entity);
-    },
-    [entity, selectEntity],
-  );
 
   return (
-    <mesh position={position} onClick={handleClick}>
+    <HighlightableEntity entity={entity} position={position}>
       <planeGeometry args={[18, 16]} />
-      <meshBasicMaterial map={texture} transparent />
-    </mesh>
+      <meshBasicMaterial map={texture} transparent depthWrite={false} />
+    </HighlightableEntity>
   );
 }

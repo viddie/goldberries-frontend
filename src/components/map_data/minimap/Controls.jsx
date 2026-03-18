@@ -5,14 +5,16 @@ import { useEffect, useRef } from "react";
 import { useMinimapStore } from "./useMinimapStore";
 
 const MARGIN = 40; // px margin around the room when zooming to fit
+const ZOOM_SPEED = 1.15;
 
 export function Controls() {
-  const { invalidate, camera, size } = useThree();
+  const { invalidate, camera, size, gl } = useThree();
   const controlsRef = useRef();
 
   const cameraTarget = useMinimapStore((s) => s.cameraTarget);
   const clearCameraTarget = useMinimapStore((s) => s.clearCameraTarget);
 
+  //#region Navigate to room
   useEffect(() => {
     if (!cameraTarget || !controlsRef.current) return;
 
@@ -38,14 +40,54 @@ export function Controls() {
     invalidate();
     clearCameraTarget();
   }, [cameraTarget, camera, size, invalidate, clearCameraTarget]);
+  //#endregion
+
+  //#region Zoom toward mouse position
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const onWheel = (e) => {
+      e.preventDefault();
+
+      const rect = canvas.getBoundingClientRect();
+      const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      const oldZoom = camera.zoom;
+      const factor = e.deltaY > 0 ? 1 / ZOOM_SPEED : ZOOM_SPEED;
+      const newZoom = oldZoom * factor;
+
+      if (newZoom === oldZoom) return;
+
+      // Shift camera so the world point under the mouse stays fixed
+      const dx = ndcX * (size.width / 2) * (1 / oldZoom - 1 / newZoom);
+      const dy = ndcY * (size.height / 2) * (1 / oldZoom - 1 / newZoom);
+
+      camera.position.x += dx;
+      camera.position.y += dy;
+      camera.zoom = newZoom;
+      camera.updateProjectionMatrix();
+
+      if (controlsRef.current) {
+        controlsRef.current.target.x += dx;
+        controlsRef.current.target.y += dy;
+        controlsRef.current.update();
+      }
+
+      invalidate();
+    };
+
+    canvas.addEventListener("wheel", onWheel, { passive: false });
+    return () => canvas.removeEventListener("wheel", onWheel);
+  }, [camera, gl, size, invalidate]);
+  //#endregion
 
   return (
     <MapControls
       ref={controlsRef}
       makeDefault
       enableRotate={false}
+      enableZoom={false}
       screenSpacePanning
-      zoomSpeed={2.0}
       panSpeed={1}
       onChange={invalidate}
     />

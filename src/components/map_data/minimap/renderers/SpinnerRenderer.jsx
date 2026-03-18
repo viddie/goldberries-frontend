@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePixelTexture } from "../../usePixelTexture";
-import { LAYERS } from "../../MapDataMinimap";
+import { LAYERS } from "../entity_definitions";
 
 import { InstancedPlane } from "./InstancedPlane";
 
@@ -13,7 +13,7 @@ export function SpinnerRenderer({ entities }) {
       entities.map((e) => ({
         x: e.attributes.x,
         y: -e.attributes.y,
-        z: LAYERS.ENTITIES,
+        z: LAYERS.COMMON_ENTITIES,
         scaleX: 24,
         scaleY: 24,
       })),

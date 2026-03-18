@@ -198,7 +198,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth="lg">
+      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth={false} fullWidth>
         {selectedEntry && (
           <MapDataDialog
             mapId={selectedEntry.map_id ?? null}

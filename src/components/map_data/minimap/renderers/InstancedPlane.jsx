@@ -30,7 +30,7 @@ export function InstancedPlane({ entries, texture }) {
   return (
     <instancedMesh ref={meshRef} args={[null, null, count]} key={count} frustumCulled={false}>
       <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial map={texture} transparent />
+      <meshBasicMaterial map={texture} transparent depthWrite={false} />
     </instancedMesh>
   );
 }

@@ -24,51 +24,13 @@ import { ErrorDisplay, LoadingSpinner } from "../basic";
 
 import { MapDataMinimap } from "./MapDataMinimap";
 
-//#region Collectible definitions
-const COLLECTIBLE_DEFS = [
-  {
-    name: "Golden Berry",
-    entityNames: ["goldenBerry"],
-    match: (attr) => !attr.winged,
-  },
-  {
-    name: "Winged Golden Berry",
-    entityNames: ["goldenBerry"],
-    match: (attr) => !!attr.winged,
-  },
-  {
-    name: "Cassette",
-    entityNames: ["cassette"],
-    match: () => true,
-  },
-  {
-    name: "Strawberry",
-    entityNames: ["strawberry"],
-    match: (attr) => !attr.moon && !attr.winged,
-  },
-  {
-    name: "Moon Berry",
-    entityNames: ["strawberry"],
-    match: (attr) => !!attr.moon && !attr.winged,
-  },
-  {
-    name: "Winged Strawberry",
-    entityNames: ["strawberry"],
-    match: (attr) => !attr.moon && !!attr.winged,
-  },
-];
-//#endregion
-
 export function MapDataDialog({ mapId, hash, campaignId }) {
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
 
-  const { rooms, collectibles } = useMemo(() => {
-    if (!mapData) return { rooms: [], collectibles: [] };
-    return {
-      rooms: extractRooms(mapData),
-      collectibles: extractCollectibles(mapData),
-    };
+  const rooms = useMemo(() => {
+    if (!mapData) return [];
+    return extractRooms(mapData);
   }, [mapData]);
 
   return (
@@ -83,9 +45,6 @@ export function MapDataDialog({ mapId, hash, campaignId }) {
 
           {/* Room List */}
           <RoomListSection rooms={rooms} />
-
-          {/* Collectibles */}
-          <CollectiblesTable collectibles={collectibles} />
         </>
       )}
     </Stack>
@@ -458,57 +417,6 @@ function SolidTilesCanvas({ solidsText, roomWidth, scale = 4 }) {
 }
 //#endregion
 
-//#region Collectibles
-function CollectiblesTable({ collectibles }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.collectibles" });
-
-  if (collectibles.length === 0) return null;
-
-  return (
-    <Box>
-      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5 }}>
-        {t("title", { count: collectibles.length })}
-      </Typography>
-      <TableContainer
-        sx={{
-          width: "fit-content",
-          borderRadius: 1,
-          backgroundColor: "rgba(0,0,0,0.2)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t("col_type")}</TableCell>
-              <TableCell>{t("col_room")}</TableCell>
-              <TableCell>{t("col_position")}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {collectibles.map((c, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ whiteSpace: "nowrap" }}>{c.name}</TableCell>
-                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                  <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
-                    {c.room}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                  <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
-                    {c.x}, {c.y}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
-}
-//#endregion
-
 //#region Data extraction utilities
 export function extractRooms(mapData) {
   const levelsNode = mapData.children?.find((c) => c.name === "levels");
@@ -544,32 +452,4 @@ export function extractRooms(mapData) {
     });
 }
 
-function extractCollectibles(mapData) {
-  const levelsNode = mapData.children?.find((c) => c.name === "levels");
-  if (!levelsNode) return [];
-
-  const results = [];
-
-  for (const level of levelsNode.children) {
-    const roomName = level.attributes?.name ?? "?";
-    const entitiesNode = level.children?.find((c) => c.name === "entities");
-    if (!entitiesNode) continue;
-
-    for (const entity of entitiesNode.children) {
-      for (const def of COLLECTIBLE_DEFS) {
-        if (def.entityNames.some((name) => name === entity.name) && def.match(entity.attributes || {})) {
-          results.push({
-            name: def.name,
-            room: roomName,
-            x: entity.attributes?.x ?? 0,
-            y: entity.attributes?.y ?? 0,
-          });
-          break;
-        }
-      }
-    }
-  }
-
-  return results;
-}
 //#endregion
