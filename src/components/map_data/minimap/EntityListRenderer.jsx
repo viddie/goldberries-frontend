@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import {
   GoldenBerryRenderer,
   SilverBerryRenderer,
@@ -6,10 +8,13 @@ import {
   StrawberryRenderer,
 } from "./renderers";
 
-const entityMap = {
+const individualEntityMap = {
   goldenBerry: GoldenBerryRenderer,
   "CollabUtils2/SilverBerry": SilverBerryRenderer,
   strawberry: StrawberryRenderer,
+};
+
+const batchedEntityMap = {
   spikesUp: SpikeRenderer,
   spikesDown: SpikeRenderer,
   spikesLeft: SpikeRenderer,
@@ -18,10 +23,32 @@ const entityMap = {
 };
 
 export function EntityListRenderer({ entities }) {
-  return entities.map((e, i) => {
-    const Component = entityMap[e.name];
-    if (!Component) return null;
+  const { individual, batched } = useMemo(() => {
+    const individual = [];
+    const batchMap = {};
+    for (const e of entities) {
+      const IndividualComponent = individualEntityMap[e.name];
+      if (IndividualComponent) {
+        individual.push({ Component: IndividualComponent, entity: e });
+        continue;
+      }
+      const BatchedComponent = batchedEntityMap[e.name];
+      if (BatchedComponent) {
+        if (!batchMap[e.name]) batchMap[e.name] = { Component: BatchedComponent, entities: [] };
+        batchMap[e.name].entities.push(e);
+      }
+    }
+    return { individual, batched: Object.entries(batchMap) };
+  }, [entities]);
 
-    return <Component key={i} entity={e} />;
-  });
+  return (
+    <>
+      {individual.map(({ Component, entity }, i) => (
+        <Component key={i} entity={entity} />
+      ))}
+      {batched.map(([name, { Component, entities }]) => (
+        <Component key={name} entities={entities} />
+      ))}
+    </>
+  );
 }

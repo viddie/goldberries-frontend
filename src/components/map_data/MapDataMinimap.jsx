@@ -1,11 +1,12 @@
 import { Box, Grid } from "@mui/material";
 import { Canvas } from "@react-three/fiber";
 import { Edges, Text } from "@react-three/drei";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { CanvasTexture, NearestFilter } from "three";
 
 import { extractRooms } from "./MapDataDialog";
 import { Controls, EntityListRenderer, MinimapSidebar, MouseWorldPos } from "./minimap";
+import { useMinimapStore } from "./minimap/useMinimapStore";
 
 export const LAYERS = {
   BACKGROUND: 0,
@@ -18,9 +19,14 @@ export const LAYERS = {
 export function MapDataMinimap({ mapData, campaign, map }) {
   const rooms = extractRooms(mapData);
   const bounds = getEnclosingBounds(rooms);
+  const clearSelectedEntity = useMinimapStore((s) => s.clearSelectedEntity);
 
   const defaultZoom = 1;
   const defaultPosition = [0, 0, 100];
+
+  const handlePointerMissed = useCallback(() => {
+    clearSelectedEntity();
+  }, [clearSelectedEntity]);
 
   return (
     <Grid container spacing={2}>
@@ -38,7 +44,12 @@ export function MapDataMinimap({ mapData, campaign, map }) {
             border: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          <Canvas orthographic frameloop="always" camera={{ zoom: defaultZoom, position: defaultPosition }}>
+          <Canvas
+            orthographic
+            frameloop="always"
+            camera={{ zoom: defaultZoom, position: defaultPosition }}
+            onPointerMissed={handlePointerMissed}
+          >
             <Controls />
             <MouseWorldPos />
             {rooms.map((room) => (
@@ -99,10 +110,10 @@ function RoomRenderer({ room }) {
           <meshBasicMaterial map={tilesTexture} transparent opacity={0.8} />
         </mesh>
       )}
-      <mesh>
+      {/* <mesh>
         <circleGeometry args={[5]} />
         <meshBasicMaterial color="red" />
-      </mesh>
+      </mesh> */}
       <mesh position={[bounds.width / 2, -bounds.height / 2, LAYERS.BACKGROUND]}>
         <planeGeometry args={[bounds.width, bounds.height]} />
         <meshBasicMaterial color="black" transparent opacity={0.2} />

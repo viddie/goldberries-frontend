@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { usePixelTexture } from "../../usePixelTexture";
 import { LAYERS } from "../../MapDataMinimap";
 
+import { InstancedPlane } from "./InstancedPlane";
+
 const PATHS = {
   spikesUp: "spike_up.png",
   spikesDown: "spike_down.png",
@@ -17,22 +19,33 @@ const OFFSETS = {
   spikesRight: [4, -4],
 };
 
-export function SpikeRenderer({ entity }) {
-  const path = `/icons/game/${PATHS[entity.name]}`;
-  const texture = usePixelTexture(path);
-  const position = useMemo(
-    () => [
-      entity.attributes.x + OFFSETS[entity.name][0],
-      -entity.attributes.y + OFFSETS[entity.name][1],
-      LAYERS.ENTITIES,
-    ],
-    [entity.attributes.x, entity.attributes.y],
+const HORIZONTAL = new Set(["spikesUp", "spikesDown"]);
+
+export function SpikeRenderer({ entities }) {
+  const name = entities[0].name;
+  const texture = usePixelTexture(`/icons/game/${PATHS[name]}`);
+  const offset = OFFSETS[name];
+  const isHorizontal = HORIZONTAL.has(name);
+
+  const entries = useMemo(
+    () =>
+      entities.flatMap((e) => {
+        const span = isHorizontal ? (e.attributes.width ?? 8) : (e.attributes.height ?? 8);
+        const count = Math.max(1, Math.floor(span / 8));
+        const results = [];
+        for (let i = 0; i < count; i++) {
+          results.push({
+            x: e.attributes.x + offset[0] + (isHorizontal ? i * 8 : 0),
+            y: -e.attributes.y + offset[1] - (isHorizontal ? 0 : i * 8),
+            z: LAYERS.ENTITIES,
+            scaleX: 8,
+            scaleY: 8,
+          });
+        }
+        return results;
+      }),
+    [entities, offset, isHorizontal],
   );
 
-  return (
-    <mesh position={position}>
-      <planeGeometry args={[8, 8]} />
-      <meshBasicMaterial map={texture} transparent />
-    </mesh>
-  );
+  return <InstancedPlane entries={entries} texture={texture} />;
 }

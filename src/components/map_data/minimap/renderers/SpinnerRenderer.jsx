@@ -3,18 +3,22 @@ import { useMemo } from "react";
 import { usePixelTexture } from "../../usePixelTexture";
 import { LAYERS } from "../../MapDataMinimap";
 
-export function SpinnerRenderer({ entity }) {
-  const path = "/icons/game/spinner.png";
-  const texture = usePixelTexture(path);
-  const position = useMemo(
-    () => [entity.attributes.x, -entity.attributes.y, LAYERS.ENTITIES],
-    [entity.attributes.x, entity.attributes.y],
+import { InstancedPlane } from "./InstancedPlane";
+
+export function SpinnerRenderer({ entities }) {
+  const texture = usePixelTexture("/icons/game/spinner.png");
+
+  const entries = useMemo(
+    () =>
+      entities.map((e) => ({
+        x: e.attributes.x,
+        y: -e.attributes.y,
+        z: LAYERS.ENTITIES,
+        scaleX: 24,
+        scaleY: 24,
+      })),
+    [entities],
   );
 
-  return (
-    <mesh position={position}>
-      <planeGeometry args={[24, 24]} />
-      <meshBasicMaterial map={texture} transparent />
-    </mesh>
-  );
+  return <InstancedPlane entries={entries} texture={texture} />;
 }
