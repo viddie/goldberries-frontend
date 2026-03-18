@@ -441,6 +441,9 @@ export function fetchCampaignData(id) {
 export function fetchCampaignDataMapping(id) {
   return axios.get("/campaign/data-mapping", { params: { id } });
 }
+export function fetchProcessCampaign(id) {
+  return axios.get("/admin/process-campaign", { params: { id } });
+}
 export function fetchMapData(id, { campaignId, hash, checkExists } = {}) {
   const params = {};
   if (id) params.id = id;

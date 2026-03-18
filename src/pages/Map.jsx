@@ -275,7 +275,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
       <CustomModal modalHook={editMapModal} options={{ hideFooter: true }}>
         <FormMapWrapper id={id} onSave={editMapModal.close} />
       </CustomModal>
-      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth="lg">
+      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth={false} fullWidth>
         <MapDataDialog mapId={id} campaignId={campaign?.id} />
       </CustomModal>
     </Box>

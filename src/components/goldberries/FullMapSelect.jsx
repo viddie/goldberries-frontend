@@ -4,7 +4,13 @@ import { useState } from "react";
 import { CampaignSelect } from "./CampaignSelect";
 import { MapSelect } from "./MapSelect";
 
-export function FullMapSelect({ value, setValue, disabled }) {
+export function FullMapSelect({
+  value,
+  setValue,
+  disabled,
+  emptyCampaigns = false,
+  rejectedCampaigns = false,
+}) {
   const [campaign, setCampaign] = useState(value?.campaign ?? null);
 
   const onCampaignSelect = (campaign) => {
@@ -18,7 +24,13 @@ export function FullMapSelect({ value, setValue, disabled }) {
 
   return (
     <Stack direction="column" gap={2}>
-      <CampaignSelect selected={campaign} setSelected={onCampaignSelect} disabled={disabled} />
+      <CampaignSelect
+        selected={campaign}
+        setSelected={onCampaignSelect}
+        disabled={disabled}
+        empty={emptyCampaigns}
+        rejected={rejectedCampaigns}
+      />
       {campaign && (
         <MapSelect campaign={campaign} selected={value} setSelected={setValue} disabled={disabled} />
       )}

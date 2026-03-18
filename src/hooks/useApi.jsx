@@ -108,6 +108,7 @@ import {
   fetchCampaignData,
   fetchCampaignDataMapping,
   fetchMapData,
+  fetchProcessCampaign,
   postCampaignData,
   postCampaignDataMapping,
   postMapData,
@@ -550,7 +551,7 @@ export function useGetCampaignData(id) {
   return useQuery({
     queryKey: ["campaign_data", id],
     queryFn: () => fetchCampaignData(id),
-    onError: errorToast,
+    retry: false,
     enabled: !!id,
   });
 }
@@ -1302,6 +1303,18 @@ export function useRunAdminAction(onSuccess) {
   return useMutation({
     mutationFn: ({ action, params }) => fetchAdminAction(action, params),
     onSuccess: (response, variables) => {
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useProcessCampaign(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => fetchProcessCampaign(id),
+    onSuccess: (response, id) => {
+      queryClient.invalidateQueries(["campaign_data", id]);
+      queryClient.invalidateQueries(["campaign_data_mapping", id]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,

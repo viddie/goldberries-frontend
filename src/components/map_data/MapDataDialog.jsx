@@ -1,5 +1,6 @@
 import {
   Box,
+  InputAdornment,
   Stack,
   Tab,
   Table,
@@ -9,10 +10,11 @@ import {
   TableHead,
   TableRow,
   Tabs,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -26,30 +28,38 @@ import { MapDataMinimap } from "./MapDataMinimap";
 const COLLECTIBLE_DEFS = [
   {
     name: "Golden Berry",
-    entityName: "goldenBerry",
+    entityNames: ["goldenBerry"],
+    match: (attr) => !attr.winged,
+  },
+  {
+    name: "Winged Golden Berry",
+    entityNames: ["goldenBerry"],
+    match: (attr) => !!attr.winged,
+  },
+  {
+    name: "Cassette",
+    entityNames: ["cassette"],
     match: () => true,
   },
   {
     name: "Strawberry",
-    entityName: "strawberry",
+    entityNames: ["strawberry"],
     match: (attr) => !attr.moon && !attr.winged,
   },
   {
     name: "Moon Berry",
-    entityName: "strawberry",
+    entityNames: ["strawberry"],
     match: (attr) => !!attr.moon && !attr.winged,
   },
   {
-    name: "Winged Golden",
-    entityName: "strawberry",
+    name: "Winged Strawberry",
+    entityNames: ["strawberry"],
     match: (attr) => !attr.moon && !!attr.winged,
   },
 ];
 //#endregion
 
 export function MapDataDialog({ mapId, hash, campaignId }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data" });
-
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
 
@@ -63,8 +73,6 @@ export function MapDataDialog({ mapId, hash, campaignId }) {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h6">{t("title")}</Typography>
-
       {query.isLoading && <LoadingSpinner />}
       {query.isError && <ErrorDisplay error={query.error} />}
 
@@ -85,9 +93,26 @@ export function MapDataDialog({ mapId, hash, campaignId }) {
 }
 
 //#region Room List
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
+function filterBySearch(items, search) {
+  if (!search) return items;
+  const lower = search.toLowerCase();
+  return items.filter((item) => item.name.toLowerCase().includes(lower));
+}
+
 function RoomListSection({ rooms }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.rooms" });
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const search = useDebounce(searchInput, 1000);
 
   if (rooms.length === 0) return null;
 
@@ -95,9 +120,25 @@ function RoomListSection({ rooms }) {
 
   return (
     <Box>
-      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5 }}>
-        {t("title", { count: rooms.length })}
-      </Typography>
+      <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 0.5 }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          {t("title", { count: rooms.length })}
+        </Typography>
+        <TextField
+          size="small"
+          placeholder={t("search_placeholder")}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <FontAwesomeIcon icon={faSearch} size="sm" style={{ opacity: 0.5 }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ width: 200 }}
+        />
+      </Stack>
       <Stack direction="row" gap={2} alignItems="flex-start">
         <TableContainer
           sx={{
@@ -141,14 +182,16 @@ function RoomListSection({ rooms }) {
                       {room.width}×{room.height}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">{room.entityCount}</TableCell>
+                  <TableCell align="right">{filterBySearch(room.entities, search).length}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
 
-        {selectedRoom && <RoomDetailsPanel room={selectedRoom} />}
+        {selectedRoom && (
+          <RoomDetailsPanel room={selectedRoom} search={search} marginTop={selectedIndex * 33} />
+        )}
       </Stack>
     </Box>
   );
@@ -156,15 +199,21 @@ function RoomListSection({ rooms }) {
 //#endregion
 
 //#region Room Details Panel
-function RoomDetailsPanel({ room }) {
+function RoomDetailsPanel({ room, search, marginTop }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.room_details" });
   const [tab, setTab] = useState("entities");
+
+  const filteredEntities = useMemo(() => filterBySearch(room.entities, search), [room.entities, search]);
+  const filteredTriggers = useMemo(() => filterBySearch(room.triggers, search), [room.triggers, search]);
+
+  marginTop = Math.max(0, marginTop - 300);
 
   return (
     <Box
       sx={{
         flex: 1,
         minWidth: 0,
+        mt: `${marginTop}px`,
         borderRadius: 1,
         backgroundColor: "rgba(0,0,0,0.2)",
         border: "1px solid rgba(255,255,255,0.06)",
@@ -185,8 +234,8 @@ function RoomDetailsPanel({ room }) {
         <Tab label={t("tab_triggers")} value="triggers" sx={{ minHeight: 36, py: 0 }} />
       </Tabs>
       <Box sx={{ p: 1 }}>
-        {tab === "entities" && <EntitiesTab entities={room.entities} />}
-        {tab === "triggers" && <TriggersTab triggers={room.triggers} />}
+        {tab === "entities" && <EntitiesTab entities={filteredEntities} />}
+        {tab === "triggers" && <TriggersTab triggers={filteredTriggers} />}
       </Box>
     </Box>
   );
@@ -461,7 +510,7 @@ function CollectiblesTable({ collectibles }) {
 //#endregion
 
 //#region Data extraction utilities
-function extractRooms(mapData) {
+export function extractRooms(mapData) {
   const levelsNode = mapData.children?.find((c) => c.name === "levels");
   if (!levelsNode) return [];
 
@@ -508,7 +557,7 @@ function extractCollectibles(mapData) {
 
     for (const entity of entitiesNode.children) {
       for (const def of COLLECTIBLE_DEFS) {
-        if (entity.name === def.entityName && def.match(entity.attributes || {})) {
+        if (def.entityNames.some((name) => name === entity.name) && def.match(entity.attributes || {})) {
           results.push({
             name: def.name,
             room: roomName,

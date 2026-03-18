@@ -27,8 +27,9 @@ import {
   useGetCampaignData,
   useGetCampaignDataMapping,
   usePostCampaignDataMapping,
+  useProcessCampaign,
 } from "../../hooks/useApi";
-import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
+import { LoadingSpinner, StyledLink } from "../basic";
 import { CustomModal, useModal } from "../../hooks/useModal";
 import { getMapName } from "../../util/data_util";
 
@@ -41,8 +42,26 @@ export function CampaignDataDialog({ campaignId, campaign }) {
   const dataQuery = useGetCampaignData(campaignId);
   const mappingQuery = useGetCampaignDataMapping(campaignId);
 
-  const campaignData = getQueryData(dataQuery);
-  const mappingData = getQueryData(mappingQuery);
+  const campaignDataResponse = getQueryData(dataQuery);
+  const campaignData = campaignDataResponse?.data ?? null;
+  const campaignMeta = campaignDataResponse
+    ? {
+        status: campaignDataResponse.status,
+        message: campaignDataResponse.message,
+        binCount: campaignDataResponse.bin_count,
+        unmatchedBinCount: campaignDataResponse.unmatched_bin_count,
+        unmatchedMapCount: campaignDataResponse.unmatched_map_count,
+      }
+    : null;
+
+  let mappingData = getQueryData(mappingQuery);
+  if (mappingData !== null) {
+    mappingData = mappingData.data; // unwrap from { data: {...} } structure for the editor
+  }
+
+  const { mutate: processCampaign, isLoading: isProcessing } = useProcessCampaign(() => {
+    toast.success(t("process_success"));
+  });
 
   // Build a lookup of map_id -> map object from the campaign for name resolution
   const mapsById = {};
@@ -54,12 +73,42 @@ export function CampaignDataDialog({ campaignId, campaign }) {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h6">{t("title")}</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="h6">{t("title")}</Typography>
+        {auth.hasHelperPriv && (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => processCampaign(campaignId)}
+            disabled={isProcessing}
+          >
+            {isProcessing ? t("processing") : t("process_button")}
+          </Button>
+        )}
+      </Stack>
 
       {/* Structure (index.json) */}
       <Box>
         {dataQuery.isLoading && <LoadingSpinner />}
-        {dataQuery.isError && <ErrorDisplay error={dataQuery.error} />}
+        {dataQuery.isError && (
+          <Typography variant="body2" color="text.secondary">
+            {t("not_available")}
+          </Typography>
+        )}
+        {campaignMeta?.status === "error" && campaignMeta.message && (
+          <Typography variant="body2" color="error">
+            {campaignMeta.message}
+          </Typography>
+        )}
+        {campaignMeta && campaignMeta.status === "ok" && (
+          <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+            {t("bin_count", { count: campaignMeta.binCount })}
+            {campaignMeta.unmatchedBinCount > 0 &&
+              " · " + t("unmatched_bins", { count: campaignMeta.unmatchedBinCount })}
+            {campaignMeta.unmatchedMapCount > 0 &&
+              " · " + t("unmatched_maps", { count: campaignMeta.unmatchedMapCount })}
+          </Typography>
+        )}
         {campaignData && (
           <CampaignStructureTable
             entries={campaignData}
@@ -104,7 +153,6 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
     <>
       <TableContainer
         sx={{
-          maxHeight: 500,
           borderRadius: 1,
           backgroundColor: "rgba(0,0,0,0.2)",
           border: "1px solid rgba(255,255,255,0.06)",

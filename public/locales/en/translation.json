@@ -2245,6 +2245,13 @@
   "map_data": {
     "campaign_data": {
       "title": "Campaign Data",
+      "not_available": "This campaign has not been processed yet, or is unavailable for other reasons.",
+      "bin_count": "{{count}} .bin files",
+      "unmatched_bins": "{{count}} unmatched .bin files",
+      "unmatched_maps": "{{count}} unmatched maps",
+      "process_button": "Process Campaign",
+      "processing": "Processing...",
+      "process_success": "Campaign processed successfully.",
       "structure": {
         "unknown_map": "Unknown Map",
         "unmatched_tooltip": "This .bin file has not been matched to a map in the database. It may be a lobby, an old version of a map, or simply have a different name to the map in the database.",
@@ -2263,13 +2270,13 @@
       }
     },
     "map_data": {
-      "title": "Map Data",
       "rooms": {
         "title": "Rooms ({{count}})",
         "col_name": "Name",
         "col_position": "Position",
         "col_size": "Size",
-        "col_entities": "Entities"
+        "col_entities": "Entities",
+        "search_placeholder": "Filter entities..."
       },
       "room_details": {
         "tab_entities": "Entities",

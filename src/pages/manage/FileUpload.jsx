@@ -101,7 +101,7 @@ export function PageFileUpload() {
               <Divider sx={{ mb: 2 }}>
                 <Chip size="small" label={"Select map to upload for"} />
               </Divider>
-              <FullMapSelect value={selectedMap} setValue={setSelectedMap} />
+              <FullMapSelect value={selectedMap} setValue={setSelectedMap} emptyCampaigns rejectedCampaigns />
               {selectedMap && (
                 <>
                   <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
