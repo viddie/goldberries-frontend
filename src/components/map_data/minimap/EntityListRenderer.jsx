@@ -1,9 +1,20 @@
-import { GoldenBerryRenderer, SilverBerryRenderer, StrawberryRenderer } from "./renderers";
+import {
+  GoldenBerryRenderer,
+  SilverBerryRenderer,
+  SpikeRenderer,
+  SpinnerRenderer,
+  StrawberryRenderer,
+} from "./renderers";
 
 const entityMap = {
   goldenBerry: GoldenBerryRenderer,
   "CollabUtils2/SilverBerry": SilverBerryRenderer,
   strawberry: StrawberryRenderer,
+  spikesUp: SpikeRenderer,
+  spikesDown: SpikeRenderer,
+  spikesLeft: SpikeRenderer,
+  spikesRight: SpikeRenderer,
+  spinner: SpinnerRenderer,
 };
 
 export function EntityListRenderer({ entities }) {

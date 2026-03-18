@@ -8,7 +8,7 @@ export function Controls() {
       makeDefault
       enableRotate={false}
       screenSpacePanning
-      zoomSpeed={1.2}
+      zoomSpeed={2.0}
       panSpeed={1}
       onChange={invalidate}
     />
