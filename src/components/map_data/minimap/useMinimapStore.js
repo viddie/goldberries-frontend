@@ -30,33 +30,58 @@ export const useMinimapStore = create((set) => ({
   // Stores { data, z } where data is the entity/trigger object and z is its render depth
   selectedObject: null,
   // Map of entity → bounds for click-cycling. Entries whose bounds don't
-  // contain the current click point are pruned on each click.
+  // contain the current click point are pruned once per native click event.
   clickedObjects: new Map(),
+  _lastClickEvent: null,
   selectObject: (data, z, bounds) =>
     set((state) => {
       const next = new Map(state.clickedObjects);
       next.set(data, bounds);
       return { selectedObject: { data, z }, clickedObjects: next };
     }),
-  pruneClickedObjects: (point) =>
+  pruneClickedObjects: (point, nativeEvent) =>
     set((state) => {
+      // Only prune once per native event to avoid clearing entries mid-chain
+      if (nativeEvent && state._lastClickEvent === nativeEvent) return {};
       const next = new Map();
       for (const [entity, b] of state.clickedObjects) {
         if (point.x >= b.minX && point.x <= b.maxX && point.y >= b.minY && point.y <= b.maxY) {
           next.set(entity, b);
         }
       }
-      return { clickedObjects: next };
+      return { clickedObjects: next, _lastClickEvent: nativeEvent };
     }),
-  clearSelectedObject: () => set({ selectedObject: null, clickedObjects: new Map() }),
+  clearSelectedObject: () => set({ selectedObject: null, clickedObjects: new Map(), _lastClickEvent: null }),
 
-  // Debug flags
+  // Settings
   showUnhandledEntities: true,
   setShowUnhandledEntities: (v) => set({ showUnhandledEntities: v }),
   showUnhandledTriggers: false,
   setShowUnhandledTriggers: (v) => set({ showUnhandledTriggers: v }),
 
+  // Debug mode — shows pointer coordinates and axis arrows in the HUD
+  debugMode: false,
+  setDebugMode: (v) => set({ debugMode: v }),
+
+  // Anti-spoiler mode — hides rooms containing VivHelper/HideRoomInMap
+  antiSpoilerMode: true,
+  setAntiSpoilerMode: (v) => set({ antiSpoilerMode: v }),
+
   // Grid type: "tile" | "pixel" | "none"
   gridType: "tile",
   setGridType: (v) => set({ gridType: v }),
+
+  // Shown ignore groups — set of group keys from IgnoreUnhandled that are visible.
+  // Default: only miscGameTriggers shown, all others hidden.
+  shownIgnoreGroups: new Set(["importantTriggers", "miscGameTriggers"]),
+  toggleIgnoreGroup: (group) =>
+    set((state) => {
+      const next = new Set(state.shownIgnoreGroups);
+      if (next.has(group)) {
+        next.delete(group);
+      } else {
+        next.add(group);
+      }
+      return { shownIgnoreGroups: next };
+    }),
 }));

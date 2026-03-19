@@ -1,7 +1,10 @@
 import { useCallback, useState } from "react";
+import { Vector3 } from "three";
 
 import { useMinimapStore } from "../useMinimapStore";
 import { LAYERS } from "../entity_definitions";
+
+const _worldPos = new Vector3();
 
 export function HighlightableEntity({ entity, position, highlightRadius = 14, children }) {
   const [hovered, setHovered] = useState(false);
@@ -22,19 +25,21 @@ export function HighlightableEntity({ entity, position, highlightRadius = 14, ch
   const onClick = useCallback(
     (e) => {
       const store = useMinimapStore.getState();
-      store.pruneClickedObjects(e.point);
+      store.pruneClickedObjects(e.point, e.nativeEvent);
       if (useMinimapStore.getState().clickedObjects.has(entity)) return;
       e.stopPropagation();
+      // Compute bounds in world space to match world-space e.point used by pruneClickedObjects
+      e.object.getWorldPosition(_worldPos);
       const r = highlightRadius;
       const bounds = {
-        minX: position[0] - r,
-        maxX: position[0] + r,
-        minY: position[1] - r,
-        maxY: position[1] + r,
+        minX: _worldPos.x - r,
+        maxX: _worldPos.x + r,
+        minY: _worldPos.y - r,
+        maxY: _worldPos.y + r,
       };
       selectObject(entity, LAYERS.IMPORTANT_ENTITIES, bounds);
     },
-    [entity, selectObject, position, highlightRadius],
+    [entity, selectObject, highlightRadius],
   );
 
   const showHighlight = hovered || isSelected;

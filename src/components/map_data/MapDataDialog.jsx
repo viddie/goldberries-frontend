@@ -23,15 +23,19 @@ import { getQueryData, useGetMapData } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
 
 import { MapDataMinimap } from "./MapDataMinimap";
+import { isRoomHidden } from "./minimap/entity_definitions";
+import { useMinimapStore } from "./minimap/useMinimapStore";
 
 export function MapDataDialog({ mapId, hash, campaignId }) {
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
+  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
 
   const rooms = useMemo(() => {
     if (!mapData) return [];
-    return extractRooms(mapData);
-  }, [mapData]);
+    const allRooms = extractRooms(mapData);
+    return antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms;
+  }, [mapData, antiSpoilerMode]);
 
   return (
     <Stack spacing={2}>

@@ -7,9 +7,23 @@ import { useMinimapStore } from "./useMinimapStore";
 const FALLBACK_ENTITY_DEF = { color: "white", opacity: 0.1 };
 const FALLBACK_TRIGGER_DEF = { color: "#5588ff", opacity: 0.1 };
 
+/**
+ * Checks whether an entity/trigger name belongs to any ignore group that is currently hidden.
+ * Returns true if the name should be hidden.
+ */
+function isIgnored(name, shownIgnoreGroups) {
+  for (const [group, nameSet] of Object.entries(IgnoreUnhandled)) {
+    if (nameSet.has(name)) {
+      return !shownIgnoreGroups.has(group);
+    }
+  }
+  return false;
+}
+
 export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) {
   const showUnhandledEntities = useMinimapStore((s) => s.showUnhandledEntities);
   const showUnhandledTriggers = useMinimapStore((s) => s.showUnhandledTriggers);
+  const shownIgnoreGroups = useMinimapStore((s) => s.shownIgnoreGroups);
 
   const { individual, batched, simple } = useMemo(() => {
     const individual = [];
@@ -32,7 +46,7 @@ export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) 
       if (simpleDef) {
         if (!simpleMap[e.name]) simpleMap[e.name] = { def: simpleDef, entities: [] };
         simpleMap[e.name].entities.push(e);
-      } else if (showUnhandledEntities && !IgnoreUnhandled.has(e.name)) {
+      } else if (showUnhandledEntities && !isIgnored(e.name, shownIgnoreGroups)) {
         if (!simpleMap[e.name]) simpleMap[e.name] = { def: FALLBACK_ENTITY_DEF, entities: [] };
         simpleMap[e.name].entities.push(e);
       }
@@ -43,7 +57,7 @@ export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) 
       batched: Object.entries(batchMap),
       simple: Object.entries(simpleMap),
     };
-  }, [entities, showUnhandledEntities]);
+  }, [entities, showUnhandledEntities, shownIgnoreGroups]);
 
   const triggerGroups = useMemo(() => {
     if (!triggers || triggers.length === 0) return [];
@@ -53,13 +67,13 @@ export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) 
       if (def) {
         if (!groupMap[t.name]) groupMap[t.name] = { def, entities: [] };
         groupMap[t.name].entities.push(t);
-      } else if (showUnhandledTriggers && !IgnoreUnhandled.has(t.name)) {
+      } else if (showUnhandledTriggers && !isIgnored(t.name, shownIgnoreGroups)) {
         if (!groupMap[t.name]) groupMap[t.name] = { def: FALLBACK_TRIGGER_DEF, entities: [] };
         groupMap[t.name].entities.push(t);
       }
     }
     return Object.entries(groupMap);
-  }, [triggers, showUnhandledTriggers]);
+  }, [triggers, showUnhandledTriggers, shownIgnoreGroups]);
 
   return (
     <>

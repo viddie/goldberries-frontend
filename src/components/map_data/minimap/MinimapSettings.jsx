@@ -1,16 +1,19 @@
 import { useState } from "react";
 import {
+  Box,
   Checkbox,
   FormControlLabel,
   IconButton,
   Paper,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
+import { IgnoreUnhandled } from "./entity_definitions";
 import { useMinimapStore } from "./useMinimapStore";
 
 export function MinimapSettings() {
@@ -20,6 +23,12 @@ export function MinimapSettings() {
   const setShowUnhandledEntities = useMinimapStore((s) => s.setShowUnhandledEntities);
   const showUnhandledTriggers = useMinimapStore((s) => s.showUnhandledTriggers);
   const setShowUnhandledTriggers = useMinimapStore((s) => s.setShowUnhandledTriggers);
+  const debugMode = useMinimapStore((s) => s.debugMode);
+  const setDebugMode = useMinimapStore((s) => s.setDebugMode);
+  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
+  const setAntiSpoilerMode = useMinimapStore((s) => s.setAntiSpoilerMode);
+  const shownIgnoreGroups = useMinimapStore((s) => s.shownIgnoreGroups);
+  const toggleIgnoreGroup = useMinimapStore((s) => s.toggleIgnoreGroup);
   const gridType = useMinimapStore((s) => s.gridType);
   const setGridType = useMinimapStore((s) => s.setGridType);
 
@@ -84,6 +93,60 @@ export function MinimapSettings() {
           />
 
           <Typography variant="body2" sx={{ mb: 0.5 }}>
+            Show Groups
+          </Typography>
+          {Object.entries(IgnoreUnhandled).map(([group, nameSet]) => (
+            <Box key={group} sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={shownIgnoreGroups.has(group)}
+                    onChange={() => toggleIgnoreGroup(group)}
+                    size="small"
+                  />
+                }
+                label={group.charAt(0).toUpperCase() + group.slice(1)}
+                sx={{ flex: 1, mb: 0.5 }}
+                slotProps={{ typography: { variant: "body2" } }}
+              />
+              <Tooltip
+                title={
+                  <span style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", fontSize: "0.7rem" }}>
+                    {[...nameSet].join("\n")}
+                  </span>
+                }
+                arrow
+                placement="right"
+              >
+                <span style={{ display: "inline-flex", cursor: "help", opacity: 0.5 }}>
+                  <FontAwesomeIcon icon={faInfoCircle} size="xs" />
+                </span>
+              </Tooltip>
+            </Box>
+          ))}
+
+          <FormControlLabel
+            control={
+              <Checkbox checked={debugMode} onChange={(e) => setDebugMode(e.target.checked)} size="small" />
+            }
+            label="Debug mode"
+            sx={{ display: "flex", mb: 0.5, mt: 1 }}
+            slotProps={{ typography: { variant: "body2" } }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={antiSpoilerMode}
+                onChange={(e) => setAntiSpoilerMode(e.target.checked)}
+                size="small"
+              />
+            }
+            label="Anti-spoiler mode"
+            sx={{ display: "flex", mb: 1 }}
+            slotProps={{ typography: { variant: "body2" } }}
+          />
+
+          <Typography variant="body2" sx={{ mt: 1, mb: 0.5 }}>
             Grid
           </Typography>
           <ToggleButtonGroup

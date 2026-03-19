@@ -9,10 +9,16 @@ import { Controls, EntityListRenderer, MinimapSidebar, MouseWorldPos } from "./m
 import { MinimapSettings } from "./minimap/MinimapSettings";
 import { TileGrid } from "./minimap/TileGrid";
 import { useMinimapStore } from "./minimap/useMinimapStore";
-import { LAYERS } from "./minimap/entity_definitions";
+import { LAYERS, isRoomHidden } from "./minimap/entity_definitions";
 
 export function MapDataMinimap({ mapData, campaign, map }) {
-  const rooms = extractRooms(mapData);
+  const allRooms = extractRooms(mapData);
+  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
+  const debugMode = useMinimapStore((s) => s.debugMode);
+  const rooms = useMemo(
+    () => (antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms),
+    [allRooms, antiSpoilerMode],
+  );
   const bounds = getEnclosingBounds(rooms);
   const clearSelectedObject = useMinimapStore((s) => s.clearSelectedObject);
   const navigateToRoom = useMinimapStore((s) => s.navigateToRoom);
@@ -64,7 +70,7 @@ export function MapDataMinimap({ mapData, campaign, map }) {
             onCreated={handleCreated}
           >
             <Controls />
-            <MouseWorldPos />
+            {debugMode && <MouseWorldPos />}
             <TileGrid />
             {!ready && (
               <Text
@@ -87,7 +93,7 @@ export function MapDataMinimap({ mapData, campaign, map }) {
   );
 }
 
-const CULL_SIMPLE_SHAPES_AT_ZOOM = 0.1;
+const CULL_SIMPLE_SHAPES_AT_ZOOM = 0.15;
 
 function RoomRenderer({ room }) {
   const [contentsVisible, setContentsVisible] = useState(true);

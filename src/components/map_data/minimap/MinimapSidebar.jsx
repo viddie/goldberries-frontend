@@ -18,13 +18,24 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { extractRooms } from "../MapDataDialog";
 
 import { useMinimapStore } from "./useMinimapStore";
-import { extractCollectibles } from "./entity_definitions";
+import { extractCollectibles, isRoomHidden } from "./entity_definitions";
 
 export function MinimapSidebar({ mapData }) {
   const [tab, setTab] = useState("rooms");
-  const rooms = extractRooms(mapData);
-  const collectibles = useMemo(() => extractCollectibles(mapData), [mapData]);
+  const allRooms = extractRooms(mapData);
+  const allCollectibles = useMemo(() => extractCollectibles(mapData), [mapData]);
+  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
   const selectedObject = useMinimapStore((s) => s.selectedObject);
+
+  const rooms = useMemo(
+    () => (antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms),
+    [allRooms, antiSpoilerMode],
+  );
+  const collectibles = useMemo(() => {
+    if (!antiSpoilerMode) return allCollectibles;
+    const hiddenRoomNames = new Set(allRooms.filter((r) => isRoomHidden(r)).map((r) => r.name));
+    return allCollectibles.filter((c) => !hiddenRoomNames.has(c.room));
+  }, [allRooms, allCollectibles, antiSpoilerMode]);
   const clearSelectedObject = useMinimapStore((s) => s.clearSelectedObject);
   const navigateToRoom = useMinimapStore((s) => s.navigateToRoom);
   const navigateToPoint = useMinimapStore((s) => s.navigateToPoint);

@@ -1,6 +1,9 @@
 export { GoldenBerryRenderer } from "./GoldenBerryRenderer";
+export { LargeBlockContentRenderer } from "./LargeBlockContentRenderer";
 export { SilverBerryRenderer } from "./SilverBerryRenderer";
 export { StrawberryRenderer } from "./StrawberryRenderer";
 export { SpinnerRenderer } from "./SpinnerRenderer";
 export { SpikeRenderer } from "./SpikeRenderer";
 export { SimpleShapeRenderer } from "./SimpleShapeRenderer";
+export { MoveBlockContentRenderer } from "./MoveBlockContentRenderer";
+export { CrystalHeartRenderer } from "./CrystalHeartRenderer";

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BufferGeometry, Float32BufferAttribute } from "three";
+import { BufferGeometry, Float32BufferAttribute, Vector3 } from "three";
 import { Text } from "@react-three/drei";
 
 import { Arrow } from "../Arrow";
@@ -7,13 +7,15 @@ import { useMinimapStore } from "../useMinimapStore";
 import { LAYERS } from "../entity_definitions";
 
 /**
- * Splits an entity name on capital letters into multiple lines.
+ * Splits an entity name on camelCase boundaries into multiple lines.
  * Handles mod prefixes like "CollabUtils2/SilverBerry" by taking only the part after "/".
+ * Only splits before a capital letter when preceded by a lowercase letter or digit,
+ * so "(Refill)" stays on one line and "SMWTrack" stays on one line.
  * Example: "floatySpaceBlock" → "floaty\nSpace\nBlock"
  */
 function splitOnCapitals(name) {
   const simpleName = name.includes("/") ? name.split("/").pop() : name;
-  return simpleName.replace(/([A-Z])/g, "\n$1").trim();
+  return simpleName.replace(/([a-z0-9])([A-Z])/g, "$1\n$2");
 }
 
 /**
@@ -26,6 +28,8 @@ function resolve(value, attributes, fallback) {
   }
   return value ?? fallback;
 }
+
+const _worldPos = new Vector3();
 
 export function SimpleShapeRenderer({ entities, def }) {
   return (
@@ -46,8 +50,8 @@ function SimpleShape({ entity, def }) {
   const isSelected = useMinimapStore((s) => s.selectedObject?.data === entity);
 
   const attr = entity.attributes;
-  const w = resolve(def.width, attr, attr.width ?? 8);
-  const h = resolve(def.height, attr, attr.height ?? 8);
+  const w = resolve(def.width, attr, attr.width > 0 ? attr.width : 8);
+  const h = resolve(def.height, attr, attr.height > 0 ? attr.height : 8);
   const color = resolve(def.color, attr, "white");
   const outline = resolve(def.outline, attr, undefined);
   const baseOpacity = resolve(def.opacity, attr, 0.08);
@@ -98,21 +102,25 @@ function SimpleShape({ entity, def }) {
   const onClick = useCallback(
     (e) => {
       const store = useMinimapStore.getState();
-      // Prune previously clicked objects that don't overlap with this click position
-      store.pruneClickedObjects(e.point);
+      // Prune previously clicked objects that don't overlap with this click position (once per native event)
+      store.pruneClickedObjects(e.point, e.nativeEvent);
       // If this entity was already visited in the current cycle, skip it
       if (useMinimapStore.getState().clickedObjects.has(entity)) return;
 
       e.stopPropagation();
-      // Store entity bounds for future pruning
-      const cx = x + meshOffsetX;
-      const cy = y + meshOffsetY;
+      // Compute bounds in world space to match world-space e.point used by pruneClickedObjects
+      e.object.getWorldPosition(_worldPos);
       const halfW = isCircle ? radius : w / 2;
       const halfH = isCircle ? radius : h / 2;
-      const bounds = { minX: cx - halfW, maxX: cx + halfW, minY: cy - halfH, maxY: cy + halfH };
+      const bounds = {
+        minX: _worldPos.x - halfW,
+        maxX: _worldPos.x + halfW,
+        minY: _worldPos.y - halfH,
+        maxY: _worldPos.y + halfH,
+      };
       selectObject(entity, depth, bounds);
     },
-    [entity, selectObject, depth, x, y, meshOffsetX, meshOffsetY, w, h, radius, isCircle],
+    [entity, selectObject, depth, w, h, radius, isCircle],
   );
 
   //#region Node path
@@ -184,24 +192,30 @@ function SimpleShape({ entity, def }) {
           onPointerOut={onPointerOut}
           onClick={onClick}
         />
-        <Text
-          position={[meshOffsetX, meshOffsetY, 0.1]}
-          fontSize={fontSize}
-          color={color}
-          anchorX="center"
-          anchorY="middle"
-          maxWidth={(isCircle ? radius * 2 : w) - 1}
-          textAlign="center"
-        >
-          {displayName}
-        </Text>
+        {def.renderer ? (
+          <group position={[meshOffsetX, meshOffsetY, 0.1]}>
+            <def.renderer entity={entity} def={def} />
+          </group>
+        ) : (
+          <Text
+            position={[meshOffsetX, meshOffsetY, 0.1]}
+            fontSize={fontSize}
+            color={color}
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={(isCircle ? radius * 2 : w) - 1}
+            textAlign="center"
+          >
+            {displayName}
+          </Text>
+        )}
       </group>
     </group>
   );
 }
 
 //#region Shape rendering helpers
-function ShapeMesh({
+export function ShapeMesh({
   shape,
   w,
   h,
