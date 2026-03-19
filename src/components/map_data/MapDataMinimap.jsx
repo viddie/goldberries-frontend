@@ -93,7 +93,7 @@ export function MapDataMinimap({ mapData, campaign, map }) {
   );
 }
 
-const CULL_SIMPLE_SHAPES_AT_ZOOM = 0.15;
+const CULL_SIMPLE_SHAPES_AT_ZOOM = 0.2;
 
 function RoomRenderer({ room }) {
   const [contentsVisible, setContentsVisible] = useState(true);

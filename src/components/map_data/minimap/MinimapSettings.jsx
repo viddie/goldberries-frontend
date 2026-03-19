@@ -160,7 +160,7 @@ export function MinimapSettings() {
           >
             <ToggleButton value="tile">Tile</ToggleButton>
             <ToggleButton value="pixel">Pixel</ToggleButton>
-            <ToggleButton value="none">No Grid</ToggleButton>
+            <ToggleButton value="none">Off</ToggleButton>
           </ToggleButtonGroup>
         </Paper>
       )}

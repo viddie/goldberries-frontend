@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BufferGeometry, Float32BufferAttribute, Vector3 } from "three";
+import { BufferGeometry, Float32BufferAttribute } from "three";
 import { Text } from "@react-three/drei";
 
 import { Arrow } from "../Arrow";
@@ -29,7 +29,130 @@ function resolve(value, attributes, fallback) {
   return value ?? fallback;
 }
 
-const _worldPos = new Vector3();
+//#region Shape descriptors
+/**
+ * Shape descriptors define how shapes are composed from primitive sub-shapes.
+ * Each descriptor receives (attr, def, resolve) and returns:
+ *
+ * ShapeInfo = {
+ *   parts: Part[]                    — primitives to render
+ *   labelArea: { w, h, cx, cy }     — text sizing/placement relative to entity position
+ *   centerAnchored: boolean          — if true, position = (attr.x, -attr.y), ignoring def offset
+ * }
+ *
+ * Part = { type: "rect", w, h, cx, cy } | { type: "circle", radius, cx, cy }
+ * cx, cy are center positions relative to entity position in R3F coordinates (Y-up).
+ */
+
+/**
+ * Converts a Celeste Hitbox(w, h, offsetX, offsetY) definition (top-left offset, Y-down)
+ * to a R3F rect part (center-positioned, Y-up).
+ */
+function hitboxToPart(w, h, offsetX, offsetY) {
+  return { type: "rect", w, h, cx: offsetX + w / 2, cy: -(offsetY + h / 2) };
+}
+
+function anchorOffset(anchorX, anchorY, w, h) {
+  const ox = anchorX === "center" ? 0 : anchorX === "right" ? -w / 2 : w / 2;
+  const oy = anchorY === "center" ? 0 : anchorY === "bottom" ? h / 2 : -h / 2;
+  return [ox, oy];
+}
+
+const SHAPE_DESCRIPTORS = {
+  box: (attr, def, r) => {
+    const w = r(def.width, attr, attr.width > 0 ? attr.width : 8);
+    const h = r(def.height, attr, attr.height > 0 ? attr.height : 8);
+    const aX = r(def.anchorX, attr, "left");
+    const aY = r(def.anchorY, attr, "top");
+    const [cx, cy] = anchorOffset(aX, aY, w, h);
+    return {
+      parts: [{ type: "rect", w, h, cx, cy }],
+      labelArea: { w, h, cx, cy },
+      centerAnchored: false,
+    };
+  },
+
+  circle: (attr, def, r) => {
+    const w = r(def.width, attr, attr.width > 0 ? attr.width : 8);
+    const h = r(def.height, attr, attr.height > 0 ? attr.height : 8);
+    const radius = r(def.radius, attr, Math.min(w, h) / 2);
+    return {
+      parts: [{ type: "circle", radius, cx: 0, cy: 0 }],
+      labelArea: { w: radius * 2, h: radius * 2, cx: 0, cy: 0 },
+      centerAnchored: false,
+    };
+  },
+
+  spinner: (attr, def, r) => {
+    const w = r(def.width, attr, 16);
+    const h = r(def.height, attr, 4);
+    const radius = r(def.radius, attr, 6);
+    const offset = r(def.offset, attr, undefined);
+    const ox = offset?.[0] ?? -8;
+    const oy = offset?.[1] ?? -3;
+    return {
+      parts: [{ type: "circle", radius, cx: 0, cy: 0 }, hitboxToPart(w, h, ox, oy)],
+      labelArea: { w: radius * 2, h: radius * 2, cx: 0, cy: 0 },
+      centerAnchored: true,
+    };
+  },
+
+  seeker: () => {
+    const parts = [
+      hitboxToPart(12, 8, -6, -2), // attack
+      hitboxToPart(16, 6, -8, -8), // bounce
+    ];
+    const bounds = computePartsBounds(parts);
+    return {
+      parts,
+      labelArea: {
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY,
+        cx: (bounds.minX + bounds.maxX) / 2,
+        cy: (bounds.minY + bounds.maxY) / 2,
+      },
+      centerAnchored: true,
+    };
+  },
+
+  theo: () => {
+    const parts = [
+      hitboxToPart(8, 10, -4, -10), // base collider
+      hitboxToPart(16, 22, -8, -16), // pickup collider
+    ];
+    const bounds = computePartsBounds(parts);
+    return {
+      parts,
+      labelArea: {
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY,
+        cx: (bounds.minX + bounds.maxX) / 2,
+        cy: (bounds.minY + bounds.maxY) / 2,
+      },
+      centerAnchored: true,
+    };
+  },
+};
+
+/**
+ * Computes the axis-aligned bounding box of a set of shape parts.
+ */
+function computePartsBounds(parts) {
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
+  for (const part of parts) {
+    const halfW = part.type === "circle" ? part.radius : part.w / 2;
+    const halfH = part.type === "circle" ? part.radius : part.h / 2;
+    minX = Math.min(minX, part.cx - halfW);
+    maxX = Math.max(maxX, part.cx + halfW);
+    minY = Math.min(minY, part.cy - halfH);
+    maxY = Math.max(maxY, part.cy + halfH);
+  }
+  return { minX, maxX, minY, maxY };
+}
+//#endregion
 
 export function SimpleShapeRenderer({ entities, def }) {
   return (
@@ -50,20 +173,21 @@ function SimpleShape({ entity, def }) {
   const isSelected = useMinimapStore((s) => s.selectedObject?.data === entity);
 
   const attr = entity.attributes;
-  const w = resolve(def.width, attr, attr.width > 0 ? attr.width : 8);
-  const h = resolve(def.height, attr, attr.height > 0 ? attr.height : 8);
   const color = resolve(def.color, attr, "white");
   const outline = resolve(def.outline, attr, undefined);
   const baseOpacity = resolve(def.opacity, attr, 0.08);
   const nameOverride = resolve(def.name, attr, undefined);
   const offset = resolve(def.offset, attr, undefined);
   const depth = resolve(def.depth, attr, LAYERS.ENTITIES);
-  const anchorX = resolve(def.anchorX, attr, "left");
-  const anchorY = resolve(def.anchorY, attr, "top");
-  const shape = resolve(def.shape, attr, "box");
-  const radius = resolve(def.radius, attr, Math.min(w, h) / 2);
+  const shapeName = resolve(def.shape, attr, "box");
 
-  const isCircle = shape === "circle";
+  // Resolve shape descriptor — produces parts, labelArea, centerAnchored
+  const shapeInfo = useMemo(
+    () => (SHAPE_DESCRIPTORS[shapeName] ?? SHAPE_DESCRIPTORS.box)(attr, def, resolve),
+    [shapeName, attr, def],
+  );
+
+  const { parts, labelArea, centerAnchored } = shapeInfo;
   const opacity = isSelected || hovered ? HIGHLIGHT_OPACITY : baseOpacity;
   const outlineOpacity = isSelected ? 1 : hovered ? 0.6 : 0.3;
 
@@ -72,21 +196,20 @@ function SimpleShape({ entity, def }) {
     [nameOverride, entity.name],
   );
 
-  const x = attr.x + (offset?.[0] ?? 0);
-  const y = -attr.y + (offset ? -offset[1] : 0);
+  // Center-anchored shapes use raw entity position, others apply def offset
+  const x = attr.x + (centerAnchored ? 0 : (offset?.[0] ?? 0));
+  const y = -attr.y + (centerAnchored ? 0 : offset ? -offset[1] : 0);
 
-  // Compute mesh offset based on anchor props
-  // Circles are always center-anchored on both axes
-  const meshOffsetX = isCircle ? 0 : anchorX === "center" ? 0 : anchorX === "right" ? -w / 2 : w / 2;
-  const meshOffsetY = isCircle ? 0 : anchorY === "center" ? 0 : anchorY === "bottom" ? h / 2 : -h / 2;
-
-  const effectiveSize = isCircle ? radius * 2 : Math.min(w, h);
-  // Scale font to fit: shorter names get proportionally larger text
+  // Font sizing from label area
+  const effectiveSize = Math.min(labelArea.w, labelArea.h);
   const lines = displayName.split("\n");
   const longestLine = Math.max(...lines.map((l) => l.length));
-  const maxFontByWidth = ((isCircle ? radius * 2 : w) * 0.75) / Math.max(longestLine * 0.6, 1);
-  const maxFontByHeight = ((isCircle ? radius * 2 : h) * 0.75) / Math.max(lines.length, 1);
+  const maxFontByWidth = (labelArea.w * 0.75) / Math.max(longestLine * 0.6, 1);
+  const maxFontByHeight = (labelArea.h * 0.75) / Math.max(lines.length, 1);
   const fontSize = Math.min(maxFontByWidth, maxFontByHeight, effectiveSize * 0.75);
+
+  // Click bounds computed from shape parts
+  const shapeBounds = useMemo(() => computePartsBounds(parts), [parts]);
 
   const onPointerOver = useCallback((e) => {
     e.stopPropagation();
@@ -108,19 +231,15 @@ function SimpleShape({ entity, def }) {
       if (useMinimapStore.getState().clickedObjects.has(entity)) return;
 
       e.stopPropagation();
-      // Compute bounds in world space to match world-space e.point used by pruneClickedObjects
-      e.object.getWorldPosition(_worldPos);
-      const halfW = isCircle ? radius : w / 2;
-      const halfH = isCircle ? radius : h / 2;
       const bounds = {
-        minX: _worldPos.x - halfW,
-        maxX: _worldPos.x + halfW,
-        minY: _worldPos.y - halfH,
-        maxY: _worldPos.y + halfH,
+        minX: x + shapeBounds.minX,
+        maxX: x + shapeBounds.maxX,
+        minY: y + shapeBounds.minY,
+        maxY: y + shapeBounds.maxY,
       };
       selectObject(entity, depth, bounds);
     },
-    [entity, selectObject, depth, w, h, radius, isCircle],
+    [entity, selectObject, depth, x, y, shapeBounds],
   );
 
   //#region Node path
@@ -131,20 +250,18 @@ function SimpleShape({ entity, def }) {
 
   // Center positions for arrow connections: [entityCenter, node1Center, node2Center, ...]
   const pathPositions = useMemo(() => {
-    const mainCenter = { x: x + meshOffsetX, y: y + meshOffsetY };
+    const mainCenter = { x: x + labelArea.cx, y: y + labelArea.cy };
     const nodePositions = nodes.map((node) => ({
-      x: node.attributes.x + (offset?.[0] ?? 0) + meshOffsetX,
-      y: -node.attributes.y + (offset ? -offset[1] : 0) + meshOffsetY,
+      x: node.attributes.x + (centerAnchored ? 0 : (offset?.[0] ?? 0)) + labelArea.cx,
+      y: -node.attributes.y + (centerAnchored ? 0 : offset ? -offset[1] : 0) + labelArea.cy,
     }));
     return [mainCenter, ...nodePositions];
-  }, [x, y, meshOffsetX, meshOffsetY, nodes, offset]);
+  }, [x, y, labelArea, centerAnchored, nodes, offset]);
 
   const NODE_OPACITY_FACTOR = 0.4;
   const nodeOpacity = opacity * NODE_OPACITY_FACTOR;
   const nodeOutlineOpacity = outlineOpacity * NODE_OPACITY_FACTOR;
   //#endregion
-
-  const shapeProps = { shape: isCircle ? "circle" : "box", w, h, radius, color, outline };
 
   return (
     <group>
@@ -165,14 +282,14 @@ function SimpleShape({ entity, def }) {
 
       {/* Node ghost shapes */}
       {nodes.map((node, i) => {
-        const nx = node.attributes.x + (offset?.[0] ?? 0);
-        const ny = -node.attributes.y + (offset ? -offset[1] : 0);
+        const nx = node.attributes.x + (centerAnchored ? 0 : (offset?.[0] ?? 0));
+        const ny = -node.attributes.y + (centerAnchored ? 0 : offset ? -offset[1] : 0);
         return (
           <group key={i} position={[nx, ny, depth]}>
             <ShapeMesh
-              {...shapeProps}
-              offsetX={meshOffsetX}
-              offsetY={meshOffsetY}
+              parts={parts}
+              color={color}
+              outline={outline}
               opacity={nodeOpacity}
               outlineOpacity={nodeOutlineOpacity}
             />
@@ -183,9 +300,9 @@ function SimpleShape({ entity, def }) {
       {/* Main shape */}
       <group position={[x, y, depth]}>
         <ShapeMesh
-          {...shapeProps}
-          offsetX={meshOffsetX}
-          offsetY={meshOffsetY}
+          parts={parts}
+          color={color}
+          outline={outline}
           opacity={opacity}
           outlineOpacity={outlineOpacity}
           onPointerOver={onPointerOver}
@@ -193,17 +310,17 @@ function SimpleShape({ entity, def }) {
           onClick={onClick}
         />
         {def.renderer ? (
-          <group position={[meshOffsetX, meshOffsetY, 0.1]}>
+          <group position={[labelArea.cx, labelArea.cy, 0.1]}>
             <def.renderer entity={entity} def={def} />
           </group>
         ) : (
           <Text
-            position={[meshOffsetX, meshOffsetY, 0.1]}
+            position={[labelArea.cx, labelArea.cy, 0.1]}
             fontSize={fontSize}
             color={color}
             anchorX="center"
             anchorY="middle"
-            maxWidth={(isCircle ? radius * 2 : w) - 1}
+            maxWidth={labelArea.w - 1}
             textAlign="center"
           >
             {displayName}
@@ -215,50 +332,44 @@ function SimpleShape({ entity, def }) {
 }
 
 //#region Shape rendering helpers
-export function ShapeMesh({
-  shape,
-  w,
-  h,
-  radius,
-  color,
-  outline,
-  offsetX,
-  offsetY,
-  opacity,
-  outlineOpacity,
-  ...events
-}) {
-  if (shape === "circle") {
-    return (
-      <group position={[offsetX, offsetY, 0]}>
-        <mesh {...events}>
-          <circleGeometry args={[radius, CIRCLE_SEGMENTS]} />
-          <meshBasicMaterial color={color} transparent opacity={opacity} />
-        </mesh>
-        <mesh position={[0, 0, 0.05]}>
-          <ringGeometry args={[radius - 0.5, radius, CIRCLE_SEGMENTS]} />
-          <meshBasicMaterial color={color} transparent opacity={outlineOpacity} />
-        </mesh>
-      </group>
-    );
-  }
-
+/**
+ * Renders a list of shape parts (rects and circles) generically.
+ * Event handlers are forwarded to all interactive meshes.
+ */
+export function ShapeMesh({ parts, color, outline, opacity, outlineOpacity, ...events }) {
   return (
-    <>
-      <mesh position={[offsetX, offsetY, 0]} {...events}>
-        <planeGeometry args={[w, h]} />
-        <meshBasicMaterial color={color} transparent opacity={opacity} />
-      </mesh>
-      <RectOutline
-        width={w}
-        height={h}
-        centerX={offsetX}
-        centerY={offsetY}
-        color={color}
-        outline={outline ?? "solid"}
-        outlineOpacity={outlineOpacity}
-      />
-    </>
+    <group>
+      {parts.map((part, i) =>
+        part.type === "circle" ? (
+          <group key={i} position={[part.cx, part.cy, 0]}>
+            <mesh {...events}>
+              <circleGeometry args={[part.radius, CIRCLE_SEGMENTS]} />
+              <meshBasicMaterial color={color} transparent opacity={opacity} />
+            </mesh>
+            <mesh position={[0, 0, 0.05]}>
+              <ringGeometry args={[part.radius - 0.5, part.radius, CIRCLE_SEGMENTS]} />
+              <meshBasicMaterial color={color} transparent opacity={outlineOpacity} />
+            </mesh>
+          </group>
+        ) : (
+          <group key={i}>
+            <mesh position={[part.cx, part.cy, 0]} {...events}>
+              <planeGeometry args={[part.w, part.h]} />
+              <meshBasicMaterial color={color} transparent opacity={opacity} />
+            </mesh>
+            <RectOutline
+              width={part.w}
+              height={part.h}
+              centerX={part.cx}
+              centerY={part.cy}
+              color={color}
+              outline={outline ?? "solid"}
+              outlineOpacity={outlineOpacity}
+            />
+          </group>
+        ),
+      )}
+    </group>
   );
 }
 //#endregion

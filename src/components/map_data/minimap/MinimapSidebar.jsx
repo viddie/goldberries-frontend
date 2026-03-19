@@ -102,7 +102,7 @@ export function MinimapSidebar({ mapData }) {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Room</TableCell>
-                <TableCell>ID</TableCell>
+                {/* <TableCell>ID</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -112,7 +112,7 @@ export function MinimapSidebar({ mapData }) {
                   <TableCell sx={{ whiteSpace: "nowrap", fontFamily: "monospace", fontSize: "0.8rem" }}>
                     {c.room}
                   </TableCell>
-                  <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{c.id}</TableCell>
+                  {/* <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{c.id}</TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

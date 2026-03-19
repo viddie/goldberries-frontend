@@ -5,8 +5,8 @@ import { LAYERS } from "../entity_definitions";
 
 import { HighlightableEntity } from "./HighlightableEntity";
 
-export function CrystalHeartRenderer({ entity }) {
-  const texture = usePixelTexture("/icons/crystal-heart-a.png");
+export function MiniHeartRenderer({ entity }) {
+  const texture = usePixelTexture("/icons/miniheart.png");
   const position = useMemo(
     () => [entity.attributes.x, -entity.attributes.y, LAYERS.IMPORTANT_ENTITIES],
     [entity.attributes.x, entity.attributes.y],
