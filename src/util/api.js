@@ -444,6 +444,19 @@ export function fetchCampaignDataMapping(id) {
 export function fetchProcessCampaign(id) {
   return axios.get("/admin/process-campaign", { params: { id } });
 }
+export function fetchProcessGbCampaign(gamebananaId, regenerate = false) {
+  const params = { gamebanana_id: gamebananaId };
+  if (regenerate) params.regenerate = "true";
+  return axios.get("/admin/process-gb-campaign", { params });
+}
+export function fetchTempData(gamebananaId) {
+  return axios.get("/admin/temp-data", { params: { gamebanana_id: gamebananaId } });
+}
+export function fetchTempMapData(gamebananaId, hash, checkExists = false) {
+  const params = { gamebanana_id: gamebananaId, hash };
+  if (checkExists) params.check_exists = "true";
+  return axios.get("/admin/temp-map-data", { params });
+}
 export function fetchMapData(id, { campaignId, hash, checkExists } = {}) {
   const params = {};
   if (id) params.id = id;

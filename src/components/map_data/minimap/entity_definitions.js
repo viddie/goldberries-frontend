@@ -909,6 +909,32 @@ export function extractCollectibles(mapData) {
 
   return results;
 }
+
+// Maps COLLECTIBLE_DEFS names to COLLECTIBLES form values (from forms/Map.jsx)
+export const COLLECTIBLE_DEF_TO_FORM_VALUE = {
+  "Golden Berry": "0",
+  "Winged Golden Berry": "4",
+  "Silver Berry": "1",
+  Strawberry: "2",
+  "Winged Strawberry": "2",
+  "Moon Berry": "3",
+  Cassette: "6",
+  "Crystal Heart": "7",
+  "Speed Berry": "10",
+};
+
+// Extracts collectibles from parsed map data and returns them in the form's 5-tuple format:
+// [[collectibleValue, variantValue, note, count, globalCount], ...]
+export function extractCollectiblesForForm(mapData) {
+  const raw = extractCollectibles(mapData);
+  const counts = {};
+  for (const item of raw) {
+    const formValue = COLLECTIBLE_DEF_TO_FORM_VALUE[item.name];
+    if (!formValue) continue;
+    counts[formValue] = (counts[formValue] || 0) + 1;
+  }
+  return Object.entries(counts).map(([value, count]) => [value, "", "", String(count), ""]);
+}
 //#endregion
 
 //#region Validation

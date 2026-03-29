@@ -63,8 +63,8 @@ import {
 import { FormCampaignWrapper } from "../../components/forms/Campaign";
 import { FormCampaignMassAddMaps } from "../../components/forms/CampaignMassAddMaps";
 import { FormCreateFullChallengeWrapper } from "../../components/forms/CreateFullChallenge";
+import { FormCreateCampaignFromGB } from "../../components/forms/CreateCampaignFromGB";
 import { FullChallengeSelect } from "../../components/goldberries";
-
 
 export function PageManageChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.challenges" });
@@ -568,6 +568,8 @@ export function CreateAnyButton({
   const createChallengeModal = useModal();
 
   const createFullChallengeModal = useModal();
+  const createFromGBModal = useModal();
+  const [gbDialogMaxWidth, setGbDialogMaxWidth] = useState("md");
 
   const onCreatedChallenge = (data) => {
     createChallengeModal.close();
@@ -576,6 +578,10 @@ export function CreateAnyButton({
   const onCreatedFullChallenge = (data) => {
     createFullChallengeModal.close();
     if (onCreateChallenge) onCreateChallenge(data);
+  };
+  const onCreatedFromGB = () => {
+    createFromGBModal.close();
+    setGbDialogMaxWidth("md");
   };
 
   return (
@@ -603,6 +609,10 @@ export function CreateAnyButton({
         <MenuItem disableRipple onClick={createFullChallengeModal.open}>
           <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faPlus} />
           {t("create_full_challenge")}
+        </MenuItem>
+        <MenuItem disableRipple onClick={createFromGBModal.open}>
+          <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faPlus} />
+          {t("create_from_gb")}
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem disableRipple onClick={campaignMassAddMapsModal.open}>
@@ -651,6 +661,10 @@ export function CreateAnyButton({
           defaultUrl={defaultCampaignUrl}
           defaultDifficultyId={defaultDifficultyId}
         />
+      </CustomModal>
+
+      <CustomModal modalHook={createFromGBModal} options={{ hideFooter: true }} maxWidth={gbDialogMaxWidth}>
+        <FormCreateCampaignFromGB onSuccess={onCreatedFromGB} setMaxWidth={setGbDialogMaxWidth} />
       </CustomModal>
     </>
   );

@@ -109,6 +109,9 @@ import {
   fetchCampaignDataMapping,
   fetchMapData,
   fetchProcessCampaign,
+  fetchProcessGbCampaign,
+  fetchTempData,
+  fetchTempMapData,
   postCampaignData,
   postCampaignDataMapping,
   postMapData,
@@ -1318,6 +1321,31 @@ export function useProcessCampaign(onSuccess) {
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
+  });
+}
+export function useProcessGbCampaign(onSuccess) {
+  return useMutation({
+    mutationFn: ({ gamebananaId, regenerate }) => fetchProcessGbCampaign(gamebananaId, regenerate),
+    onSuccess: (response) => {
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useGetTempData(gamebananaId) {
+  return useQuery({
+    queryKey: ["temp_data", gamebananaId],
+    queryFn: () => fetchTempData(gamebananaId),
+    retry: false,
+    enabled: !!gamebananaId,
+  });
+}
+export function useGetTempMapData(gamebananaId, hash) {
+  return useQuery({
+    queryKey: ["temp_map_data", gamebananaId, hash],
+    queryFn: () => fetchTempMapData(gamebananaId, hash),
+    retry: false,
+    enabled: !!(gamebananaId && hash),
   });
 }
 //#endregion

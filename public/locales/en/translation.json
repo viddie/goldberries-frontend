@@ -410,6 +410,63 @@
         "save_maps": "Save Maps"
       }
     },
+    "create_campaign_from_gb": {
+      "title": "Create Campaign from GameBanana",
+      "step": "Step {{current}} / {{total}}",
+      "next": "Continue",
+      "back": "Back",
+      "step_1": {
+        "label": "GameBanana URL",
+        "url_label": "GameBanana Mod URL",
+        "url_placeholder": "https://gamebanana.com/mods/123456",
+        "process_button": "Process URL",
+        "invalid_url": "Invalid GameBanana mod URL. Expected format: https://gamebanana.com/mods/<id>"
+      },
+      "step_2": {
+        "label": "Processing",
+        "processing": "Processing mod files...",
+        "error": "An error occurred while processing the mod.",
+        "retry": "Retry"
+      },
+      "step_3": {
+        "label": "Campaign & Maps",
+        "campaign_name": "Campaign Name",
+        "author_gb_id": "Author GameBanana ID",
+        "author_gb_name": "Author GameBanana Name",
+        "maps_found_one": "{{count}} map found",
+        "maps_found_other": "{{count}} maps found",
+        "no_maps": "No maps found in the mod data.",
+        "map_name": "Map Name",
+        "bin_path": "Bin File",
+        "add_map": "Add Map",
+        "unassigned_bins": "Unassigned Bin Files",
+        "remove_map": "Remove Map"
+      },
+      "step_4": {
+        "label": "Collectibles",
+        "loading_map_data": "Loading map data...",
+        "edit": "Edit Collectibles",
+        "done": "Done",
+        "collectible_summary": "Collectibles",
+        "no_collectibles": "No collectibles detected",
+        "loading_error": "Failed to load map data for this bin."
+      },
+      "step_5": {
+        "label": "Challenges",
+        "helper": "Specify which challenges to generate for each map.",
+        "generate_challenges": "Generate Challenges",
+        "c_fc_distinct": "Clear and FC separately",
+        "create_all": "Create All"
+      },
+      "feedback": {
+        "creating_one": "Creating ({{current}}/{{count}})",
+        "creating_other": "Creating ({{current}}/{{count}})",
+        "campaign_created": "Campaign created",
+        "maps_created": "Maps and challenges created",
+        "mapping_saved": "Mapping saved",
+        "error": "An error occurred during creation"
+      }
+    },
     "campaign_mass_add_maps": {
       "feedback": {
         "adding_one": "Adding map ({{current}}/{{count}})",
@@ -798,6 +855,7 @@
         "new_map": "New Map",
         "new_challenge": "New Challenge",
         "create_full_challenge": "Create Full Challenge",
+        "create_from_gb": "Create Campaign from GB",
         "mass_add_maps": "Mass Add Maps to Campaign"
       }
     },
