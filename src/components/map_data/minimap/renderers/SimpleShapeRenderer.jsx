@@ -331,7 +331,7 @@ function SimpleShape({ entity, def }) {
           <group position={[labelArea.cx, labelArea.cy, 0.1]}>
             <def.renderer entity={entity} def={def} />
           </group>
-        ) : (
+        ) : displayName ? (
           <Text
             position={[labelArea.cx, labelArea.cy, 0.1]}
             fontSize={fontSize}
@@ -343,7 +343,7 @@ function SimpleShape({ entity, def }) {
           >
             {displayName}
           </Text>
-        )}
+        ) : null}
       </group>
     </group>
   );

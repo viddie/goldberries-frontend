@@ -31,10 +31,13 @@ export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) 
     const simpleMap = {};
 
     for (const e of entities) {
-      const IndividualComponent = IndividualEntityMap[e.name];
-      if (IndividualComponent) {
-        individual.push({ Component: IndividualComponent, entity: e });
-        continue;
+      const resolveRenderer = IndividualEntityMap[e.name];
+      if (resolveRenderer) {
+        const Component = resolveRenderer(e.attributes || {});
+        if (Component) {
+          individual.push({ Component, entity: e });
+          continue;
+        }
       }
       const BatchedComponent = BatchedEntityMap[e.name];
       if (BatchedComponent) {

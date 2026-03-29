@@ -23,19 +23,23 @@ export const LAYERS = {
 //#region Renderers
 // These are entities that need special rendering
 export const IndividualEntityMap = {
-  goldenBerry: GoldenBerryRenderer,
-  "CollabUtils2/SilverBerry": SilverBerryRenderer,
-  strawberry: StrawberryRenderer,
-  "DSidesHelper/TeleportMoonBerry": StrawberryRenderer,
-  "SpringCollab2020/returnBerry": StrawberryRenderer,
-  "LunaticHelper/StrawberryWithReturn": StrawberryRenderer,
-  "SorbetHelper/ReturnBerry": StrawberryRenderer,
-  blackGem: CrystalHeartRenderer,
-  "MaxHelpingHand/ReskinnableCrystalHeart": CrystalHeartRenderer,
-  "AdventureHelper/CustomCrystalHeart": CrystalHeartRenderer,
-  "CollabUtils2/MiniHeart": MiniHeartRenderer,
-  "CollabUtils2/FakeMiniHeart": MiniHeartRenderer,
-  cassette: CassetteRenderer,
+  goldenBerry: () => GoldenBerryRenderer,
+  "MaxHelpingHand/GoldenStrawberryCustomConditions": () => GoldenBerryRenderer,
+  "CollabUtils2/SilverBerry": () => SilverBerryRenderer,
+  strawberry: () => StrawberryRenderer,
+  "DSidesHelper/TeleportMoonBerry": () => StrawberryRenderer,
+  "SpringCollab2020/returnBerry": () => StrawberryRenderer,
+  "LunaticHelper/StrawberryWithReturn": () => StrawberryRenderer,
+  "SorbetHelper/ReturnBerry": () => StrawberryRenderer,
+  blackGem: () => CrystalHeartRenderer,
+  "MaxHelpingHand/ReskinnableCrystalHeart": () => CrystalHeartRenderer,
+  "AdventureHelper/CustomCrystalHeart": () => CrystalHeartRenderer,
+  "CollabUtils2/MiniHeart": () => MiniHeartRenderer,
+  "CollabUtils2/FakeMiniHeart": () => MiniHeartRenderer,
+  cassette: () => CassetteRenderer,
+  "XaphanHelper/CustomCollectable": (attr) =>
+    attr.sprite?.indexOf("cassette") >= 0 ? CassetteRenderer : null,
+  "ParrotHelper/FlagBerry": () => StrawberryRenderer,
 };
 
 // These are common entities that need special rendering but can be batched together
@@ -63,6 +67,11 @@ const movingSolidOpacity = 0.5;
 //#region Solids
 ssm.floatySpaceBlock = { color: "white", name: "MoonBlock", opacity: movingSolidOpacity };
 ssm["SpringCollab2020/floatierSpaceBlock"] = { ...ssm.floatySpaceBlock, name: "FloatierMoonBlock" };
+ssm["BrokemiaHelper/floatierSpaceBlock"] = ssm["SpringCollab2020/floatierSpaceBlock"];
+ssm["MaxHelpingHand/FloatySpaceBlockWithAttachedSidewaysJumpthruSupport"] = {
+  ...ssm.floatySpaceBlock,
+  name: "MoonBlockWithJumpThrough",
+};
 
 ssm.swapBlock = { color: "orange", name: "S", opacity: movingSolidOpacity };
 ssm["FrostHelper/ToggleSwapBlock"] = {
@@ -76,6 +85,11 @@ ssm["AdventureHelper/ZipMoverNoReturn"] = {
 };
 ssm.fallingBlock = { color: "#12fffb", name: "F", opacity: movingSolidOpacity };
 ssm["FancyTileEntities/FancyFallingBlock"] = ssm.fallingBlock;
+ssm["VortexHelper/AutoFallingBlock"] = ssm.fallingBlock;
+ssm["HonlyHelper/RisingBlock"] = {
+  ...ssm.fallingBlock,
+  name: "R",
+};
 ssm.finalBossFallingBlock = { ...ssm.fallingBlock, color: "#cc00ff" };
 ssm.finalBossMovingBlock = {
   ...ssm.finalBossFallingBlock,
@@ -94,6 +108,7 @@ ssm["SpringCollab2020/safeRespawnCrumble"] = {
 
 ssm.dashBlock = { color: "#12fffb", name: "D", opacity: movingSolidOpacity };
 ssm["VivHelper/CustomDashBlock"] = ssm.dashBlock;
+ssm["FrostHelper/DashBlockDestroyAttached"] = ssm.dashBlock;
 ssm.crushBlock = { color: "#285aff", name: "Kevin", opacity: movingSolidOpacity };
 ssm["MaxHelpingHand/ReskinnableCrushBlock"] = ssm.crushBlock;
 
@@ -112,6 +127,7 @@ ssm.switchGate = { color: "#00a6ff", name: "SwitchGate", opacity: movingSolidOpa
 ssm["MaxHelpingHand/FlagSwitchGate"] = ssm.switchGate;
 ssm["SpringCollab2020/FlagSwitchGate"] = ssm.switchGate;
 ssm["MaxHelpingHand/ShatterFlagSwitchGate"] = ssm.switchGate;
+ssm["VortexHelper/VortexSwitchGate"] = ssm.switchGate;
 ssm.introCrusher = { ...ssm.switchGate, name: "IntroCrusher" };
 ssm["VivHelper/FlagIntroCrusher"] = ssm.introCrusher;
 
@@ -119,6 +135,10 @@ ssm.templeGate = { color: "#dddddd", name: "TempleGate", opacity: movingSolidOpa
 
 ssm.moveBlock = { color: "#9400ae", renderer: MoveBlockContentRenderer };
 ssm.lockBlock = { color: "orange", name: "LockBlock", width: 32, height: 32 };
+ssm["PrismaticHelper/MultiLockedDoor"] = {
+  ...ssm.lockBlock,
+  name: (attr) => (attr.keys || 1) + (attr.keys === 1 ? "Key" : "Keys") + "LockBlock",
+};
 
 ssm["starJumpBlock"] = {
   color: "white",
@@ -199,10 +219,8 @@ ssm["MaxHelpingHand/UpsideDownJumpThru"] = {
   offset: [0, 3],
   name: "DownJumpThrough",
 };
-ssm["SpringCollab2020/UpsideDownJumpThru"] = {
-  ...ssm["MaxHelpingHand/UpsideDownJumpThru"],
-  offset: [0, 3],
-};
+ssm["SpringCollab2020/UpsideDownJumpThru"] = ssm["MaxHelpingHand/UpsideDownJumpThru"];
+ssm["GravityHelper/UpsideDownJumpThru"] = ssm["MaxHelpingHand/UpsideDownJumpThru"];
 ssm["VortexHelper/AttachedJumpThru"] = ssm.jumpThru;
 //#endregion
 
@@ -232,13 +250,23 @@ ssm["VivHelper/RefillWall"] = {
   height: undefined,
   name: (attr) => (attr.oneUse ? "(RefillWall)" : "RefillWall"),
 };
-ssm.lightning = { color: "yellow", name: "Lightning", depth: LAYERS.ENTITIES - 1 };
+ssm["vitellary/timecrystal"] = {
+  ...ssm.refill,
+  color: "#00d9ff",
+  name: "TimeCrystal",
+};
+
+ssm.lightning = { color: "yellow", name: "", depth: LAYERS.ENTITIES - 1, outline: "dashed" };
 
 ssm.spring = { color: "#c96800", name: "Spring", anchorX: "center", anchorY: "bottom", width: 16, height: 6 };
 ssm["MaxHelpingHand/CustomDashRefillSpring"] = {
   ...ssm.spring,
   color: "#16bd00",
   name: "CustomDashRefillSpring",
+};
+ssm["GravityHelper/GravitySpringFloor"] = {
+  ...ssm["MaxHelpingHand/CustomDashRefillSpring"],
+  name: "GravitySpring",
 };
 ssm.wallSpringLeft = {
   ...ssm.spring,
@@ -253,6 +281,10 @@ ssm["MaxHelpingHand/CustomDashRefillSpringLeft"] = {
   color: "#16bd00",
   name: "CustomDashRefillSpring",
 };
+ssm["GravityHelper/GravitySpringWallLeft"] = {
+  ...ssm["MaxHelpingHand/CustomDashRefillSpringLeft"],
+  name: "GravitySpring",
+};
 ssm.wallSpringRight = {
   ...ssm.spring,
   anchorX: "right",
@@ -265,6 +297,10 @@ ssm["MaxHelpingHand/CustomDashRefillSpringRight"] = {
   color: "#16bd00",
   name: "CustomDashRefillSpring",
 };
+ssm["GravityHelper/GravitySpringWallRight"] = {
+  ...ssm["MaxHelpingHand/CustomDashRefillSpringRight"],
+  name: "GravitySpring",
+};
 ssm["FrostHelper/SpringRight"] = ssm.wallSpringRight;
 ssm["FrostHelper/SpringFloor"] = ssm.spring;
 ssm["DJMapHelper/springGreen"] = {
@@ -273,6 +309,15 @@ ssm["DJMapHelper/springGreen"] = {
   color: "#16bd00",
   name: "GreenSpring",
   offset: (attr) => (attr.orientation === "Floor" ? [-8, -6] : [0, -8]),
+};
+
+ssm["GravityHelper/GravitySpringCeiling"] = {
+  name: "GravitySpring",
+  color: "#16bd00",
+  anchorX: "center",
+  anchorY: "top",
+  width: 16,
+  height: 6,
 };
 
 ssm.touchSwitch = {
@@ -298,6 +343,7 @@ ssm.dashSwitchV = {
   width: 16,
   height: 8,
 };
+ssm["SSMHelper/BarrierDashSwitch"] = ssm.dashSwitchH;
 
 ssm.lightningBlock = {
   color: "#d3b548",
@@ -373,6 +419,10 @@ ssm["cavern/crystalbomb"] = {
   name: "CrystalBomb",
 };
 ssm.glider = { color: "#0077ff", name: "Jelly", shape: "jelly" };
+ssm["MaxHelpingHand/RespawningJellyfish"] = {
+  ...ssm.glider,
+  name: "RespawningJelly",
+};
 
 ssm.triggerSpikesLeft = {
   color: "#ffffff",
@@ -445,6 +495,12 @@ ssm.fireBall = {
   name: "FireBall",
   radius: 6,
 };
+
+ssm["CommunalHelper/PlayerBubbleRegion"] = {
+  color: "#8d8d8d",
+  name: "PlayerBubbleRegion",
+  outline: "dashed",
+};
 //#endregion
 
 //#region Triggers
@@ -485,6 +541,13 @@ ssm["FancyTileEntities/FancyFakeWall"] = ssm.fakeWall;
 ssm["MaxHelpingHand/FlagExitBlock"] = ssm.exitBlock;
 ssm["SpringCollab2020/caveWall"] = ssm.fakeWall;
 ssm["BrokemiaHelper/caveWall"] = ssm.fakeWall;
+
+ssm["GravityHelper/GravityField"] = {
+  ...ssm.fakeWall,
+  name: "GravityField",
+  color: "#00d9ff",
+};
+
 ssm.water = {
   color: "#0066ff",
   opacity: 0.1,
@@ -532,6 +595,7 @@ ssm.invisibleBarrier = {
   name: "InvisibleBarrier",
   renderer: undefined,
 };
+ssm["MaxHelpingHand/OneWayInvisibleBarrierHorizontal"] = ssm.invisibleBarrier;
 
 const refillCancelColors = {
   "001": "#475cff",
@@ -550,6 +614,13 @@ ssm["VivHelper/RefillCancelSpace"] = {
       (attr.NoStaminaRefill ? "1" : "0") + (attr.NoDash ? "1" : "0") + (attr.NoDashRefill ? "1" : "0")
     ] || "white",
 };
+
+ssm["EeveeHelper/HoldableContainer"] = {
+  name: "Holdable",
+  color: "#ff00ff",
+  opacity: 0.05,
+  outline: "dotted",
+};
 //#endregion
 
 //#region Room Markers
@@ -562,6 +633,7 @@ ssm.towerviewer = {
   anchorX: "center",
   anchorY: "bottom",
 };
+ssm["PrismaticHelper/AttachedWatchtower"] = ssm.towerviewer;
 ssm.summitcheckpoint = {
   color: "#ffffff",
   width: 8,
@@ -569,6 +641,10 @@ ssm.summitcheckpoint = {
   name: (attr) => "Flag " + attr.number,
   anchorX: "center",
   anchorY: "top",
+};
+ssm["MaxHelpingHand/CustomSummitCheckpoint"] = {
+  ...ssm.summitcheckpoint,
+  name: "CustomFlag",
 };
 ssm.checkpoint = {
   color: "#ffffff",
@@ -622,16 +698,32 @@ ssm["everest/npc"] = {
   offset: [-8, -4],
 };
 ssm["MaxHelpingHand/MoreCustomNPC"] = ssm["everest/npc"];
+ssm["luaCutscenes/luaTalker"] = {
+  ...ssm["everest/npc"],
+  width: undefined,
+  height: undefined,
+};
+
+ssm["FemtoHelper/CustomFakeHeart"] = {
+  color: "#3962e1",
+  width: 16,
+  height: 16,
+  anchorX: "center",
+  anchorY: "center",
+  name: "CustomFakeHeart",
+};
 //#endregion
 
 export const IgnoreUnhandled = {
   //#region Important Triggers
   importantTriggers: new Set([
+    "noRefillTrigger",
+    "windTrigger",
     "everest/changeInventoryTrigger",
     "DJMapHelper/maxDashesTrigger",
+    "MoreDasheline/HairColorTrigger",
     "FrostHelper/NoMovementTrigger",
     "vitellary/nodashtrigger",
-    "noRefillTrigger",
     "VivHelper/BasicInstantTeleportTrigger",
     "VivHelper/CustomInstantTeleportTrigger",
     "VivHelper/ITPT1Way",
@@ -640,6 +732,9 @@ export const IgnoreUnhandled = {
     "ContortHelper/TeleportationTarget",
     "ContortHelper/MomentumModifierTrigger",
     "StrawberryJam2021/liftBoostTrigger",
+    "XaphanHelper/TeleportToChapterTrigger",
+    "DJMapHelper/badelineBoostTeleport",
+    "AurorasHelper/ForcedMovementTrigger",
   ]),
   //#endregion
   //#region Variant Triggers
@@ -650,11 +745,19 @@ export const IgnoreUnhandled = {
     "ExtendedVariantMode/BooleanExtendedVariantTrigger",
     "ExtendedVariantTrigger",
     "ExtendedVariantMode/ExtendedVariantTrigger",
+    "ExtendedVariantMode/FloatExtendedVariantTrigger",
+    "ExtendedVariantMode/BooleanVanillaVariantTrigger",
+    "ExtendedVariantMode/JumpCountTrigger",
+    "ExtendedVariantMode/ResetVariantsTrigger",
+    "GravityHelper/GravityTrigger",
+    "ExtendedVariantMode/GameSpeedTrigger",
   ]),
   //#endregion
   //#region Misc Gameplay Triggers
   miscGameplayTriggers: new Set([
     "changeRespawnTrigger",
+    "goldenBerryCollectTrigger",
+    "CollabUtils2/SilverBerryCollectTrigger",
     "CollabUtils2/GoldenBerryPlayerRespawnPoint",
     "killbox",
     "SorbetHelper/FlagToggledKillbox",
@@ -669,6 +772,12 @@ export const IgnoreUnhandled = {
     "BounceHelper/BounceHelperTrigger",
     "detachFollowersTrigger",
     "everest/coreModeTrigger",
+    "GameHelper/EntityModifier",
+    "Bitsbolts/BlockTransition",
+    "FrostHelper/CapDashOnGroundTrigger",
+    "vitellary/canceltimecrystaltrigger",
+    "AurorasHelper/ResetStateTrigger",
+    "GravityHelper/SpawnGravityTrigger",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -682,6 +791,19 @@ export const IgnoreUnhandled = {
     "EeveeHelper/FlagGateContainer",
     "vitellary/flagsequencecontroller",
     "MaxHelpingHand/FlagLogicGate",
+    "FrostHelper/LoopActivator",
+    "FrostHelper/OnCounterActivator",
+    "FrostHelper/SessionCounterTrigger",
+    "FrostHelper/IfCounterActivator",
+    "FrostHelper/OnSpawnActivator",
+    "XaphanHelper/ResetFlagsTrigger",
+    "FrostHelper/TemporaryFlagTrigger",
+    "GameHelper/TemporaryFlagTrigger",
+    "vitellary/flaginsidetrigger",
+    "FlaglinesAndSuch/FlagLogicGate",
+    "ConditionHelper/ConditionFlagTrigger",
+    "Bitsbolts/Flags",
+    "XaphanHelper/GlobalFlagTrigger",
   ]),
   //#endregion
   //#region Camera Triggers
@@ -703,6 +825,8 @@ export const IgnoreUnhandled = {
     "SpringCollab2020/SmoothCameraOffsetTrigger",
     "SpringCollab2020/FlagToggleSmoothCameraOffsetTrigger",
     "MaxHelpingHand/OneWayCameraTrigger",
+    "HonlyHelper/CameraTargetCrossfadeTrigger",
+    "ExCameraDynamics/CameraZoomTrigger",
   ]),
   //#endregion
   //#region Dialog Triggers
@@ -719,6 +843,13 @@ export const IgnoreUnhandled = {
     "MemorialHelper/ParallaxText",
     "everest/CustomHeightDisplayTrigger",
     "everest/customBirdTutorialTrigger",
+    "FemtoHelper/CinematicText",
+    "MaxHelpingHand/ExtendedDialogCutsceneTrigger",
+    "MaxHelpingHand/Comment",
+    "XaphanHelper/SubAreaNameTrigger",
+    "ContortHelper/CustomMemo",
+    "FlaglinesAndSuch/DialogIfFlag",
+    "MaxHelpingHand/CustomTutorialWithNoBird",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -748,6 +879,7 @@ export const IgnoreUnhandled = {
     "templeEye",
     "waterfall",
     "bonfire",
+    "door",
     "foregroundDebris",
     "lightFadeTrigger",
     "bloomFadeTrigger",
@@ -808,6 +940,27 @@ export const IgnoreUnhandled = {
     "FrostHelper/EntityRainbowifyController",
     "MaxHelpingHand/RainbowSpinnerColorTrigger",
     "MaxHelpingHand/RainbowSpinnerColorAreaController",
+    "MaxHelpingHand/FlagDecalXML",
+    "achievementHelper/triggerAchievement",
+    "ContortHelper/MadelineSpotlightModifierTrigger",
+    "VivHelper/CustomTorch",
+    "ContortHelper/LightSource",
+    "MaxHelpingHand/FlagDecal",
+    "EeveeHelper/FloatyContainer",
+    "GameHelper/EntityRespriter",
+    "MaxHelpingHand/BloomStrengthFadeTrigger",
+    "pandorasBox/coloredBigWaterfall",
+    "HonlyHelper/FloatyBgTile",
+    "EeveeHelper/AttachedContainer",
+    "XaphanHelper/InGameMapRoomController",
+    "MaxHelpingHand/StylegroundFadeController",
+    "VivHelper/LightningMuter",
+    "GameHelper/AutoSaveTrigger",
+    "ContortHelper/FlickerLightSource",
+    "ContortHelper/LightSourceZone",
+    "VivHelper/RoomWrapController",
+    "FlaglinesAndSuch/MusicIfFlag",
+    "MaxHelpingHand/SetDarknessAlphaTrigger",
   ]),
   //#endregion
 };
@@ -815,69 +968,52 @@ export const IgnoreUnhandled = {
 //#endregion
 
 //#region Collectibles
-export const COLLECTIBLE_DEFS = [
+export const COLLECTIBLE_DEFS = {};
+const cd = COLLECTIBLE_DEFS;
+
+cd.goldenBerry = [
+  { match: (attr) => !attr.winged, collectible: { name: "Golden Berry", formValue: "0" } },
+  { match: (attr) => !!attr.winged, collectible: { name: "Winged Golden Berry", formValue: "4" } },
+];
+cd["MaxHelpingHand/GoldenStrawberryCustomConditions"] = [
+  { match: (attr) => !attr.winged, collectible: { name: "Golden Berry", formValue: "0" } },
+];
+
+cd.strawberry = [
+  { match: (attr) => !attr.moon && !attr.winged, collectible: { name: "Strawberry", formValue: "2" } },
+  { match: (attr) => !!attr.moon && !attr.winged, collectible: { name: "Moon Berry", formValue: "3" } },
   {
-    name: "Golden Berry",
-    entityNames: ["goldenBerry"],
-    match: (attr) => !attr.winged,
-  },
-  {
-    name: "Winged Golden Berry",
-    entityNames: ["goldenBerry"],
-    match: (attr) => !!attr.winged,
-  },
-  {
-    name: "Cassette",
-    entityNames: ["cassette"],
-    match: () => true,
-  },
-  {
-    name: "Strawberry",
-    entityNames: [
-      "strawberry",
-      "SpringCollab2020/returnBerry",
-      "LunaticHelper/StrawberryWithReturn",
-      "SorbetHelper/ReturnBerry",
-    ],
-    match: (attr) => !attr.moon && !attr.winged,
-  },
-  {
-    name: "Moon Berry",
-    entityNames: ["strawberry", "DSidesHelper/TeleportMoonBerry"],
-    match: (attr) => !!attr.moon && !attr.winged,
-  },
-  {
-    name: "Winged Strawberry",
-    entityNames: ["strawberry"],
     match: (attr) => !attr.moon && !!attr.winged,
-  },
-  {
-    name: "Silver Berry",
-    entityNames: ["CollabUtils2/SilverBerry"],
-    match: () => true,
-  },
-  {
-    name: "Speed Berry",
-    entityNames: ["CollabUtils2/SpeedBerry"],
-    match: () => true,
-  },
-  {
-    name: "Cassette",
-    entityNames: ["cassette"],
-    match: () => true,
-  },
-  {
-    name: "Crystal Heart",
-    entityNames: [
-      "blackGem",
-      "CollabUtils2/CrystalHeart",
-      "CollabUtils2/MiniHeart",
-      "MaxHelpingHand/ReskinnableCrystalHeart",
-      "AdventureHelper/CustomCrystalHeart",
-    ],
-    match: () => true,
+    collectible: { name: "Winged Strawberry", formValue: "2" },
   },
 ];
+
+const returnBerryDef = [
+  { match: (attr) => !attr.moon && !attr.winged, collectible: { name: "Strawberry", formValue: "2" } },
+];
+cd["SpringCollab2020/returnBerry"] = returnBerryDef;
+cd["LunaticHelper/StrawberryWithReturn"] = returnBerryDef;
+cd["SorbetHelper/ReturnBerry"] = returnBerryDef;
+cd["ParrotHelper/FlagBerry"] = returnBerryDef;
+
+cd["DSidesHelper/TeleportMoonBerry"] = [
+  { match: (attr) => !!attr.moon && !attr.winged, collectible: { name: "Moon Berry", formValue: "3" } },
+];
+
+cd["CollabUtils2/SilverBerry"] = [
+  { match: () => true, collectible: { name: "Silver Berry", formValue: "1" } },
+];
+cd["CollabUtils2/SpeedBerry"] = [
+  { match: () => true, collectible: { name: "Speed Berry", formValue: "10" } },
+];
+cd.cassette = [{ match: () => true, collectible: { name: "Cassette", formValue: "6" } }];
+
+const crystalHeartDef = [{ match: () => true, collectible: { name: "Crystal Heart", formValue: "7" } }];
+cd.blackGem = crystalHeartDef;
+cd["CollabUtils2/CrystalHeart"] = crystalHeartDef;
+cd["CollabUtils2/MiniHeart"] = crystalHeartDef;
+cd["MaxHelpingHand/ReskinnableCrystalHeart"] = crystalHeartDef;
+cd["AdventureHelper/CustomCrystalHeart"] = crystalHeartDef;
 
 export function extractCollectibles(mapData) {
   const levelsNode = mapData.children?.find((c) => c.name === "levels");
@@ -891,10 +1027,13 @@ export function extractCollectibles(mapData) {
     if (!entitiesNode) continue;
 
     for (const entity of entitiesNode.children) {
-      for (const def of COLLECTIBLE_DEFS) {
-        if (def.entityNames.some((name) => name === entity.name) && def.match(entity.attributes || {})) {
+      const defs = COLLECTIBLE_DEFS[entity.name];
+      if (!defs) continue;
+      for (const def of defs) {
+        if (def.match(entity.attributes || {})) {
           results.push({
-            name: def.name,
+            name: def.collectible.name,
+            formValue: def.collectible.formValue,
             room: roomName,
             id: entity.attributes?.id ?? "?",
             x: entity.attributes?.x ?? 0,
@@ -910,28 +1049,14 @@ export function extractCollectibles(mapData) {
   return results;
 }
 
-// Maps COLLECTIBLE_DEFS names to COLLECTIBLES form values (from forms/Map.jsx)
-export const COLLECTIBLE_DEF_TO_FORM_VALUE = {
-  "Golden Berry": "0",
-  "Winged Golden Berry": "4",
-  "Silver Berry": "1",
-  Strawberry: "2",
-  "Winged Strawberry": "2",
-  "Moon Berry": "3",
-  Cassette: "6",
-  "Crystal Heart": "7",
-  "Speed Berry": "10",
-};
-
 // Extracts collectibles from parsed map data and returns them in the form's 5-tuple format:
 // [[collectibleValue, variantValue, note, count, globalCount], ...]
 export function extractCollectiblesForForm(mapData) {
   const raw = extractCollectibles(mapData);
   const counts = {};
   for (const item of raw) {
-    const formValue = COLLECTIBLE_DEF_TO_FORM_VALUE[item.name];
-    if (!formValue) continue;
-    counts[formValue] = (counts[formValue] || 0) + 1;
+    if (!item.formValue) continue;
+    counts[item.formValue] = (counts[item.formValue] || 0) + 1;
   }
   return Object.entries(counts).map(([value, count]) => [value, "", "", String(count), ""]);
 }
