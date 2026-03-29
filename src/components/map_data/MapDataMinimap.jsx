@@ -136,7 +136,7 @@ function RoomRenderer({ room }) {
     if (!room.solidsText) return null;
 
     const rows = room.solidsText.split("\n");
-    const tileRows = rows.length;
+    const tileRows = Math.ceil(room.height / 8);
     const tileCols = Math.ceil(room.width / 8);
 
     // Create an off-screen canvas
@@ -161,7 +161,7 @@ function RoomRenderer({ room }) {
     texture.flipY = true;
 
     return texture;
-  }, [room.solidsText, room.width]);
+  }, [room.solidsText, room.width, room.height]);
 
   return (
     <group position={[bounds.x, bounds.y, 0]}>

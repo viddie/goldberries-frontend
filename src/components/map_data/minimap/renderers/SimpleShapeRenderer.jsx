@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BufferGeometry, Float32BufferAttribute } from "three";
+import { BufferGeometry, Float32BufferAttribute, Vector3 } from "three";
 import { Text } from "@react-three/drei";
 
 import { Arrow } from "../Arrow";
@@ -71,7 +71,6 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: false,
     };
   },
-
   circle: (attr, def, r) => {
     const w = r(def.width, attr, attr.width > 0 ? attr.width : 8);
     const h = r(def.height, attr, attr.height > 0 ? attr.height : 8);
@@ -82,7 +81,6 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: false,
     };
   },
-
   spinner: (attr, def, r) => {
     const w = r(def.width, attr, 16);
     const h = r(def.height, attr, 4);
@@ -96,7 +94,6 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: true,
     };
   },
-
   seeker: () => {
     const parts = [
       hitboxToPart(12, 8, -6, -2), // attack
@@ -114,11 +111,27 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: true,
     };
   },
-
   theo: () => {
     const parts = [
       hitboxToPart(8, 10, -4, -10), // base collider
       hitboxToPart(16, 22, -8, -16), // pickup collider
+    ];
+    const bounds = computePartsBounds(parts);
+    return {
+      parts,
+      labelArea: {
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY,
+        cx: (bounds.minX + bounds.maxX) / 2,
+        cy: (bounds.minY + bounds.maxY) / 2,
+      },
+      centerAnchored: true,
+    };
+  },
+  jelly: () => {
+    const parts = [
+      hitboxToPart(8, 10, -4, -10), // base collider
+      hitboxToPart(20, 22, -10, -16), // pickup collider
     ];
     const bounds = computePartsBounds(parts);
     return {
@@ -166,11 +179,13 @@ export function SimpleShapeRenderer({ entities, def }) {
 
 const HIGHLIGHT_OPACITY = 0.3;
 const CIRCLE_SEGMENTS = 32;
+const _worldPos = new Vector3();
 
 function SimpleShape({ entity, def }) {
   const [hovered, setHovered] = useState(false);
   const selectObject = useMinimapStore((s) => s.selectObject);
   const isSelected = useMinimapStore((s) => s.selectedObject?.data === entity);
+  const mainGroupRef = useRef();
 
   const attr = entity.attributes;
   const color = resolve(def.color, attr, "white");
@@ -231,15 +246,18 @@ function SimpleShape({ entity, def }) {
       if (useMinimapStore.getState().clickedObjects.has(entity)) return;
 
       e.stopPropagation();
+      // Compute bounds in world space from the entity group origin, not the individual
+      // mesh (which is offset by part.cx/cy and would double-count the part offset).
+      mainGroupRef.current.getWorldPosition(_worldPos);
       const bounds = {
-        minX: x + shapeBounds.minX,
-        maxX: x + shapeBounds.maxX,
-        minY: y + shapeBounds.minY,
-        maxY: y + shapeBounds.maxY,
+        minX: _worldPos.x + shapeBounds.minX,
+        maxX: _worldPos.x + shapeBounds.maxX,
+        minY: _worldPos.y + shapeBounds.minY,
+        maxY: _worldPos.y + shapeBounds.maxY,
       };
       selectObject(entity, depth, bounds);
     },
-    [entity, selectObject, depth, x, y, shapeBounds],
+    [entity, selectObject, depth, shapeBounds],
   );
 
   //#region Node path
@@ -298,7 +316,7 @@ function SimpleShape({ entity, def }) {
       })}
 
       {/* Main shape */}
-      <group position={[x, y, depth]}>
+      <group ref={mainGroupRef} position={[x, y, depth]}>
         <ShapeMesh
           parts={parts}
           color={color}

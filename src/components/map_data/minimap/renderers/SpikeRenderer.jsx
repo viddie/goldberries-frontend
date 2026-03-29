@@ -21,8 +21,18 @@ const OFFSETS = {
 
 const HORIZONTAL = new Set(["spikesUp", "spikesDown"]);
 
+const spikeAlts = {
+  "VivHelper/RainbowSpikesUp": "spikesUp",
+  "VivHelper/RainbowSpikesDown": "spikesDown",
+  "VivHelper/RainbowSpikesLeft": "spikesLeft",
+  "VivHelper/RainbowSpikesRight": "spikesRight",
+};
+
 export function SpikeRenderer({ entities }) {
-  const name = entities[0].name;
+  let name = entities[0].name;
+  if (spikeAlts[name]) {
+    name = spikeAlts[name];
+  }
   const texture = usePixelTexture(`/icons/game/${PATHS[name]}`);
   const offset = OFFSETS[name];
   const isHorizontal = HORIZONTAL.has(name);

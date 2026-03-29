@@ -189,7 +189,7 @@ function RoomDetailsPanel({ room, search, marginTop }) {
         justifyContent="space-around"
         sx={{ p: 1, borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <SolidTilesCanvas solidsText={room.solidsText} roomWidth={room.width} />
+        <SolidTilesCanvas solidsText={room.solidsText} roomWidth={room.width} roomHeight={room.height} />
       </Stack>
 
       <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth" sx={{ minHeight: 36 }}>
@@ -359,19 +359,20 @@ function TriggerRow({ trigger }) {
   );
 }
 
-function SolidTilesCanvas({ solidsText, roomWidth, scale = 4 }) {
+function SolidTilesCanvas({ solidsText, roomWidth, roomHeight, scale = 4 }) {
   const canvasRef = useRef(null);
   const TILE_SIZE = 8;
 
-  // Room width is in pixels; each tile is 8px wide in Celeste
+  // Room dimensions in pixels; each tile is 8px in Celeste
   const tilesWide = Math.ceil(roomWidth / TILE_SIZE);
+  const tilesHigh = Math.ceil(roomHeight / TILE_SIZE);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !solidsText) return;
 
     const rows = solidsText.split("\n");
-    const tileRows = rows.length;
+    const tileRows = tilesHigh;
     const tileCols = tilesWide;
 
     canvas.width = tileCols * scale;
@@ -392,7 +393,7 @@ function SolidTilesCanvas({ solidsText, roomWidth, scale = 4 }) {
         ctx.fillRect(c * scale, r * scale, scale, scale);
       }
     }
-  }, [solidsText, tilesWide]);
+  }, [solidsText, tilesWide, tilesHigh]);
 
   useEffect(() => {
     draw();

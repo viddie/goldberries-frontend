@@ -8,3 +8,4 @@ export { SimpleShapeRenderer } from "./SimpleShapeRenderer";
 export { MoveBlockContentRenderer } from "./MoveBlockContentRenderer";
 export { CrystalHeartRenderer } from "./CrystalHeartRenderer";
 export { MiniHeartRenderer } from "./MiniHeartRenderer";
+export { CassetteRenderer } from "./CassetteRenderer";
