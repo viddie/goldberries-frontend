@@ -9,3 +9,5 @@ export { MoveBlockContentRenderer } from "./MoveBlockContentRenderer";
 export { CrystalHeartRenderer } from "./CrystalHeartRenderer";
 export { MiniHeartRenderer } from "./MiniHeartRenderer";
 export { CassetteRenderer } from "./CassetteRenderer";
+export { RainbowBerryRenderer } from "./RainbowBerryRenderer";
+export { PlatinumBerryRenderer } from "./PlatinumBerryRenderer";

@@ -6,8 +6,10 @@ import {
   faArrowRightArrowLeft,
   faBan,
   faBroom,
+  faCogs,
   faCodeMerge,
   faSpinner,
+  faTrashCan,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -185,6 +187,26 @@ const ADMIN_ACTIONS = [
         name: "Clean Traffic",
         description: "Delete traffic entries with NULL user_agent",
         icon: faBroom,
+        dangerous: false,
+      },
+    ],
+  },
+  {
+    category: "campaigns",
+    actions: [
+      {
+        key: "clean_campaign_data_errors",
+        name: "Clean Campaign Data Errors",
+        description:
+          "Removes all failed campaign processing results, as well as all temporary gamebanana processing.",
+        icon: faTrashCan,
+        dangerous: true,
+      },
+      {
+        key: "process_campaigns",
+        name: "Process Campaigns",
+        description: "Processes a batch of campaigns. This action will take ~30 minutes.",
+        icon: faCogs,
         dangerous: false,
       },
     ],

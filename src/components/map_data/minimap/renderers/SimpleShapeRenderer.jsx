@@ -11,11 +11,20 @@ import { LAYERS } from "../entity_definitions";
  * Handles mod prefixes like "CollabUtils2/SilverBerry" by taking only the part after "/".
  * Only splits before a capital letter when preceded by a lowercase letter or digit,
  * so "(Refill)" stays on one line and "SMWTrack" stays on one line.
+ * Text wrapped in curly braces like "{LockBlock}" is treated as a single block on one line
+ * (braces are stripped in the output).
  * Example: "floatySpaceBlock" → "floaty\nSpace\nBlock"
  */
 function splitOnCapitals(name) {
   const simpleName = name.includes("/") ? name.split("/").pop() : name;
-  return simpleName.replace(/([a-z0-9])([A-Z])/g, "$1\n$2");
+  // Extract curly-brace blocks, split the rest on camelCase, then restore blocks
+  const blocks = [];
+  const withPlaceholders = simpleName.replace(/\{([^}]*)\}/g, (_, inner) => {
+    blocks.push(inner);
+    return `\u200B${blocks.length - 1}\u200B`;
+  });
+  const split = withPlaceholders.replace(/([a-z0-9])([A-Z])/g, "$1\n$2");
+  return split.replace(/\u200B(\d+)\u200B/g, (_, i) => "\n" + blocks[Number(i)]);
 }
 
 /**
@@ -163,6 +172,24 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: true,
     };
   },
+  fish: () => {
+    const parts = [
+      hitboxToPart(12, 10, -6, -5),
+      hitboxToPart(14, 12, -7, -7),
+      { type: "halfCircle", radius: 32, cx: 0, cy: -5, side: "bottom" },
+    ];
+    const bounds = computePartsBounds(parts);
+    return {
+      parts,
+      labelArea: {
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY,
+        cx: (bounds.minX + bounds.maxX) / 2,
+        cy: (bounds.minY + bounds.maxY) / 2,
+      },
+      centerAnchored: true,
+    };
+  },
 };
 
 /**
@@ -174,12 +201,24 @@ function computePartsBounds(parts) {
     minY = Infinity,
     maxY = -Infinity;
   for (const part of parts) {
-    const halfW = part.type === "circle" ? part.radius : part.w / 2;
-    const halfH = part.type === "circle" ? part.radius : part.h / 2;
-    minX = Math.min(minX, part.cx - halfW);
-    maxX = Math.max(maxX, part.cx + halfW);
-    minY = Math.min(minY, part.cy - halfH);
-    maxY = Math.max(maxY, part.cy + halfH);
+    if (part.type === "halfCircle") {
+      const isH = part.side === "left" || part.side === "right";
+      const fullW = isH ? part.radius : part.radius * 2;
+      const fullH = isH ? part.radius * 2 : part.radius;
+      const oX = part.side === "right" ? 0 : part.side === "left" ? -part.radius : -part.radius;
+      const oY = part.side === "bottom" ? -part.radius : part.side === "top" ? 0 : -part.radius;
+      minX = Math.min(minX, part.cx + oX);
+      maxX = Math.max(maxX, part.cx + oX + fullW);
+      minY = Math.min(minY, part.cy + oY);
+      maxY = Math.max(maxY, part.cy + oY + fullH);
+    } else {
+      const halfW = part.type === "circle" ? part.radius : part.w / 2;
+      const halfH = part.type === "circle" ? part.radius : part.h / 2;
+      minX = Math.min(minX, part.cx - halfW);
+      maxX = Math.max(maxX, part.cx + halfW);
+      minY = Math.min(minY, part.cy - halfH);
+      maxY = Math.max(maxY, part.cy + halfH);
+    }
   }
   return { minX, maxX, minY, maxY };
 }
@@ -376,7 +415,16 @@ export function ShapeMesh({ parts, color, outline, opacity, outlineOpacity, ...e
   return (
     <group>
       {parts.map((part, i) =>
-        part.type === "circle" ? (
+        part.type === "halfCircle" ? (
+          <HalfCirclePart
+            key={i}
+            part={part}
+            color={color}
+            opacity={opacity}
+            outlineOpacity={outlineOpacity}
+            events={events}
+          />
+        ) : part.type === "circle" ? (
           <group key={i} position={[part.cx, part.cy, 0]}>
             <mesh {...events}>
               <circleGeometry args={[part.radius, CIRCLE_SEGMENTS]} />
@@ -411,6 +459,87 @@ export function ShapeMesh({ parts, color, outline, opacity, outlineOpacity, ...e
 //#endregion
 
 //#region Outline helpers
+const HALF_CIRCLE_SEGMENTS = 32;
+
+function halfCircleRotation(side) {
+  // circleGeometry draws the top half by default (arc from 0 to PI)
+  // we rotate to get the desired side
+  if (side === "bottom") return Math.PI;
+  if (side === "left") return Math.PI / 2;
+  if (side === "right") return -Math.PI / 2;
+  return 0; // top
+}
+
+function HalfCirclePart({ part, color, opacity, outlineOpacity, events }) {
+  const rotation = halfCircleRotation(part.side);
+  const ringGeo = useMemo(() => {
+    const inner = part.radius - 0.5;
+    const outer = part.radius;
+    const geo = new BufferGeometry();
+    const positions = [];
+    for (let i = 0; i < HALF_CIRCLE_SEGMENTS; i++) {
+      const a1 = (i / HALF_CIRCLE_SEGMENTS) * Math.PI;
+      const a2 = ((i + 1) / HALF_CIRCLE_SEGMENTS) * Math.PI;
+      // outer edge quad
+      positions.push(
+        Math.cos(a1) * inner,
+        Math.sin(a1) * inner,
+        0,
+        Math.cos(a1) * outer,
+        Math.sin(a1) * outer,
+        0,
+        Math.cos(a2) * outer,
+        Math.sin(a2) * outer,
+        0,
+        Math.cos(a1) * inner,
+        Math.sin(a1) * inner,
+        0,
+        Math.cos(a2) * outer,
+        Math.sin(a2) * outer,
+        0,
+        Math.cos(a2) * inner,
+        Math.sin(a2) * inner,
+        0,
+      );
+    }
+    // flat edge (diameter line)
+    const hw = 0.25;
+    positions.push(
+      -part.radius,
+      -hw,
+      0,
+      part.radius,
+      -hw,
+      0,
+      part.radius,
+      hw,
+      0,
+      -part.radius,
+      -hw,
+      0,
+      part.radius,
+      hw,
+      0,
+      -part.radius,
+      hw,
+      0,
+    );
+    geo.setAttribute("position", new Float32BufferAttribute(new Float32Array(positions), 3));
+    return geo;
+  }, [part.radius]);
+
+  return (
+    <group position={[part.cx, part.cy, 0]} rotation={[0, 0, rotation]}>
+      <mesh {...events}>
+        <circleGeometry args={[part.radius, HALF_CIRCLE_SEGMENTS, 0, Math.PI]} />
+        <meshBasicMaterial color={color} transparent opacity={opacity} />
+      </mesh>
+      <mesh position={[0, 0, 0.05]} geometry={ringGeo}>
+        <meshBasicMaterial color={color} transparent opacity={outlineOpacity} />
+      </mesh>
+    </group>
+  );
+}
 const DASH_STYLES = {
   dashed: { dashSize: 4, gapSize: 3 },
   dotted: { dashSize: 1, gapSize: 2 },
