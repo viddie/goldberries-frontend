@@ -65,6 +65,12 @@ const ssm = SimpleShapeMap;
 const movingSolidOpacity = 0.5;
 
 //#region Solids
+ssm["FancyTileEntities/FancySolidTiles"] = {
+  color: "#ffffff",
+  name: "Solid",
+  opacity: movingSolidOpacity,
+};
+
 ssm.floatySpaceBlock = { color: "white", name: "MoonBlock", opacity: movingSolidOpacity };
 ssm["SpringCollab2020/floatierSpaceBlock"] = { ...ssm.floatySpaceBlock, name: "FloatierMoonBlock" };
 ssm["BrokemiaHelper/floatierSpaceBlock"] = ssm["SpringCollab2020/floatierSpaceBlock"];
@@ -86,6 +92,7 @@ ssm["AdventureHelper/ZipMoverNoReturn"] = {
 ssm.fallingBlock = { color: "#12fffb", name: "F", opacity: movingSolidOpacity };
 ssm["FancyTileEntities/FancyFallingBlock"] = ssm.fallingBlock;
 ssm["VortexHelper/AutoFallingBlock"] = ssm.fallingBlock;
+ssm["VivHelper/CustomFallingBlock"] = ssm.fallingBlock;
 ssm["HonlyHelper/RisingBlock"] = {
   ...ssm.fallingBlock,
   name: "R",
@@ -105,6 +112,7 @@ ssm["SpringCollab2020/safeRespawnCrumble"] = {
   ...ssm.crumbleBlock,
   name: "SafeRespawnCrumble",
 };
+ssm["SafeRespawnCrumble/SafeRespawnCrumble"] = ssm["SpringCollab2020/safeRespawnCrumble"];
 
 ssm.dashBlock = { color: "#12fffb", name: "D", opacity: movingSolidOpacity };
 ssm["VivHelper/CustomDashBlock"] = ssm.dashBlock;
@@ -123,6 +131,11 @@ ssm.sinkingPlatform = { ...ssm.movingPlatform, name: "SinkingPlatform" };
 ssm["SpringCollab2020/MultiNodeMovingPlatform"] = ssm.movingPlatform;
 
 ssm.dreamBlock = { color: "#777777", name: "DreamBlock", opacity: movingSolidOpacity };
+ssm["FrostHelper/CustomDreamBlock"] = ssm.dreamBlock;
+ssm["CommunalHelper/ConnectedDreamBlock"] = {
+  ...ssm.dreamBlock,
+  name: "ConnectedDreamBlock",
+};
 ssm.switchGate = { color: "#00a6ff", name: "SwitchGate", opacity: movingSolidOpacity };
 ssm["MaxHelpingHand/FlagSwitchGate"] = ssm.switchGate;
 ssm["SpringCollab2020/FlagSwitchGate"] = ssm.switchGate;
@@ -132,12 +145,20 @@ ssm.introCrusher = { ...ssm.switchGate, name: "IntroCrusher" };
 ssm["VivHelper/FlagIntroCrusher"] = ssm.introCrusher;
 
 ssm.templeGate = { color: "#dddddd", name: "TempleGate", opacity: movingSolidOpacity };
+ssm["XaphanHelper/FlagTempleGate"] = {
+  ...ssm.templeGate,
+  name: "FlagTempleGate",
+};
 
 ssm.moveBlock = { color: "#9400ae", renderer: MoveBlockContentRenderer };
 ssm.lockBlock = { color: "orange", name: "LockBlock", width: 32, height: 32 };
 ssm["PrismaticHelper/MultiLockedDoor"] = {
   ...ssm.lockBlock,
   name: (attr) => (attr.keys || 1) + (attr.keys === 1 ? "Key" : "Keys") + "LockBlock",
+};
+ssm["XaphanHelper/CollectableDoor"] = {
+  color: (attr) => validateColorOr(attr.interiorColor, "#9400ae"),
+  name: "CollectibleDoor",
 };
 
 ssm["starJumpBlock"] = {
@@ -193,6 +214,12 @@ ssm["VivHelper/CornerBoostBlock"] = {
   name: "CornerBoostBlock",
   opacity: movingSolidOpacity,
 };
+
+ssm.goldenBlock = {
+  color: "#ffdf00",
+  name: "GoldenBlock",
+  opacity: movingSolidOpacity,
+};
 //#endregion
 
 //#region Semi-Solids
@@ -242,6 +269,7 @@ ssm.refill = {
   name: (attr) => (attr.oneUse ? "(Refill)" : "Refill"),
 };
 ssm["MaxHelpingHand/CustomizableRefill"] = ssm.refill;
+ssm["DJMapHelper/colorfulRefill"] = ssm.refill;
 ssm["VivHelper/RefillWall"] = {
   color: (attr) => (attr.twoDash ? "#ff4be7" : "#5eff5e"),
   anchorX: "left",
@@ -249,6 +277,11 @@ ssm["VivHelper/RefillWall"] = {
   width: undefined,
   height: undefined,
   name: (attr) => (attr.oneUse ? "(RefillWall)" : "RefillWall"),
+};
+ssm["ExtendedVariantMode/RecoverJumpRefill"] = {
+  ...ssm.refill,
+  color: "#77bde6",
+  name: (attr) => (attr.oneUse ? "(JumpRefill)" : "JumpRefill"),
 };
 ssm["vitellary/timecrystal"] = {
   ...ssm.refill,
@@ -319,6 +352,13 @@ ssm["GravityHelper/GravitySpringCeiling"] = {
   width: 16,
   height: 6,
 };
+ssm["GravityHelper/GravitySpring"] = {
+  ...ssm["GravityHelper/GravitySpringCeiling"],
+  anchorX: (attr) => (attr.orientation === "Floor" ? "center" : attr.left ? "left" : "right"),
+  anchorY: (attr) => (attr.orientation === "Floor" ? "bottom" : "center"),
+  width: (attr) => (attr.orientation === "Floor" ? 16 : 6),
+  height: (attr) => (attr.orientation === "Floor" ? 6 : 16),
+};
 
 ssm.touchSwitch = {
   color: "#00a6ff",
@@ -356,6 +396,10 @@ ssm.lightningBlock = {
 ssm.flingBird = { color: "#00a6ff", name: "FlingBird", shape: "circle", radius: 16 };
 ssm.badelineBoost = { color: "#cc00ff", name: "BadelineBoost", shape: "circle", radius: 16 };
 ssm.finalBoss = { color: "#cc00ff", name: "FinalBoss", shape: "circle", radius: 14, offset: [0, -6] };
+ssm["DJMapHelper/finalBossReversed"] = {
+  ...ssm.finalBoss,
+  name: "FinalBossReversed",
+};
 ssm.booster = {
   color: (attr) => (attr.red ? "#ff3e3e" : "#31ff7d"),
   name: "Bubble",
@@ -424,6 +468,8 @@ ssm["MaxHelpingHand/RespawningJellyfish"] = {
   name: "RespawningJelly",
 };
 
+ssm.introCar = { color: "#9b9b9b", name: "IntroCar", shape: "car" };
+
 ssm.triggerSpikesLeft = {
   color: "#ffffff",
   name: "TriggerSpikes",
@@ -440,6 +486,10 @@ ssm.triggerSpikesUp = {
   anchorY: "bottom",
   height: 3,
   width: undefined,
+};
+ssm.triggerSpikesDown = {
+  ...ssm.triggerSpikesUp,
+  anchorY: "top",
 };
 
 ssm["SpringCollab2020/GroupedTriggerSpikesLeft"] = {
@@ -561,6 +611,10 @@ ssm.fireBarrier = {
   color: "#ff4000",
   name: "Fire",
 };
+ssm["FrostHelper/CustomFireBarrier"] = {
+  ...ssm.fireBarrier,
+  color: (attr) => validateColorOr(attr.surfaceColor, "#ff4000"),
+};
 ssm.iceBlock = {
   ...ssm.water,
   color: "#66ccff",
@@ -596,6 +650,7 @@ ssm.invisibleBarrier = {
   renderer: undefined,
 };
 ssm["MaxHelpingHand/OneWayInvisibleBarrierHorizontal"] = ssm.invisibleBarrier;
+ssm["FrostHelper/CustomInvisibleBarrier"] = ssm.invisibleBarrier;
 
 const refillCancelColors = {
   "001": "#475cff",
@@ -634,6 +689,7 @@ ssm.towerviewer = {
   anchorY: "bottom",
 };
 ssm["PrismaticHelper/AttachedWatchtower"] = ssm.towerviewer;
+ssm["VivHelper/CustomPlaybackWatchtower"] = ssm.towerviewer;
 ssm.summitcheckpoint = {
   color: "#ffffff",
   width: 8,
@@ -712,6 +768,27 @@ ssm["FemtoHelper/CustomFakeHeart"] = {
   anchorY: "center",
   name: "CustomFakeHeart",
 };
+
+ssm["VivHelper/HideRoomInMap"] = {
+  color: "#000000",
+};
+ssm["vitellary/dashcodecontroller"] = {
+  color: "#ff00ff",
+  name: "DashCodeController",
+};
+ssm.memorialTextController = {
+  color: "#ffffff",
+  name: "Memorial",
+  width: 60,
+  height: 80,
+  offset: [-30, -60],
+};
+ssm["MaxHelpingHand/CustomMemorialWithDreamingAttribute"] = {
+  ...ssm.memorialTextController,
+  offset: [0, 0],
+  anchorX: "center",
+  anchorY: "bottom",
+};
 //#endregion
 
 export const IgnoreUnhandled = {
@@ -730,11 +807,14 @@ export const IgnoreUnhandled = {
     "VivHelper/TeleportTarget",
     "ContortHelper/TeleportationTriggerLevel1",
     "ContortHelper/TeleportationTarget",
+    "VivHelper/MainInstantTeleportTrigger",
     "ContortHelper/MomentumModifierTrigger",
     "StrawberryJam2021/liftBoostTrigger",
     "XaphanHelper/TeleportToChapterTrigger",
     "DJMapHelper/badelineBoostTeleport",
     "AurorasHelper/ForcedMovementTrigger",
+    "MaxHelpingHand/SetCustomInventoryTrigger",
+    "SSMHelper/DashCancelTrigger",
   ]),
   //#endregion
   //#region Variant Triggers
@@ -751,6 +831,8 @@ export const IgnoreUnhandled = {
     "ExtendedVariantMode/ResetVariantsTrigger",
     "GravityHelper/GravityTrigger",
     "ExtendedVariantMode/GameSpeedTrigger",
+    "ExtendedVariantMode/SetJumpCountTrigger",
+    "ExtendedVariantMode/DontRefillDashOnGroundTrigger",
   ]),
   //#endregion
   //#region Misc Gameplay Triggers
@@ -778,6 +860,7 @@ export const IgnoreUnhandled = {
     "vitellary/canceltimecrystaltrigger",
     "AurorasHelper/ResetStateTrigger",
     "GravityHelper/SpawnGravityTrigger",
+    "MaxHelpingHand/PauseBadelineBossesTrigger",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -796,6 +879,8 @@ export const IgnoreUnhandled = {
     "FrostHelper/SessionCounterTrigger",
     "FrostHelper/IfCounterActivator",
     "FrostHelper/OnSpawnActivator",
+    "FrostHelper/IfActivator",
+    "FrostHelper/OnDeathActivator",
     "XaphanHelper/ResetFlagsTrigger",
     "FrostHelper/TemporaryFlagTrigger",
     "GameHelper/TemporaryFlagTrigger",
@@ -804,6 +889,9 @@ export const IgnoreUnhandled = {
     "ConditionHelper/ConditionFlagTrigger",
     "Bitsbolts/Flags",
     "XaphanHelper/GlobalFlagTrigger",
+    "AurorasHelper/LogicFlagCounterTrigger",
+    "SSMHelper/CustomCheatTrigger",
+    "MaxHelpingHand/SetFlagOnSpawnTrigger",
   ]),
   //#endregion
   //#region Camera Triggers
@@ -827,22 +915,26 @@ export const IgnoreUnhandled = {
     "MaxHelpingHand/OneWayCameraTrigger",
     "HonlyHelper/CameraTargetCrossfadeTrigger",
     "ExCameraDynamics/CameraZoomTrigger",
+    "Bitsbolts/UnlockCamera",
   ]),
   //#endregion
   //#region Dialog Triggers
   dialogTriggers: new Set([
+    "bird",
+    "playbackTutorial",
     "everest/dialogTrigger",
+    "everest/coreMessage",
+    "everest/CustomHeightDisplayTrigger",
+    "everest/customBirdTutorialTrigger",
     "minitextboxTrigger",
     "DJMapHelper/talkToBadelineTrigger",
     "MaxHelpingHand/CustomCh3Memo",
     "luaCutscenes/luaCutsceneTrigger",
     "VivHelper/ConfettiTrigger",
     "SpringCollab2020/CustomBirdTutorialTrigger",
-    "everest/coreMessage",
+    "ArphimigonHelper/CoreMessage",
     "ShroomHelper/ShroomBookInteraction",
     "MemorialHelper/ParallaxText",
-    "everest/CustomHeightDisplayTrigger",
-    "everest/customBirdTutorialTrigger",
     "FemtoHelper/CinematicText",
     "MaxHelpingHand/ExtendedDialogCutsceneTrigger",
     "MaxHelpingHand/Comment",
@@ -850,6 +942,8 @@ export const IgnoreUnhandled = {
     "ContortHelper/CustomMemo",
     "FlaglinesAndSuch/DialogIfFlag",
     "MaxHelpingHand/CustomTutorialWithNoBird",
+    "VivHelper/CustomCoreMessage",
+    "ContortHelper/CustomNote",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -884,6 +978,7 @@ export const IgnoreUnhandled = {
     "lightFadeTrigger",
     "bloomFadeTrigger",
     "blackholeStrength",
+    "everest/ambienceTrigger",
     "moonGlitchBackgroundTrigger",
     "PrismaticHelper/StylegroundsPanel",
     "MaxHelpingHand/RainbowSpinnerColorController",
@@ -961,6 +1056,18 @@ export const IgnoreUnhandled = {
     "VivHelper/RoomWrapController",
     "FlaglinesAndSuch/MusicIfFlag",
     "MaxHelpingHand/SetDarknessAlphaTrigger",
+    "StyleMaskHelper/LightingMask",
+    "StyleMaskHelper/StylegroundMask",
+    "EeveeHelper/DepthModifier",
+    "XaphanHelper/CustomTorch",
+    "FancyTileEntities/TileSeedController",
+    "ChroniaHelper/FloatyBgTile",
+    "FrostHelper/ColoredLightbeam",
+    "DJMapHelper/startPoint",
+    "FemtoHelper/CustomMoonCreature",
+    "FlaglinesAndSuch/CustomFlagline",
+    "FrostHelper/DecalContainer",
+    "JungleHelper/Cobweb",
   ]),
   //#endregion
 };
@@ -1085,5 +1192,72 @@ function isValidCssColor(str) {
  */
 export function isRoomHidden(room) {
   return room.entities?.some((e) => e.name === "VivHelper/HideRoomInMap") ?? false;
+}
+//#endregion
+
+//#region Unhandled entities extraction
+/**
+ * Returns a deduplicated list of unhandled entity/trigger types.
+ * Each entry has: { name, type ("entity"|"trigger"), count, entity, room, x, y }
+ * where entity is the raw object, room/x/y point to the first instance and count is the total occurrences.
+ */
+export function extractUnhandledEntities(rooms) {
+  // Build a flat set of all ignored names across all IgnoreUnhandled groups
+  const ignoredNames = new Set();
+  for (const nameSet of Object.values(IgnoreUnhandled)) {
+    for (const name of nameSet) {
+      ignoredNames.add(name);
+    }
+  }
+
+  // key = "entity:name" or "trigger:name" → first-seen entry
+  const seen = new Map();
+
+  for (const room of rooms) {
+    for (const entity of room.entities ?? []) {
+      if (IndividualEntityMap[entity.name]) continue;
+      if (BatchedEntityMap[entity.name]) continue;
+      if (SimpleShapeMap[entity.name]) continue;
+      if (ignoredNames.has(entity.name)) continue;
+      const key = `entity:${entity.name}`;
+      const existing = seen.get(key);
+      if (existing) {
+        existing.count++;
+      } else {
+        seen.set(key, {
+          name: entity.name,
+          type: "entity",
+          count: 1,
+          entity,
+          room: room.name,
+          x: room.x + (entity.attributes?.x ?? 0),
+          y: room.y + (entity.attributes?.y ?? 0),
+        });
+      }
+    }
+
+    for (const trigger of room.triggers ?? []) {
+      if (SimpleShapeMap[trigger.name]) continue;
+      if (ignoredNames.has(trigger.name)) continue;
+      const key = `trigger:${trigger.name}`;
+      const existing = seen.get(key);
+      if (existing) {
+        existing.count++;
+      } else {
+        seen.set(key, {
+          name: trigger.name,
+          type: "trigger",
+          count: 1,
+          entity: trigger,
+          room: room.name,
+          x: room.x + (trigger.attributes?.x ?? 0),
+          y: room.y + (trigger.attributes?.y ?? 0),
+        });
+      }
+    }
+  }
+
+  // Sort by count descending, then name ascending for ties
+  return [...seen.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 //#endregion

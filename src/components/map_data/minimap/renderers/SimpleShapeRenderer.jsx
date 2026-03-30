@@ -145,6 +145,24 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: true,
     };
   },
+  car: () => {
+    const parts = [
+      hitboxToPart(25, 4, -15, -17),
+      hitboxToPart(19, 4, 8, -11),
+      hitboxToPart(42, 16, -15, -17),
+    ];
+    const bounds = computePartsBounds(parts);
+    return {
+      parts,
+      labelArea: {
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY,
+        cx: (bounds.minX + bounds.maxX) / 2,
+        cy: (bounds.minY + bounds.maxY) / 2,
+      },
+      centerAnchored: true,
+    };
+  },
 };
 
 /**
