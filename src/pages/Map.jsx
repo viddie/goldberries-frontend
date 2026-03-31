@@ -24,7 +24,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 
 import { getCampaignName, getChallengeNameShort, getMapLobbyInfo, getMapName } from "../util/data_util";
@@ -93,7 +93,27 @@ export function PageMap() {
   );
 }
 
-export function MapDisplay({ id, challengeId, isModal = false }) {
+export function PageMapViewer() {
+  const { id, roomName } = useParams();
+
+  return (
+    <BasicContainerBox
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#282828",
+        border: "none",
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }}
+    >
+      <MapDisplay id={parseInt(id)} openViewer initialRoom={roomName} />
+    </BasicContainerBox>
+  );
+}
+
+export function MapDisplay({ id, challengeId, isModal = false, openViewer = false, initialRoom }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map" });
   const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -104,6 +124,8 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   const query = useGetMap(id);
   const mapDataExistsQuery = useCheckMapDataExists(id);
   const [selectedChallengeId, setSelectedChallengeId] = useState(challengeId ?? null);
+  const selectedChallengeRef = useRef(selectedChallengeId);
+  selectedChallengeRef.current = selectedChallengeId;
 
   const updateSelectedChallenge = (challengeId) => {
     setSelectedChallengeId(challengeId);
@@ -113,7 +135,37 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
   };
 
   const editMapModal = useModal();
-  const mapDataModal = useModal();
+  const mapDataModal = useModal(
+    undefined,
+    !isModal
+      ? () => {
+          const cid = selectedChallengeRef.current;
+          navigate("/map/" + id + (cid ? "/" + cid : ""), { replace: true });
+        }
+      : undefined,
+  );
+
+  useEffect(() => {
+    if (openViewer) {
+      mapDataModal.open();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openViewer]);
+
+  const handleMapDataOpen = useCallback(() => {
+    mapDataModal.open();
+    if (!isModal) {
+      navigate("/map/" + id + "/view", { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModal, navigate, id]);
+
+  const handleRoomNavigate = useCallback(
+    (roomName) => {
+      navigate("/map/" + id + "/view/" + encodeURIComponent(roomName), { replace: true });
+    },
+    [navigate, id],
+  );
 
   const mapDataExists = mapDataExistsQuery.isSuccess;
   const mapDataLoading = mapDataExistsQuery.isLoading;
@@ -158,7 +210,7 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
           map={map}
           mapDataExists={mapDataExists}
           mapDataLoading={mapDataLoading}
-          onMapDataClick={mapDataModal.open}
+          onMapDataClick={handleMapDataOpen}
         />
       </Box>
 
@@ -276,7 +328,12 @@ export function MapDisplay({ id, challengeId, isModal = false }) {
         <FormMapWrapper id={id} onSave={editMapModal.close} />
       </CustomModal>
       <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth={false} fullWidth>
-        <MapDataDialog mapId={id} campaignId={campaign?.id} />
+        <MapDataDialog
+          mapId={id}
+          campaignId={campaign?.id}
+          initialRoom={initialRoom}
+          onRoomNavigate={!isModal ? handleRoomNavigate : undefined}
+        />
       </CustomModal>
     </Box>
   );

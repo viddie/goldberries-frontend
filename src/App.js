@@ -110,7 +110,7 @@ import { PageCredits } from "./pages/Credits";
 import { PageFAQ } from "./pages/FAQ";
 import { PageGoldenList } from "./pages/GoldenList";
 import { LegalNoticePage } from "./pages/LegalNotice";
-import { PageMap } from "./pages/Map";
+import { PageMap, PageMapViewer } from "./pages/Map";
 import { PageMonthlyRecap } from "./pages/MonthlyRecap";
 import { PagePlayer } from "./pages/Player";
 import { PagePostList } from "./pages/Post";
@@ -289,6 +289,7 @@ const router = createBrowserRouter([
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },
       { path: "challenge/:id", element: <PageChallenge /> },
+      { path: "map/:id/view/:roomName?", element: <PageMapViewer /> },
       { path: "map/:id/:challengeId?", element: <PageMap /> },
       { path: "campaign/:id/:tab?", element: <PageCampaign /> },
       { path: "author/:name", element: <PageAuthor /> },

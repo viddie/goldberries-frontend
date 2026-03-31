@@ -11,7 +11,7 @@ import { TileGrid } from "./minimap/TileGrid";
 import { useMinimapStore } from "./minimap/useMinimapStore";
 import { LAYERS, isRoomHidden } from "./minimap/entity_definitions";
 
-export function MapDataMinimap({ mapData, campaign, map }) {
+export function MapDataMinimap({ mapData, campaign, map, initialRoom, onRoomNavigate }) {
   const allRooms = extractRooms(mapData);
   const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
   const debugMode = useMinimapStore((s) => s.debugMode);
@@ -42,13 +42,14 @@ export function MapDataMinimap({ mapData, campaign, map }) {
     clearSelectedObject();
   }, [clearSelectedObject]);
 
-  // Focus the first room once everything has loaded
+  // Focus the initial room (by name) or the first room once everything has loaded
   useEffect(() => {
     if (allReady && !initialFocusDone.current && rooms.length > 0) {
       initialFocusDone.current = true;
-      navigateToRoom(rooms[0]);
+      const targetRoom = initialRoom ? rooms.find((r) => r.name === initialRoom) : null;
+      navigateToRoom(targetRoom ?? rooms[0]);
     }
-  }, [allReady, rooms, navigateToRoom]);
+  }, [allReady, rooms, navigateToRoom, initialRoom]);
 
   const handleCreated = useCallback(() => {
     setCanvasReady(true);
@@ -86,7 +87,7 @@ export function MapDataMinimap({ mapData, campaign, map }) {
           minHeight: { md: 0 },
         }}
       >
-        <MinimapSidebar mapData={mapData} />
+        <MinimapSidebar mapData={mapData} onRoomNavigate={onRoomNavigate} />
       </Box>
       <Box
         sx={{

@@ -26,7 +26,7 @@ import { extractCollectibles, extractUnhandledEntities, isRoomHidden } from "./e
 
 const UNHANDLED_PAGE_SIZE = 50;
 
-export function MinimapSidebar({ mapData }) {
+export function MinimapSidebar({ mapData, onRoomNavigate }) {
   const [tab, setTab] = useState("rooms");
   const [unhandledPage, setUnhandledPage] = useState(0);
   const allRooms = extractRooms(mapData);
@@ -96,7 +96,10 @@ export function MinimapSidebar({ mapData }) {
                   key={room.name}
                   hover
                   sx={{ cursor: "pointer" }}
-                  onClick={() => navigateToRoom(room)}
+                  onClick={() => {
+                    navigateToRoom(room);
+                    onRoomNavigate?.(room.name);
+                  }}
                 >
                   <TableCell sx={{ wordBreak: "break-all" }}>{room.name}</TableCell>
                 </TableRow>

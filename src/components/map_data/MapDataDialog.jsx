@@ -26,7 +26,7 @@ import { MapDataMinimap } from "./MapDataMinimap";
 import { isRoomHidden } from "./minimap/entity_definitions";
 import { useMinimapStore } from "./minimap/useMinimapStore";
 
-export function MapDataDialog({ mapId, hash, campaignId }) {
+export function MapDataDialog({ mapId, hash, campaignId, initialRoom, onRoomNavigate }) {
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
   const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
@@ -45,7 +45,7 @@ export function MapDataDialog({ mapId, hash, campaignId }) {
       {mapData && (
         <>
           {/* Minimap */}
-          <MapDataMinimap mapData={mapData} />
+          <MapDataMinimap mapData={mapData} initialRoom={initialRoom} onRoomNavigate={onRoomNavigate} />
 
           {/* Room List */}
           <RoomListSection rooms={rooms} />
