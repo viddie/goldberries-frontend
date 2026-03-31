@@ -15,8 +15,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { faChevronDown, faChevronRight, faQuestionCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronRight,
+  faQuestionCircle,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -137,6 +144,8 @@ export function CampaignDataDialog({ campaignId, campaign }) {
 //#region Structure Table
 function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.structure" });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const mapDataModal = useModal();
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [showUnmatched, setShowUnmatched] = useState(false);
@@ -198,7 +207,21 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign }) {
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth={false} fullWidth>
+      <CustomModal
+        modalHook={mapDataModal}
+        options={{ hideFooter: true }}
+        maxWidth={false}
+        fullWidth
+        fullScreen={isMobile}
+        contentSx={{ px: { xs: 1, sm: 1.5, md: 2 }, py: { xs: 1, sm: 1.5, md: 3 } }}
+      >
+        {isMobile && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0.5 }}>
+            <IconButton size="small" onClick={() => mapDataModal.cancel()} aria-label="close">
+              <FontAwesomeIcon icon={faTimes} />
+            </IconButton>
+          </Box>
+        )}
         {selectedEntry && (
           <MapDataDialog
             mapId={selectedEntry.map_id ?? null}

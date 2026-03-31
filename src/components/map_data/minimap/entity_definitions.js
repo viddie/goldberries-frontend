@@ -106,6 +106,11 @@ group(
     "VivHelper/CustomDepthTileEntity": true,
     fakeBlock: true,
     conditionBlock: { name: "ConditionBlock", opacity: movingSolidOpacity },
+    "EmHelper/Monumentswitchblock": {
+      name: "MonumentSwitchBlock",
+      color: (attr) => validateColorOr(attr.color, "#ffffff"),
+      opacity: movingSolidOpacity,
+    },
   },
 );
 
@@ -136,6 +141,7 @@ group(
     "MaxHelpingHand/ReskinnableSwapBlock": true,
     "FrostHelper/ToggleSwapBlock": { name: "[S]" },
     "XaphanHelper/FlagSwapBlock": { name: "[S]" },
+    "spirialis/swapblock": { name: "[S]" },
   },
 );
 
@@ -150,6 +156,7 @@ group(
     "VivHelper/CornerBoostZipMover": { name: "[Z]" },
     "VivHelper/CustomZipMover": { name: "[Z]" },
     "CommunalHelper/DreamZipMover": { color: "#777777", name: "[Z]" },
+    "spirialis/timezipmover": { name: "[Z]" },
   },
 );
 
@@ -162,6 +169,7 @@ group(
     "VivHelper/CustomFallingBlock": true,
     "AdventureHelper/GroupedFallingBlock": { name: "[F]" },
     "VivHelper/CornerBoostFallingBlock": { name: "[F]" },
+    "spirialis/timefallingblock": { name: "[F]" },
     finalBossFallingBlock: { color: "#cc00ff" },
     finalBossMovingBlock: ["finalBossFallingBlock", { name: "M" }],
   },
@@ -220,6 +228,7 @@ group(
     crushBlock: true,
     "MaxHelpingHand/ReskinnableCrushBlock": true,
     "CherryHelper/NonReturnKevin": { name: "[Kevin]" },
+    "spirialis/timekevin": { name: "[Kevin]" },
   },
 );
 
@@ -231,6 +240,7 @@ group(
     movingPlatform: true,
     sinkingPlatform: { name: "SinkingPlatform" },
     "SpringCollab2020/MultiNodeMovingPlatform": true,
+    "spirialis/timemovingplatform": { name: "TimeMovingPlatform" },
   },
 );
 
@@ -252,6 +262,7 @@ group(
     "MaxHelpingHand/ShatterFlagSwitchGate": true,
     "VortexHelper/VortexSwitchGate": true,
     "CommunalHelper/DreamSwitchGate": { color: "#777777" },
+    "spirialis/timeswitchgate": { name: "TimeSwitchGate" },
     introCrusher: { name: "IntroCrusher" },
     "VivHelper/FlagIntroCrusher": "introCrusher",
   },
@@ -269,6 +280,7 @@ group(
 
 ssm.moveBlock = { color: "#9400ae", renderer: MoveBlockContentRenderer };
 ssm["vitellary/vitmoveblock"] = ssm.moveBlock;
+ssm["spirialis/timemoveblock"] = ssm.moveBlock;
 
 group(
   { color: "orange", name: "LockBlock", width: 32, height: 32 },
@@ -454,8 +466,14 @@ group(
       name: (attr) => (attr.oneUse ? "(ForceJumpCrystal)" : "ForceJumpCrystal"),
     },
     "LunaticHelper/CustomRefill": true,
+    "BounceHelper/BounceRefill": { name: (attr) => (attr.oneUse ? "(BounceRefill)" : "BounceRefill") },
+    "TwigHelper/LargeRefill": { name: (attr) => (attr.oneUse ? "(LargeRefill)" : "LargeRefill") },
   },
 );
+ssm["VivHelper/RefillWallWrapper"] = {
+  color: "#5eff5e",
+  name: "RefillWallWrapper",
+};
 
 ssm.lightning = { color: "yellow", name: "", depth: LAYERS.ENTITIES - 1, outline: "dashed" };
 
@@ -590,6 +608,8 @@ group(
     "SJ2021/DashBoostField": { color: "#f531ff", name: "DashBoostField" },
     "FrostHelper/BlueBooster": { color: "#31baff", name: "DashlessBubble" },
     "GlassHelper/ReverseBooster": { color: "#f531ff", name: "ReverseBubble" },
+    "JackalCollabHelper/FlagBooster": { color: "#3168ff", name: "FlagBubble" },
+    "EmHelper/Monumentbooster": { color: "#3168ff", name: "MonumentBooster" },
   },
 );
 
@@ -615,6 +635,7 @@ group(
     "pandorasBox/flagToggleSwitch": { name: "FlagToggleSwitch" },
     "GravityHelper/GravitySwitch": { name: "GravitySwitch" },
     "bgSwitch/bgModeToggle": { name: "BGModeToggle" },
+    "EmHelper/Monumentflipswitch": { name: "MonumentFlipSwitch" },
   },
 );
 
@@ -627,6 +648,8 @@ group(
     rotateSpinner: { name: "RotateSpinner" },
     "SpringCollab2020/FlagToggleStarRotateSpinner": { name: "FlagRotateSpinner" },
     "isaBag/dreamSpinner": { name: "DreamSpinner", color: "#777777" },
+    "VivHelper/AnimatedSpinner": { name: "AnimatedSpinner" },
+    "spirialis/timerotatespinner": { name: "TimeRotateSpinner" },
   },
 );
 
@@ -664,6 +687,7 @@ group(
     glider: true,
     "MaxHelpingHand/RespawningJellyfish": { name: "RespawningJelly" },
     "VivHelper/ReskinnableJelly": true,
+    "BounceHelper/BounceJellyfish": { name: "BounceJelly" },
   },
 );
 
@@ -740,6 +764,36 @@ group(
   },
 );
 
+group(
+  { color: "#ffffff", name: "CoreModeSpikes", outline: "dashed" },
+  {
+    "MaxHelpingHand/CoreModeSpikesLeft": { width: 3, anchorX: "right" },
+    "MaxHelpingHand/CoreModeSpikesRight": { width: 3, anchorX: "left" },
+    "MaxHelpingHand/CoreModeSpikesUp": [
+      "MaxHelpingHand/CoreModeSpikesRight",
+      { anchorY: "bottom", height: 3, width: undefined },
+    ],
+    "MaxHelpingHand/CoreModeSpikesDown": ["MaxHelpingHand/CoreModeSpikesUp", { anchorY: "top" }],
+  },
+);
+
+group(
+  {
+    color: (attr) => validateColorOr(attr.color, "#ffffff"),
+    name: "MonumentSpikes",
+    outline: "dashed",
+  },
+  {
+    "EmHelper/MonumentspikesLeft": { width: 3, anchorX: "right" },
+    "EmHelper/MonumentspikesRight": { width: 3, anchorX: "left" },
+    "EmHelper/MonumentspikesUp": [
+      "EmHelper/MonumentspikesRight",
+      { anchorY: "bottom", height: 3, width: undefined },
+    ],
+    "EmHelper/MonumentspikesDown": ["EmHelper/MonumentspikesUp", { anchorY: "top" }],
+  },
+);
+
 ssm["outback/portal"] = {
   name: "Portal",
   color: (attr) => validateColorOr(attr.readyColor, "#00d9ff"),
@@ -800,6 +854,12 @@ group(
     "MaxHelpingHand/StaticPuffer": true,
   },
 );
+
+ssm["MaxHelpingHand/KevinBarrier"] = {
+  color: (attr) => validateColorOr(attr.color, "#3090f0"),
+  name: "KevinBarrier",
+  opacity: 0.3,
+};
 //#endregion
 
 //#region Triggers
@@ -833,15 +893,20 @@ const fakeWallBase = group(
   },
   {
     fakeWall: true,
+    "XaphanHelper/LinkedFakeWall": true,
     blockField: { name: "BlockField" },
     exitBlock: { name: "ExitBlock" },
     coverupWall: { name: "CoverupWall" },
     "FancyTileEntities/FancyCoverupWall": "coverupWall",
+    "VivHelper/CustomCoverupWall": "coverupWall",
     "FancyTileEntities/FancyFakeWall": true,
     "MaxHelpingHand/FlagExitBlock": "exitBlock",
+    "FancyTileEntities/FancyExitBlock": "exitBlock",
     "SpringCollab2020/caveWall": true,
     "BrokemiaHelper/caveWall": true,
+    "VivHelper/EnterBlock": { name: "EnterBlock" },
     "GravityHelper/GravityField": { name: "GravityField", color: "#00d9ff" },
+    crumbleWallOnRumble: { name: "CrumbleWallOnRumble" },
   },
 );
 
@@ -935,6 +1000,13 @@ ssm["SJ2021/SineDustSpinner"] = {
   ...fakeWallBase,
   name: "Sine\nDust\nSpinner",
   color: "#7a5dd8",
+};
+
+ssm["JackalCollabHelper/DarkMatter"] = {
+  color: "#131313",
+  name: "DarkMatter",
+  opacity: 0.25,
+  outline: "dashed",
 };
 //#endregion
 
@@ -1116,6 +1188,7 @@ export const IgnoreUnhandled = {
     "SJ2021/DashJumpCountResetTrigger",
     "MoreDasheline/MaxDashTrigger",
     "FrostHelper/EntityMover",
+    "spirialis/timegrabtrigger",
   ]),
   //#endregion
   //#region Variant Triggers
@@ -1134,6 +1207,7 @@ export const IgnoreUnhandled = {
     "ExtendedVariantMode/GameSpeedTrigger",
     "ExtendedVariantMode/SetJumpCountTrigger",
     "ExtendedVariantMode/DontRefillDashOnGroundTrigger",
+    "ForceVariantTrigger",
   ]),
   //#endregion
   //#region Misc Gameplay Triggers
@@ -1143,6 +1217,7 @@ export const IgnoreUnhandled = {
     "spawnFacingTrigger",
     "detachFollowersTrigger",
     "goldenBerryCollectTrigger",
+    "respawnTargetTrigger",
     "everest/activateDreamBlocksTrigger",
     "everest/lavaBlockerTrigger",
     "everest/coreModeTrigger",
@@ -1174,6 +1249,7 @@ export const IgnoreUnhandled = {
     "DisposableTheo/DisposableTheoTrigger",
     "SJ2021/CoreModeTriggerNoFlash",
     "SJ2021/TheoKillBoxTrigger",
+    "isaBag/waterBoost",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -1267,6 +1343,7 @@ export const IgnoreUnhandled = {
     "JungleHelper/UITextTrigger",
     "rubysentities/heightdisplaytrigger",
     "FemtoHelper/CinematicTextTrigger",
+    "FlaglinesAndSuch/MiniTextboxIfFlag",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -1302,6 +1379,7 @@ export const IgnoreUnhandled = {
     "bloomFadeTrigger",
     "blackholeStrength",
     "playbackBillboard",
+    "coloredlights/hanginglamp",
     "everest/ambienceTrigger",
     "moonGlitchBackgroundTrigger",
     "PrismaticHelper/StylegroundsPanel",
@@ -1443,6 +1521,10 @@ export const IgnoreUnhandled = {
     "YetAnotherHelper/SpikeJumpThruController",
     "MaxHelpingHand/SeekerBarrierColorController",
     "MaxHelpingHand/LitBlueTorch",
+    "JackalCollabHelper/DarkMatterController",
+    "ContortHelper/LightningStrikesController",
+    "MaxHelpingHand/SpeedBasedMusicParamTrigger",
+    "spirialis/rainblocker",
   ]),
   //#endregion
 };

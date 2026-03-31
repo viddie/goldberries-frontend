@@ -63,8 +63,13 @@ export function MinimapSidebar({ mapData }) {
   }
 
   return (
-    <Box>
-      <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} variant="fullWidth" sx={{ mb: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
+      <Tabs
+        value={tab}
+        onChange={(e, newValue) => setTab(newValue)}
+        variant="fullWidth"
+        sx={{ mb: 2, flexShrink: 0 }}
+      >
         <Tab value="rooms" label={`Rooms (${rooms.length})`} />
         <Tab value="collectibles" label={`Collectibles (${collectibles.length})`} />
         {debugMode && <Tab value="unhandled" label={`Unhandled (${unhandled.length})`} />}
@@ -72,7 +77,8 @@ export function MinimapSidebar({ mapData }) {
       {tab === "rooms" && (
         <TableContainer
           sx={{
-            maxHeight: "736px",
+            flex: 1,
+            overflow: "auto",
             borderRadius: 1,
             backgroundColor: "rgba(0,0,0,0.2)",
             border: "1px solid rgba(255,255,255,0.06)",
@@ -100,11 +106,12 @@ export function MinimapSidebar({ mapData }) {
         </TableContainer>
       )}
       {tab === "collectibles" && (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden", minHeight: 0 }}>
           <CollectibleChipsSummary collectibles={collectibles} />
           <TableContainer
             sx={{
-              maxHeight: "692px",
+              flex: 1,
+              overflow: "auto",
               borderRadius: 1,
               backgroundColor: "rgba(0,0,0,0.2)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -136,7 +143,7 @@ export function MinimapSidebar({ mapData }) {
               </TableBody>
             </Table>
           </TableContainer>
-        </>
+        </Box>
       )}
       {tab === "unhandled" && debugMode && (
         <UnhandledEntitiesTab
@@ -190,10 +197,11 @@ function UnhandledEntitiesTab({ unhandled, page, onPageChange, onNavigate }) {
   );
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden", minHeight: 0 }}>
       <TableContainer
         sx={{
-          maxHeight: "692px",
+          flex: 1,
+          overflow: "auto",
           borderRadius: 1,
           backgroundColor: "rgba(0,0,0,0.2)",
           border: "1px solid rgba(255,255,255,0.06)",
@@ -235,9 +243,9 @@ function UnhandledEntitiesTab({ unhandled, page, onPageChange, onNavigate }) {
         onPageChange={(e, newPage) => onPageChange(newPage)}
         rowsPerPage={UNHANDLED_PAGE_SIZE}
         rowsPerPageOptions={[UNHANDLED_PAGE_SIZE]}
-        sx={{ ".MuiTablePagination-toolbar": { minHeight: 36 } }}
+        sx={{ ".MuiTablePagination-toolbar": { minHeight: 36 }, flexShrink: 0 }}
       />
-    </>
+    </Box>
   );
 }
 
@@ -271,8 +279,8 @@ function ObjectDetailPanel({ object, onBack }) {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexShrink: 0 }}>
         <IconButton size="small" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} fontSize="small" fixedWidth />
         </IconButton>
@@ -283,7 +291,7 @@ function ObjectDetailPanel({ object, onBack }) {
       <Box
         component="pre"
         sx={{
-          maxHeight: "736px",
+          flex: 1,
           overflow: "auto",
           p: 1.5,
           m: 0,

@@ -87,6 +87,7 @@ export const useMinimapStore = create(
           }
           return { shownIgnoreGroups: next };
         }),
+      setShownIgnoreGroups: (groups) => set({ shownIgnoreGroups: new Set(groups) }),
     }),
     {
       name: "minimap-settings",

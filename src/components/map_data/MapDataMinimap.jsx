@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Edges, Text, useProgress } from "@react-three/drei";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -67,45 +67,62 @@ export function MapDataMinimap({ mapData, campaign, map }) {
         : "";
 
   return (
-    <Grid container spacing={2}>
-      <Grid item md={2} display={{ xs: "none", md: "block" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        gap: 2,
+        height: { md: "calc(100vh - 130px)" },
+        minHeight: 300,
+      }}
+    >
+      <Box
+        sx={{
+          width: { xs: "100%", md: 300 },
+          flexShrink: 0,
+          order: { xs: 1, md: 0 },
+          maxHeight: { xs: "50svh", md: "unset" },
+          overflow: "hidden",
+          minHeight: { md: 0 },
+        }}
+      >
         <MinimapSidebar mapData={mapData} />
-      </Grid>
-      <Grid item xs={12} md={10}>
-        <Box
-          sx={{
-            width: "100%",
-            height: 800,
-            borderRadius: 1,
-            overflow: "hidden",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            position: "relative",
-          }}
+      </Box>
+      <Box
+        sx={{
+          flex: { md: 1 },
+          minWidth: 0,
+          height: { xs: "70svh", md: "auto" },
+          minHeight: { md: 0 },
+          borderRadius: 1,
+          overflow: "hidden",
+          backgroundColor: "rgba(0,0,0,0.3)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          position: "relative",
+        }}
+      >
+        {!allReady && <MinimapLoadingOverlay label={loadingLabel} />}
+        <MinimapSettings />
+        <Canvas
+          style={{ visibility: allReady ? "visible" : "hidden" }}
+          orthographic
+          frameloop="demand"
+          camera={{ zoom: defaultZoom, position: defaultPosition }}
+          onPointerMissed={handlePointerMissed}
+          onCreated={handleCreated}
         >
-          {!allReady && <MinimapLoadingOverlay label={loadingLabel} />}
-          <MinimapSettings />
-          <Canvas
-            style={{ visibility: allReady ? "visible" : "hidden" }}
-            orthographic
-            frameloop="demand"
-            camera={{ zoom: defaultZoom, position: defaultPosition }}
-            onPointerMissed={handlePointerMissed}
-            onCreated={handleCreated}
-          >
-            <Controls />
-            {debugMode && <MouseWorldPos />}
-            <TileGrid />
-            <Suspense fallback={null}>
-              <FontSentinel onReady={handleFontSync} />
-              {rooms.map((room) => (
-                <RoomRenderer key={room.name} room={room} />
-              ))}
-            </Suspense>
-          </Canvas>
-        </Box>
-      </Grid>
-    </Grid>
+          <Controls />
+          {debugMode && <MouseWorldPos />}
+          <TileGrid />
+          <Suspense fallback={null}>
+            <FontSentinel onReady={handleFontSync} />
+            {rooms.map((room) => (
+              <RoomRenderer key={room.name} room={room} />
+            ))}
+          </Suspense>
+        </Canvas>
+      </Box>
+    </Box>
   );
 }
 
