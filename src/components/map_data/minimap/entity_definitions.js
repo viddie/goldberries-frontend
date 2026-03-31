@@ -40,6 +40,7 @@ export const IndividualEntityMap = {
   "CollabUtils2/FakeMiniHeart": () => MiniHeartRenderer,
   "CollabUtils2/RainbowBerry": () => RainbowBerryRenderer,
   "PlatinumStrawberry/PlatinumStrawberry": () => PlatinumBerryRenderer,
+  "DSidesPlatinum/PlatinumStrawberry": () => PlatinumBerryRenderer,
   cassette: () => CassetteRenderer,
   "XaphanHelper/CustomCollectable": (attr) =>
     attr.sprite?.indexOf("cassette") >= 0 ? CassetteRenderer : null,
@@ -1494,6 +1495,8 @@ cd["CollabUtils2/RainbowBerry"] = [
 cd["PlatinumStrawberry/PlatinumStrawberry"] = [
   { match: () => true, collectible: { name: "Platinum Berry", formValue: "5" } },
 ];
+cd["DSidesPlatinum/PlatinumStrawberry"] = cd["PlatinumStrawberry/PlatinumStrawberry"];
+
 cd.cassette = [{ match: () => true, collectible: { name: "Cassette", formValue: "6" } }];
 
 const crystalHeartDef = [{ match: () => true, collectible: { name: "Crystal Heart", formValue: "7" } }];

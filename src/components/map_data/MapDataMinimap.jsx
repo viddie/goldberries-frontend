@@ -1,7 +1,7 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Edges, Text } from "@react-three/drei";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Edges, Text, useProgress } from "@react-three/drei";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CanvasTexture, NearestFilter } from "three";
 
 import { extractRooms } from "./MapDataDialog";
@@ -22,8 +22,18 @@ export function MapDataMinimap({ mapData, campaign, map }) {
   const bounds = getEnclosingBounds(rooms);
   const clearSelectedObject = useMinimapStore((s) => s.clearSelectedObject);
   const navigateToRoom = useMinimapStore((s) => s.navigateToRoom);
-  const [ready, setReady] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
   const initialFocusDone = useRef(false);
+
+  const {
+    active: texturesLoading,
+    progress: textureProgress,
+    loaded: texturesLoaded,
+    total: texturesTotal,
+  } = useProgress();
+  const texturesReady = canvasReady && !texturesLoading && textureProgress >= 100;
+  const allReady = canvasReady && texturesReady && fontsReady;
 
   const defaultZoom = 1;
   const defaultPosition = [0, 0, 100];
@@ -32,17 +42,29 @@ export function MapDataMinimap({ mapData, campaign, map }) {
     clearSelectedObject();
   }, [clearSelectedObject]);
 
-  // Focus the first room once the canvas has rendered
+  // Focus the first room once everything has loaded
   useEffect(() => {
-    if (ready && !initialFocusDone.current && rooms.length > 0) {
+    if (allReady && !initialFocusDone.current && rooms.length > 0) {
       initialFocusDone.current = true;
       navigateToRoom(rooms[0]);
     }
-  }, [ready, rooms, navigateToRoom]);
+  }, [allReady, rooms, navigateToRoom]);
 
   const handleCreated = useCallback(() => {
-    setReady(true);
+    setCanvasReady(true);
   }, []);
+
+  const handleFontSync = useCallback(() => {
+    setFontsReady(true);
+  }, []);
+
+  const loadingLabel = !canvasReady
+    ? "Initializing..."
+    : !texturesReady
+      ? `Loading textures... ${texturesLoaded}/${texturesTotal}`
+      : !fontsReady
+        ? "Loading labels..."
+        : "";
 
   return (
     <Grid container spacing={2}>
@@ -61,8 +83,10 @@ export function MapDataMinimap({ mapData, campaign, map }) {
             position: "relative",
           }}
         >
+          {!allReady && <MinimapLoadingOverlay label={loadingLabel} />}
           <MinimapSettings />
           <Canvas
+            style={{ visibility: allReady ? "visible" : "hidden" }}
             orthographic
             frameloop="demand"
             camera={{ zoom: defaultZoom, position: defaultPosition }}
@@ -72,24 +96,52 @@ export function MapDataMinimap({ mapData, campaign, map }) {
             <Controls />
             {debugMode && <MouseWorldPos />}
             <TileGrid />
-            {!ready && (
-              <Text
-                position={[0, 0, LAYERS.UI]}
-                fontSize={24}
-                color="white"
-                anchorX="center"
-                anchorY="middle"
-              >
-                Loading...
-              </Text>
-            )}
-            {rooms.map((room) => (
-              <RoomRenderer key={room.name} room={room} />
-            ))}
+            <Suspense fallback={null}>
+              <FontSentinel onReady={handleFontSync} />
+              {rooms.map((room) => (
+                <RoomRenderer key={room.name} room={room} />
+              ))}
+            </Suspense>
           </Canvas>
         </Box>
       </Grid>
     </Grid>
+  );
+}
+
+function MinimapLoadingOverlay({ label }) {
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 10,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#272727",
+      }}
+    >
+      <Typography variant="body1" color="white">
+        {label}
+      </Typography>
+    </Box>
+  );
+}
+
+function FontSentinel({ onReady }) {
+  const called = useRef(false);
+  const handleSync = useCallback(() => {
+    if (!called.current) {
+      called.current = true;
+      onReady();
+    }
+  }, [onReady]);
+
+  return (
+    <Text position={[0, 0, -9999]} fontSize={1} onSync={handleSync} visible={false}>
+      .
+    </Text>
   );
 }
 
