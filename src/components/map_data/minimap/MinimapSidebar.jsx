@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import {
   Box,
   IconButton,
+  Stack,
   Tab,
   Table,
   TableBody,
@@ -18,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 
 import { extractRooms } from "../MapDataDialog";
+import { CollectibleChip } from "../../goldberries";
 
 import { useMinimapStore } from "./useMinimapStore";
 import { extractCollectibles, extractUnhandledEntities, isRoomHidden } from "./entity_definitions";
@@ -98,35 +100,43 @@ export function MinimapSidebar({ mapData }) {
         </TableContainer>
       )}
       {tab === "collectibles" && (
-        <TableContainer
-          sx={{
-            maxHeight: "736px",
-            borderRadius: 1,
-            backgroundColor: "rgba(0,0,0,0.2)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Room</TableCell>
-                {/* <TableCell>ID</TableCell> */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {collectibles.map((c, i) => (
-                <TableRow key={i} hover sx={{ cursor: "pointer" }} onClick={() => handleCollectibleClick(c)}>
-                  <TableCell sx={{ whiteSpace: "nowrap" }}>{c.name}</TableCell>
-                  <TableCell sx={{ wordBreak: "break-all", fontFamily: "monospace", fontSize: "0.8rem" }}>
-                    {c.room}
-                  </TableCell>
-                  {/* <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{c.id}</TableCell> */}
+        <>
+          <CollectibleChipsSummary collectibles={collectibles} />
+          <TableContainer
+            sx={{
+              maxHeight: "692px",
+              borderRadius: 1,
+              backgroundColor: "rgba(0,0,0,0.2)",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Room</TableCell>
+                  {/* <TableCell>ID</TableCell> */}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {collectibles.map((c, i) => (
+                  <TableRow
+                    key={i}
+                    hover
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleCollectibleClick(c)}
+                  >
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>{c.name}</TableCell>
+                    <TableCell sx={{ wordBreak: "break-all", fontFamily: "monospace", fontSize: "0.8rem" }}>
+                      {c.room}
+                    </TableCell>
+                    {/* <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{c.id}</TableCell> */}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
       )}
       {tab === "unhandled" && debugMode && (
         <UnhandledEntitiesTab
@@ -147,6 +157,29 @@ export function MinimapSidebar({ mapData }) {
         />
       )}
     </Box>
+  );
+}
+
+function CollectibleChipsSummary({ collectibles }) {
+  const summary = useMemo(() => {
+    const counts = {};
+    for (const item of collectibles) {
+      if (!item.formValue) continue;
+      const key = item.formValue;
+      counts[key] = counts[key] || { collectibleId: item.formValue, count: 0 };
+      counts[key].count++;
+    }
+    return Object.values(counts);
+  }, [collectibles]);
+
+  if (summary.length === 0) return null;
+
+  return (
+    <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mb: 1 }}>
+      {summary.map((s) => (
+        <CollectibleChip key={s.collectibleId} collectibleId={s.collectibleId} count={String(s.count)} />
+      ))}
+    </Stack>
   );
 }
 

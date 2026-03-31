@@ -36,19 +36,14 @@ import {
 } from "../../hooks/useApi";
 import { fetchTempMapData } from "../../util/api";
 import { DIFF_CONSTS } from "../../util/constants";
-import { ObjectiveSelect } from "../goldberries";
+import { CollectibleChip, ObjectiveSelect } from "../goldberries";
 import { LoadingSpinner } from "../basic";
 import { StringListEditor } from "../StringListEditor";
 import { MapDataMinimap } from "../map_data/MapDataMinimap";
 import { extractCollectiblesForForm } from "../map_data/minimap/entity_definitions";
 
 import { SameCampaignNameIndicator } from "./Campaign";
-import {
-  getCollectibleIcon,
-  getCollectibleName,
-  getCollectibleOptions,
-  getCollectibleVariantOptions,
-} from "./Map";
+import { getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
 
 const GB_URL_REGEX = /gamebanana\.com\/mods\/(\d+)/;
 const STEP_LABEL_KEYS = ["step_1.label", "step_2.label", "step_3.label", "step_4.label", "step_5.label"];
@@ -774,21 +769,6 @@ function Step5Challenges({ mapList, challengeConfigs, setChallengeConfigs, onBac
         </Button>
       </Stack>
     </Stack>
-  );
-}
-//#endregion
-
-//#region Utility Components
-function CollectibleChip({ collectibleId, count }) {
-  const name = getCollectibleName(collectibleId, "");
-  const icon = getCollectibleIcon(collectibleId, "");
-
-  return (
-    <Chip
-      size="small"
-      label={`${name}${count && count !== "1" ? ` ×${count}` : ""}`}
-      avatar={icon ? <img src={icon} alt={name} style={{ width: 16, height: 16 }} /> : undefined}
-    />
   );
 }
 //#endregion
