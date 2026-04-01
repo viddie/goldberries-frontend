@@ -175,8 +175,8 @@ function CollectibleChipsSummary({ collectibles }) {
     const counts = {};
     for (const item of collectibles) {
       if (!item.formValue) continue;
-      const key = item.formValue;
-      counts[key] = counts[key] || { collectibleId: item.formValue, count: 0 };
+      const key = `${item.formValue}:${item.formVariant || ""}`;
+      counts[key] = counts[key] || { collectibleId: item.formValue, variantId: item.formVariant, count: 0 };
       counts[key].count++;
     }
     return Object.values(counts);
@@ -187,7 +187,12 @@ function CollectibleChipsSummary({ collectibles }) {
   return (
     <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mb: 1 }}>
       {summary.map((s) => (
-        <CollectibleChip key={s.collectibleId} collectibleId={s.collectibleId} count={String(s.count)} />
+        <CollectibleChip
+          key={`${s.collectibleId}:${s.variantId || ""}`}
+          collectibleId={s.collectibleId}
+          variantId={s.variantId}
+          count={String(s.count)}
+        />
       ))}
     </Stack>
   );

@@ -11,3 +11,4 @@ export { MiniHeartRenderer } from "./MiniHeartRenderer";
 export { CassetteRenderer } from "./CassetteRenderer";
 export { RainbowBerryRenderer } from "./RainbowBerryRenderer";
 export { PlatinumBerryRenderer } from "./PlatinumBerryRenderer";
+export { WingedGoldenBerryRenderer } from "./WingedGoldenBerryRenderer";

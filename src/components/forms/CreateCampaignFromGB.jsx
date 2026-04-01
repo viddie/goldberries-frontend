@@ -1,5 +1,6 @@
 import {
   Alert,
+  Box,
   Button,
   Chip,
   Divider,
@@ -312,24 +313,34 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     const collectibles = mapCollectibles[map?.hash] ?? [];
 
     return (
-      <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">
-            {t("step_4.edit")} — {map?.name}
-          </Typography>
-          <Button variant="outlined" onClick={closeViewerEditor}>
-            {t("step_4.done")}
-          </Button>
-        </Stack>
-        <Grid container spacing={2}>
-          <Grid item xs={12} lg={7}>
-            {mapData ? (
-              <MapDataViewer mapData={mapData} />
-            ) : (
-              <Alert severity="error">{t("step_4.loading_error")}</Alert>
-            )}
-          </Grid>
-          <Grid item xs={12} lg={5}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={9}>
+          {mapData ? (
+            <MapDataViewer mapData={mapData} />
+          ) : (
+            <Alert severity="error">{t("step_4.loading_error")}</Alert>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          lg={3}
+          sx={{ display: "flex", flexDirection: "column", maxHeight: { lg: "calc(100vh - 130px)" } }}
+        >
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mb: 2, flexShrink: 0 }}
+          >
+            <Typography variant="h6">
+              {t("step_4.edit")} - {map?.name}
+            </Typography>
+            <Button variant="outlined" onClick={closeViewerEditor}>
+              {t("step_4.done")}
+            </Button>
+          </Stack>
+          <Box sx={{ overflow: "auto", flex: 1, minHeight: 0 }}>
             <StringListEditor
               label={t_fm("collectibles.label")}
               valueTypes={[
@@ -354,9 +365,9 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
               reorderable
               inline={[6, 6, 12, 6, 6]}
             />
-          </Grid>
+          </Box>
         </Grid>
-      </Stack>
+      </Grid>
     );
   }
 
@@ -696,7 +707,7 @@ function Step4Collectibles({
                     ) : (
                       <Stack direction="row" gap={1} flexWrap="wrap">
                         {collectibles.map((c, ci) => (
-                          <CollectibleChip key={ci} collectibleId={c[0]} count={c[3]} />
+                          <CollectibleChip key={ci} collectibleId={c[0]} variantId={c[1]} count={c[3]} />
                         ))}
                       </Stack>
                     )}

@@ -11,6 +11,7 @@ import {
   SpikeRenderer,
   SpinnerRenderer,
   StrawberryRenderer,
+  WingedGoldenBerryRenderer,
 } from "./renderers";
 
 export const LAYERS = {
@@ -33,6 +34,7 @@ export const IndividualEntityMap = {
   "SpringCollab2020/returnBerry": () => StrawberryRenderer,
   "LunaticHelper/StrawberryWithReturn": () => StrawberryRenderer,
   "SorbetHelper/ReturnBerry": () => StrawberryRenderer,
+  "FrostTemple/ReturnStrawberry": () => StrawberryRenderer,
   blackGem: () => CrystalHeartRenderer,
   "MaxHelpingHand/ReskinnableCrystalHeart": () => CrystalHeartRenderer,
   "AdventureHelper/CustomCrystalHeart": () => CrystalHeartRenderer,
@@ -45,6 +47,8 @@ export const IndividualEntityMap = {
   "XaphanHelper/CustomCollectable": (attr) =>
     attr.sprite?.indexOf("cassette") >= 0 ? CassetteRenderer : null,
   "ParrotHelper/FlagBerry": () => StrawberryRenderer,
+  memorialTextController: () => WingedGoldenBerryRenderer,
+  "JungleHelper/TreeDepthController": () => WingedGoldenBerryRenderer,
 };
 
 // These are common entities that need special rendering but can be batched together
@@ -610,6 +614,8 @@ group(
     "GlassHelper/ReverseBooster": { color: "#f531ff", name: "ReverseBubble" },
     "JackalCollabHelper/FlagBooster": { color: "#3168ff", name: "FlagBubble" },
     "EmHelper/Monumentbooster": { color: "#3168ff", name: "MonumentBooster" },
+    "CommunalHelper/DreamBooster": { color: "#777777", name: "DreamBubble" },
+    "Anonhelper/OneUseBooster": { name: "OneUseBubble" },
   },
 );
 
@@ -823,6 +829,20 @@ group(
   },
 );
 
+group(
+  {
+    width: 16,
+    height: 16,
+    anchorX: "center",
+    anchorY: "center",
+    name: "CardinalBumper",
+    color: "#3d44ff",
+  },
+  {
+    "JackalHelper/LinkedCardinalBumper": { name: "LinkedCardinalBumper" },
+  },
+);
+
 ssm.fireBall = { shape: "circle", color: "#ff3d3d", name: "FireBall", radius: 6 };
 group(
   {
@@ -955,6 +975,7 @@ group(
       color: (attr) => validateColorOr(attr.color, "#0066ff"),
       name: "ColoredWater",
     },
+    "JackalHelper/DeadlyWater": ["pandorasBox/coloredWater", { name: "DeadlyWater" }],
     "SpringCollab2020/bubblePushField": [
       "SpringCollab2020/FlagToggleWater",
       { name: "BubblePushField", renderer: undefined },
@@ -1116,7 +1137,6 @@ group(
   {
     memorial: { width: 40, height: 60, offset: [-20, -60] },
     "everest/memorial": "memorial",
-    memorialTextController: true,
     "MaxHelpingHand/CustomMemorialWithDreamingAttribute": {
       offset: [0, 0],
       anchorX: "center",
@@ -1168,13 +1188,16 @@ export const IgnoreUnhandled = {
     "VivHelper/ITPT1Way",
     "VivHelper/TeleportTarget",
     "ContortHelper/TeleportationTriggerLevel1",
+    "ContortHelper/TeleportationTriggerLevel2",
+    "ContortHelper/TeleportationTriggerLevel3",
+    "ContortHelper/TeleportationTriggerLevel4",
+    "ContortHelper/TeleportationTriggerLevel5",
     "ContortHelper/TeleportationTarget",
     "VivHelper/MainInstantTeleportTrigger",
     "SJ2021/BasicInstantTeleportTrigger",
     "ContortHelper/MomentumModifierTrigger",
     "StrawberryJam2021/liftBoostTrigger",
     "XaphanHelper/TeleportToChapterTrigger",
-    "ContortHelper/TeleportationTriggerLevel5",
     "DJMapHelper/teleportTrigger",
     "DJMapHelper/badelineBoostTeleport",
     "AurorasHelper/ForcedMovementTrigger",
@@ -1222,6 +1245,7 @@ export const IgnoreUnhandled = {
     "everest/lavaBlockerTrigger",
     "everest/coreModeTrigger",
     "everest/crystalShatterTrigger",
+    "ArphimigonHelper/KillTrigger",
     "CollabUtils2/SilverBerryCollectTrigger",
     "CollabUtils2/SpeedBerryCollectTrigger",
     "CollabUtils2/RainbowBerryUnlockCutsceneTrigger",
@@ -1344,6 +1368,7 @@ export const IgnoreUnhandled = {
     "rubysentities/heightdisplaytrigger",
     "FemtoHelper/CinematicTextTrigger",
     "FlaglinesAndSuch/MiniTextboxIfFlag",
+    "JungleHelper/UIImageTrigger",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -1525,6 +1550,8 @@ export const IgnoreUnhandled = {
     "ContortHelper/LightningStrikesController",
     "MaxHelpingHand/SpeedBasedMusicParamTrigger",
     "spirialis/rainblocker",
+    "FrostHelper/CustomFlutterBird",
+    "ArphimigonHelper/ColorGradeTrigger",
   ]),
   //#endregion
 };
@@ -1543,6 +1570,10 @@ cd.goldenBerry = [
 cd["MaxHelpingHand/GoldenStrawberryCustomConditions"] = [
   { match: (attr) => !attr.winged, collectible: { name: "Golden Berry", formValue: "0" } },
 ];
+cd.memorialTextController = [
+  { match: () => true, collectible: { name: "Winged Golden Berry", formValue: "4" } },
+];
+cd["JungleHelper/TreeDepthController"] = cd.memorialTextController;
 
 cd.strawberry = [
   { match: (attr) => !attr.moon && !attr.winged, collectible: { name: "Strawberry", formValue: "2" } },
@@ -1553,13 +1584,11 @@ cd.strawberry = [
   },
 ];
 
-const returnBerryDef = [
-  { match: (attr) => !attr.moon && !attr.winged, collectible: { name: "Strawberry", formValue: "2" } },
-];
-cd["SpringCollab2020/returnBerry"] = returnBerryDef;
-cd["LunaticHelper/StrawberryWithReturn"] = returnBerryDef;
-cd["SorbetHelper/ReturnBerry"] = returnBerryDef;
-cd["ParrotHelper/FlagBerry"] = returnBerryDef;
+cd["SpringCollab2020/returnBerry"] = cd.strawberry;
+cd["LunaticHelper/StrawberryWithReturn"] = cd.strawberry;
+cd["SorbetHelper/ReturnBerry"] = cd.strawberry;
+cd["ParrotHelper/FlagBerry"] = cd.strawberry;
+cd["FrostTemple/ReturnStrawberry"] = cd.strawberry;
 
 cd["DSidesHelper/TeleportMoonBerry"] = [
   { match: (attr) => !!attr.moon && !attr.winged, collectible: { name: "Moon Berry", formValue: "3" } },
