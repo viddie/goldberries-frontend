@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faGear, faInfoCircle, faRotateLeft, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { IgnoreUnhandled } from "./entity_definitions";
-import { useMinimapStore } from "./useMinimapStore";
+import { useViewerStore } from "./useViewerStore";
 
 const DEFAULT_SHOWN_GROUPS = ["importantTriggers", "variantTriggers", "miscGameplayTriggers"];
 
@@ -29,22 +29,22 @@ function sortEntityNames(nameSet) {
   });
 }
 
-export function MinimapSettings() {
+export function ViewerSettings() {
   const [open, setOpen] = useState(false);
 
-  const showUnhandledEntities = useMinimapStore((s) => s.showUnhandledEntities);
-  const setShowUnhandledEntities = useMinimapStore((s) => s.setShowUnhandledEntities);
-  const showUnhandledTriggers = useMinimapStore((s) => s.showUnhandledTriggers);
-  const setShowUnhandledTriggers = useMinimapStore((s) => s.setShowUnhandledTriggers);
-  const debugMode = useMinimapStore((s) => s.debugMode);
-  const setDebugMode = useMinimapStore((s) => s.setDebugMode);
-  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
-  const setAntiSpoilerMode = useMinimapStore((s) => s.setAntiSpoilerMode);
-  const shownIgnoreGroups = useMinimapStore((s) => s.shownIgnoreGroups);
-  const toggleIgnoreGroup = useMinimapStore((s) => s.toggleIgnoreGroup);
-  const setShownIgnoreGroups = useMinimapStore((s) => s.setShownIgnoreGroups);
-  const gridType = useMinimapStore((s) => s.gridType);
-  const setGridType = useMinimapStore((s) => s.setGridType);
+  const showUnhandledEntities = useViewerStore((s) => s.showUnhandledEntities);
+  const setShowUnhandledEntities = useViewerStore((s) => s.setShowUnhandledEntities);
+  const showUnhandledTriggers = useViewerStore((s) => s.showUnhandledTriggers);
+  const setShowUnhandledTriggers = useViewerStore((s) => s.setShowUnhandledTriggers);
+  const debugMode = useViewerStore((s) => s.debugMode);
+  const setDebugMode = useViewerStore((s) => s.setDebugMode);
+  const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
+  const setAntiSpoilerMode = useViewerStore((s) => s.setAntiSpoilerMode);
+  const shownIgnoreGroups = useViewerStore((s) => s.shownIgnoreGroups);
+  const toggleIgnoreGroup = useViewerStore((s) => s.toggleIgnoreGroup);
+  const setShownIgnoreGroups = useViewerStore((s) => s.setShownIgnoreGroups);
+  const gridType = useViewerStore((s) => s.gridType);
+  const setGridType = useViewerStore((s) => s.setGridType);
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -79,7 +79,7 @@ export function MinimapSettings() {
             }}
           >
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-              Minimap Settings
+              Viewer Settings
             </Typography>
 
             <FormControlLabel

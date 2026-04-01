@@ -21,19 +21,19 @@ import { faArrowLeft, faCheck, faCopy } from "@fortawesome/free-solid-svg-icons"
 import { extractRooms } from "../MapDataDialog";
 import { CollectibleChip } from "../../goldberries";
 
-import { useMinimapStore } from "./useMinimapStore";
+import { useViewerStore } from "./useViewerStore";
 import { extractCollectibles, extractUnhandledEntities, isRoomHidden } from "./entity_definitions";
 
 const UNHANDLED_PAGE_SIZE = 50;
 
-export function MinimapSidebar({ mapData, onRoomNavigate }) {
+export function ViewerSidebar({ mapData, onRoomNavigate }) {
   const [tab, setTab] = useState("rooms");
   const [unhandledPage, setUnhandledPage] = useState(0);
   const allRooms = extractRooms(mapData);
   const allCollectibles = useMemo(() => extractCollectibles(mapData), [mapData]);
-  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
-  const debugMode = useMinimapStore((s) => s.debugMode);
-  const selectedObject = useMinimapStore((s) => s.selectedObject);
+  const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
+  const debugMode = useViewerStore((s) => s.debugMode);
+  const selectedObject = useViewerStore((s) => s.selectedObject);
 
   const rooms = useMemo(
     () => (antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms),
@@ -45,10 +45,10 @@ export function MinimapSidebar({ mapData, onRoomNavigate }) {
     return allCollectibles.filter((c) => !hiddenRoomNames.has(c.room));
   }, [allRooms, allCollectibles, antiSpoilerMode]);
   const unhandled = useMemo(() => extractUnhandledEntities(rooms), [rooms]);
-  const clearSelectedObject = useMinimapStore((s) => s.clearSelectedObject);
-  const selectObject = useMinimapStore((s) => s.selectObject);
-  const navigateToRoom = useMinimapStore((s) => s.navigateToRoom);
-  const navigateToPoint = useMinimapStore((s) => s.navigateToPoint);
+  const clearSelectedObject = useViewerStore((s) => s.clearSelectedObject);
+  const selectObject = useViewerStore((s) => s.selectObject);
+  const navigateToRoom = useViewerStore((s) => s.navigateToRoom);
+  const navigateToPoint = useViewerStore((s) => s.navigateToPoint);
 
   const handleCollectibleClick = (c) => {
     // Find the room containing the collectible, as its position is needed. the collectible pos is merely an offset.

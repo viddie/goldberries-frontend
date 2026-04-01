@@ -5,23 +5,23 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { CanvasTexture, NearestFilter } from "three";
 
 import { extractRooms } from "./MapDataDialog";
-import { Controls, EntityListRenderer, MinimapSidebar, MouseWorldPos } from "./minimap";
-import { MinimapSettings } from "./minimap/MinimapSettings";
-import { TileGrid } from "./minimap/TileGrid";
-import { useMinimapStore } from "./minimap/useMinimapStore";
-import { LAYERS, isRoomHidden } from "./minimap/entity_definitions";
+import { Controls, EntityListRenderer, ViewerSidebar, MouseWorldPos } from "./viewer";
+import { ViewerSettings } from "./viewer/ViewerSettings";
+import { TileGrid } from "./viewer/TileGrid";
+import { useViewerStore } from "./viewer/useViewerStore";
+import { LAYERS, isRoomHidden } from "./viewer/entity_definitions";
 
-export function MapDataMinimap({ mapData, campaign, map, initialRoom, onRoomNavigate }) {
+export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavigate }) {
   const allRooms = extractRooms(mapData);
-  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
-  const debugMode = useMinimapStore((s) => s.debugMode);
+  const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
+  const debugMode = useViewerStore((s) => s.debugMode);
   const rooms = useMemo(
     () => (antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms),
     [allRooms, antiSpoilerMode],
   );
   const bounds = getEnclosingBounds(rooms);
-  const clearSelectedObject = useMinimapStore((s) => s.clearSelectedObject);
-  const navigateToRoom = useMinimapStore((s) => s.navigateToRoom);
+  const clearSelectedObject = useViewerStore((s) => s.clearSelectedObject);
+  const navigateToRoom = useViewerStore((s) => s.navigateToRoom);
   const [canvasReady, setCanvasReady] = useState(false);
   const [fontsReady, setFontsReady] = useState(false);
   const initialFocusDone = useRef(false);
@@ -87,7 +87,7 @@ export function MapDataMinimap({ mapData, campaign, map, initialRoom, onRoomNavi
           minHeight: { md: 0 },
         }}
       >
-        <MinimapSidebar mapData={mapData} onRoomNavigate={onRoomNavigate} />
+        <ViewerSidebar mapData={mapData} onRoomNavigate={onRoomNavigate} />
       </Box>
       <Box
         sx={{
@@ -102,8 +102,8 @@ export function MapDataMinimap({ mapData, campaign, map, initialRoom, onRoomNavi
           position: "relative",
         }}
       >
-        {!allReady && <MinimapLoadingOverlay label={loadingLabel} />}
-        <MinimapSettings />
+        {!allReady && <ViewerLoadingOverlay label={loadingLabel} />}
+        <ViewerSettings />
         <Canvas
           style={{ visibility: allReady ? "visible" : "hidden" }}
           orthographic
@@ -127,7 +127,7 @@ export function MapDataMinimap({ mapData, campaign, map, initialRoom, onRoomNavi
   );
 }
 
-function MinimapLoadingOverlay({ label }) {
+function ViewerLoadingOverlay({ label }) {
   return (
     <Box
       sx={{

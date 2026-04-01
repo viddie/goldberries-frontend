@@ -2,7 +2,7 @@ import { MapControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 
-import { useMinimapStore } from "./useMinimapStore";
+import { useViewerStore } from "./useViewerStore";
 
 const MARGIN = 40; // px margin around the room when zooming to fit
 const ZOOM_SPEED = 1.15;
@@ -11,8 +11,8 @@ export function Controls() {
   const { invalidate, camera, size, gl } = useThree();
   const controlsRef = useRef();
 
-  const cameraTarget = useMinimapStore((s) => s.cameraTarget);
-  const clearCameraTarget = useMinimapStore((s) => s.clearCameraTarget);
+  const cameraTarget = useViewerStore((s) => s.cameraTarget);
+  const clearCameraTarget = useViewerStore((s) => s.clearCameraTarget);
 
   //#region Navigate to room
   useEffect(() => {

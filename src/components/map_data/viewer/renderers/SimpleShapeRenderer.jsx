@@ -3,7 +3,7 @@ import { BufferGeometry, Float32BufferAttribute, Vector3 } from "three";
 import { Text } from "@react-three/drei";
 
 import { Arrow } from "../Arrow";
-import { useMinimapStore } from "../useMinimapStore";
+import { useViewerStore } from "../useViewerStore";
 import { LAYERS } from "../entity_definitions";
 
 /**
@@ -240,8 +240,8 @@ const _worldPos = new Vector3();
 
 function SimpleShape({ entity, def }) {
   const [hovered, setHovered] = useState(false);
-  const selectObject = useMinimapStore((s) => s.selectObject);
-  const isSelected = useMinimapStore((s) => s.selectedObject?.data === entity);
+  const selectObject = useViewerStore((s) => s.selectObject);
+  const isSelected = useViewerStore((s) => s.selectedObject?.data === entity);
   const mainGroupRef = useRef();
 
   const attr = entity.attributes;
@@ -296,11 +296,11 @@ function SimpleShape({ entity, def }) {
 
   const onClick = useCallback(
     (e) => {
-      const store = useMinimapStore.getState();
+      const store = useViewerStore.getState();
       // Prune previously clicked objects that don't overlap with this click position (once per native event)
       store.pruneClickedObjects(e.point, e.nativeEvent);
       // If this entity was already visited in the current cycle, skip it
-      if (useMinimapStore.getState().clickedObjects.has(entity)) return;
+      if (useViewerStore.getState().clickedObjects.has(entity)) return;
 
       e.stopPropagation();
       // Compute bounds in world space from the entity group origin, not the individual

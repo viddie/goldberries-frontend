@@ -1,15 +1,15 @@
 import { useCallback, useState } from "react";
 import { Vector3 } from "three";
 
-import { useMinimapStore } from "../useMinimapStore";
+import { useViewerStore } from "../useViewerStore";
 import { LAYERS } from "../entity_definitions";
 
 const _worldPos = new Vector3();
 
 export function HighlightableEntity({ entity, position, highlightRadius = 14, children }) {
   const [hovered, setHovered] = useState(false);
-  const selectObject = useMinimapStore((s) => s.selectObject);
-  const isSelected = useMinimapStore((s) => s.selectedObject?.data === entity);
+  const selectObject = useViewerStore((s) => s.selectObject);
+  const isSelected = useViewerStore((s) => s.selectedObject?.data === entity);
 
   const onPointerOver = useCallback((e) => {
     e.stopPropagation();
@@ -24,9 +24,9 @@ export function HighlightableEntity({ entity, position, highlightRadius = 14, ch
 
   const onClick = useCallback(
     (e) => {
-      const store = useMinimapStore.getState();
+      const store = useViewerStore.getState();
       store.pruneClickedObjects(e.point, e.nativeEvent);
-      if (useMinimapStore.getState().clickedObjects.has(entity)) return;
+      if (useViewerStore.getState().clickedObjects.has(entity)) return;
       e.stopPropagation();
       // Compute bounds in world space to match world-space e.point used by pruneClickedObjects
       e.object.getWorldPosition(_worldPos);

@@ -3,6 +3,7 @@ import {
   Button,
   Chip,
   Divider,
+  Grid,
   IconButton,
   MenuItem,
   Stack,
@@ -39,8 +40,8 @@ import { DIFF_CONSTS } from "../../util/constants";
 import { CollectibleChip, ObjectiveSelect } from "../goldberries";
 import { LoadingSpinner } from "../basic";
 import { StringListEditor } from "../StringListEditor";
-import { MapDataMinimap } from "../map_data/MapDataMinimap";
-import { extractCollectiblesForForm } from "../map_data/minimap/entity_definitions";
+import { MapDataViewer } from "../map_data/MapDataViewer";
+import { extractCollectiblesForForm } from "../map_data/viewer/entity_definitions";
 
 import { SameCampaignNameIndicator } from "./Campaign";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
@@ -291,12 +292,12 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   };
   //#endregion
 
-  //#region Minimap editing
-  const openMinimapEditor = (index) => {
+  //#region Viewer editing
+  const openViewerEditor = (index) => {
     setEditingMapIndex(index);
     if (setMaxWidth) setMaxWidth(false);
   };
-  const closeMinimapEditor = () => {
+  const closeViewerEditor = () => {
     setEditingMapIndex(null);
     if (setMaxWidth) setMaxWidth("md");
   };
@@ -304,7 +305,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
 
   const campaignName = campaignForm.watch("name");
 
-  // If editing a map's collectibles in the minimap view
+  // If editing a map's collectibles in the viewer
   if (editingMapIndex !== null) {
     const map = mapList[editingMapIndex];
     const mapData = mapDataCache[map?.hash];
@@ -316,39 +317,45 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
           <Typography variant="h6">
             {t("step_4.edit")} — {map?.name}
           </Typography>
-          <Button variant="outlined" onClick={closeMinimapEditor}>
+          <Button variant="outlined" onClick={closeViewerEditor}>
             {t("step_4.done")}
           </Button>
         </Stack>
-        {mapData ? (
-          <MapDataMinimap mapData={mapData} />
-        ) : (
-          <Alert severity="error">{t("step_4.loading_error")}</Alert>
-        )}
-        <StringListEditor
-          label={t_fm("collectibles.label")}
-          valueTypes={[
-            { type: "enum", options: getCollectibleOptions() },
-            { type: "enum", options: (item) => getCollectibleVariantOptions(item[0]) },
-            { type: "string", multiline: true },
-            { type: "string" },
-            { type: "string" },
-          ]}
-          valueLabels={[
-            t_fm("collectibles.label"),
-            t_fm("collectibles.variant"),
-            t_fm("collectibles.note"),
-            t_fm("collectibles.count"),
-            t_fm("collectibles.global_count"),
-          ]}
-          list={collectibles}
-          setList={(newList) => {
-            setMapCollectibles((prev) => ({ ...prev, [map.hash]: newList }));
-          }}
-          valueCount={5}
-          reorderable
-          inline={[6, 6, 12, 6, 6]}
-        />
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={7}>
+            {mapData ? (
+              <MapDataViewer mapData={mapData} />
+            ) : (
+              <Alert severity="error">{t("step_4.loading_error")}</Alert>
+            )}
+          </Grid>
+          <Grid item xs={12} lg={5}>
+            <StringListEditor
+              label={t_fm("collectibles.label")}
+              valueTypes={[
+                { type: "enum", options: getCollectibleOptions() },
+                { type: "enum", options: (item) => getCollectibleVariantOptions(item[0]) },
+                { type: "string", multiline: true },
+                { type: "string" },
+                { type: "string" },
+              ]}
+              valueLabels={[
+                t_fm("collectibles.label"),
+                t_fm("collectibles.variant"),
+                t_fm("collectibles.note"),
+                t_fm("collectibles.count"),
+                t_fm("collectibles.global_count"),
+              ]}
+              list={collectibles}
+              setList={(newList) => {
+                setMapCollectibles((prev) => ({ ...prev, [map.hash]: newList }));
+              }}
+              valueCount={5}
+              reorderable
+              inline={[6, 6, 12, 6, 6]}
+            />
+          </Grid>
+        </Grid>
       </Stack>
     );
   }
@@ -413,7 +420,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
           mapCollectibles={mapCollectibles}
           mapDataLoading={mapDataLoading}
           mapDataErrors={mapDataErrors}
-          onEditMap={openMinimapEditor}
+          onEditMap={openViewerEditor}
           onBack={() => setStep(2)}
           onNext={() => {
             // Initialize challenge configs from mapList, deriving objectives from collectibles

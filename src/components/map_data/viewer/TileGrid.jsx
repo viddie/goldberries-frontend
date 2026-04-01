@@ -2,7 +2,7 @@ import { useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { ShaderMaterial } from "three";
 
-import { useMinimapStore } from "./useMinimapStore";
+import { useViewerStore } from "./useViewerStore";
 
 const vertexShader = `
 varying vec2 vWorldPos;
@@ -34,7 +34,7 @@ const GRID_SIZES = { tile: 8.0, pixel: 1.0 };
 
 export function TileGrid() {
   const { camera } = useThree();
-  const gridType = useMinimapStore((s) => s.gridType);
+  const gridType = useViewerStore((s) => s.gridType);
 
   const material = useMemo(
     () =>

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { BatchedEntityMap, IgnoreUnhandled, IndividualEntityMap, SimpleShapeMap } from "./entity_definitions";
 import { SimpleShapeRenderer } from "./renderers/SimpleShapeRenderer";
-import { useMinimapStore } from "./useMinimapStore";
+import { useViewerStore } from "./useViewerStore";
 
 const FALLBACK_ENTITY_DEF = { color: "white", opacity: 0.1 };
 const FALLBACK_TRIGGER_DEF = { color: "#5588ff", opacity: 0.1 };
@@ -21,9 +21,9 @@ function isIgnored(name, shownIgnoreGroups) {
 }
 
 export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) {
-  const showUnhandledEntities = useMinimapStore((s) => s.showUnhandledEntities);
-  const showUnhandledTriggers = useMinimapStore((s) => s.showUnhandledTriggers);
-  const shownIgnoreGroups = useMinimapStore((s) => s.shownIgnoreGroups);
+  const showUnhandledEntities = useViewerStore((s) => s.showUnhandledEntities);
+  const showUnhandledTriggers = useViewerStore((s) => s.showUnhandledTriggers);
+  const shownIgnoreGroups = useViewerStore((s) => s.shownIgnoreGroups);
 
   const { individual, batched, simple } = useMemo(() => {
     const individual = [];

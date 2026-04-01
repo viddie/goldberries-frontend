@@ -22,14 +22,14 @@ import { useTranslation } from "react-i18next";
 import { getQueryData, useGetMapData } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
 
-import { MapDataMinimap } from "./MapDataMinimap";
-import { isRoomHidden } from "./minimap/entity_definitions";
-import { useMinimapStore } from "./minimap/useMinimapStore";
+import { MapDataViewer } from "./MapDataViewer";
+import { isRoomHidden } from "./viewer/entity_definitions";
+import { useViewerStore } from "./viewer/useViewerStore";
 
 export function MapDataDialog({ mapId, hash, campaignId, initialRoom, onRoomNavigate }) {
   const query = useGetMapData(mapId, { campaignId, hash });
   const mapData = getQueryData(query);
-  const antiSpoilerMode = useMinimapStore((s) => s.antiSpoilerMode);
+  const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
 
   const rooms = useMemo(() => {
     if (!mapData) return [];
@@ -44,8 +44,8 @@ export function MapDataDialog({ mapId, hash, campaignId, initialRoom, onRoomNavi
 
       {mapData && (
         <>
-          {/* Minimap */}
-          <MapDataMinimap mapData={mapData} initialRoom={initialRoom} onRoomNavigate={onRoomNavigate} />
+          {/* Map Viewer */}
+          <MapDataViewer mapData={mapData} initialRoom={initialRoom} onRoomNavigate={onRoomNavigate} />
 
           {/* Room List */}
           <RoomListSection rooms={rooms} />

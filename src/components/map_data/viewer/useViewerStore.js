@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 const POINT_ZOOM_AREA = 400; // px world-space area around a point when focusing
 
-export const useMinimapStore = create(
+export const useViewerStore = create(
   persist(
     (set) => ({
       // Camera navigation target — set by sidebar, consumed by Controls

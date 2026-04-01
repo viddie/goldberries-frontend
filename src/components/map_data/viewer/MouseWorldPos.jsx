@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { Plane, Vector3 } from "three";
 import { Hud, OrthographicCamera, Text } from "@react-three/drei";
 
-import { unprojectCelestePoint } from "../MapDataMinimap";
+import { unprojectCelestePoint } from "../MapDataViewer";
 
 import { Arrow } from "./Arrow";
 

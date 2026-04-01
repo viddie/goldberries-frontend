@@ -35,7 +35,7 @@ export function PageCredits() {
           </TableRow>
           <TableRow>
             <TableCell>{t("chinese_translation")}</TableCell>
-            <TableCell>Parabones & xyAlone</TableCell>
+            <TableCell>Parabones, xyAlone & Kongtiao</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>{t("french_translation")}</TableCell>
