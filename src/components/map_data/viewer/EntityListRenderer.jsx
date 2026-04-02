@@ -20,7 +20,7 @@ function isIgnored(name, shownIgnoreGroups) {
   return false;
 }
 
-export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) {
+export function EntityListRenderer({ entities, triggers, simpleShapesVisible, batchedEntitiesVisible }) {
   const showUnhandledEntities = useViewerStore((s) => s.showUnhandledEntities);
   const showUnhandledTriggers = useViewerStore((s) => s.showUnhandledTriggers);
   const shownIgnoreGroups = useViewerStore((s) => s.shownIgnoreGroups);
@@ -83,9 +83,8 @@ export function EntityListRenderer({ entities, triggers, simpleShapesVisible }) 
       {individual.map(({ Component, entity }, i) => (
         <Component key={i} entity={entity} />
       ))}
-      {batched.map(([name, { Component, entities }]) => (
-        <Component key={name} entities={entities} />
-      ))}
+      {batchedEntitiesVisible &&
+        batched.map(([name, { Component, entities }]) => <Component key={name} entities={entities} />)}
       {simpleShapesVisible && (
         <>
           {simple.map(([name, { def, entities }]) => (

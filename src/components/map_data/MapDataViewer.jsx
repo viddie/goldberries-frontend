@@ -164,12 +164,15 @@ function FontSentinel({ onReady }) {
 }
 
 const CULL_SIMPLE_SHAPES_AT_ZOOM = 0.2;
+const CULL_BATCHED_ENTITIES_AT_ZOOM = 0.02;
 
 function RoomRenderer({ room }) {
   const [contentsVisible, setContentsVisible] = useState(true);
   const [simpleShapesVisible, setSimpleShapesVisible] = useState(true);
+  const [batchedEntitiesVisible, setBatchedEntitiesVisible] = useState(true);
   const visibleRef = useRef(true);
   const simpleVisibleRef = useRef(true);
+  const batchedVisibleRef = useRef(true);
   const name = room.name;
   const bounds = {
     x: room.x,
@@ -198,6 +201,12 @@ function RoomRenderer({ room }) {
     if (shapesVisible !== simpleVisibleRef.current) {
       simpleVisibleRef.current = shapesVisible;
       setSimpleShapesVisible(shapesVisible);
+    }
+
+    const batchedVisible = camera.zoom >= CULL_BATCHED_ENTITIES_AT_ZOOM;
+    if (batchedVisible !== batchedVisibleRef.current) {
+      batchedVisibleRef.current = batchedVisible;
+      setBatchedEntitiesVisible(batchedVisible);
     }
   });
   //#endregion
@@ -257,6 +266,7 @@ function RoomRenderer({ room }) {
             entities={room.entities}
             triggers={room.triggers}
             simpleShapesVisible={simpleShapesVisible}
+            batchedEntitiesVisible={batchedEntitiesVisible}
           />
         </>
       )}
