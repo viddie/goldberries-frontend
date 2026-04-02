@@ -1325,27 +1325,27 @@ export function useProcessCampaign(onSuccess) {
 }
 export function useProcessGbCampaign(onSuccess) {
   return useMutation({
-    mutationFn: ({ gamebananaId, regenerate }) => fetchProcessGbCampaign(gamebananaId, regenerate),
+    mutationFn: ({ url, regenerate }) => fetchProcessGbCampaign(url, regenerate),
     onSuccess: (response) => {
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
   });
 }
-export function useGetTempData(gamebananaId) {
+export function useGetTempData(url) {
   return useQuery({
-    queryKey: ["temp_data", gamebananaId],
-    queryFn: () => fetchTempData(gamebananaId),
+    queryKey: ["temp_data", url],
+    queryFn: () => fetchTempData(url),
     retry: false,
-    enabled: !!gamebananaId,
+    enabled: !!url,
   });
 }
-export function useGetTempMapData(gamebananaId, hash) {
+export function useGetTempMapData(url, hash) {
   return useQuery({
-    queryKey: ["temp_map_data", gamebananaId, hash],
-    queryFn: () => fetchTempMapData(gamebananaId, hash),
+    queryKey: ["temp_map_data", url, hash],
+    queryFn: () => fetchTempMapData(url, hash),
     retry: false,
-    enabled: !!(gamebananaId && hash),
+    enabled: !!(url && hash),
   });
 }
 //#endregion

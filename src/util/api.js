@@ -444,16 +444,16 @@ export function fetchCampaignDataMapping(id) {
 export function fetchProcessCampaign(id) {
   return axios.get("/admin/process-campaign", { params: { id } });
 }
-export function fetchProcessGbCampaign(gamebananaId, regenerate = false) {
-  const params = { gamebanana_id: gamebananaId };
+export function fetchProcessGbCampaign(url, regenerate = false) {
+  const params = { gamebanana_url: url };
   if (regenerate) params.regenerate = "true";
   return axios.get("/admin/process-gb-campaign", { params });
 }
-export function fetchTempData(gamebananaId) {
-  return axios.get("/admin/temp-data", { params: { gamebanana_id: gamebananaId } });
+export function fetchTempData(url) {
+  return axios.get("/admin/temp-campaign-data", { params: { gamebanana_url: url } });
 }
-export function fetchTempMapData(gamebananaId, hash, checkExists = false) {
-  const params = { gamebanana_id: gamebananaId, hash };
+export function fetchTempMapData(url, hash, checkExists = false) {
+  const params = { gamebanana_url: url, hash };
   if (checkExists) params.check_exists = "true";
   return axios.get("/admin/temp-map-data", { params });
 }

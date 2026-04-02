@@ -184,18 +184,16 @@ export function displayDate(dateObj, t) {
 export function getGamebananaEmbedUrl(url, size = "medium") {
   if (url === null) return null;
 
-  //urls look like: https://gamebanana.com/mods/409812
-  if (!url.startsWith("https://gamebanana.com/mods/")) {
+  //urls look like: https://gamebanana.com/mods/409812 or https://gamebanana.com/wips/12345
+  const match = url.match(/https:\/\/gamebanana\.com\/(mods|wips)\/(\d+)/);
+  if (!match) {
     return null;
   }
-  const split = url.split("/");
-  if (split.length !== 5) {
-    return null;
-  }
-  const id = split[4];
+  const itemType = match[1];
+  const id = match[2];
 
-  //Make the embed url: https://gamebanana.com/mods/embeddables/<id>?type=medium
-  return "https://gamebanana.com/mods/embeddables/" + id + "?type=" + size;
+  //Make the embed url: https://gamebanana.com/<type>/embeddables/<id>?type=medium
+  return "https://gamebanana.com/" + itemType + "/embeddables/" + id + "?type=" + size;
 }
 
 export function getMapAuthor(map) {

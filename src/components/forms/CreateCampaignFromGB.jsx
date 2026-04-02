@@ -47,7 +47,7 @@ import { extractCollectiblesForForm } from "../map_data/viewer/entity_definition
 import { SameCampaignNameIndicator } from "./Campaign";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
 
-const GB_URL_REGEX = /gamebanana\.com\/mods\/(\d+)/;
+const GB_URL_REGEX = /gamebanana\.com\/(mods|wips)\/(\d+)/;
 const STEP_LABEL_KEYS = ["step_1.label", "step_2.label", "step_3.label", "step_4.label", "step_5.label"];
 
 // Derive default objective from collectibles:
@@ -67,7 +67,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
 
   const [step, setStep] = useState(0);
   const [gbUrl, setGbUrl] = useState("");
-  const [gamebananaId, setGamebananaId] = useState(null);
+  const [gamebananaUrl, setGamebananaUrl] = useState(null);
   const [urlError, setUrlError] = useState("");
   const [processResult, setProcessResult] = useState(null);
   const [processError, setProcessError] = useState(null);
@@ -119,11 +119,10 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
       return;
     }
     setUrlError("");
-    const gbId = match[1];
-    setGamebananaId(gbId);
+    setGamebananaUrl(gbUrl);
     campaignForm.setValue("url", gbUrl);
     setStep(1);
-    processGbCampaign({ gamebananaId: gbId });
+    processGbCampaign({ url: gbUrl });
     getModInfo(gbUrl);
   };
   //#endregion
@@ -147,7 +146,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
 
   //#region Step 3 → Step 4 transition: fetch all map data
   const loadAllMapData = useCallback(async () => {
-    if (!gamebananaId || mapList.length === 0) return;
+    if (!gamebananaUrl || mapList.length === 0) return;
     setMapDataLoading(true);
     const newCache = {};
     const newErrors = {};
@@ -156,7 +155,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     for (const map of mapList) {
       if (!map.hash) continue;
       try {
-        const response = await fetchTempMapData(gamebananaId, map.hash);
+        const response = await fetchTempMapData(gamebananaUrl, map.hash);
         newCache[map.hash] = response.data;
         // Auto-extract collectibles if not already edited
         if (!newCollectibles[map.hash]) {
@@ -171,7 +170,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     setMapDataErrors(newErrors);
     setMapCollectibles(newCollectibles);
     setMapDataLoading(false);
-  }, [gamebananaId, mapList, mapCollectibles]);
+  }, [gamebananaUrl, mapList, mapCollectibles]);
   //#endregion
 
   //#region Step 5: Create all
@@ -397,7 +396,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
           processError={processError}
           onRetry={() => {
             setProcessError(null);
-            processGbCampaign({ gamebananaId });
+            processGbCampaign({ url: gamebananaUrl });
           }}
           onBack={() => setStep(0)}
           t={t}

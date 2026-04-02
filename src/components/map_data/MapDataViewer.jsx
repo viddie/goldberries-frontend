@@ -32,7 +32,7 @@ export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavig
     loaded: texturesLoaded,
     total: texturesTotal,
   } = useProgress();
-  const texturesReady = canvasReady && !texturesLoading && textureProgress >= 100;
+  const texturesReady = canvasReady && !texturesLoading && (textureProgress >= 100 || texturesTotal === 0);
   const allReady = canvasReady && texturesReady && fontsReady;
 
   const defaultZoom = 1;
