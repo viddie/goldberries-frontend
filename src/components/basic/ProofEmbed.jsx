@@ -52,7 +52,7 @@ export function ProofEmbed({ url, ...props }) {
         </div>
       </div>
     );
-  } else if (url.includes("twitch.tv")) {
+  } else if (url.includes("twitch.tv") && parseTwitchUrl(url)) {
     const { id } = parseTwitchUrl(url);
     const embedUrl = `https://player.twitch.tv/?video=${id}&parent=${TWITCH_EMBED_PARENT}`;
     return (
