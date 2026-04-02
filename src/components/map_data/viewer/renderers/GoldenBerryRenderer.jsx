@@ -8,6 +8,7 @@ import { HighlightableEntity } from "./HighlightableEntity";
 export function GoldenBerryRenderer({ entity }) {
   const winged = entity.attributes.winged;
   const path = winged ? "/icons/winged-goldenberry.png" : "/icons/goldenberry.png";
+  const size = winged ? [40, 24] : [18, 16];
   const texture = usePixelTexture(path);
   const position = useMemo(
     () => [entity.attributes.x, -entity.attributes.y, LAYERS.IMPORTANT_ENTITIES],
@@ -16,7 +17,7 @@ export function GoldenBerryRenderer({ entity }) {
 
   return (
     <HighlightableEntity entity={entity} position={position}>
-      <planeGeometry args={[18, 16]} />
+      <planeGeometry args={size} />
       <meshBasicMaterial map={texture} transparent depthWrite={false} />
     </HighlightableEntity>
   );

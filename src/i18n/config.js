@@ -3,7 +3,7 @@ import HttpApi from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-import { IS_DEBUG } from "../util/constants";
+import { CURRENT_VERSION, IS_DEBUG } from "../util/constants";
 
 export const LANGUAGES = [
   { code: "en", name: "English" },
@@ -23,6 +23,9 @@ i18n
   .use(HttpApi)
   .use(initReactI18next)
   .init({
+    backend: {
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${CURRENT_VERSION}`,
+    },
     // lng: "en",
     fallbackLng: "en",
     detection: DETECTION_OPTIONS,

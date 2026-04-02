@@ -35,6 +35,7 @@ export const IndividualEntityMap = {
   "LunaticHelper/StrawberryWithReturn": () => StrawberryRenderer,
   "SorbetHelper/ReturnBerry": () => StrawberryRenderer,
   "FrostTemple/ReturnStrawberry": () => StrawberryRenderer,
+  "MaxHelpingHand/CustomizableBerry": () => StrawberryRenderer,
   blackGem: () => CrystalHeartRenderer,
   "MaxHelpingHand/ReskinnableCrystalHeart": () => CrystalHeartRenderer,
   "AdventureHelper/CustomCrystalHeart": () => CrystalHeartRenderer,
@@ -49,6 +50,8 @@ export const IndividualEntityMap = {
   "ParrotHelper/FlagBerry": () => StrawberryRenderer,
   memorialTextController: () => WingedGoldenBerryRenderer,
   "JungleHelper/TreeDepthController": () => WingedGoldenBerryRenderer,
+  "RosewoodHelper/OneDashWingedStrawberry": () => WingedGoldenBerryRenderer,
+  "ShroomHelper/OneDashWingedStrawberry": () => WingedGoldenBerryRenderer,
 };
 
 // These are common entities that need special rendering but can be batched together
@@ -135,6 +138,7 @@ group(
     },
     "VivHelper/FloatyBreakBlock": { name: "[MoonBlock]" },
     "FancyTileEntities/FancyFloatySpaceBlock": true,
+    "CommunalHelper/DreamFloatySpaceBlock": { color: "#777777", name: "DreamMoonBlock" },
   },
 );
 
@@ -254,6 +258,7 @@ group(
     dreamBlock: true,
     "FrostHelper/CustomDreamBlock": true,
     "CommunalHelper/ConnectedDreamBlock": { name: "ConnectedDreamBlock" },
+    "BounceHelper/BounceDreamBlock": { name: "BounceDreamBlock" },
   },
 );
 
@@ -319,25 +324,26 @@ ssm.redBlocks = { color: "#d900ff", name: "Towels", opacity: movingSolidOpacity 
 ssm.greenBlocks = { color: "#26e615", name: "Books", opacity: movingSolidOpacity };
 ssm.yellowBlocks = { color: "#e4b611", name: "Crates", opacity: movingSolidOpacity };
 
-ssm.cassetteBlock = {
-  name: "CassetteBlock",
-  color: (attr) => {
-    if (attr.index === 1) return "#f049be";
-    if (attr.index === 2) return "#fcdc3a";
-    if (attr.index === 3) return "#38e04e";
-    return "#49aaf0";
-  },
-  opacity: movingSolidOpacity,
-};
 group(
-  { ...ssm.cassetteBlock },
   {
+    name: "CassetteBlock",
+    color: (attr) => {
+      if (attr.index === 1) return "#f049be";
+      if (attr.index === 2) return "#fcdc3a";
+      if (attr.index === 3) return "#38e04e";
+      return "#49aaf0";
+    },
+    opacity: movingSolidOpacity,
+  },
+  {
+    cassetteBlock: true,
     "CommunalHelper/CassetteZipMover": { name: "CassetteZipMover" },
     "dsides/invisibleCassetteBlock": {
       name: "InvisibleCassetteBlock",
       outline: "dashed",
       opacity: 0.1,
     },
+    "CommunalHelper/CustomCassetteBlock": true,
   },
 );
 ssm["SJ2021/WonkyCassetteBlock"] = {
@@ -608,6 +614,7 @@ group(
   },
   {
     booster: true,
+    "FrostHelper/IncrementBooster": { name: "IncrementBubble" },
     "GravityHelper/GravityBooster": { color: "#f531ff", name: "GravityBubble" },
     "SJ2021/DashBoostField": { color: "#f531ff", name: "DashBoostField" },
     "FrostHelper/BlueBooster": { color: "#31baff", name: "DashlessBubble" },
@@ -615,7 +622,9 @@ group(
     "JackalCollabHelper/FlagBooster": { color: "#3168ff", name: "FlagBubble" },
     "EmHelper/Monumentbooster": { color: "#3168ff", name: "MonumentBooster" },
     "CommunalHelper/DreamBooster": { color: "#777777", name: "DreamBubble" },
+    "CommunalHelper/SpiralDreamBooster": { color: "#777777", name: "SpiralDreamBubble" },
     "Anonhelper/OneUseBooster": { name: "OneUseBubble" },
+    "CommunalHelper/CurvedBooster": { color: "#f531ff", name: "CurvedBooster" },
   },
 );
 
@@ -694,6 +703,7 @@ group(
     "MaxHelpingHand/RespawningJellyfish": { name: "RespawningJelly" },
     "VivHelper/ReskinnableJelly": true,
     "BounceHelper/BounceJellyfish": { name: "BounceJelly" },
+    "CommunalHelper/DreamJellyfish": { color: "#777777", name: "DreamJelly" },
   },
 );
 
@@ -914,6 +924,7 @@ const fakeWallBase = group(
   {
     fakeWall: true,
     "XaphanHelper/LinkedFakeWall": true,
+    "XaphanHelper/CustomFakeWall": true,
     blockField: { name: "BlockField" },
     exitBlock: { name: "ExitBlock" },
     coverupWall: { name: "CoverupWall" },
@@ -1087,14 +1098,6 @@ ssm["SpringCollab2020/CustomBirdTutorial"] = {
 ssm.fakeHeart = { color: "#3962e1", width: 16, height: 16, anchorX: "center", anchorY: "center" };
 
 group(
-  { color: "#ff4b4b", width: 10, height: 10, anchorX: "center", anchorY: "center" },
-  {
-    "SpringCollab2020/MultiRoomStrawberry": true,
-    "SpringCollab2020/MultiRoomStrawberrySeed": true,
-  },
-);
-
-group(
   { color: "#ffb700", width: (attr) => attr.approachDistance ?? 8, height: 8, offset: [-8, -4] },
   {
     npc: { height: 10, offset: [-4, 0], anchorY: "bottom" },
@@ -1145,13 +1148,33 @@ group(
   },
 );
 
-ssm["BrokemiaHelper/trollStrawberry"] = {
-  color: "#e92727",
-  name: "TrollStrawberry",
-  width: 16,
-  height: 16,
-  anchorX: "center",
-  anchorY: "center",
+group(
+  {
+    width: 16,
+    height: 16,
+    anchorX: "center",
+    anchorY: "center",
+    color: "#e92727",
+  },
+  {
+    "BrokemiaHelper/trollStrawberry": { name: "TrollStrawberry" },
+    "MaxHelpingHand/SecretBerry": {
+      name: (attr) => strawberrySpriteMap[attr.strawberrySprite] || "SecretBerry",
+      color: (attr) => validateColorOr(attr.particleColor1, "#e92727"),
+    },
+    "MaxHelpingHand/MultiRoomStrawberry": {
+      name: (attr) => "MultiRoomStrawberry{" + attr.name + "}",
+    },
+    "MaxHelpingHand/MultiRoomStrawberrySeed": {
+      name: (attr) => "MultiRoomStrawberrySeed{" + attr.strawberryName + "}",
+    },
+    "SpringCollab2020/MultiRoomStrawberry": "MaxHelpingHand/MultiRoomStrawberry",
+    "SpringCollab2020/MultiRoomStrawberrySeed": "MaxHelpingHand/MultiRoomStrawberrySeed",
+  },
+);
+const strawberrySpriteMap = {
+  gemberry: "GemBerry",
+  bouncyberry: "BouncyBerry",
 };
 
 group(
@@ -1195,6 +1218,7 @@ export const IgnoreUnhandled = {
     "ContortHelper/TeleportationTarget",
     "VivHelper/MainInstantTeleportTrigger",
     "SJ2021/BasicInstantTeleportTrigger",
+    "VivHelper/InLevelTeleporter",
     "ContortHelper/MomentumModifierTrigger",
     "StrawberryJam2021/liftBoostTrigger",
     "XaphanHelper/TeleportToChapterTrigger",
@@ -1274,6 +1298,8 @@ export const IgnoreUnhandled = {
     "SJ2021/CoreModeTriggerNoFlash",
     "SJ2021/TheoKillBoxTrigger",
     "isaBag/waterBoost",
+    "MaxHelpingHand/PopStrawberrySeedsTrigger",
+    "Bitsbolts/NoRetry",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -1295,6 +1321,11 @@ export const IgnoreUnhandled = {
     "FrostHelper/IfActivator",
     "FrostHelper/OnDeathActivator",
     "FrostHelper/OnFlagActivator",
+    "pandorasBox/entityActivator",
+    "FrostHelper/OnBerryCollectActivator",
+    "FrostHelper/OnPlayerDashingActivator",
+    "FrostHelper/OnPlayerOnGroundActivator",
+    "FrostHelper/OnCassetteSwapActivator",
     "XaphanHelper/ResetFlagsTrigger",
     "FrostHelper/TemporaryFlagTrigger",
     "GameHelper/TemporaryFlagTrigger",
@@ -1307,6 +1338,7 @@ export const IgnoreUnhandled = {
     "SSMHelper/CustomCheatTrigger",
     "MaxHelpingHand/SetFlagOnSpawnTrigger",
     "Bitsbolts/SaveDataFlagSync",
+    "Bitsbolts/ResizeTriggers",
   ]),
   //#endregion
   //#region Camera Triggers
@@ -1369,6 +1401,7 @@ export const IgnoreUnhandled = {
     "FemtoHelper/CinematicTextTrigger",
     "FlaglinesAndSuch/MiniTextboxIfFlag",
     "JungleHelper/UIImageTrigger",
+    "CommunalHelper/HintController",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -1435,7 +1468,6 @@ export const IgnoreUnhandled = {
     "pandorasBox/lamp",
     "SpringCollab2020/invisibleLightSource",
     "SpringCollab2020/RemoveLightSourcesTrigger",
-    "pandorasBox/entityActivator",
     "SpringCollab2020/ColorGradeFadeTrigger",
     "MaxHelpingHand/ReskinnableFloatingDebris",
     "SJ2021/AllInOneMask",
@@ -1552,6 +1584,17 @@ export const IgnoreUnhandled = {
     "spirialis/rainblocker",
     "FrostHelper/CustomFlutterBird",
     "ArphimigonHelper/ColorGradeTrigger",
+    "ShroomHelper/MultilayerMusicFadeTrigger",
+    "FrostHelper/BloomPoint",
+    "JungleHelper/AttachTriggerController",
+    "CommunalHelper/SurfaceSoundPanel",
+    "AdamsAddons/CameraCorrectionController",
+    "CherryHelper/AudioPlayTrigger",
+    "JungleHelper/MossyWall",
+    "MaxHelpingHand/SetBloomBaseTrigger",
+    "FemtoHelper/CustomCliffsideWindFlag",
+    "CommunalHelper/SoundAreaTrigger",
+    "ExtendedVariantMode/DisplaySpeedometerTrigger",
   ]),
   //#endregion
 };
@@ -1574,6 +1617,8 @@ cd.memorialTextController = [
   { match: () => true, collectible: { name: "Winged Golden Berry", formValue: "4" } },
 ];
 cd["JungleHelper/TreeDepthController"] = cd.memorialTextController;
+cd["RosewoodHelper/OneDashWingedStrawberry"] = cd.memorialTextController;
+cd["ShroomHelper/OneDashWingedStrawberry"] = cd.memorialTextController;
 
 cd.strawberry = [
   { match: (attr) => !attr.moon && !attr.winged, collectible: { name: "Strawberry", formValue: "2" } },
@@ -1583,12 +1628,12 @@ cd.strawberry = [
     collectible: { name: "Winged Strawberry", formValue: "2" },
   },
 ];
-
 cd["SpringCollab2020/returnBerry"] = cd.strawberry;
 cd["LunaticHelper/StrawberryWithReturn"] = cd.strawberry;
 cd["SorbetHelper/ReturnBerry"] = cd.strawberry;
 cd["ParrotHelper/FlagBerry"] = cd.strawberry;
 cd["FrostTemple/ReturnStrawberry"] = cd.strawberry;
+cd["MaxHelpingHand/CustomizableBerry"] = cd.strawberry;
 
 cd["DSidesHelper/TeleportMoonBerry"] = [
   { match: (attr) => !!attr.moon && !attr.winged, collectible: { name: "Moon Berry", formValue: "3" } },
@@ -1602,6 +1647,16 @@ cd["CollabUtils2/SpeedBerry"] = [
 ];
 cd["CollabUtils2/RainbowBerry"] = [
   { match: () => true, collectible: { name: "Rainbow Berry", formValue: "13", formVariant: "3" } },
+];
+cd["MaxHelpingHand/SecretBerry"] = [
+  {
+    match: (attr) => attr.strawberrySprite === "bouncyberry",
+    collectible: { name: "Bouncy Berry", formValue: "13", formVariant: "2" },
+  },
+  {
+    match: (attr) => attr.strawberrySprite === "gemberry",
+    collectible: { name: "Gem Berry", formValue: "13", formVariant: "6" },
+  },
 ];
 cd["PlatinumStrawberry/PlatinumStrawberry"] = [
   { match: () => true, collectible: { name: "Platinum Berry", formValue: "5" } },

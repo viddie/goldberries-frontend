@@ -44,6 +44,16 @@ export function ViewerSidebar({ mapData, onRoomNavigate }) {
     const hiddenRoomNames = new Set(allRooms.filter((r) => isRoomHidden(r)).map((r) => r.name));
     return allCollectibles.filter((c) => !hiddenRoomNames.has(c.room));
   }, [allRooms, allCollectibles, antiSpoilerMode]);
+  const collectibleDisplayNames = useMemo(() => {
+    const counts = {};
+    for (const c of collectibles) counts[c.name] = (counts[c.name] || 0) + 1;
+    const indices = {};
+    return collectibles.map((c) => {
+      if (counts[c.name] <= 1) return c.name;
+      indices[c.name] = (indices[c.name] || 0) + 1;
+      return `${c.name} #${indices[c.name]}`;
+    });
+  }, [collectibles]);
   const unhandled = useMemo(() => extractUnhandledEntities(rooms), [rooms]);
   const clearSelectedObject = useViewerStore((s) => s.clearSelectedObject);
   const selectObject = useViewerStore((s) => s.selectObject);
@@ -136,7 +146,7 @@ export function ViewerSidebar({ mapData, onRoomNavigate }) {
                     sx={{ cursor: "pointer" }}
                     onClick={() => handleCollectibleClick(c)}
                   >
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>{c.name}</TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>{collectibleDisplayNames[i]}</TableCell>
                     <TableCell sx={{ wordBreak: "break-all", fontFamily: "monospace", fontSize: "0.8rem" }}>
                       {c.room}
                     </TableCell>
