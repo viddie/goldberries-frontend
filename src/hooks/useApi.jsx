@@ -115,6 +115,9 @@ import {
   postCampaignData,
   postCampaignDataMapping,
   postMapData,
+  postMapDataBin,
+  deleteCampaignData,
+  deleteMapData,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -931,6 +934,7 @@ export function usePostCampaignDataMapping(onSuccess) {
     mutationFn: ({ id, data }) => postCampaignDataMapping(id, data),
     onSuccess: (response, { id }) => {
       queryClient.invalidateQueries(["campaign_data_mapping", id]);
+      queryClient.invalidateQueries(["campaign_data", id]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
@@ -948,9 +952,47 @@ export function usePostMapData(onSuccess) {
     onError: errorToast,
   });
 }
+export function usePostMapDataBin(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, binPath, campaignId }) => postMapDataBin(data, { binPath, campaignId }),
+    onSuccess: (response, { campaignId }) => {
+      queryClient.invalidateQueries(["campaign_data", campaignId]);
+      queryClient.invalidateQueries(["map_data"]);
+      queryClient.invalidateQueries(["map_data_exists"]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
 //#endregion
 
 //#region == DELETE ==
+export function useDeleteCampaignData(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteCampaignData(id),
+    onSuccess: (response, id) => {
+      queryClient.invalidateQueries(["campaign_data", id]);
+      queryClient.invalidateQueries(["campaign_data_mapping", id]);
+      if (onSuccess) onSuccess(response, id);
+    },
+    onError: errorToast,
+  });
+}
+export function useDeleteMapData(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, campaignId, hash }) => deleteMapData(id, { campaignId, hash }),
+    onSuccess: (response, { campaignId }) => {
+      queryClient.invalidateQueries(["campaign_data", campaignId]);
+      queryClient.invalidateQueries(["map_data"]);
+      queryClient.invalidateQueries(["map_data_exists"]);
+      if (onSuccess) onSuccess(response);
+    },
+    onError: errorToast,
+  });
+}
 export function useDeleteCampaign(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({

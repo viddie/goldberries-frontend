@@ -595,9 +595,24 @@ export function postCampaignDataMapping(id, data) {
 export function postMapData(id, data) {
   return axios.post("/map/data", data, { params: { id } });
 }
+export function postMapDataBin(data, { binPath, campaignId }) {
+  return axios.post("/map/data", data, { params: { bin_path: binPath, campaign_id: campaignId } });
+}
 //#endregion
 
 //#region == DELETE ==
+export function deleteCampaignData(id) {
+  return axios.delete("/campaign/data", {
+    params: { id },
+  });
+}
+export function deleteMapData(id, { campaignId, hash } = {}) {
+  const params = {};
+  if (id) params.id = id;
+  if (campaignId) params.campaign_id = campaignId;
+  if (hash) params.hash = hash;
+  return axios.delete("/map/data", { params });
+}
 export function deleteCampaign(id) {
   return axios.delete("/campaign", {
     params: {

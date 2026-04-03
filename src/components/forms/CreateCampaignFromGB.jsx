@@ -36,7 +36,7 @@ import {
   usePostMap,
   useProcessGbCampaign,
 } from "../../hooks/useApi";
-import { fetchTempMapData } from "../../util/api";
+import { fetchTempData, fetchTempMapData } from "../../util/api";
 import { DIFF_CONSTS } from "../../util/constants";
 import { CollectibleChip, ObjectiveSelect } from "../goldberries";
 import { LoadingSpinner } from "../basic";
@@ -112,7 +112,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   const { mutateAsync: postCampaignDataMapping } = usePostCampaignDataMapping();
 
   //#region Step 1: URL Input
-  const handleProcessUrl = () => {
+  const handleProcessUrl = async () => {
     const match = gbUrl.match(GB_URL_REGEX);
     if (!match) {
       setUrlError(t("step_1.invalid_url"));
@@ -122,8 +122,18 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     setGamebananaUrl(gbUrl);
     campaignForm.setValue("url", gbUrl);
     setStep(1);
-    processGbCampaign({ url: gbUrl });
     getModInfo(gbUrl);
+
+    // Check if this URL has already been processed (cached temp data)
+    try {
+      const response = await fetchTempData(gbUrl);
+      // Normalize: temp-campaign-data returns { data: [...] }, but the rest of
+      // the component expects processResult.bins, so map accordingly
+      setProcessResult({ bins: response.data.data });
+    } catch {
+      // No cached data — fall back to full processing
+      processGbCampaign({ url: gbUrl });
+    }
   };
   //#endregion
 
@@ -468,6 +478,7 @@ function Step1UrlInput({ gbUrl, setGbUrl, urlError, onProcess, t }) {
         label={t("step_1.url_label")}
         placeholder={t("step_1.url_placeholder")}
         fullWidth
+        autoFocus
         value={gbUrl}
         onChange={(e) => setGbUrl(e.target.value)}
         error={!!urlError}
