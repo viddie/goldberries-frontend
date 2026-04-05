@@ -16,8 +16,8 @@ import {
 
 export const LAYERS = {
   BACKGROUND: 0,
+  COMMON_ENTITIES: 8,
   SOLIDS: 10,
-  COMMON_ENTITIES: 15,
   ENTITIES: 20,
   IMPORTANT_ENTITIES: 30,
   UI: 50,
@@ -98,10 +98,77 @@ function group(base, entries) {
   return base;
 }
 
+const colors = {
+  solid: "#ffffff",
+  gray1: "#dddddd",
+  gray2: "#a2a2a2",
+  gray3: "#9b9b9b",
+  glass: "#99d9ea",
+  swapBlock: "orange",
+  fallingBlock: "#12fffb",
+  movingBlock: "#cc00ff",
+  kevin: "#285aff",
+  dream: "#777777",
+  coreBlock: "#f62121",
+  movingPlatform: "#dda94a",
+  switchGate: "#00a6ff",
+  collectibleDoor: "#3962e1",
+  crackedBlock: "#e81a1a",
+  pushBlock: "#f270e1",
+  towels: "#d900ff",
+  books: "#26e615",
+  crates: "#e4b611",
+  golden: "#ffdf00",
+  silver: "#c0c0c0",
+  platinum: "#e5e4e2",
+  cloud: "#d7f2ff",
+  cloudFragile: "#f27dff",
+  elevator: "#ff7a7a",
+  refill: "#5eff5e",
+  refillTwoDash: "#ff4be7",
+  jumpRefill: "#77bde6",
+  specialRefill: "#dd178a",
+  spring: "#c96800",
+  springSpecial: "#16bd00",
+  springIron: "#aebebe",
+  dashSwitch: "#1aff00",
+  lightning: "#d3b548",
+  bird: "#00a6ff",
+  bubble: "#31ff7d",
+  bubbleRed: "#ff3e3e",
+  bubbleSpecial: "#f531ff",
+  bubbleDashless: "#31baff",
+  feather: "yellow",
+  toggleSwitch: "#15b800",
+  coreIce: "#00d9ff",
+  coreFire: "#e12525",
+  spinner: "#7a5dd8",
+  seeker: "#a832a8",
+  theo: "#00d0ff",
+  jelly: "#0077ff",
+  bumper: "#3d44ff",
+  plant: "#00ff00",
+  fish: "#ffa43d",
+  fakeWall: "#888888",
+  water: "#0066ff",
+  fire: "#ff4000",
+  specialArea: "#ff00ff",
+  baddy: "#931ebd",
+  darkMatter: "#131313",
+  respawn: "#ff0000",
+  bino: "#6b6b6b",
+  key: "#ffff20",
+  strawberry: "#e92727",
+  speedberry: "#ffb700",
+  heart: "#3962e1",
+  npc: "#ffe100",
+  chapterPanel: "#37f0c8",
+};
+
 //#region Solids
 group(
   {
-    color: "#ffffff",
+    color: colors.solid,
     name: "",
     opacity: fixedSolidOpacity,
   },
@@ -109,26 +176,27 @@ group(
     solid: true,
     "FancyTileEntities/FancySolidTiles": true,
     bridge: { name: "Bridge" },
-    glassBlock: { color: "#99d9ea", name: "GlassBlock" },
+    glassBlock: { color: colors.glass, name: "GlassBlock" },
+    "MaxHelpingHand/CustomizableGlassBlock": "glassBlock",
     "VivHelper/CustomDepthTileEntity": true,
     fakeBlock: true,
     conditionBlock: { name: "ConditionBlock", opacity: movingSolidOpacity },
     "EmHelper/Monumentswitchblock": {
       name: "MonumentSwitchBlock",
-      color: (attr) => validateColorOr(attr.color, "#ffffff"),
+      color: (attr) => validateColorOr(attr.color, colors.solid),
       opacity: movingSolidOpacity,
     },
   },
 );
 
 ssm.crumbleWallOnRumble = {
-  color: "white",
+  color: colors.solid,
   name: "CrumbleWallOnRumble",
   opacity: movingSolidOpacity,
 };
 
 group(
-  { color: "white", name: "MoonBlock", opacity: movingSolidOpacity },
+  { color: colors.solid, name: "MoonBlock", opacity: movingSolidOpacity },
   {
     floatySpaceBlock: true,
     "SpringCollab2020/floatierSpaceBlock": { name: "FloatierMoonBlock" },
@@ -138,12 +206,12 @@ group(
     },
     "VivHelper/FloatyBreakBlock": { name: "[MoonBlock]" },
     "FancyTileEntities/FancyFloatySpaceBlock": true,
-    "CommunalHelper/DreamFloatySpaceBlock": { color: "#777777", name: "DreamMoonBlock" },
+    "CommunalHelper/DreamFloatySpaceBlock": { color: colors.dream, name: "DreamMoonBlock" },
   },
 );
 
 group(
-  { color: "orange", name: "S", opacity: movingSolidOpacity },
+  { color: colors.swapBlock, name: "S", opacity: movingSolidOpacity },
   {
     swapBlock: true,
     "MaxHelpingHand/ReskinnableSwapBlock": true,
@@ -154,7 +222,7 @@ group(
 );
 
 group(
-  { color: "orange", name: "Z", opacity: movingSolidOpacity },
+  { color: colors.swapBlock, name: "Z", opacity: movingSolidOpacity },
   {
     zipMover: true,
     "AdventureHelper/ZipMoverNoReturn": { name: "[Z]" },
@@ -163,13 +231,14 @@ group(
     "AdventureHelper/LinkedZipMoverNoReturn": { name: "[Z]" },
     "VivHelper/CornerBoostZipMover": { name: "[Z]" },
     "VivHelper/CustomZipMover": { name: "[Z]" },
-    "CommunalHelper/DreamZipMover": { color: "#777777", name: "[Z]" },
+    "CommunalHelper/DreamZipMover": { color: colors.dream, name: "[Z]" },
     "spirialis/timezipmover": { name: "[Z]" },
+    "BSS/ZipMover": true,
   },
 );
 
 group(
-  { color: "#12fffb", name: "F", opacity: movingSolidOpacity },
+  { color: colors.fallingBlock, name: "F", opacity: movingSolidOpacity },
   {
     fallingBlock: true,
     "FancyTileEntities/FancyFallingBlock": true,
@@ -178,35 +247,35 @@ group(
     "AdventureHelper/GroupedFallingBlock": { name: "[F]" },
     "VivHelper/CornerBoostFallingBlock": { name: "[F]" },
     "spirialis/timefallingblock": { name: "[F]" },
-    finalBossFallingBlock: { color: "#cc00ff" },
+    finalBossFallingBlock: { color: colors.movingBlock },
     finalBossMovingBlock: ["finalBossFallingBlock", { name: "M" }],
   },
 );
 
 ssm["CommunalHelper/ConnectedMoveBlock"] = {
-  color: "#cc00ff",
+  color: colors.movingBlock,
   renderer: MoveBlockContentRenderer,
 };
 ssm["CommunalHelper/DreamMoveBlock"] = {
-  color: "#777777",
+  color: colors.dream,
   renderer: MoveBlockContentRenderer,
 };
 
 ssm["MaxHelpingHand/MultiNodeMovingPlatform"] = {
-  color: "#cc00ff",
+  color: colors.movingBlock,
   name: "MultiNodeMovingPlatform",
   opacity: movingSolidOpacity,
 };
 
 group(
-  { color: "#12fffb", name: "R", opacity: movingSolidOpacity },
+  { color: colors.fallingBlock, name: "R", opacity: movingSolidOpacity },
   {
     "HonlyHelper/RisingBlock": true,
   },
 );
 
 group(
-  { color: "#12fffb", name: "C", opacity: movingSolidOpacity },
+  { color: colors.fallingBlock, name: "C", opacity: movingSolidOpacity },
   {
     crumbleBlock: true,
     "ShroomHelper/CrumbleBlockOnTouch": { name: "(C)" },
@@ -217,7 +286,7 @@ group(
 );
 
 group(
-  { color: "#12fffb", name: "D", opacity: movingSolidOpacity },
+  { color: colors.fallingBlock, name: "D", opacity: movingSolidOpacity },
   {
     dashBlock: true,
     "VivHelper/CustomDashBlock": true,
@@ -227,11 +296,12 @@ group(
     "SJ2021/ShatterDashBlock": {
       name: (attr) => "ShatterDashBlock{Speed = " + validateNumber(attr.SpeedRequirement) + "}",
     },
+    "BSS/StaticDebrisDashBlock": true,
   },
 );
 
 group(
-  { color: "#285aff", name: "Kevin", opacity: movingSolidOpacity },
+  { color: colors.kevin, name: "Kevin", opacity: movingSolidOpacity },
   {
     crushBlock: true,
     "MaxHelpingHand/ReskinnableCrushBlock": true,
@@ -240,10 +310,10 @@ group(
   },
 );
 
-ssm.bounceBlock = { color: "#f62121", name: "CoreBlock", opacity: movingSolidOpacity };
+ssm.bounceBlock = { color: colors.coreBlock, name: "CoreBlock", opacity: movingSolidOpacity };
 
 group(
-  { color: "#dda94a", name: "MovingPlatform", opacity: movingSolidOpacity },
+  { color: colors.movingPlatform, name: "MovingPlatform", opacity: movingSolidOpacity },
   {
     movingPlatform: true,
     sinkingPlatform: { name: "SinkingPlatform" },
@@ -253,7 +323,7 @@ group(
 );
 
 group(
-  { color: "#777777", name: "DreamBlock", opacity: movingSolidOpacity },
+  { color: colors.dream, name: "DreamBlock", opacity: movingSolidOpacity },
   {
     dreamBlock: true,
     "FrostHelper/CustomDreamBlock": true,
@@ -263,14 +333,14 @@ group(
 );
 
 group(
-  { color: "#00a6ff", name: "SwitchGate", opacity: movingSolidOpacity },
+  { color: colors.switchGate, name: "SwitchGate", opacity: movingSolidOpacity },
   {
     switchGate: true,
     "MaxHelpingHand/FlagSwitchGate": true,
     "SpringCollab2020/FlagSwitchGate": true,
     "MaxHelpingHand/ShatterFlagSwitchGate": true,
     "VortexHelper/VortexSwitchGate": true,
-    "CommunalHelper/DreamSwitchGate": { color: "#777777" },
+    "CommunalHelper/DreamSwitchGate": { color: colors.dream },
     "spirialis/timeswitchgate": { name: "TimeSwitchGate" },
     introCrusher: { name: "IntroCrusher" },
     "VivHelper/FlagIntroCrusher": "introCrusher",
@@ -278,7 +348,7 @@ group(
 );
 
 group(
-  { color: "#dddddd", name: "TempleGate", opacity: movingSolidOpacity },
+  { color: colors.gray1, name: "TempleGate", opacity: movingSolidOpacity },
   {
     templeGate: true,
     "XaphanHelper/FlagTempleGate": { name: "FlagTempleGate" },
@@ -287,12 +357,12 @@ group(
   },
 );
 
-ssm.moveBlock = { color: "#9400ae", renderer: MoveBlockContentRenderer };
+ssm.moveBlock = { color: colors.moveBlock, renderer: MoveBlockContentRenderer };
 ssm["vitellary/vitmoveblock"] = ssm.moveBlock;
 ssm["spirialis/timemoveblock"] = ssm.moveBlock;
 
 group(
-  { color: "orange", name: "LockBlock", width: 32, height: 32 },
+  { color: colors.swapBlock, name: "LockBlock", width: 32, height: 32 },
   {
     lockBlock: true,
     "PrismaticHelper/MultiLockedDoor": {
@@ -303,26 +373,101 @@ group(
 
 group(
   {
-    color: "#3962e1",
+    color: colors.collectibleDoor,
     name: "CollectibleDoor",
     height: (attr) => attr.height * 2,
     anchorY: "center",
   },
   {
     "XaphanHelper/CollectableDoor": {
-      color: (attr) => validateColorOr(attr.interiorColor, "#9400ae"),
+      color: (attr) => validateColorOr(attr.interiorColor, colors.collectibleDoor),
     },
-    "MaxHelpingHand/SaveFileStrawberryGate": { color: "#e92727", name: "SaveFileStrawberryGate", height: 80 },
+    "MaxHelpingHand/SaveFileStrawberryGate": {
+      color: colors.strawberry,
+      name: "SaveFileStrawberryGate",
+      height: 80,
+    },
     "CollabUtils2/MiniHeartDoor": { name: "MiniHeartDoor" },
     heartGemDoor: { height: undefined, anchorY: undefined, name: "HeartGemDoor" },
   },
 );
 
 ssm.starJumpBlock = { color: "white", opacity: 0.8, name: "" };
-ssm.templeCrackedBlock = { color: "#e81a1a", name: "CrackedBlock", opacity: movingSolidOpacity };
-ssm.redBlocks = { color: "#d900ff", name: "Towels", opacity: movingSolidOpacity };
-ssm.greenBlocks = { color: "#26e615", name: "Books", opacity: movingSolidOpacity };
-ssm.yellowBlocks = { color: "#e4b611", name: "Crates", opacity: movingSolidOpacity };
+group(
+  {
+    color: colors.crackedBlock,
+    name: "CrackedBlock",
+    opacity: movingSolidOpacity,
+  },
+  {
+    templeCrackedBlock: true,
+    "XaphanHelper/BreakBlock": { name: "BreakBlock" },
+  },
+);
+
+group(
+  {
+    color: colors.towels,
+    name: "Towels",
+    opacity: movingSolidOpacity,
+  },
+  {
+    redBlocks: true,
+  },
+);
+group(
+  {
+    color: colors.books,
+    name: "Books",
+    opacity: movingSolidOpacity,
+  },
+  {
+    greenBlocks: true,
+  },
+);
+group(
+  {
+    color: colors.crates,
+    name: "Crates",
+    opacity: movingSolidOpacity,
+  },
+  {
+    yellowBlocks: true,
+  },
+);
+ssm["CustomClutterHelper/customClutterBlock"] = {
+  opacity: movingSolidOpacity,
+  color: (attr) =>
+    attr.color === "red"
+      ? colors.towels
+      : attr.color === "green"
+        ? colors.books
+        : attr.color === "yellow"
+          ? colors.crates
+          : colors.solid,
+  name: (attr) =>
+    attr.color === "red"
+      ? "Towels"
+      : attr.color === "green"
+        ? "Books"
+        : attr.color === "yellow"
+          ? "Crates"
+          : "CustomClutterBlock",
+};
+
+ssm["CustomClutterHelper/customClutterSwitch"] = {
+  color: (attr) =>
+    attr.type === "red"
+      ? colors.towels
+      : attr.type === "green"
+        ? colors.books
+        : attr.type === "yellow"
+          ? colors.crates
+          : colors.solid,
+  name: "ClutterSwitch",
+  width: 32,
+  height: 16,
+};
 
 group(
   {
@@ -348,22 +493,27 @@ group(
 );
 ssm["SJ2021/WonkyCassetteBlock"] = {
   name: "WonkyCassetteBlock",
-  color: (attr) => validateColorOr(attr.color, "#49aaf0"),
+  color: (attr) => validateColorOr(attr.color, colors.switchGate),
+  opacity: movingSolidOpacity,
+};
+ssm["XaphanHelper/JumpBlock"] = {
+  name: "JumpBlock",
+  color: (attr) => validateColorOr(attr.color, colors.solid),
   opacity: movingSolidOpacity,
 };
 
 ssm["VivHelper/CornerBoostBlock"] = { color: "white", name: "CornerBoostBlock", opacity: movingSolidOpacity };
 ssm["cpopBlock"] = { color: "white", name: "CPOP\nBlock", opacity: movingSolidOpacity };
-ssm.goldenBlock = { color: "#ffdf00", name: "GoldenBlock", opacity: movingSolidOpacity };
-ssm["CollabUtils2/SilverBlock"] = { color: "#c0c0c0", name: "SilverBlock", opacity: movingSolidOpacity };
+ssm.goldenBlock = { color: colors.golden, name: "GoldenBlock", opacity: movingSolidOpacity };
+ssm["CollabUtils2/SilverBlock"] = { color: colors.silver, name: "SilverBlock", opacity: movingSolidOpacity };
 ssm["PlatinumStrawberry/PlatinumBlock"] = {
-  color: "#e5e4e2",
+  color: colors.platinum,
   name: "PlatinumBlock",
   opacity: movingSolidOpacity,
 };
 
 ssm["vitellary/kaizoblock"] = {
-  color: "#ffe77a",
+  color: colors.movingPlatform,
   name: "KaizoBlock",
   opacity: 0.1,
   outline: "dashed",
@@ -372,11 +522,21 @@ ssm["vitellary/kaizoblock"] = {
   width: 16,
   height: 16,
 };
+
+ssm["canyon/pushblock"] = {
+  color: colors.pushBlock,
+  name: "PushBlock",
+  opacity: movingSolidOpacity,
+  anchorX: "center",
+  anchorY: "center",
+  width: 32,
+  height: 32,
+};
 //#endregion
 
 //#region Semi-Solids
 group(
-  { color: "orange", height: 5, name: "JumpThrough" },
+  { color: colors.swapBlock, height: 5, name: "JumpThrough" },
   {
     jumpThru: true,
     "VivHelper/CrumbleJumpThru": { name: "CrumbleJumpThrough" },
@@ -387,7 +547,7 @@ group(
 
 group(
   {
-    color: "orange",
+    color: colors.swapBlock,
     width: 5,
     offset: (attr) => (attr.left ? [1, 0] : [3, 0]),
     name: (attr) => (attr.left ? "Left" : "Right") + "JumpThrough",
@@ -400,7 +560,7 @@ group(
 );
 
 group(
-  { color: "orange", height: 5, offset: [0, 3], name: "DownJumpThrough" },
+  { color: colors.swapBlock, height: 5, offset: [0, 3], name: "DownJumpThrough" },
   {
     "MaxHelpingHand/UpsideDownJumpThru": true,
     "SpringCollab2020/UpsideDownJumpThru": true,
@@ -410,7 +570,7 @@ group(
 
 group(
   {
-    color: (attr) => (attr.fragile ? "#f27dff" : "#d7f2ff"),
+    color: (attr) => (attr.fragile ? colors.cloudFragile : colors.cloud),
     height: 5,
     width: (attr) => (attr.small ? 26 : 32),
     name: "Cloud",
@@ -422,7 +582,7 @@ group(
 );
 
 ssm["SJ2021/SolarElevator"] = {
-  color: "#ff7a7a",
+  color: colors.elevator,
   name: "SolarElevator",
   anchorY: "bottom",
   anchorX: "center",
@@ -435,7 +595,7 @@ ssm["SJ2021/SolarElevator"] = {
 //#region Gameplay Elements
 group(
   {
-    color: (attr) => (attr.twoDash ? "#ff4be7" : "#5eff5e"),
+    color: (attr) => (attr.twoDash ? colors.refillTwoDash : colors.refill),
     width: 16,
     height: 16,
     anchorX: "center",
@@ -454,25 +614,25 @@ group(
       name: (attr) => (attr.oneUse ? "(RefillWall)" : "RefillWall"),
     },
     "ExtendedVariantMode/RecoverJumpRefill": {
-      color: "#77bde6",
+      color: colors.jumpRefill,
       name: (attr) => (attr.oneUse ? "(JumpRefill)" : "JumpRefill"),
     },
     "ExtendedVariantMode/ExtraJumpRefill": {
-      color: "#77bde6",
+      color: colors.jumpRefill,
       name: (attr) => (attr.oneUse ? "(ExtraJumpRefill)" : "ExtraJumpRefill"),
     },
-    "vitellary/timecrystal": { color: "#00d9ff", name: "TimeCrystal" },
-    "GravityHelper/GravityRefill": { color: "#f531ff", name: "GravityRefill" },
+    "vitellary/timecrystal": { color: colors.jumpRefill, name: "TimeCrystal" },
+    "GravityHelper/GravityRefill": { color: colors.specialRefill, name: "GravityRefill" },
     "MoreDasheline/SpecialRefill": {
-      color: (attr) => (attr.dashes === 2 ? "#ff4be7" : "#5eff5e"),
+      color: (attr) => (attr.dashes === 2 ? colors.refillTwoDash : colors.refill),
       name: "SpecialRefill",
     },
     "CommunalHelper/DreamRefill": {
-      color: "#777777",
+      color: colors.dream,
       name: (attr) => (attr.oneUse ? "(DreamRefill)" : "DreamRefill"),
     },
     "vitellary/forcejumpcrystal": {
-      color: "#ff7a7a",
+      color: colors.specialRefill,
       name: (attr) => (attr.oneUse ? "(ForceJumpCrystal)" : "ForceJumpCrystal"),
     },
     "LunaticHelper/CustomRefill": true,
@@ -481,21 +641,21 @@ group(
   },
 );
 ssm["VivHelper/RefillWallWrapper"] = {
-  color: "#5eff5e",
+  color: colors.refill,
   name: "RefillWallWrapper",
 };
 
 ssm.lightning = { color: "yellow", name: "", depth: LAYERS.ENTITIES - 1, outline: "dashed" };
 
 const spring = group(
-  { color: "#c96800", name: "Spring", anchorX: "center", anchorY: "bottom", width: 16, height: 6 },
+  { color: colors.spring, name: "Spring", anchorX: "center", anchorY: "bottom", width: 16, height: 6 },
   {
     spring: true,
     "FrostHelper/SpringFloor": true,
-    "MaxHelpingHand/CustomDashRefillSpring": { color: "#16bd00", name: "CustomDashRefillSpring" },
-    "GravityHelper/GravitySpringFloor": { color: "#16bd00", name: "GravitySpring" },
+    "MaxHelpingHand/CustomDashRefillSpring": { color: colors.springSpecial, name: "CustomDashRefillSpring" },
+    "GravityHelper/GravitySpringFloor": { color: colors.springSpecial, name: "GravitySpring" },
     "FrostHelper/SpringCeiling": { anchorY: "top" },
-    "MaxHelpingHand/NoDashRefillSpring": { color: "#16bd00", name: "NoDashRefillSpring" },
+    "MaxHelpingHand/NoDashRefillSpring": { color: colors.springSpecial, name: "NoDashRefillSpring" },
   },
 );
 
@@ -505,10 +665,13 @@ group(
     wallSpringLeft: true,
     "FrostHelper/SpringLeft": true,
     "BrokemiaHelper/wallDashSpringLeft": true,
-    "MaxHelpingHand/CustomDashRefillSpringLeft": { color: "#16bd00", name: "CustomDashRefillSpring" },
-    "GravityHelper/GravitySpringWallLeft": { color: "#16bd00", name: "GravitySpring" },
-    "MaxHelpingHand/NoDashRefillSpringLeft": { color: "#16bd00", name: "NoDashRefillSpring" },
-    "SpringCollab2020/wallDashSpringLeft": { color: "#aebebe", name: "IronSpring" },
+    "MaxHelpingHand/CustomDashRefillSpringLeft": {
+      color: colors.springSpecial,
+      name: "CustomDashRefillSpring",
+    },
+    "GravityHelper/GravitySpringWallLeft": { color: colors.springSpecial, name: "GravitySpring" },
+    "MaxHelpingHand/NoDashRefillSpringLeft": { color: colors.springSpecial, name: "NoDashRefillSpring" },
+    "SpringCollab2020/wallDashSpringLeft": { color: colors.springIron, name: "IronSpring" },
   },
 );
 
@@ -517,24 +680,34 @@ group(
   {
     wallSpringRight: true,
     "FrostHelper/SpringRight": true,
-    "MaxHelpingHand/CustomDashRefillSpringRight": { color: "#16bd00", name: "CustomDashRefillSpring" },
-    "GravityHelper/GravitySpringWallRight": { color: "#16bd00", name: "GravitySpring" },
-    "MaxHelpingHand/NoDashRefillSpringRight": { color: "#16bd00", name: "NoDashRefillSpring" },
-    "SpringCollab2020/wallDashSpringRight": { color: "#aebebe", name: "IronSpring" },
+    "MaxHelpingHand/CustomDashRefillSpringRight": {
+      color: colors.springSpecial,
+      name: "CustomDashRefillSpring",
+    },
+    "GravityHelper/GravitySpringWallRight": { color: colors.springSpecial, name: "GravitySpring" },
+    "MaxHelpingHand/NoDashRefillSpringRight": { color: colors.springSpecial, name: "NoDashRefillSpring" },
+    "SpringCollab2020/wallDashSpringRight": { color: colors.springIron, name: "IronSpring" },
   },
 );
 
 ssm["DJMapHelper/springGreen"] = {
   width: (attr) => (attr.orientation === "Floor" ? 16 : 6),
   height: (attr) => (attr.orientation === "Floor" ? 6 : 16),
-  color: "#16bd00",
+  color: colors.springSpecial,
   name: "GreenSpring",
   offset: (attr) =>
     attr.orientation === "Floor" ? [-8, -6] : attr.orientation === "WallRight" ? [-5, -8] : [0, -8],
 };
 
 group(
-  { name: "GravitySpring", color: "#16bd00", anchorX: "center", anchorY: "top", width: 16, height: 6 },
+  {
+    name: "GravitySpring",
+    color: colors.springSpecial,
+    anchorX: "center",
+    anchorY: "top",
+    width: 16,
+    height: 6,
+  },
   {
     "GravityHelper/GravitySpringCeiling": true,
     "GravityHelper/GravitySpring": {
@@ -547,7 +720,14 @@ group(
 );
 
 group(
-  { color: "#00a6ff", name: "TouchSwitch", anchorX: "center", anchorY: "center", width: 16, height: 16 },
+  {
+    color: colors.switchGate,
+    name: "TouchSwitch",
+    anchorX: "center",
+    anchorY: "center",
+    width: 16,
+    height: 16,
+  },
   {
     touchSwitch: true,
     "MaxHelpingHand/FlagTouchSwitch": true,
@@ -559,7 +739,7 @@ group(
 );
 
 group(
-  { color: "#1aff00", name: "DashSwitch", width: 8, height: 16 },
+  { color: colors.dashSwitch, name: "DashSwitch", width: 8, height: 16 },
   {
     dashSwitchH: true,
     dashSwitchV: { width: 16, height: 8 },
@@ -568,24 +748,24 @@ group(
 );
 
 ssm["batteries/battery_switch"] = {
-  color: "#1aff00",
+  color: colors.dashSwitch,
   name: "BatterySwitch",
   width: (attr) => (attr.horizontal ? 8 : 16),
   height: (attr) => (attr.horizontal ? 16 : 8),
 };
 
 ssm.lightningBlock = {
-  color: "#d3b548",
+  color: colors.lightning,
   name: "BreakerBox",
   width: 32,
   height: 32,
   opacity: movingSolidOpacity,
 };
 
-ssm.flingBird = { color: "#00a6ff", name: "FlingBird", shape: "circle", radius: 16 };
+ssm.flingBird = { color: colors.bird, name: "FlingBird", shape: "circle", radius: 16 };
 group(
   {
-    color: "#cc00ff",
+    color: colors.movingBlock,
     name: "BadelineBoost",
     shape: "circle",
     radius: 16,
@@ -598,7 +778,7 @@ group(
 );
 
 group(
-  { color: "#cc00ff", name: "FinalBoss", shape: "circle", radius: 14, offset: [0, -6] },
+  { color: colors.movingBlock, name: "FinalBoss", shape: "circle", radius: 14, offset: [0, -6] },
   {
     finalBoss: true,
     "DJMapHelper/finalBossReversed": { name: "FinalBossReversed" },
@@ -607,7 +787,7 @@ group(
 
 group(
   {
-    color: (attr) => (attr.red ? "#ff3e3e" : "#31ff7d"),
+    color: (attr) => (attr.red ? colors.bubbleRed : colors.bubble),
     name: "Bubble",
     shape: "circle",
     radius: 10,
@@ -615,21 +795,21 @@ group(
   {
     booster: true,
     "FrostHelper/IncrementBooster": { name: "IncrementBubble" },
-    "GravityHelper/GravityBooster": { color: "#f531ff", name: "GravityBubble" },
-    "SJ2021/DashBoostField": { color: "#f531ff", name: "DashBoostField" },
-    "FrostHelper/BlueBooster": { color: "#31baff", name: "DashlessBubble" },
-    "GlassHelper/ReverseBooster": { color: "#f531ff", name: "ReverseBubble" },
-    "JackalCollabHelper/FlagBooster": { color: "#3168ff", name: "FlagBubble" },
-    "EmHelper/Monumentbooster": { color: "#3168ff", name: "MonumentBooster" },
-    "CommunalHelper/DreamBooster": { color: "#777777", name: "DreamBubble" },
-    "CommunalHelper/SpiralDreamBooster": { color: "#777777", name: "SpiralDreamBubble" },
+    "GravityHelper/GravityBooster": { color: colors.bubbleSpecial, name: "GravityBubble" },
+    "SJ2021/DashBoostField": { color: colors.bubbleSpecial, name: "DashBoostField" },
+    "FrostHelper/BlueBooster": { color: colors.bubbleDashless, name: "DashlessBubble" },
+    "GlassHelper/ReverseBooster": { color: colors.bubbleSpecial, name: "ReverseBubble" },
+    "JackalCollabHelper/FlagBooster": { color: colors.bubbleSpecial, name: "FlagBubble" },
+    "EmHelper/Monumentbooster": { color: colors.bubbleSpecial, name: "MonumentBooster" },
+    "CommunalHelper/DreamBooster": { color: colors.dream, name: "DreamBubble" },
+    "CommunalHelper/SpiralDreamBooster": { color: colors.dream, name: "SpiralDreamBubble" },
     "Anonhelper/OneUseBooster": { name: "OneUseBubble" },
-    "CommunalHelper/CurvedBooster": { color: "#f531ff", name: "CurvedBooster" },
+    "CommunalHelper/CurvedBooster": { color: colors.bubbleSpecial, name: "CurvedBooster" },
   },
 );
 
 ssm.infiniteStar = {
-  color: "yellow",
+  color: colors.feather,
   name: "Feather",
   width: 20,
   height: 20,
@@ -639,14 +819,17 @@ ssm.infiniteStar = {
 
 group(
   {
-    color: "#15b800",
+    color: colors.toggleSwitch,
     anchorX: "center",
     anchorY: "center",
     width: 16,
     height: 24,
   },
   {
-    coreModeToggle: { name: "CoreModeToggle", color: (attr) => (attr.onlyIce ? "#00d9ff" : "#e12525") },
+    coreModeToggle: {
+      name: "CoreModeToggle",
+      color: (attr) => (attr.onlyIce ? colors.coreIce : colors.coreFire),
+    },
     "pandorasBox/flagToggleSwitch": { name: "FlagToggleSwitch" },
     "GravityHelper/GravitySwitch": { name: "GravitySwitch" },
     "bgSwitch/bgModeToggle": { name: "BGModeToggle" },
@@ -655,14 +838,14 @@ group(
 );
 
 group(
-  { shape: "spinner", color: "#7a5dd8", name: "TrackSpinner" },
+  { shape: "spinner", color: colors.spinner, name: "TrackSpinner" },
   {
     trackSpinner: true,
     "AdventureHelper/DustTrackSpinnerMultinode": true,
     "SpringCollab2020/FlagToggleStarTrackSpinner": { name: "FlagTrackSpinner" },
     rotateSpinner: { name: "RotateSpinner" },
     "SpringCollab2020/FlagToggleStarRotateSpinner": { name: "FlagRotateSpinner" },
-    "isaBag/dreamSpinner": { name: "DreamSpinner", color: "#777777" },
+    "isaBag/dreamSpinner": { name: "DreamSpinner", color: colors.dream },
     "VivHelper/AnimatedSpinner": { name: "AnimatedSpinner" },
     "spirialis/timerotatespinner": { name: "TimeRotateSpinner" },
   },
@@ -670,7 +853,7 @@ group(
 
 group(
   {
-    color: (attr) => (attr.notCoreMode ? "#2ff5ff" : "#ff7a7a"),
+    color: (attr) => (attr.notCoreMode ? colors.coreIce : colors.coreFire),
     outline: "dashed",
     name: (attr) => (attr.notCoreMode ? "IceWall" : "WallBooster"),
     width: 2,
@@ -679,15 +862,21 @@ group(
   {
     wallBooster: true,
     "CommunalHelper/AttachedWallBooster": true,
-    "ShroomHelper/AttachedIceWall": { name: "IceWall", color: "#2ff5ff" },
-    "cavern/icyfloor": { name: "IcyFloor", color: "#2ff5ff", height: 2, width: undefined, offset: [0, 6] },
+    "ShroomHelper/AttachedIceWall": { name: "IceWall", color: colors.coreIce },
+    "cavern/icyfloor": {
+      name: "IcyFloor",
+      color: colors.coreIce,
+      height: 2,
+      width: undefined,
+      offset: [0, 6],
+    },
   },
 );
 
-ssm.seeker = { color: "#a832a8", name: "Seeker", shape: "seeker" };
+ssm.seeker = { color: colors.seeker, name: "Seeker", shape: "seeker" };
 
 group(
-  { color: "#00d0ff", name: "TheoCrystal", shape: "theo" },
+  { color: colors.theo, name: "TheoCrystal", shape: "theo" },
   {
     theoCrystal: true,
     "cavern/crystalbomb": { name: "CrystalBomb" },
@@ -697,20 +886,20 @@ group(
 );
 
 group(
-  { color: "#0077ff", name: "Jelly", shape: "jelly" },
+  { color: colors.jelly, name: "Jelly", shape: "jelly" },
   {
     glider: true,
     "MaxHelpingHand/RespawningJellyfish": { name: "RespawningJelly" },
     "VivHelper/ReskinnableJelly": true,
     "BounceHelper/BounceJellyfish": { name: "BounceJelly" },
-    "CommunalHelper/DreamJellyfish": { color: "#777777", name: "DreamJelly" },
+    "CommunalHelper/DreamJellyfish": { color: colors.dream, name: "DreamJelly" },
   },
 );
 
-ssm.introCar = { color: "#9b9b9b", name: "IntroCar", shape: "car" };
+ssm.introCar = { color: colors.gray3, name: "IntroCar", shape: "car" };
 
 group(
-  { color: "#ffffff", name: "TriggerSpikes", outline: "dashed" },
+  { color: colors.solid, name: "TriggerSpikes", outline: "dashed" },
   {
     triggerSpikesLeft: { width: 3, anchorX: "right" },
     triggerSpikesRight: { width: 3, anchorX: "left" },
@@ -724,7 +913,7 @@ group(
 );
 
 group(
-  { color: "#ffffff", name: "GroupedTriggerSpikes", outline: "dashed" },
+  { color: colors.solid, name: "GroupedTriggerSpikes", outline: "dashed" },
   {
     "SpringCollab2020/GroupedTriggerSpikesLeft": { width: 3, anchorX: "right" },
     "SpringCollab2020/GroupedTriggerSpikesRight": { width: 3, anchorX: "left" },
@@ -763,25 +952,25 @@ group(
 
     "SJ2021/DashThroughSpikesUp": [
       "SpringCollab2020/GroupedTriggerSpikesUp",
-      { name: "DashThroughSpikes", color: "#777777" },
+      { name: "DashThroughSpikes", color: colors.dream },
     ],
     "SJ2021/DashThroughSpikesDown": [
       "SpringCollab2020/GroupedTriggerSpikesDown",
-      { name: "DashThroughSpikes", color: "#777777" },
+      { name: "DashThroughSpikes", color: colors.dream },
     ],
     "SJ2021/DashThroughSpikesLeft": [
       "SpringCollab2020/GroupedTriggerSpikesLeft",
-      { name: "DashThroughSpikes", color: "#777777" },
+      { name: "DashThroughSpikes", color: colors.dream },
     ],
     "SJ2021/DashThroughSpikesRight": [
       "SpringCollab2020/GroupedTriggerSpikesRight",
-      { name: "DashThroughSpikes", color: "#777777" },
+      { name: "DashThroughSpikes", color: colors.dream },
     ],
   },
 );
 
 group(
-  { color: "#ffffff", name: "CoreModeSpikes", outline: "dashed" },
+  { color: colors.solid, name: "CoreModeSpikes", outline: "dashed" },
   {
     "MaxHelpingHand/CoreModeSpikesLeft": { width: 3, anchorX: "right" },
     "MaxHelpingHand/CoreModeSpikesRight": { width: 3, anchorX: "left" },
@@ -794,8 +983,21 @@ group(
 );
 
 group(
+  { color: colors.solid, name: "BouncySpikes", outline: "dashed", color: colors.specialArea },
   {
-    color: (attr) => validateColorOr(attr.color, "#ffffff"),
+    "HonlyHelper/BouncySpikesLeft": { width: 3, anchorX: "right" },
+    "HonlyHelper/BouncySpikesRight": { width: 3, anchorX: "left" },
+    "HonlyHelper/BouncySpikesUp": [
+      "HonlyHelper/BouncySpikesRight",
+      { anchorY: "bottom", height: 3, width: undefined },
+    ],
+    "HonlyHelper/BouncySpikesDown": ["HonlyHelper/BouncySpikesUp", { anchorY: "top" }],
+  },
+);
+
+group(
+  {
+    color: (attr) => validateColorOr(attr.color, colors.solid),
     name: "MonumentSpikes",
     outline: "dashed",
   },
@@ -812,7 +1014,7 @@ group(
 
 ssm["outback/portal"] = {
   name: "Portal",
-  color: (attr) => validateColorOr(attr.readyColor, "#00d9ff"),
+  color: (attr) => validateColorOr(attr.readyColor, colors.coreIce),
   width: (attr) => (attr.direction === "Left" || attr.direction === "Right" ? 6 : 10),
   height: (attr) => (attr.direction === "Left" || attr.direction === "Right" ? 10 : 6),
   anchorX: "center",
@@ -822,19 +1024,19 @@ ssm["outback/portal"] = {
 group(
   {
     shape: "circle",
-    color: "#3d44ff",
+    color: colors.bumper,
     name: "Bumper",
     radius: 12,
   },
   {
     bigSpinner: true,
     "FrostHelper/StaticBumper": {
-      color: (attr) => (attr.sprite === "bumper_white" ? "#ffffff" : "#3d44ff"),
+      color: (attr) => (attr.sprite === "bumper_white" ? "#ffffff" : colors.bumper),
     },
     "VivHelper/RefilllessBumper": { name: "RefilllessBumper" },
     "MaxHelpingHand/RotatingBumper": { name: "RotatingBumper" },
     "VortexHelper/VortexCustomBumper": {
-      color: (attr) => validateColorOr(attr.style, "#3d44ff"),
+      color: (attr) => validateColorOr(attr.style, colors.bumper),
     },
   },
 );
@@ -846,17 +1048,17 @@ group(
     anchorX: "center",
     anchorY: "center",
     name: "CardinalBumper",
-    color: "#3d44ff",
+    color: colors.bumper,
   },
   {
     "JackalHelper/LinkedCardinalBumper": { name: "LinkedCardinalBumper" },
   },
 );
 
-ssm.fireBall = { shape: "circle", color: "#ff3d3d", name: "FireBall", radius: 6 };
+ssm.fireBall = { shape: "circle", color: colors.bubbleRed, name: "FireBall", radius: 6 };
 group(
   {
-    color: "#8d8d8d",
+    color: colors.gray3,
     name: "ReturnBubble",
     outline: "dashed",
   },
@@ -867,13 +1069,13 @@ group(
 );
 
 ssm["JungleHelper/SpinyPlant"] = {
-  color: (attr) => validateColorOr(attr.color, "#00ff00"),
+  color: (attr) => validateColorOr(attr.color, colors.plant),
   name: "SpinyPlant",
 };
 
 group(
   {
-    color: "#ffa43d",
+    color: colors.fish,
     name: "Fish",
     shape: "fish",
   },
@@ -886,15 +1088,16 @@ group(
 );
 
 ssm["MaxHelpingHand/KevinBarrier"] = {
-  color: (attr) => validateColorOr(attr.color, "#3090f0"),
+  color: (attr) => validateColorOr(attr.color, colors.kevin),
   name: "KevinBarrier",
   opacity: 0.3,
+  outline: "dashed",
 };
 //#endregion
 
 //#region Triggers
 group(
-  { color: "white", name: "SeekerBarrier", outline: "dashed" },
+  { color: colors.solid, name: "SeekerBarrier", outline: "dashed" },
   {
     seekerBarrier: true,
     "MaxHelpingHand/CustomSeekerBarrier": true,
@@ -905,7 +1108,7 @@ group(
   },
 );
 ssm["VivHelper/SolidModifier"] = {
-  color: "#a5a5a5",
+  color: colors.gray3,
   name: "SolidModifier",
   outline: "dashed",
 };
@@ -914,7 +1117,7 @@ ssm["VivHelper/SolidModifier"] = {
 //#region Large Background Entities
 const fakeWallBase = group(
   {
-    color: "#888888",
+    color: colors.fakeWall,
     opacity: 0.01,
     outline: "dashed",
     depth: LAYERS.SOLIDS + 1,
@@ -936,7 +1139,7 @@ const fakeWallBase = group(
     "SpringCollab2020/caveWall": true,
     "BrokemiaHelper/caveWall": true,
     "VivHelper/EnterBlock": { name: "EnterBlock" },
-    "GravityHelper/GravityField": { name: "GravityField", color: "#00d9ff" },
+    "GravityHelper/GravityField": { name: "GravityField", color: colors.coreIce },
     crumbleWallOnRumble: { name: "CrumbleWallOnRumble" },
   },
 );
@@ -952,7 +1155,7 @@ group(
 
 group(
   {
-    color: "#0066ff",
+    color: colors.water,
     opacity: 0.1,
     outline: "dashed",
     depth: LAYERS.SOLIDS + 1,
@@ -961,18 +1164,18 @@ group(
   },
   {
     water: true,
-    fireBarrier: { color: "#ff4000", name: "Fire" },
+    fireBarrier: { color: colors.fire, name: "Fire" },
     "FrostHelper/CustomFireBarrier": [
       "fireBarrier",
-      { color: (attr) => validateColorOr(attr.surfaceColor, "#ff4000") },
+      { color: (attr) => validateColorOr(attr.surfaceColor, colors.fire) },
     ],
-    iceBlock: { color: "#66ccff", name: "Ice" },
+    iceBlock: { color: colors.coreIce, name: "Ice" },
   },
 );
 
 group(
   {
-    color: (attr) => (attr.liquidType === "lava" ? "#ff4000" : "#0066ff"),
+    color: (attr) => (attr.liquidType === "lava" ? colors.fire : colors.water),
     opacity: 0.1,
     outline: "dashed",
     depth: LAYERS.SOLIDS + 1,
@@ -981,9 +1184,9 @@ group(
   },
   {
     "XaphanHelper/Liquid": true,
-    "SpringCollab2020/FlagToggleWater": { color: "#0066ff", name: "Water" },
+    "SpringCollab2020/FlagToggleWater": { color: colors.water, name: "Water" },
     "pandorasBox/coloredWater": {
-      color: (attr) => validateColorOr(attr.color, "#0066ff"),
+      color: (attr) => validateColorOr(attr.color, colors.water),
       name: "ColoredWater",
     },
     "JackalHelper/DeadlyWater": ["pandorasBox/coloredWater", { name: "DeadlyWater" }],
@@ -1014,28 +1217,28 @@ ssm["VivHelper/RefillCancelSpace"] = {
 
 ssm["EeveeHelper/HoldableContainer"] = {
   name: "Holdable",
-  color: "#ff00ff",
+  color: colors.specialArea,
   opacity: 0.05,
   outline: "dotted",
 };
 
 ssm.darkChaser = {
-  color: "#931ebd",
+  color: colors.baddy,
   name: "BaddyChaser",
 };
 ssm.darkChaserEnd = {
   ...fakeWallBase,
   name: "BaddyChaserEnd",
-  color: "#931ebd",
+  color: colors.baddy,
 };
 ssm["SJ2021/SineDustSpinner"] = {
   ...fakeWallBase,
   name: "Sine\nDust\nSpinner",
-  color: "#7a5dd8",
+  color: colors.spinner,
 };
 
 ssm["JackalCollabHelper/DarkMatter"] = {
-  color: "#131313",
+  color: colors.darkMatter,
   name: "DarkMatter",
   opacity: 0.25,
   outline: "dashed",
@@ -1043,10 +1246,24 @@ ssm["JackalCollabHelper/DarkMatter"] = {
 //#endregion
 
 //#region Room Markers
-ssm.player = { color: "red", width: 8, height: 10, name: "Respawn", anchorX: "center", anchorY: "bottom" };
+group(
+  {
+    color: colors.respawn,
+    width: 8,
+    height: 10,
+    name: "Respawn",
+    anchorX: "center",
+    anchorY: "bottom",
+  },
+  {
+    player: true,
+    "VivHelper/InterRoomSpawnTarget2": { name: "InterRoomSpawn" },
+    "VivHelper/InterRoomSpawner": { name: "InterRoomSpawner" },
+  },
+);
 
 group(
-  { color: "#6b6b6b", width: 8, height: 10, name: "TowerViewer", anchorX: "center", anchorY: "bottom" },
+  { color: colors.bino, width: 8, height: 10, name: "TowerViewer", anchorX: "center", anchorY: "bottom" },
   {
     towerviewer: true,
     "PrismaticHelper/AttachedWatchtower": true,
@@ -1059,7 +1276,7 @@ group(
 
 group(
   {
-    color: "#ffffff",
+    color: colors.solid,
     width: 8,
     height: 16,
     name: (attr) => "Flag " + attr.number,
@@ -1073,32 +1290,46 @@ group(
 );
 
 ssm.checkpoint = {
-  color: "#ffffff",
+  color: colors.solid,
   width: 20,
   height: 24,
   anchorX: "center",
   anchorY: "bottom",
   name: "Checkpoint",
 };
-ssm.key = { color: "#ffff20", width: 12, height: 12, anchorX: "center", anchorY: "center", name: "Key" };
+
+group(
+  {
+    color: colors.key,
+    width: 12,
+    height: 12,
+    anchorX: "center",
+    anchorY: "center",
+  },
+  {
+    key: { name: "Key" },
+    "FrostHelper/KeyIce": { color: colors.coreIce, name: "KeyIce" },
+  },
+);
+
 ssm["CollabUtils2/SpeedBerry"] = {
-  color: "#ffb700",
+  color: colors.speedberry,
   width: 18,
   height: 16,
   anchorX: "center",
   anchorY: "center",
 };
 ssm["SpringCollab2020/CustomBirdTutorial"] = {
-  color: "#a2a2a2",
+  color: colors.gray2,
   width: 16,
   height: 16,
   anchorX: "center",
   anchorY: "bottom",
 };
-ssm.fakeHeart = { color: "#3962e1", width: 16, height: 16, anchorX: "center", anchorY: "center" };
+ssm.fakeHeart = { color: colors.heart, width: 16, height: 16, anchorX: "center", anchorY: "center" };
 
 group(
-  { color: "#ffb700", width: (attr) => attr.approachDistance ?? 8, height: 8, offset: [-8, -4] },
+  { color: colors.npc, width: (attr) => attr.approachDistance ?? 8, height: 8, offset: [-8, -4] },
   {
     npc: { height: 10, offset: [-4, 0], anchorY: "bottom" },
     "everest/npc": true,
@@ -1109,7 +1340,7 @@ group(
 
 group(
   {
-    color: "#3962e1",
+    color: colors.heart,
     width: 16,
     height: 16,
     anchorX: "center",
@@ -1126,7 +1357,7 @@ ssm["VivHelper/HideRoomInMap"] = { color: "#000000" };
 
 group(
   {
-    color: "#ff00ff",
+    color: colors.specialArea,
     name: "DashCode",
   },
   {
@@ -1136,7 +1367,7 @@ group(
 );
 
 group(
-  { color: "#ffffff", name: "Memorial", width: 60, height: 80, offset: [-30, -60] },
+  { color: colors.solid, name: "Memorial", outline: "dashed", width: 60, height: 80, offset: [-30, -60] },
   {
     memorial: { width: 40, height: 60, offset: [-20, -60] },
     "everest/memorial": "memorial",
@@ -1154,13 +1385,13 @@ group(
     height: 16,
     anchorX: "center",
     anchorY: "center",
-    color: "#e92727",
+    color: colors.strawberry,
   },
   {
     "BrokemiaHelper/trollStrawberry": { name: "TrollStrawberry" },
     "MaxHelpingHand/SecretBerry": {
       name: (attr) => strawberrySpriteMap[attr.strawberrySprite] || "SecretBerry",
-      color: (attr) => validateColorOr(attr.particleColor1, "#e92727"),
+      color: (attr) => validateColorOr(attr.particleColor1, colors.strawberry),
     },
     "MaxHelpingHand/MultiRoomStrawberry": {
       name: (attr) => "MultiRoomStrawberry{" + attr.name + "}",
@@ -1179,7 +1410,7 @@ const strawberrySpriteMap = {
 
 group(
   {
-    color: "#37f0c8",
+    color: colors.chapterPanel,
   },
   {
     "CollabUtils2/ChapterPanelTrigger": {
@@ -1188,6 +1419,13 @@ group(
     "CollabUtils2/JournalTrigger": true,
   },
 );
+
+ssm["XaphanHelper/UpgradeCollectable"] = {
+  color: colors.specialArea,
+  name: (attr) => "Upgrade:{" + attr.upgrade + "}",
+  width: 16,
+  height: 16,
+};
 //#endregion
 
 export const IgnoreUnhandled = {
@@ -1300,6 +1538,7 @@ export const IgnoreUnhandled = {
     "isaBag/waterBoost",
     "MaxHelpingHand/PopStrawberrySeedsTrigger",
     "Bitsbolts/NoRetry",
+    "FlaglinesAndSuch/ChangeDreaming",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -1366,6 +1605,7 @@ export const IgnoreUnhandled = {
     "Bitsbolts/UnlockCamera",
     "FrostHelper/EasedCameraZoomTrigger",
     "FurryHelper/momentumCameraOffsetTrigger",
+    "Sardine7/SmoothieCameraTargetTrigger",
   ]),
   //#endregion
   //#region Dialog Triggers
@@ -1402,6 +1642,7 @@ export const IgnoreUnhandled = {
     "FlaglinesAndSuch/MiniTextboxIfFlag",
     "JungleHelper/UIImageTrigger",
     "CommunalHelper/HintController",
+    "BrokemiaHelper/persistentMiniTextboxTrigger",
   ]),
   //#endregion
   //#region Other Unhandled
@@ -1437,6 +1678,7 @@ export const IgnoreUnhandled = {
     "bloomFadeTrigger",
     "blackholeStrength",
     "playbackBillboard",
+    "clutterCabinet",
     "coloredlights/hanginglamp",
     "everest/ambienceTrigger",
     "moonGlitchBackgroundTrigger",
@@ -1595,6 +1837,13 @@ export const IgnoreUnhandled = {
     "FemtoHelper/CustomCliffsideWindFlag",
     "CommunalHelper/SoundAreaTrigger",
     "ExtendedVariantMode/DisplaySpeedometerTrigger",
+    "KoseiHelper/EvilHoldableController",
+    "MaxHelpingHand/CustomizableGlassBlockController",
+    "XaphanHelper/UpgradeController",
+    "PrismaticHelper/CustomHangingLamp",
+    "BrokemiaHelper/vineinator",
+    "FrostHelper/ArbitraryLight",
+    "FrostHelper/DustSprite",
   ]),
   //#endregion
 };

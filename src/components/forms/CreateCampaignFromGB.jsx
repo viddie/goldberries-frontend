@@ -404,7 +404,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
           processError={processError}
           onRetry={() => {
             setProcessError(null);
-            processGbCampaign({ url: gamebananaUrl });
+            processGbCampaign({ url: gamebananaUrl, regenerate: true });
           }}
           onBack={() => setStep(0)}
           t={t}

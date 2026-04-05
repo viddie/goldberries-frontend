@@ -13,10 +13,10 @@ const PATHS = {
 };
 
 const OFFSETS = {
-  spikesUp: [4, 4],
-  spikesDown: [4, -4],
-  spikesLeft: [-4, -4],
-  spikesRight: [4, -4],
+  spikesUp: [4, 3],
+  spikesDown: [4, -3],
+  spikesLeft: [-3, -4],
+  spikesRight: [3, -4],
 };
 
 const HORIZONTAL = new Set(["spikesUp", "spikesDown"]);
@@ -47,7 +47,7 @@ export function SpikeRenderer({ entities }) {
           results.push({
             x: e.attributes.x + offset[0] + (isHorizontal ? i * 8 : 0),
             y: -e.attributes.y + offset[1] - (isHorizontal ? 0 : i * 8),
-            z: LAYERS.COMMON_ENTITIES,
+            z: LAYERS.COMMON_ENTITIES - 1,
             scaleX: 8,
             scaleY: 8,
           });

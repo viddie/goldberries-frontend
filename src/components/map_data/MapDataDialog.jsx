@@ -423,6 +423,7 @@ function SolidTilesCanvas({ solidsText, roomWidth, roomHeight, scale = 4 }) {
 //#endregion
 
 //#region Data extraction utilities
+const fillerRoomEntities = new Set(["player", "VivHelper/InterRoomSpawner"]);
 export function extractRooms(mapData) {
   const levelsNode = mapData.children?.find((c) => c.name === "levels");
   if (!levelsNode) return [];
@@ -431,7 +432,7 @@ export function extractRooms(mapData) {
     .filter((level) => {
       // Filter out filler rooms (rooms without a player entity)
       const entitiesNode = level.children?.find((c) => c.name === "entities");
-      return entitiesNode?.children?.some((e) => e.name === "player") ?? false;
+      return entitiesNode?.children?.some((e) => fillerRoomEntities.has(e.name)) ?? false;
     })
     .map((level) => {
       const attr = level.attributes || {};

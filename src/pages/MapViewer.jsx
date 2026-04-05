@@ -163,7 +163,7 @@ export function PageMapViewer() {
 
         // Step 4: Process the campaign from GameBanana
         setShowCloudflareWarning(true);
-        await fetchProcessGbCampaign(fullUrl, true);
+        await fetchProcessGbCampaign(fullUrl);
 
         // Step 5: Fetch the processed temp data
         const processedResponse = await fetchTempData(fullUrl);
