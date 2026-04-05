@@ -37,6 +37,7 @@ import {
   faHome,
   faInbox,
   faMailBulk,
+  faMap,
   faNewspaper,
   faNoteSticky,
   faPlayCircle,
@@ -136,6 +137,7 @@ import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
+import { PageMapViewer } from "./pages/MapViewer";
 import { getFeaturedCampaignsNavEntries } from "./util/other_data";
 
 axios.defaults.withCredentials = true;
@@ -313,6 +315,8 @@ const router = createBrowserRouter([
 
       { path: "news/:id?", element: <PagePostList type="news" /> },
       { path: "changelog/:id?", element: <PagePostList type="changelog" /> },
+
+      { path: "map-viewer/:gbUrlPath?/:binPath?/:roomName?", element: <PageMapViewer /> },
 
       //Catch all
       { path: "*", element: <Page404 /> },
@@ -693,6 +697,11 @@ export function Layout() {
           name: t("other_menu.changelog"),
           path: "/changelog",
           icon: <FontAwesomeIcon icon={faNoteSticky} />,
+        },
+        {
+          name: t("other_menu.map_viewer"),
+          path: "/map-viewer",
+          icon: <FontAwesomeIcon icon={faMap} />,
         },
         { divider: true },
         {

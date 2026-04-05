@@ -708,6 +708,7 @@
       "faq": "FAQ",
       "news": "News",
       "changelog": "Changelog",
+      "map_viewer": "Map Viewer",
       "report": "Report an Issue"
     },
     "internal_menu": {
@@ -2373,5 +2374,19 @@
         "col_position": "Position"
       }
     }
+  },
+  "map_viewer": {
+    "title": "Map Viewer",
+    "url_label": "GameBanana URL",
+    "url_placeholder": "https://gamebanana.com/mods/123456",
+    "view_map": "View Map",
+    "login_required": "You must be logged in with a claimed player to use the Map Viewer.",
+    "invalid_url": "Please enter a valid GameBanana URL (e.g. https://gamebanana.com/mods/123456)",
+    "processing": "Processing GameBanana link...",
+    "processing_warning": "If the mod is large, processing may take a while. If it takes longer than 100 seconds, Cloudflare will kill the connection and processing will fail.",
+    "error": "An error occurred while processing the campaign.",
+    "bin_files": "Map Files",
+    "unknown_map": "Unknown Map",
+    "no_bins": "No .bin files were found in this mod."
   }
 }

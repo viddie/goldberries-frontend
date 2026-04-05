@@ -435,6 +435,9 @@ export function fetchBadgePlayers(badgeId) {
   });
 }
 
+export function fetchCampaignByGbUrl(gamebananaUrl) {
+  return axios.get("/campaign/find-by-gb-url", { params: { gamebanana_url: gamebananaUrl } });
+}
 export function fetchCampaignData(id) {
   return axios.get("/campaign/data", { params: { id } });
 }

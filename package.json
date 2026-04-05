@@ -1,6 +1,6 @@
 {
   "name": "goldberries",
-  "version": "1.18.2",
+  "version": "1.18.3",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
