@@ -106,14 +106,12 @@ import {
   deleteChallengeLike,
   fetchPlayerLikes,
   fetchCampaignData,
-  fetchCampaignDataMapping,
   fetchMapData,
   fetchProcessCampaign,
   fetchProcessGbCampaign,
   fetchTempData,
   fetchTempMapData,
   postCampaignData,
-  postCampaignDataMapping,
   postMapData,
   postMapDataBin,
   deleteCampaignData,
@@ -561,20 +559,12 @@ export function useGetCampaignData(id) {
     enabled: !!id,
   });
 }
-export function useGetCampaignDataMapping(id) {
+export function useGetMapData(id, { campaignId, binPath, checkExists } = {}) {
   return useQuery({
-    queryKey: ["campaign_data_mapping", id],
-    queryFn: () => fetchCampaignDataMapping(id),
-    retry: false,
-    enabled: !!id,
-  });
-}
-export function useGetMapData(id, { campaignId, hash, checkExists } = {}) {
-  return useQuery({
-    queryKey: ["map_data", id, campaignId, hash, checkExists],
-    queryFn: () => fetchMapData(id, { campaignId, hash, checkExists }),
+    queryKey: ["map_data", id, campaignId, binPath, checkExists],
+    queryFn: () => fetchMapData(id, { campaignId, binPath, checkExists }),
     onError: checkExists ? undefined : errorToast,
-    enabled: !!(id || hash),
+    enabled: !!(id || binPath),
   });
 }
 export function useCheckMapDataExists(id) {
@@ -612,6 +602,7 @@ export function usePostMap(onSuccess) {
       queryClient.invalidateQueries(["map", response.data.id]);
       queryClient.invalidateQueries(["all_maps", response.data.campaign_id]);
       queryClient.invalidateQueries(["campaign", response.data.campaign_id]);
+      queryClient.invalidateQueries(["campaign_view", response.data.campaign_id]);
       queryClient.invalidateQueries(["submission_queue"]);
       queryClient.invalidateQueries(["manage_challenges"]);
       invalidateJointQueries(queryClient);
@@ -928,18 +919,6 @@ export function usePostCampaignData(onSuccess) {
     onError: errorToast,
   });
 }
-export function usePostCampaignDataMapping(onSuccess) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }) => postCampaignDataMapping(id, data),
-    onSuccess: (response, { id }) => {
-      queryClient.invalidateQueries(["campaign_data_mapping", id]);
-      queryClient.invalidateQueries(["campaign_data", id]);
-      if (onSuccess) onSuccess(response.data);
-    },
-    onError: errorToast,
-  });
-}
 export function usePostMapData(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -955,7 +934,8 @@ export function usePostMapData(onSuccess) {
 export function usePostMapDataBin(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ data, binPath, campaignId }) => postMapDataBin(data, { binPath, campaignId }),
+    mutationFn: ({ data, binPath, campaignId, isBinary }) =>
+      postMapDataBin(data, { binPath, campaignId, isBinary }),
     onSuccess: (response, { campaignId }) => {
       queryClient.invalidateQueries(["campaign_data", campaignId]);
       queryClient.invalidateQueries(["map_data"]);
@@ -974,7 +954,6 @@ export function useDeleteCampaignData(onSuccess) {
     mutationFn: (id) => deleteCampaignData(id),
     onSuccess: (response, id) => {
       queryClient.invalidateQueries(["campaign_data", id]);
-      queryClient.invalidateQueries(["campaign_data_mapping", id]);
       if (onSuccess) onSuccess(response, id);
     },
     onError: errorToast,
@@ -983,7 +962,7 @@ export function useDeleteCampaignData(onSuccess) {
 export function useDeleteMapData(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, campaignId, hash }) => deleteMapData(id, { campaignId, hash }),
+    mutationFn: ({ id, campaignId, binPath }) => deleteMapData(id, { campaignId, binPath }),
     onSuccess: (response, { campaignId }) => {
       queryClient.invalidateQueries(["campaign_data", campaignId]);
       queryClient.invalidateQueries(["map_data"]);
@@ -1359,7 +1338,6 @@ export function useProcessCampaign(onSuccess) {
     mutationFn: (id) => fetchProcessCampaign(id),
     onSuccess: (response, id) => {
       queryClient.invalidateQueries(["campaign_data", id]);
-      queryClient.invalidateQueries(["campaign_data_mapping", id]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
@@ -1382,12 +1360,12 @@ export function useGetTempData(url) {
     enabled: !!url,
   });
 }
-export function useGetTempMapData(url, hash) {
+export function useGetTempMapData(url, binPath) {
   return useQuery({
-    queryKey: ["temp_map_data", url, hash],
-    queryFn: () => fetchTempMapData(url, hash),
+    queryKey: ["temp_map_data", url, binPath],
+    queryFn: () => fetchTempMapData(url, binPath),
     retry: false,
-    enabled: !!(url && hash),
+    enabled: !!(url && binPath),
   });
 }
 //#endregion

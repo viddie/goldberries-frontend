@@ -36,7 +36,7 @@ export function ProofEmbed({ url, ...props }) {
         </div>
       </div>
     );
-  } else if (url.includes("bilibili.com") && !url.includes("space.bilibili.com")) {
+  } else if (url.includes("bilibili.com") && !url.includes("space.bilibili.com") && parseBilibiliUrl(url)) {
     let data = parseBilibiliUrl(url);
     url = `https://player.bilibili.com/player.html?bvid=${data.id}&page=${data.page}&high_quality=1&autoplay=false`;
 
@@ -84,10 +84,14 @@ export function parseBilibiliUrl(link) {
   // If it starts with 'av', it is an aid
   if (link.includes("/av")) {
     // Extract the AV id
-    id = link.match(/av[0-9]+/g)[0];
+    const avMatch = link.match(/av[0-9]+/g);
+    if (!avMatch) return null;
+    id = avMatch[0];
   } else {
     // Extract the BV id
-    id = link.match(/[bB][vV][0-9a-zA-Z]+/g)[0];
+    const bvMatch = link.match(/[bB][vV][0-9a-zA-Z]+/g);
+    if (!bvMatch) return null;
+    id = bvMatch[0];
   }
 
   // Extract the page number, default to 1 if not found

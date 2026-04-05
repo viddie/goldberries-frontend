@@ -420,6 +420,7 @@
         "url_label": "GameBanana Mod URL",
         "url_placeholder": "https://gamebanana.com/mods/123456",
         "process_button": "Process URL",
+        "clear_cache": "Ignore Cache (if mod had already been processed before)",
         "invalid_url": "Invalid GameBanana mod URL. Expected format: https://gamebanana.com/mods/<id>"
       },
       "step_2": {
@@ -2316,16 +2317,17 @@
       "delete_bin_confirm_text": "Delete .bin data for '{{name}}'?",
       "delete_bin_success": "Map .bin data deleted.",
       "delete_all": "Delete All Data",
-      "delete_all_confirm": "This will remove ALL campaign data, including the mapping file and all map .bin files. This cannot be undone. Are you sure?",
+      "delete_all_confirm": "This will remove ALL campaign data, including all bin assignments and map .bin files. This cannot be undone. Are you sure?",
       "delete_all_success": "All campaign data deleted.",
       "add_bin": {
         "title": "Add .bin File",
         "bin_path": ".bin path",
-        "drop_zone": "Drop parsed .json file",
+        "drop_zone": "Drop .bin or .json file",
         "submit": "Upload",
         "uploading": "Uploading...",
         "success": ".bin file data uploaded successfully.",
-        "no_file": "Please select a .json file.",
+        "no_file": "Please select a file.",
+        "invalid_file": "Please select a .bin or .json file.",
         "invalid_json": "The selected file does not contain valid JSON."
       },
       "structure": {
@@ -2334,15 +2336,15 @@
         "show_unmatched": "Show {{count}} unmatched .bin files",
         "hide_unmatched": "Hide unmatched .bin files"
       },
-      "mapping": {
-        "toggle_label": "Mapping File",
-        "no_entries": "No mappings defined yet.",
+      "bin_assignments": {
+        "title": "Bin Assignments",
+        "no_entries": "No assignments defined yet.",
         "select_bin": ".bin file",
         "select_map": "Map",
         "add": "Add",
         "save": "Save",
         "saving": "Saving...",
-        "save_success": "Mapping saved successfully."
+        "save_success": "Assignment saved successfully."
       }
     },
     "map_data": {

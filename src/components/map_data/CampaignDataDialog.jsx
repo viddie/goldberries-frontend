@@ -2,7 +2,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Collapse,
   Divider,
   IconButton,
   Stack,
@@ -15,14 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  faChevronDown,
-  faChevronRight,
-  faPen,
-  faQuestionCircle,
-  faTimes,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPen, faQuestionCircle, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { useRef, useState } from "react";
@@ -35,8 +27,7 @@ import {
   useDeleteCampaignData,
   useDeleteMapData,
   useGetCampaignData,
-  useGetCampaignDataMapping,
-  usePostCampaignDataMapping,
+  usePostMap,
   usePostMapDataBin,
   useProcessCampaign,
 } from "../../hooks/useApi";
@@ -52,7 +43,6 @@ export function CampaignDataDialog({ campaignId, campaign }) {
   const [editMode, setEditMode] = useState(false);
 
   const dataQuery = useGetCampaignData(campaignId);
-  const mappingQuery = useGetCampaignDataMapping(campaignId);
 
   const campaignDataResponse = getQueryData(dataQuery);
   const campaignData = campaignDataResponse?.data ?? null;
@@ -61,15 +51,8 @@ export function CampaignDataDialog({ campaignId, campaign }) {
         status: campaignDataResponse.status,
         message: campaignDataResponse.message,
         binCount: campaignDataResponse.bin_count,
-        unmatchedBinCount: campaignDataResponse.unmatched_bin_count,
-        unmatchedMapCount: campaignDataResponse.unmatched_map_count,
       }
     : null;
-
-  let mappingData = getQueryData(mappingQuery);
-  if (mappingData !== null) {
-    mappingData = mappingData.data; // unwrap from { data: {...} } structure for the editor
-  }
 
   const { mutate: processCampaign, isLoading: isProcessing } = useProcessCampaign(() => {
     toast.success(t("process_success"));
@@ -80,13 +63,23 @@ export function CampaignDataDialog({ campaignId, campaign }) {
     setEditMode(false);
   });
 
-  // Build a lookup of map_id -> map object from the campaign for name resolution
+  // Build lookups from campaign maps
+  const mapsByBin = {};
   const mapsById = {};
   if (campaign?.maps) {
     campaign.maps.forEach((map) => {
       mapsById[map.id] = map;
+      if (map.bin) {
+        mapsByBin[map.bin] = map;
+      }
     });
   }
+
+  // Compute unmatched counts client-side
+  const unmatchedBinCount = campaignData
+    ? campaignData.filter((e) => !e.conversion_error && !mapsByBin[e.path]).length
+    : 0;
+  const unmatchedMapCount = campaign?.maps ? campaign.maps.filter((m) => !m.bin).length : 0;
 
   return (
     <Stack spacing={2}>
@@ -132,16 +125,14 @@ export function CampaignDataDialog({ campaignId, campaign }) {
         {campaignMeta && campaignMeta.status === "ok" && (
           <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
             {t("bin_count", { count: campaignMeta.binCount })}
-            {campaignMeta.unmatchedBinCount > 0 &&
-              " · " + t("unmatched_bins", { count: campaignMeta.unmatchedBinCount })}
-            {campaignMeta.unmatchedMapCount > 0 &&
-              " · " + t("unmatched_maps", { count: campaignMeta.unmatchedMapCount })}
+            {unmatchedBinCount > 0 && " · " + t("unmatched_bins", { count: unmatchedBinCount })}
+            {unmatchedMapCount > 0 && " · " + t("unmatched_maps", { count: unmatchedMapCount })}
           </Typography>
         )}
         {campaignData && (
           <CampaignStructureTable
             entries={campaignData}
-            mapsById={mapsById}
+            mapsByBin={mapsByBin}
             campaignId={campaignId}
             campaign={campaign}
             editMode={editMode}
@@ -149,32 +140,38 @@ export function CampaignDataDialog({ campaignId, campaign }) {
         )}
       </Box>
 
-      {/* Edit mode: Add .bin file + Delete all data */}
+      {/* Edit mode sections */}
       {editMode && (
-        <Stack spacing={2}>
+        <>
+          {/* Bin→Map assignments - Helper+ only */}
+          {auth.hasHelperPriv && (
+            <>
+              <Divider />
+              <MappingEditor
+                campaignId={campaignId}
+                campaign={campaign}
+                campaignData={campaignData}
+                mapsByBin={mapsByBin}
+                mapsById={mapsById}
+              />
+            </>
+          )}
+
+          {/* Add .bin file */}
+          <Divider />
           <AddBinSection campaignId={campaignId} />
+
+          {/* Delete all data */}
           <Divider />
           <DeleteAllDataSection campaignId={campaignId} onDelete={deleteAllData} isDeleting={isDeletingAll} />
-        </Stack>
-      )}
-
-      {/* Mapping (mapping.json) - Helper+ only, edit mode only */}
-      {auth.hasHelperPriv && editMode && (
-        <MappingEditor
-          campaignId={campaignId}
-          campaign={campaign}
-          campaignData={campaignData}
-          mappingData={mappingData}
-          mappingQuery={mappingQuery}
-          mapsById={mapsById}
-        />
+        </>
       )}
     </Stack>
   );
 }
 
 //#region Structure Table
-function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editMode }) {
+function CampaignStructureTable({ entries, mapsByBin, campaignId, campaign, editMode }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.structure" });
   const { t: t_cd } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data" });
   const theme = useTheme();
@@ -192,15 +189,14 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
     if (cancelled || !pendingDeleteEntry) return;
     const entry = pendingDeleteEntry;
     deleteMapData({
-      id: entry.map_id || undefined,
+      binPath: entry.path,
       campaignId,
-      hash: entry.map_id ? undefined : entry.hash,
     });
     setPendingDeleteEntry(null);
   });
 
-  const matchedEntries = entries.filter((e) => !!e.map_id);
-  const unmatchedEntries = entries.filter((e) => !e.map_id);
+  const matchedEntries = entries.filter((e) => !e.conversion_error && !!mapsByBin[e.path]);
+  const unmatchedEntries = entries.filter((e) => !e.conversion_error && !mapsByBin[e.path]);
 
   const openMapData = (entry) => {
     setSelectedEntry(entry);
@@ -212,8 +208,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
     deleteBinModal.open(displayName);
   };
 
-  // In edit mode, always show unmatched entries
-  const showUnmatchedEntries = editMode || showUnmatched;
+  const showUnmatchedEntries = showUnmatched;
 
   return (
     <>
@@ -230,7 +225,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
               <CampaignStructureRow
                 key={`matched-${index}`}
                 entry={entry}
-                mapsById={mapsById}
+                mapsByBin={mapsByBin}
                 campaign={campaign}
                 onClick={() => openMapData(entry)}
                 editMode={editMode}
@@ -238,7 +233,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
                 isDeleting={isDeleting}
               />
             ))}
-            {unmatchedEntries.length > 0 && !editMode && (
+            {unmatchedEntries.length > 0 && (
               <TableRow>
                 <TableCell colSpan={3} sx={{ py: 0.5, borderBottom: showUnmatched ? undefined : "none" }}>
                   <Button
@@ -259,7 +254,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
                 <CampaignStructureRow
                   key={`unmatched-${index}`}
                   entry={entry}
-                  mapsById={mapsById}
+                  mapsByBin={mapsByBin}
                   campaign={campaign}
                   onClick={() => openMapData(entry)}
                   editMode={editMode}
@@ -285,13 +280,7 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
             </IconButton>
           </Box>
         )}
-        {selectedEntry && (
-          <MapDataDialog
-            mapId={selectedEntry.map_id ?? null}
-            hash={selectedEntry.map_id ? null : selectedEntry.hash}
-            campaignId={campaignId}
-          />
-        )}
+        {selectedEntry && <MapDataDialog binPath={selectedEntry.path} campaignId={campaignId} />}
       </CustomModal>
       <CustomModal modalHook={deleteBinModal} actions={[ModalButtons.cancel, ModalButtons.delete]}>
         <Typography variant="body1">
@@ -302,10 +291,10 @@ function CampaignStructureTable({ entries, mapsById, campaignId, campaign, editM
   );
 }
 
-function CampaignStructureRow({ entry, mapsById, campaign, onClick, editMode, onDelete, isDeleting }) {
+function CampaignStructureRow({ entry, mapsByBin, campaign, onClick, editMode, onDelete, isDeleting }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.structure" });
-  const isMatched = !!entry.map_id;
-  const dbMap = isMatched ? mapsById[entry.map_id] : null;
+  const dbMap = mapsByBin[entry.path] ?? null;
+  const isMatched = !!dbMap;
 
   // Prefer database map name, fall back to index.json name, then "Unknown Map"
   const displayName = dbMap ? getMapName(dbMap, campaign) : entry.name || t("unknown_map");
@@ -322,7 +311,7 @@ function CampaignStructureRow({ entry, mapsById, campaign, onClick, editMode, on
       <TableCell>
         <Stack direction="row" alignItems="center" gap={0.5}>
           {isMatched ? (
-            <StyledLink to={"/map/" + entry.map_id} onClick={(e) => e.stopPropagation()}>
+            <StyledLink to={"/map/" + dbMap.id} onClick={(e) => e.stopPropagation()}>
               {displayName}
             </StyledLink>
           ) : (
@@ -378,10 +367,10 @@ function AddBinSection({ campaignId }) {
   });
 
   const handleFile = (file) => {
-    if (file && file.name.endsWith(".json")) {
+    if (file && (file.name.endsWith(".json") || file.name.endsWith(".bin"))) {
       setSelectedFile(file);
     } else {
-      toast.error(t("invalid_json"));
+      toast.error(t("invalid_file"));
     }
   };
 
@@ -390,16 +379,24 @@ function AddBinSection({ campaignId }) {
       toast.error(t("no_file"));
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const parsed = JSON.parse(e.target.result);
-        uploadBin({ data: parsed, binPath: binPath.trim(), campaignId });
-      } catch {
-        toast.error(t("invalid_json"));
-      }
-    };
-    reader.readAsText(selectedFile);
+    if (selectedFile.name.endsWith(".bin")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadBin({ data: e.target.result, binPath: binPath.trim(), campaignId, isBinary: true });
+      };
+      reader.readAsArrayBuffer(selectedFile);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          uploadBin({ data: parsed, binPath: binPath.trim(), campaignId });
+        } catch {
+          toast.error(t("invalid_json"));
+        }
+      };
+      reader.readAsText(selectedFile);
+    }
   };
 
   return (
@@ -450,7 +447,7 @@ function AddBinSection({ campaignId }) {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".json"
+          accept=".json,.bin"
           hidden
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
@@ -502,141 +499,101 @@ function DeleteAllDataSection({ campaignId, onDelete, isDeleting }) {
 //#endregion
 
 //#region Mapping Editor
-function MappingEditor({ campaignId, campaign, campaignData, mappingData, mappingQuery, mapsById }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.mapping" });
-  const [expanded, setExpanded] = useState(false);
+function MappingEditor({ campaignId, campaign, campaignData, mapsByBin, mapsById }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.bin_assignments" });
 
-  // Local state for the editable mapping: { "path": mapId, ... }
-  const [localMapping, setLocalMapping] = useState(null);
-  const [dirty, setDirty] = useState(false);
-
-  // Initialize local mapping from server data when it arrives
-  const effectiveMapping = localMapping ?? mappingData ?? {};
-
-  const { mutate: saveMappingToServer, isLoading: isSaving } = usePostCampaignDataMapping(() => {
-    setDirty(false);
+  const { mutate: updateMap, isLoading: isSaving } = usePostMap(() => {
     toast.success(t("save_success"));
   });
 
   // Get all bin paths from campaignData
-  const allPaths = campaignData ? campaignData.map((e) => e.path) : [];
+  const allPaths = campaignData ? campaignData.filter((e) => !e.conversion_error).map((e) => e.path) : [];
 
-  // Paths already in the mapping
-  const mappedPaths = Object.keys(effectiveMapping);
+  // Paths already assigned to a map
+  const mappedPaths = allPaths.filter((p) => !!mapsByBin[p]);
 
-  // Map IDs already assigned in the mapping
-  const mappedMapIds = new Set(Object.values(effectiveMapping));
+  // Map IDs already assigned
+  const mappedMapIds = new Set(mappedPaths.map((p) => mapsByBin[p].id));
 
-  // Paths not yet in the mapping
-  const unmappedPaths = allPaths.filter((p) => !mappedPaths.includes(p));
+  // Paths not yet assigned to a map
+  const unmappedPaths = allPaths.filter((p) => !mapsByBin[p]);
 
   // Maps from the campaign not yet assigned
   const availableMaps = campaign?.maps?.filter((m) => !mappedMapIds.has(m.id)) ?? [];
 
-  const updateMapping = (newMapping) => {
-    setLocalMapping(newMapping);
-    setDirty(true);
-  };
-
   const removeMapping = (path) => {
-    const next = { ...effectiveMapping };
-    delete next[path];
-    updateMapping(next);
+    const map = mapsByBin[path];
+    if (!map) return;
+    updateMap({ ...map, bin: null });
   };
 
   const addMapping = (path, mapId) => {
-    const next = { ...effectiveMapping };
-    next[path] = mapId;
-    updateMapping(next);
-  };
-
-  const handleSave = () => {
-    saveMappingToServer({ id: campaignId, data: effectiveMapping });
+    const map = mapsById[mapId];
+    if (!map) return;
+    updateMap({ ...map, bin: path });
   };
 
   return (
-    <Box>
-      <Button
-        size="small"
-        variant="text"
-        onClick={() => setExpanded(!expanded)}
-        startIcon={<FontAwesomeIcon icon={expanded ? faChevronDown : faChevronRight} size="xs" />}
-        sx={{ textTransform: "none", mb: 0.5 }}
-      >
-        {t("toggle_label")}
-      </Button>
-      <Collapse in={expanded}>
-        <Stack
-          spacing={1.5}
-          sx={{
-            p: 1.5,
-            borderRadius: 1,
-            backgroundColor: "rgba(0,0,0,0.2)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          {mappingQuery.isLoading && <LoadingSpinner />}
-          {mappingQuery.isError && (
-            <Typography variant="body2" color="text.secondary">
-              No mapping file exists yet. Add entries below to create one.
-            </Typography>
-          )}
+    <Stack
+      spacing={1.5}
+      sx={{
+        p: 1.5,
+        borderRadius: 1,
+        backgroundColor: "rgba(0,0,0,0.2)",
+        border: "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      <Typography variant="subtitle2">{t("title")}</Typography>
 
-          {/* Current mappings list */}
-          {mappedPaths.length > 0 && (
-            <Table size="small">
-              <TableBody>
-                {mappedPaths.map((path) => {
-                  const mapId = effectiveMapping[path];
-                  const map = mapsById[mapId];
-                  const mapName = map ? getMapName(map, campaign) : `Map #${mapId}`;
-                  return (
-                    <TableRow key={path}>
-                      <TableCell sx={{ py: 0.5, fontSize: "0.8rem", color: "text.secondary" }}>
-                        {path}
-                      </TableCell>
-                      <TableCell sx={{ py: 0.5 }}>→</TableCell>
-                      <TableCell sx={{ py: 0.5, fontSize: "0.8rem" }}>{mapName}</TableCell>
-                      <TableCell sx={{ py: 0.5 }} width={1}>
-                        <IconButton size="small" onClick={() => removeMapping(path)} color="error">
-                          <FontAwesomeIcon icon={faTrash} size="xs" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          )}
+      {/* Current assignments list */}
+      {mappedPaths.length > 0 && (
+        <Table size="small">
+          <TableBody>
+            {mappedPaths.map((path) => {
+              const map = mapsByBin[path];
+              const mapName = map ? getMapName(map, campaign) : `Map #${map?.id}`;
+              return (
+                <TableRow key={path}>
+                  <TableCell sx={{ py: 0.5, fontSize: "0.8rem", color: "text.secondary" }}>{path}</TableCell>
+                  <TableCell sx={{ py: 0.5 }}>→</TableCell>
+                  <TableCell sx={{ py: 0.5, fontSize: "0.8rem" }}>{mapName}</TableCell>
+                  <TableCell sx={{ py: 0.5 }} width={1}>
+                    <IconButton
+                      size="small"
+                      onClick={() => removeMapping(path)}
+                      color="error"
+                      disabled={isSaving}
+                    >
+                      <FontAwesomeIcon icon={faTrash} size="xs" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
 
-          {mappedPaths.length === 0 && !mappingQuery.isLoading && (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
-              {t("no_entries")}
-            </Typography>
-          )}
+      {mappedPaths.length === 0 && (
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
+          {t("no_entries")}
+        </Typography>
+      )}
 
-          <Divider />
-
-          {/* Add new mapping row */}
-          <MappingAddRow
-            unmappedPaths={unmappedPaths}
-            availableMaps={availableMaps}
-            campaign={campaign}
-            onAdd={addMapping}
-          />
-
-          {/* Save button */}
-          <Button variant="contained" size="small" onClick={handleSave} disabled={!dirty || isSaving}>
-            {isSaving ? t("saving") : t("save")}
-          </Button>
-        </Stack>
-      </Collapse>
-    </Box>
+      {/* Add new assignment row */}
+      <MappingAddRow
+        unmappedPaths={unmappedPaths}
+        availableMaps={availableMaps}
+        campaign={campaign}
+        onAdd={addMapping}
+        disabled={isSaving}
+      />
+    </Stack>
   );
 }
 
-function MappingAddRow({ unmappedPaths, availableMaps, campaign, onAdd }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.mapping" });
+function MappingAddRow({ unmappedPaths, availableMaps, campaign, onAdd, disabled }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map_data.campaign_data.bin_assignments" });
   const [selectedPath, setSelectedPath] = useState(null);
   const [selectedMap, setSelectedMap] = useState(null);
 
@@ -670,7 +627,12 @@ function MappingAddRow({ unmappedPaths, availableMaps, campaign, onAdd }) {
         onChange={(_, v) => setSelectedMap(v)}
         renderInput={(params) => <TextField {...params} label={t("select_map")} />}
       />
-      <Button variant="outlined" size="small" onClick={handleAdd} disabled={!selectedPath || !selectedMap}>
+      <Button
+        variant="outlined"
+        size="small"
+        onClick={handleAdd}
+        disabled={disabled || !selectedPath || !selectedMap}
+      >
         {t("add")}
       </Button>
     </Stack>

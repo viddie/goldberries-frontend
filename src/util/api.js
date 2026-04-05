@@ -438,9 +438,6 @@ export function fetchBadgePlayers(badgeId) {
 export function fetchCampaignData(id) {
   return axios.get("/campaign/data", { params: { id } });
 }
-export function fetchCampaignDataMapping(id) {
-  return axios.get("/campaign/data-mapping", { params: { id } });
-}
 export function fetchProcessCampaign(id) {
   return axios.get("/admin/process-campaign", { params: { id } });
 }
@@ -452,15 +449,15 @@ export function fetchProcessGbCampaign(url, regenerate = false) {
 export function fetchTempData(url) {
   return axios.get("/admin/temp-campaign-data", { params: { gamebanana_url: url } });
 }
-export function fetchTempMapData(url, hash, checkExists = false) {
-  const params = { gamebanana_url: url, hash };
+export function fetchTempMapData(url, binPath, checkExists = false) {
+  const params = { gamebanana_url: url, bin_path: binPath };
   if (checkExists) params.check_exists = "true";
   return axios.get("/admin/temp-map-data", { params });
 }
-export function fetchMapData(id, { campaignId, hash, checkExists } = {}) {
+export function fetchMapData(id, { campaignId, binPath, checkExists } = {}) {
   const params = {};
   if (id) params.id = id;
-  if (hash) params.hash = hash;
+  if (binPath) params.bin_path = binPath;
   if (campaignId) params.campaign_id = campaignId;
   if (checkExists) params.check_exists = true;
   return axios.get("/map/data", { params });
@@ -589,14 +586,15 @@ export function postReport(data) {
 export function postCampaignData(id, data) {
   return axios.post("/campaign/data", data, { params: { id } });
 }
-export function postCampaignDataMapping(id, data) {
-  return axios.post("/campaign/data-mapping", data, { params: { id } });
-}
 export function postMapData(id, data) {
   return axios.post("/map/data", data, { params: { id } });
 }
-export function postMapDataBin(data, { binPath, campaignId }) {
-  return axios.post("/map/data", data, { params: { bin_path: binPath, campaign_id: campaignId } });
+export function postMapDataBin(data, { binPath, campaignId, isBinary = false }) {
+  const config = { params: { bin_path: binPath, campaign_id: campaignId } };
+  if (isBinary) {
+    config.headers = { "Content-Type": "application/octet-stream" };
+  }
+  return axios.post("/map/data", data, config);
 }
 //#endregion
 
@@ -606,11 +604,11 @@ export function deleteCampaignData(id) {
     params: { id },
   });
 }
-export function deleteMapData(id, { campaignId, hash } = {}) {
+export function deleteMapData(id, { campaignId, binPath } = {}) {
   const params = {};
   if (id) params.id = id;
   if (campaignId) params.campaign_id = campaignId;
-  if (hash) params.hash = hash;
+  if (binPath) params.bin_path = binPath;
   return axios.delete("/map/data", { params });
 }
 export function deleteCampaign(id) {

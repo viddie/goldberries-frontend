@@ -14,7 +14,7 @@ export function MouseWorldPos() {
   const textRef = useRef();
 
   // Use 'pointer' instead of 'mouse'
-  const { viewport, raycaster, camera, pointer, size } = useThree();
+  const { raycaster, camera, pointer, size } = useThree();
 
   useFrame(() => {
     // 2. Update raycaster from the pointer (-1 to +1 coordinates)

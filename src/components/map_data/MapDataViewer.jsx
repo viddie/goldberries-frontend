@@ -19,7 +19,6 @@ export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavig
     () => (antiSpoilerMode ? allRooms.filter((r) => !isRoomHidden(r)) : allRooms),
     [allRooms, antiSpoilerMode],
   );
-  const bounds = getEnclosingBounds(rooms);
   const clearSelectedObject = useViewerStore((s) => s.clearSelectedObject);
   const navigateToRoom = useViewerStore((s) => s.navigateToRoom);
   const [canvasReady, setCanvasReady] = useState(false);
@@ -275,24 +274,6 @@ function RoomRenderer({ room }) {
 }
 
 //#region Utils
-function getEnclosingBounds(rooms) {
-  if (rooms.length === 0) return { x: 0, y: 0, width: 100, height: 100 };
-
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-
-  rooms.forEach((room) => {
-    minX = Math.min(minX, room.x);
-    minY = Math.min(minY, room.y);
-    maxX = Math.max(maxX, room.x + room.width);
-    maxY = Math.max(maxY, room.y + room.height);
-  });
-
-  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
-}
-
 export function projectCelestePoint(point) {
   return { x: point.x, y: -point.y };
 }

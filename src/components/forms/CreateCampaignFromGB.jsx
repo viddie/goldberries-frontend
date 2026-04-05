@@ -2,8 +2,10 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Chip,
   Divider,
+  FormControlLabel,
   Grid,
   IconButton,
   MenuItem,
@@ -31,7 +33,6 @@ import { faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   useGetModInfo,
   usePostCampaign,
-  usePostCampaignDataMapping,
   usePostChallenge,
   usePostMap,
   useProcessGbCampaign,
@@ -77,6 +78,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   const [mapDataLoading, setMapDataLoading] = useState(false);
   const [mapDataErrors, setMapDataErrors] = useState({});
   const [editingMapIndex, setEditingMapIndex] = useState(null);
+  const [clearCache, setClearCache] = useState(false);
 
   // Campaign fields form
   const campaignForm = useForm({
@@ -109,7 +111,6 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   const { mutateAsync: postCampaign } = usePostCampaign();
   const { mutateAsync: postMap } = usePostMap();
   const { mutateAsync: postChallenge } = usePostChallenge();
-  const { mutateAsync: postCampaignDataMapping } = usePostCampaignDataMapping();
 
   //#region Step 1: URL Input
   const handleProcessUrl = async () => {
@@ -124,15 +125,19 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     setStep(1);
     getModInfo(gbUrl);
 
-    // Check if this URL has already been processed (cached temp data)
-    try {
-      const response = await fetchTempData(gbUrl);
-      // Normalize: temp-campaign-data returns { data: [...] }, but the rest of
-      // the component expects processResult.bins, so map accordingly
-      setProcessResult({ bins: response.data.data });
-    } catch {
-      // No cached data — fall back to full processing
-      processGbCampaign({ url: gbUrl });
+    if (clearCache) {
+      processGbCampaign({ url: gbUrl, regenerate: true });
+    } else {
+      // Check if this URL has already been processed (cached temp data)
+      try {
+        const response = await fetchTempData(gbUrl);
+        // Normalize: temp-campaign-data returns { data: [...] }, but the rest of
+        // the component expects processResult.bins, so map accordingly
+        setProcessResult({ bins: response.data.data });
+      } catch {
+        // No cached data — fall back to full processing
+        processGbCampaign({ url: gbUrl });
+      }
     }
   };
   //#endregion
@@ -145,7 +150,6 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
         .filter((bin) => bin.name)
         .map((bin) => ({
           name: bin.name,
-          hash: bin.hash,
           binPath: bin.path,
         }));
       setMapList(maps);
@@ -163,16 +167,16 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
     const newCollectibles = { ...mapCollectibles };
 
     for (const map of mapList) {
-      if (!map.hash) continue;
+      if (!map.binPath) continue;
       try {
-        const response = await fetchTempMapData(gamebananaUrl, map.hash);
-        newCache[map.hash] = response.data;
+        const response = await fetchTempMapData(gamebananaUrl, map.binPath);
+        newCache[map.binPath] = response.data;
         // Auto-extract collectibles if not already edited
-        if (!newCollectibles[map.hash]) {
-          newCollectibles[map.hash] = extractCollectiblesForForm(response.data);
+        if (!newCollectibles[map.binPath]) {
+          newCollectibles[map.binPath] = extractCollectiblesForForm(response.data);
         }
       } catch {
-        newErrors[map.hash] = true;
+        newErrors[map.binPath] = true;
       }
     }
 
@@ -195,26 +199,22 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
       const campaignId = campaignResponse.data.id;
       toast.update(toastId, { render: t("feedback.campaign_created") });
 
-      // 2. Create maps + challenges sequentially, collecting bin path → map ID for mapping
-      const mappingData = {};
+      // 2. Create maps + challenges sequentially, setting bin path on each map
       for (let i = 0; i < maps.length; i++) {
         const map = maps[i];
         const config = challengeConfigs[i] || { mode: "c_fc", objective_id: 2 };
-        const collectibles = mapCollectibles[map.hash]?.filter((item) => item[0] && item[0] !== "") ?? null;
+        const collectibles =
+          mapCollectibles[map.binPath]?.filter((item) => item[0] && item[0] !== "") ?? null;
 
         const mapResponse = await postMap({
           name: map.name,
           campaign_id: campaignId,
           golden_changes: "Unknown",
           is_progress: true,
+          bin: map.binPath || null,
           collectibles: collectibles?.length > 0 ? collectibles : null,
         });
         const mapId = mapResponse.data.id;
-
-        // Store bin path → map ID mapping
-        if (map.binPath) {
-          mappingData[map.binPath] = mapId;
-        }
 
         // Create challenges based on mode
         if (config.mode === "c_fc_distinct") {
@@ -246,9 +246,6 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
         });
       }
 
-      // 3. Save the bin path → map ID mapping for the campaign
-      await postCampaignDataMapping({ id: campaignId, data: mappingData });
-
       toast.update(toastId, {
         render: t("feedback.maps_created"),
         isLoading: false,
@@ -271,8 +268,8 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   //#region Map list helpers
   const unassignedBins = useMemo(() => {
     if (!processResult) return [];
-    const usedHashes = new Set(mapList.map((m) => m.hash));
-    return processResult.bins.filter((bin) => !usedHashes.has(bin.hash));
+    const usedPaths = new Set(mapList.map((m) => m.binPath));
+    return processResult.bins.filter((bin) => !usedPaths.has(bin.path));
   }, [processResult, mapList]);
 
   const addMap = (bin) => {
@@ -283,7 +280,6 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
       ...prev,
       {
         name: defaultName,
-        hash: bin.hash,
         binPath: bin.path,
       },
     ]);
@@ -298,7 +294,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   };
 
   const updateMapBin = (index, bin) => {
-    setMapList((prev) => prev.map((m, i) => (i === index ? { ...m, hash: bin.hash, binPath: bin.path } : m)));
+    setMapList((prev) => prev.map((m, i) => (i === index ? { ...m, binPath: bin.path } : m)));
   };
   //#endregion
 
@@ -318,8 +314,8 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
   // If editing a map's collectibles in the viewer
   if (editingMapIndex !== null) {
     const map = mapList[editingMapIndex];
-    const mapData = mapDataCache[map?.hash];
-    const collectibles = mapCollectibles[map?.hash] ?? [];
+    const mapData = mapDataCache[map?.binPath];
+    const collectibles = mapCollectibles[map?.binPath] ?? [];
 
     return (
       <Grid container spacing={2}>
@@ -368,7 +364,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
               ]}
               list={collectibles}
               setList={(newList) => {
-                setMapCollectibles((prev) => ({ ...prev, [map.hash]: newList }));
+                setMapCollectibles((prev) => ({ ...prev, [map.binPath]: newList }));
               }}
               valueCount={5}
               reorderable
@@ -396,6 +392,8 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
           setGbUrl={setGbUrl}
           urlError={urlError}
           onProcess={handleProcessUrl}
+          clearCache={clearCache}
+          setClearCache={setClearCache}
           t={t}
         />
       )}
@@ -447,7 +445,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
             setChallengeConfigs(
               mapList.map((map) => ({
                 mode: "c_fc",
-                objective_id: deriveObjectiveFromCollectibles(mapCollectibles[map.hash]),
+                objective_id: deriveObjectiveFromCollectibles(mapCollectibles[map.binPath]),
               })),
             );
             setStep(4);
@@ -471,7 +469,7 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
 }
 
 //#region Step Components
-function Step1UrlInput({ gbUrl, setGbUrl, urlError, onProcess, t }) {
+function Step1UrlInput({ gbUrl, setGbUrl, urlError, onProcess, clearCache, setClearCache, t }) {
   return (
     <Stack spacing={2}>
       <TextField
@@ -486,6 +484,10 @@ function Step1UrlInput({ gbUrl, setGbUrl, urlError, onProcess, t }) {
         onKeyDown={(e) => {
           if (e.key === "Enter") onProcess();
         }}
+      />
+      <FormControlLabel
+        control={<Checkbox checked={clearCache} onChange={(e) => setClearCache(e.target.checked)} />}
+        label={t("step_1.clear_cache")}
       />
       <Button variant="contained" color="primary" fullWidth onClick={onProcess} disabled={!gbUrl.trim()}>
         {t("step_1.process_button")}
@@ -607,20 +609,20 @@ function Step3MapList({
             label={t("step_3.bin_path")}
             select
             fullWidth
-            value={map.hash}
+            value={map.binPath}
             onChange={(e) => {
-              const bin = allBins.find((b) => b.hash === e.target.value);
+              const bin = allBins.find((b) => b.path === e.target.value);
               if (bin) onUpdateMapBin(index, bin);
             }}
             size="small"
           >
             {/* Current assignment */}
-            <MenuItem value={map.hash}>{map.binPath}</MenuItem>
+            <MenuItem value={map.binPath}>{map.binPath}</MenuItem>
             {/* Other available bins */}
             {unassignedBins
-              .filter((b) => b.hash !== map.hash)
+              .filter((b) => b.path !== map.binPath)
               .map((bin) => (
-                <MenuItem key={bin.hash} value={bin.hash}>
+                <MenuItem key={bin.path} value={bin.path}>
                   {bin.path}
                 </MenuItem>
               ))}
@@ -640,7 +642,7 @@ function Step3MapList({
             <Chip label={t("step_3.unassigned_bins")} size="small" />
           </Divider>
           {unassignedBins.map((bin) => (
-            <Stack key={bin.hash} direction="row" spacing={1} alignItems="center">
+            <Stack key={bin.path} direction="row" spacing={1} alignItems="center">
               <Typography variant="body2" sx={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
                 {bin.dialog_name || bin.path}
               </Typography>
@@ -699,11 +701,11 @@ function Step4Collectibles({
           </TableHead>
           <TableBody>
             {mapList.map((map, index) => {
-              const collectibles = mapCollectibles[map.hash] ?? [];
-              const hasError = mapDataErrors[map.hash];
+              const collectibles = mapCollectibles[map.binPath] ?? [];
+              const hasError = mapDataErrors[map.binPath];
 
               return (
-                <TableRow key={map.hash}>
+                <TableRow key={map.binPath}>
                   <TableCell>{map.name}</TableCell>
                   <TableCell>
                     {hasError ? (
@@ -763,7 +765,7 @@ function Step5Challenges({ mapList, challengeConfigs, setChallengeConfigs, onBac
       {mapList.map((map, index) => {
         const config = challengeConfigs[index] || { mode: "c_fc", objective_id: 2 };
         return (
-          <Stack key={map.hash} direction="row" spacing={2} alignItems="center">
+          <Stack key={map.binPath} direction="row" spacing={2} alignItems="center">
             <Typography variant="body2" sx={{ minWidth: 150 }}>
               {map.name}
             </Typography>

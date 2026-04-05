@@ -26,8 +26,8 @@ import { MapDataViewer } from "./MapDataViewer";
 import { isRoomHidden } from "./viewer/entity_definitions";
 import { useViewerStore } from "./viewer/useViewerStore";
 
-export function MapDataDialog({ mapId, hash, campaignId, initialRoom, onRoomNavigate }) {
-  const query = useGetMapData(mapId, { campaignId, hash });
+export function MapDataDialog({ mapId, binPath, campaignId, initialRoom, onRoomNavigate }) {
+  const query = useGetMapData(mapId, { campaignId, binPath });
   const mapData = getQueryData(query);
   const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
 

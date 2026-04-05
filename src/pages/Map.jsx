@@ -74,7 +74,20 @@ import {
 } from "./Challenge";
 
 export function PageMap() {
-  const { id, challengeId } = useParams();
+  const { id, "*": rest } = useParams();
+
+  // Parse rest: "view/roomName", "view", or "challengeId"
+  let challengeId = undefined;
+  let openViewer = false;
+  let initialRoom = undefined;
+
+  if (rest?.startsWith("view")) {
+    openViewer = true;
+    const roomPart = rest.slice("view".length + 1); // skip "view/"
+    if (roomPart) initialRoom = roomPart;
+  } else if (rest) {
+    challengeId = parseInt(rest);
+  }
 
   return (
     <BasicContainerBox
@@ -88,27 +101,12 @@ export function PageMap() {
         overflow: "hidden",
       }}
     >
-      <MapDisplay id={parseInt(id)} challengeId={parseInt(challengeId)} />
-    </BasicContainerBox>
-  );
-}
-
-export function PageMapViewer() {
-  const { id, roomName } = useParams();
-
-  return (
-    <BasicContainerBox
-      maxWidth="md"
-      sx={{
-        backgroundColor: "#282828",
-        border: "none",
-        p: 0,
-        pt: 0,
-        pb: 0,
-        overflow: "hidden",
-      }}
-    >
-      <MapDisplay id={parseInt(id)} openViewer initialRoom={roomName} />
+      <MapDisplay
+        id={parseInt(id)}
+        challengeId={challengeId}
+        openViewer={openViewer}
+        initialRoom={initialRoom}
+      />
     </BasicContainerBox>
   );
 }
