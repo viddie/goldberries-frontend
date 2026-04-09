@@ -401,7 +401,7 @@ export function ViewSuggestionModal({ id }) {
                 {relatedChallenges.map((challenge) => (
                   <>
                     <Grid item xs={12}>
-                      <Typography variant="body1">{getChallengeNameShort(challenge)}</Typography>
+                      <Typography variant="body1">{getChallengeNameShort(challenge, true)}</Typography>
                       <ChallengeSubmissionTable challenge={challenge} onlyShowFirst={20} />
                     </Grid>
                   </>
@@ -444,7 +444,7 @@ function VotesDetailsDisplay({ votes, voteType, hasSubmission, highlightedPlayer
               />
               {isHighlighted && (
                 <Tooltip
-                  title={t("related_challenge", { challenge: getChallengeNameShort(relatedChallenge) })}
+                  title={t("related_challenge", { challenge: getChallengeNameShort(relatedChallenge, true) })}
                   arrow
                   placement="top"
                 >
