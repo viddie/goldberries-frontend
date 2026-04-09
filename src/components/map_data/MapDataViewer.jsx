@@ -82,7 +82,7 @@ export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavig
           flexShrink: 0,
           order: { xs: 1, md: 0 },
           maxHeight: { xs: "50svh", md: "unset" },
-          overflow: "hidden",
+          overflow: { xs: "auto", md: "hidden" },
           minHeight: { md: 0 },
         }}
       >
@@ -94,33 +94,40 @@ export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavig
           minWidth: 0,
           height: { xs: "70svh", md: "auto" },
           minHeight: { md: 0 },
-          borderRadius: 1,
-          overflow: "hidden",
-          backgroundColor: "rgba(0,0,0,0.3)",
-          border: "1px solid rgba(255,255,255,0.06)",
           position: "relative",
         }}
       >
-        {!allReady && <ViewerLoadingOverlay label={loadingLabel} />}
         <ViewerSettings />
-        <Canvas
-          style={{ visibility: allReady ? "visible" : "hidden" }}
-          orthographic
-          frameloop="demand"
-          camera={{ zoom: defaultZoom, position: defaultPosition }}
-          onPointerMissed={handlePointerMissed}
-          onCreated={handleCreated}
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            borderRadius: 1,
+            overflow: "hidden",
+            backgroundColor: "rgba(0,0,0,0.3)",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
         >
-          <Controls />
-          {debugMode && <MouseWorldPos />}
-          <TileGrid />
-          <Suspense fallback={null}>
-            <FontSentinel onReady={handleFontSync} />
-            {rooms.map((room) => (
-              <RoomRenderer key={room.name} room={room} />
-            ))}
-          </Suspense>
-        </Canvas>
+          {!allReady && <ViewerLoadingOverlay label={loadingLabel} />}
+          <Canvas
+            style={{ visibility: allReady ? "visible" : "hidden" }}
+            orthographic
+            frameloop="demand"
+            camera={{ zoom: defaultZoom, position: defaultPosition }}
+            onPointerMissed={handlePointerMissed}
+            onCreated={handleCreated}
+          >
+            <Controls />
+            {debugMode && <MouseWorldPos />}
+            <TileGrid />
+            <Suspense fallback={null}>
+              <FontSentinel onReady={handleFontSync} />
+              {rooms.map((room) => (
+                <RoomRenderer key={room.name} room={room} />
+              ))}
+            </Suspense>
+          </Canvas>
+        </Box>
       </Box>
     </Box>
   );

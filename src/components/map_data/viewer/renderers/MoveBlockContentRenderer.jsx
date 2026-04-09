@@ -40,7 +40,10 @@ export function MoveBlockContentRenderer({ entity, def }) {
     }
   })();
 
-  const color = def.color;
+  let color = def.color;
+  if (typeof color === "function") {
+    color = color(entity.attributes);
+  }
 
   return <Arrow from={from} to={to} depth={0} color={color} thickness={2} />;
 }

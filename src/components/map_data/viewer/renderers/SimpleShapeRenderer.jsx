@@ -120,10 +120,13 @@ const SHAPE_DESCRIPTORS = {
       centerAnchored: true,
     };
   },
-  theo: () => {
+  theo: (attr, def, r) => {
+    const offset = r(def.offset, attr, undefined);
+    const ox = offset?.[0] ?? 0;
+    const oy = offset?.[1] ?? 0;
     const parts = [
-      hitboxToPart(8, 10, -4, -10), // base collider
-      hitboxToPart(16, 22, -8, -16), // pickup collider
+      hitboxToPart(8, 10, -4 + ox, -10 + oy), // base collider
+      hitboxToPart(16, 22, -8 + ox, -16 + oy), // pickup collider
     ];
     const bounds = computePartsBounds(parts);
     return {

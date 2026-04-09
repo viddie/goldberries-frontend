@@ -74,6 +74,8 @@ export function ViewerSettings() {
               zIndex: 10,
               p: 2,
               minWidth: 220,
+              maxHeight: "calc(100vh - 60px)",
+              overflowY: "auto",
               backgroundColor: "rgb(30,30,30)",
               border: "1px solid rgba(255,255,255,0.1)",
             }}

@@ -102,7 +102,7 @@ function RoomListSection({ rooms }) {
           sx={{ width: 200 }}
         />
       </Stack>
-      <Stack direction="row" gap={2} alignItems="flex-start">
+      <Stack direction={{ xs: "column", md: "row" }} gap={2} alignItems="flex-start">
         <TableContainer
           sx={{
             width: "fit-content",
@@ -176,7 +176,7 @@ function RoomDetailsPanel({ room, search, marginTop }) {
       sx={{
         flex: 1,
         minWidth: 0,
-        mt: `${marginTop}px`,
+        mt: { xs: 0, md: `${marginTop}px` },
         borderRadius: 1,
         backgroundColor: "rgba(0,0,0,0.2)",
         border: "1px solid rgba(255,255,255,0.06)",
