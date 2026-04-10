@@ -118,7 +118,7 @@ function RoomListSection({ rooms }) {
                 <TableCell>{t("col_name")}</TableCell>
                 <TableCell>{t("col_position")}</TableCell>
                 <TableCell>{t("col_size")}</TableCell>
-                <TableCell align="right">{t("col_entities")}</TableCell>
+                <TableCell align="right">{t("col_count")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -145,7 +145,10 @@ function RoomListSection({ rooms }) {
                       {room.width}×{room.height}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">{filterBySearch(room.entities, search).length}</TableCell>
+                  <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                    {filterBySearch(room.entities, search).length} |{" "}
+                    {filterBySearch(room.triggers, search).length}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -450,6 +453,7 @@ export function extractRooms(mapData) {
         y: attr.y ?? 0,
         width: attr.width ?? 0,
         height: attr.height ?? 0,
+        roomColor: attr.c ?? 0,
         entityCount: entities.length,
         entities,
         triggers,

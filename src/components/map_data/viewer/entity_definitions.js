@@ -249,6 +249,7 @@ group(
     "CommunalHelper/ConnectedZipMover": true,
     "CommunalHelper/SJ/DashZipMover": true,
     "VivHelper/VariantZipMover": true,
+    "VivHelper/CurvedZipMover2": true,
   },
 );
 
@@ -386,6 +387,7 @@ group(
     "vitellary/templegateall": { height: 48 },
     "batteries/battery_gate": { name: "BatteryGate", height: 48 },
     "pandorasBox/gate": { name: "FlagTempleGate", height: 48 },
+    "SJ2021/GrabTempleGate": { name: "GrabTempleGate", height: 48 },
   },
 );
 
@@ -821,6 +823,11 @@ group(
   },
   {
     "vitellary/paireddashswitch": { name: "[DashSwitch]" },
+    "SJ2021/FlagDashSwitch": {
+      name: "[DashSwitch]",
+      width: (attr) => (attr.orientation === "Down" || attr.orientation === "Up" ? 16 : 8),
+      height: (attr) => (attr.orientation === "Down" || attr.orientation === "Up" ? 8 : 16),
+    },
   },
 );
 
@@ -923,6 +930,7 @@ group(
     "VivHelper/VariantSpecificBooster": { name: "VariantSpecificBubble" },
     "VortexHelper/DashBubble": { color: colors.bubbleSpecial, name: "DashBubble" },
     "EeveeHelper/PatientBooster": { color: colors.bubbleSpecial, name: "PatientBubble" },
+    "JackalHelper/RoundKevin": { color: colors.bubbleSpecial, name: "CoreBubble" },
   },
 );
 
@@ -1013,6 +1021,7 @@ group(
     "batteries/battery": { name: "Battery" },
     "ExtendedVariantMode/TheoCrystal": true,
     "JungleHelper/Lantern": { name: "Lantern", offset: [0, 8] },
+    "VortexHelper/BowlPuffer": { name: "BowlPuffer", offset: [0, 8] },
   },
 );
 
@@ -1257,6 +1266,7 @@ group(
     "SpringCollab2020/moveBlockBarrier": { name: "MoveBlockBarrier" },
     "VivHelper/HoldableBarrier": { name: "HoldableBarrier" },
     "cavern/crystalBombField": { name: "CrystalBombField" },
+    "VortexHelper/PufferBarrier": { name: "PufferBarrier" },
     "BrokemiaHelper/moveBlockBarrier": "SpringCollab2020/moveBlockBarrier",
     "DJMapHelper/featherBarrier": {
       name: "FeatherBarrier",
@@ -1405,6 +1415,13 @@ ssm["CommunalHelper/StationBlockTrack"] = {
   ...fakeWallBase,
   color: colors.swapBlock,
   name: "StationBlockTrack",
+};
+
+ssm["FactoryHelper/DashNegator"] = {
+  ...fakeWallBase,
+  color: colors.coreFire,
+  name: "DashNegator",
+  opacity: 0.25,
 };
 //#endregion
 
@@ -1724,6 +1741,8 @@ export const IgnoreUnhandled = {
     "DJMapHelper/changeBossPatternTrigger",
     "vitellary/dropholdables",
     "EeveeHelper/GlobalModifier",
+    "SJ2021/bubbleEmitterFireTrigger",
+    "everest/entityTrigger",
   ]),
   //#endregion
   //#region Flag Triggers
@@ -1751,6 +1770,7 @@ export const IgnoreUnhandled = {
     "FrostHelper/OnPlayerOnGroundActivator",
     "FrostHelper/OnCassetteSwapActivator",
     "FrostHelper/OnPlayerEnterActivator",
+    "FrostHelper/DelayActivator",
     "XaphanHelper/ResetFlagsTrigger",
     "FrostHelper/TemporaryFlagTrigger",
     "GameHelper/TemporaryFlagTrigger",
@@ -1765,6 +1785,8 @@ export const IgnoreUnhandled = {
     "Bitsbolts/SaveDataFlagSync",
     "Bitsbolts/ResizeTriggers",
     "MaxHelpingHand/SetFlagOnActionController",
+    "FrostHelper/FlagIfVisibleTrigger",
+    "CommunalHelper/InputFlagController",
   ]),
   //#endregion
   //#region Camera Triggers
@@ -1869,6 +1891,7 @@ export const IgnoreUnhandled = {
     "clutterCabinet",
     "coloredlights/hanginglamp",
     "everest/ambienceTrigger",
+    "everest/musicLayerTrigger",
     "moonGlitchBackgroundTrigger",
     "PrismaticHelper/StylegroundsPanel",
     "MaxHelpingHand/RainbowSpinnerColorController",
@@ -2046,6 +2069,15 @@ export const IgnoreUnhandled = {
     "Sardine7/LightSource",
     "FemtoHelper/EHIController",
     "StyleMaskHelper/ColorGradeMask",
+    "CommunalHelper/Chain",
+    "FactoryHelper/KillerDebris",
+    "FactoryHelper/RustyLamp",
+    "MaxHelpingHand/SetBloomStrengthTrigger",
+    "SJ2021/MaskedDecal",
+    "coloredlights/flashlightColorTrigger",
+    "CommunalHelper/CoreModeMusicController",
+    "SorbetHelper/BigWaterfall",
+    "VivHelper/CurveEntity",
   ]),
   //#endregion
 };

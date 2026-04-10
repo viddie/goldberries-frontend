@@ -2355,6 +2355,7 @@
         "col_position": "Position",
         "col_size": "Size",
         "col_entities": "Entities",
+        "col_count": "Count",
         "search_placeholder": "Filter entities..."
       },
       "room_details": {

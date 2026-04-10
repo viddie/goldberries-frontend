@@ -11,6 +11,16 @@ import { TileGrid } from "./viewer/TileGrid";
 import { useViewerStore } from "./viewer/useViewerStore";
 import { LAYERS, isRoomHidden } from "./viewer/entity_definitions";
 
+const ROOM_COLORS = [
+  "#ffffff", // 0 - white
+  "#f6735e", // 1 - red
+  "#85f65e", // 2 - green
+  "#37d7e3", // 3 - light blue
+  "#376be3", // 4 - dark blue
+  "#c337e3", // 5 - purple
+  "#e33773", // 6 - pink
+];
+
 export function MapDataViewer({ mapData, campaign, map, initialRoom, onRoomNavigate }) {
   const allRooms = extractRooms(mapData);
   const antiSpoilerMode = useViewerStore((s) => s.antiSpoilerMode);
@@ -223,6 +233,7 @@ function RoomRenderer({ room }) {
     const rows = room.solidsText.split("\n");
     const tileRows = Math.ceil(room.height / 8);
     const tileCols = Math.ceil(room.width / 8);
+    const solidColor = ROOM_COLORS[room.roomColor % ROOM_COLORS.length];
 
     // Create an off-screen canvas
     const canvas = document.createElement("canvas");
@@ -235,7 +246,7 @@ function RoomRenderer({ room }) {
       const row = rows[r] || "";
       for (let c = 0; c < tileCols; c++) {
         const ch = row[c] || "0";
-        ctx.fillStyle = ch !== "0" && ch !== "" ? "#b0b0b0" : "#00000000";
+        ctx.fillStyle = ch !== "0" && ch !== "" ? solidColor : "#00000000";
         ctx.fillRect(c, r, 1, 1);
       }
     }
@@ -246,7 +257,7 @@ function RoomRenderer({ room }) {
     texture.flipY = true;
 
     return texture;
-  }, [room.solidsText, room.width, room.height]);
+  }, [room.solidsText, room.width, room.height, room.roomColor]);
 
   return (
     <group position={[bounds.x, bounds.y, 0]}>
