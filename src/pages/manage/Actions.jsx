@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightArrowLeft,
   faBan,
-  faBroom,
   faCodeMerge,
   faSpinner,
   faTrashCan,
@@ -178,18 +177,6 @@ const VERIFIER_ACTIONS = [
 ];
 
 const ADMIN_ACTIONS = [
-  {
-    category: "database",
-    actions: [
-      {
-        key: "clean_traffic",
-        name: "Clean Traffic",
-        description: "Delete traffic entries with NULL user_agent",
-        icon: faBroom,
-        dangerous: false,
-      },
-    ],
-  },
   {
     category: "campaigns",
     actions: [
