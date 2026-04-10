@@ -664,7 +664,11 @@ export function CreateAnyButton({
       </CustomModal>
 
       <CustomModal modalHook={createFromGBModal} options={{ hideFooter: true }} maxWidth={gbDialogMaxWidth}>
-        <FormCreateCampaignFromGB onSuccess={onCreatedFromGB} setMaxWidth={setGbDialogMaxWidth} />
+        <FormCreateCampaignFromGB
+          onSuccess={onCreatedFromGB}
+          setMaxWidth={setGbDialogMaxWidth}
+          defaultUrl={defaultCampaignUrl}
+        />
       </CustomModal>
     </>
   );

@@ -61,13 +61,14 @@ function deriveObjectiveFromCollectibles(collectibles) {
   return 13;
 }
 
-export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth }) {
+export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth, defaultUrl }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.create_campaign_from_gb" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_fm } = useTranslation(undefined, { keyPrefix: "forms.map" });
 
+  const defaultGbUrl = defaultUrl && GB_URL_REGEX.test(defaultUrl) ? defaultUrl : "";
   const [step, setStep] = useState(0);
-  const [gbUrl, setGbUrl] = useState("");
+  const [gbUrl, setGbUrl] = useState(defaultGbUrl);
   const [gamebananaUrl, setGamebananaUrl] = useState(null);
   const [urlError, setUrlError] = useState("");
   const [processResult, setProcessResult] = useState(null);
