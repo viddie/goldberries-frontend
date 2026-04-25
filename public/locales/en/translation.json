@@ -335,6 +335,9 @@
         },
         "show_like_counts": {
           "label": "Show Like Button"
+        },
+        "use_difficulty_opinions": {
+          "label": "Use Difficulty Opinions for Placement"
         }
       }
     }

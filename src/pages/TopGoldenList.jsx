@@ -308,9 +308,12 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
   }
 
   //Filter out entirely empty tier groups if hideEmptyTiers is enabled
+  const useOpinions = type === "player" && options.useDifficultyOpinions;
+  const getEffectiveDiffId = (c) =>
+    useOpinions ? (c.submissions[0].suggested_difficulty?.id ?? c.difficulty_id) : c.difficulty_id;
   const filteredTierGroups = tierGroups.filter((tierGroup) => {
     if (!hideEmptyTiers) return true;
-    const hasChallenges = tierGroup.some((tier) => challenges.some((c) => c.difficulty_id === tier.id));
+    const hasChallenges = tierGroup.some((tier) => challenges.some((c) => getEffectiveDiffId(c) === tier.id));
     return hasChallenges;
   });
 
@@ -420,7 +423,13 @@ function TierDisplay({ tier, challenges, maps, campaigns, type, showMap, editSub
     [renderUpTo],
   );
 
-  const challengesInTier = challenges.filter((c) => c.difficulty_id === tier.id);
+  const useOpinions = type === "player" && options.useDifficultyOpinions;
+  const challengesInTier = challenges.filter((c) => {
+    const effectiveDiffId = useOpinions
+      ? (c.submissions[0].suggested_difficulty?.id ?? c.difficulty_id)
+      : c.difficulty_id;
+    return effectiveDiffId === tier.id;
+  });
 
   sortChallengesForTGLNew(
     challengesInTier,

@@ -197,6 +197,14 @@ export function TglMoreButton({
                 noNote
               />
             )}
+            {isPlayer && (
+              <BoolOption
+                tKey="use_difficulty_opinions"
+                value={localOptions.useDifficultyOpinions}
+                setValue={(newValue) => changedOption("useDifficultyOpinions", newValue)}
+                noNote
+              />
+            )}
             <BoolOption
               tKey="show_like_counts"
               value={localOptions.showLikeCounts}
@@ -301,6 +309,7 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     showEmptyTiers: false,
     showTimeTaken: true,
     showLikeCounts: true,
+    useDifficultyOpinions: false,
     highlightPlayerId: playerId,
     version: 3,
   };
