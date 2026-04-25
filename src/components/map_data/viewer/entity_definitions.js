@@ -1139,7 +1139,7 @@ group(
 );
 
 group(
-  { color: colors.solid, name: "BouncySpikes", outline: "dashed", color: colors.specialArea },
+  { name: "BouncySpikes", outline: "dashed", color: colors.specialArea },
   {
     "HonlyHelper/BouncySpikesLeft": { width: 3, anchorX: "right" },
     "HonlyHelper/BouncySpikesRight": { width: 3, anchorX: "left" },

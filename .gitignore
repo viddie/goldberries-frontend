@@ -27,3 +27,4 @@ yarn-error.log*
 .github/copilot-instructions.md
 .github/goldberries.sql
 .github/bin_structure.json
+.github/changelog*

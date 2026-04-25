@@ -1338,6 +1338,7 @@ export function useProcessCampaign(onSuccess) {
     mutationFn: (id) => fetchProcessCampaign(id),
     onSuccess: (response, id) => {
       queryClient.invalidateQueries(["campaign_data", id]);
+      queryClient.invalidateQueries(["campaign_view", id]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
