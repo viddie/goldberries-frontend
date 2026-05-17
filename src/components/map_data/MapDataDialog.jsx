@@ -73,19 +73,37 @@ function filterBySearch(items, search) {
 
 function RoomListSection({ rooms }) {
   const { t } = useTranslation(undefined, { keyPrefix: "map_data.map_data.rooms" });
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedRoomName, setSelectedRoomName] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const search = useDebounce(searchInput, 1000);
 
-  if (rooms.length === 0) return null;
+  const roomRows = useMemo(
+    () =>
+      rooms
+        .map((room) => {
+          const entityCount = filterBySearch(room.entities, search).length;
+          const triggerCount = filterBySearch(room.triggers, search).length;
 
-  const selectedRoom = selectedIndex !== null ? rooms[selectedIndex] : null;
+          return {
+            room,
+            entityCount,
+            triggerCount,
+          };
+        })
+        .filter((row) => !search || row.entityCount > 0 || row.triggerCount > 0),
+    [rooms, search],
+  );
+
+  const selectedRoomIndex = roomRows.findIndex((row) => row.room.name === selectedRoomName);
+  const selectedRoom = selectedRoomIndex >= 0 ? roomRows[selectedRoomIndex].room : null;
+
+  if (rooms.length === 0) return null;
 
   return (
     <Box>
       <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 0.5 }}>
         <Typography variant="subtitle1" fontWeight="bold">
-          {t("title", { count: rooms.length })}
+          {t("title", { count: roomRows.length })}
         </Typography>
         <TextField
           size="small"
@@ -122,12 +140,12 @@ function RoomListSection({ rooms }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rooms.map((room, index) => (
+              {roomRows.map(({ room, entityCount, triggerCount }) => (
                 <TableRow
-                  key={index}
+                  key={room.name}
                   hover
-                  selected={selectedIndex === index}
-                  onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
+                  selected={selectedRoomName === room.name}
+                  onClick={() => setSelectedRoomName(selectedRoomName === room.name ? null : room.name)}
                   sx={{ cursor: "pointer" }}
                 >
                   <TableCell sx={{ whiteSpace: "nowrap" }}>
@@ -146,8 +164,7 @@ function RoomListSection({ rooms }) {
                     </Typography>
                   </TableCell>
                   <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                    {filterBySearch(room.entities, search).length} |{" "}
-                    {filterBySearch(room.triggers, search).length}
+                    {entityCount} | {triggerCount}
                   </TableCell>
                 </TableRow>
               ))}
@@ -156,7 +173,7 @@ function RoomListSection({ rooms }) {
         </TableContainer>
 
         {selectedRoom && (
-          <RoomDetailsPanel room={selectedRoom} search={search} marginTop={selectedIndex * 33} />
+          <RoomDetailsPanel room={selectedRoom} search={search} marginTop={selectedRoomIndex * 33} />
         )}
       </Stack>
     </Box>
