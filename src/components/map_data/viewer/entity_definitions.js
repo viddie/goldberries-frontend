@@ -23,6 +23,14 @@ export const LAYERS = {
   UI: 50,
 };
 
+/*
+TO ADD:
+- birdForsakenCityGem as Crystal heart renderer
+- multi-room strawberry, rust berry, dream berry, core berry, water berry
+  - https://goldberries.net/map/3742/view
+  - https://goldberries.net/map/4574/view
+*/
+
 //#region Renderers
 // These are entities that need special rendering
 export const IndividualEntityMap = {

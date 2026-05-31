@@ -52,6 +52,72 @@
       "default": "如果问题仍然存在，请尝试刷新浏览器的缓存（Ctrl + F5）或在#gb-report 中询问。"
     }
   },
+  "event": {
+    "sss26": {
+      "description": "这是你的印章表！在你提交一个新挑战并且将它标记为夏日集章赛的提交后，对应的印章会解锁并且在这里显示！你可以通过下面的条查看你的进度和平均Tier。记得查看<announcementsLink>最近的公告</announcementsLink>，里面解答了一些常见问题，以及其它有关活动的信息。",
+      "runtime": "这个活动会在6月1日到8月31日之间对所有人开放。",
+      "total_tier": "总Tier",
+      "total_tier_progress": "{{current}} / {{max}}",
+      "total_tier_info": "这些徽章只有在至少拿到8个印章的时候才能获得！",
+      "stamp_count_badge_info": "你需要拿到至少8个印章才能获得这个徽章，和总Tier无关。",
+      "boundary_passed_info": "你已经通过了这个总Tier分界线，但你仍然需要拿到至少8个印章才能获得这个徽章。",
+      "average_tier": "平均Tier: {{value}}",
+      "empty_submission": "<空>",
+      "no_stamp_alt": "无印章",
+      "stamp_alt": "印章 {{number}}",
+      "edit_stamp_tooltip": "修改印章提交挑战",
+      "edit_stamp_title": "修改印章: {{name}}",
+      "buttons": {
+        "cancel": "取消",
+        "remove": "删除",
+        "assign": "确认"
+      },
+      "stamps": [
+        {
+          "name": "Heartless </3",
+          "description": "任何不以水晶之心/迷你心结束的地图"
+        },
+        {
+          "name": "Ball and Chain",
+          "description": "任何主要GP为重型抛接物（比如Theo，电池）的地图"
+        },
+        {
+          "name": "A New Friend",
+          "description": "任何只有一人完成过的地图/挑战",
+          "extraInfo": "只需要在活动开始的时候只有一人完成"
+        },
+        {
+          "name": "Universal Language",
+          "description": "任何来自Music Translation Contest的地图"
+        },
+        {
+          "name": "The Ancient Scripts",
+          "description": "任何在2020年或2020年之前发布的地图"
+        },
+        {
+          "name": "Almost Anything",
+          "description": "任何在2020年之后发布的地图"
+        },
+        {
+          "name": "The Sequel",
+          "description": "任何名称里包含\"-Side\"的地图"
+        },
+        {
+          "name": "Time to Chill out",
+          "description": "任何无冲图"
+        },
+        {
+          "name": "All of Me",
+          "description": "任何主要GP为双冲（或更多冲）的地图"
+        },
+        {
+          "name": "Well-Read",
+          "description": "任何地图名押头韵的地图",
+          "extraInfo": "英文名中每个单词的首字母相同的地图（比如Avian Ascension，Drifting Deep）"
+        }
+      ]
+    }
+  },
   "likes": {
     "wishlist": "添加到愿望单",
     "completed": "已完成",

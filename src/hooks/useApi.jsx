@@ -35,6 +35,7 @@ import {
   verifyEmail,
   fetchSearch,
   fetchSubmissionQueue,
+  fetchSubmissionQueueInspect,
   fetchRejectedMapList,
   fetchPlayerList,
   postPlayer,
@@ -116,6 +117,10 @@ import {
   postMapDataBin,
   deleteCampaignData,
   deleteMapData,
+  fetchStampSubmission,
+  fetchStampSubmissionsForPlayer,
+  postStampSubmission,
+  deleteStampSubmission,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -312,6 +317,15 @@ export function useGetSubmissionQueue() {
     queryFn: () => fetchSubmissionQueue(),
     onError: errorToast,
     refetchInterval: 5 * 1000,
+  });
+}
+
+export function useGetSubmissionQueueInspect(id) {
+  return useQuery({
+    queryKey: ["submission_queue_inspect", id],
+    queryFn: () => fetchSubmissionQueueInspect(id),
+    onError: errorToast,
+    enabled: !!id,
   });
 }
 
@@ -573,6 +587,22 @@ export function useCheckMapDataExists(id) {
     queryFn: () => fetchMapData(id, { checkExists: true }),
     enabled: !!id,
     retry: false,
+  });
+}
+
+export function useGetStampSubmission(id) {
+  return useQuery({
+    queryKey: ["stamp_submission", id],
+    queryFn: () => fetchStampSubmission(id),
+    onError: errorToast,
+  });
+}
+export function useGetStampSubmissionsForPlayer(playerId) {
+  return useQuery({
+    queryKey: ["stamp_submissions_for_player", playerId],
+    queryFn: () => fetchStampSubmissionsForPlayer(playerId),
+    onError: errorToast,
+    enabled: !!playerId,
   });
 }
 
@@ -945,6 +975,19 @@ export function usePostMapDataBin(onSuccess) {
     onError: errorToast,
   });
 }
+
+export function usePostStampSubmission(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postStampSubmission(data),
+    onSuccess: (response, data) => {
+      queryClient.invalidateQueries(["stamp_submission"]);
+      queryClient.invalidateQueries(["stamp_submissions_for_player"]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
 //#endregion
 
 //#region == DELETE ==
@@ -1155,6 +1198,20 @@ export function useDeleteBadgePlayer(onSuccess) {
       queryClient.invalidateQueries(["player"]);
       if (onSuccess) onSuccess(response);
       else toast.success("Badge unassigned");
+    },
+    onError: errorToast,
+  });
+}
+
+export function useDeleteStampSubmission(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteStampSubmission(id),
+    onSuccess: (response, id) => {
+      queryClient.invalidateQueries(["stamp_submission", id]);
+      queryClient.invalidateQueries(["stamp_submissions_for_player"]);
+      if (onSuccess) onSuccess(response);
+      else toast.success("Stamp submission deleted");
     },
     onError: errorToast,
   });

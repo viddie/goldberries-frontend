@@ -43,6 +43,7 @@ import {
   PlayerChip,
   DifficultySelectControlled,
   DateAchievedTimePicker,
+  SubmissionInspectButton,
 } from "../goldberries";
 import { jsonDateToJsDate } from "../../util/util";
 import { FormOptions } from "../../util/constants";
@@ -289,9 +290,15 @@ export function FormSubmission({ submission, onSave, ...props }) {
               />
             </>
           )}
-          {submission.challenge?.map && (
+          {isHelper && (
             <>
               <span style={{ flexGrow: 1 }} />
+              <SubmissionInspectButton id={submission.id} />
+            </>
+          )}
+          {submission.challenge?.map && (
+            <>
+              {!isHelper && <span style={{ flexGrow: 1 }} />}
               <Tooltip arrow placement="top" title={t("map_information")}>
                 <CustomIconButton
                   onClick={() => mapCollectiblesModal.open(submission.challenge.map)}

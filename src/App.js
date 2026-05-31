@@ -116,6 +116,7 @@ import { PageMonthlyRecap } from "./pages/MonthlyRecap";
 import { PagePlayer } from "./pages/Player";
 import { PagePostList } from "./pages/Post";
 import { PageRejectedChallenges } from "./pages/RejectedChallenges";
+import { PageSummerStampRalley } from "./pages/SummerStampRalley";
 import { PageReport } from "./pages/Report";
 import { PageRules } from "./pages/Rules";
 import { PageSearch } from "./pages/Search";
@@ -287,6 +288,8 @@ const router = createBrowserRouter([
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
 
       { path: "rejected-challenges", element: <PageRejectedChallenges /> },
+
+      { path: "summer-stamp-ralley/:playerId", element: <PageSummerStampRalley /> },
 
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },
@@ -1310,6 +1313,8 @@ function VerifierStatsNavDesktop() {
   const data = getQueryData(query) ?? {
     submissions_in_queue: null,
     open_player_claims: null,
+    pending_suggestions: null,
+    undecided_suggestions: null,
   };
 
   const auth = useAuth();
@@ -1334,7 +1339,9 @@ function VerifierStatsNavDesktop() {
       <Tooltip title={t("widgets.pending_suggestions")}>
         <Link to="/suggestions" style={{ color: "inherit", textDecoration: "none" }}>
           <FontAwesomeIcon icon={faChartBar} style={{ marginRight: "5px" }} />
-          {query.isError ? "X" : (data.pending_suggestions ?? "...")}
+          {query.isError
+            ? "X"
+            : (data.pending_suggestions ?? "...") + " | " + (data.undecided_suggestions ?? "...")}
         </Link>
       </Tooltip>
     </Stack>

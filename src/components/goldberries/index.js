@@ -39,4 +39,5 @@ export {
 export { DateAchievedTimePicker } from "./DateAchievedTimePicker";
 export { ProofExternalLinkButton } from "./ProofExternalLinkButton";
 export { ChallengeInline } from "./ChallengeInline";
+export { SubmissionInspectButton } from "./SubmissionInspectButton";
 export { CollectibleChip } from "./CollectibleChip";

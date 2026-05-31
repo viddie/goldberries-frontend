@@ -2,10 +2,10 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 
-export function TooltipInfoButton({ title }) {
+export function TooltipInfoButton({ title, ...props }) {
   return (
     <Tooltip title={title} placement="top" arrow>
-      <FontAwesomeIcon icon={faInfoCircle} />
+      <FontAwesomeIcon icon={faInfoCircle} {...props} />
     </Tooltip>
   );
 }

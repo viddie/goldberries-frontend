@@ -1476,7 +1476,7 @@
           },
           {
             "heading": "Abus du bouton pause",
-            "text": "Les entrées <strong>ne doivent pas</strong> abuser du bouton de pause au point de trivialiser un challenge. Un exemple extrême d’abus est ce qu’on appelle le <i>pause buffering</i>, qui consiste à “buffer” le bouton de pause entre les pauses afin de faire avancer le jeu frame par frame. Simplifier des sections en utilisant le bouton pause est <strong>toujours</strong> interdit, même s’il ne s’agit pas de <i>pause buffering</i>. S’il n’y a pas de danger de mort présent, il est toléré d’utiliser le menu pause pour réaliser des <i>setups</i> difficiles ou répétitifs. De plus, utiliser le bouton pause peut être utilisé dans un scénario inattendu afin de laisser le temps de réfléchir. Attention, même dans un tel cas, il n’est pas autorisé de pauser plusieurs fois pour s’aligner et réaliser une séquence difficile. On notera que, comme pour le cas de la variante étendue <i>No Freeze Frames</i> (Désactiver les “freeze frames”), quelques anciennes entrées violant cette règle existent toujours, mais seraient aujourd’hui rejetées."
+            "text": "Les entrées <strong>ne doivent pas</strong> abuser du bouton de pause au point de trivialiser un challenge. Un exemple extrême d’abus est ce qu’on appelle le <i>pause buffering</i>, qui consiste à “buffer” le bouton de pause entre les pauses afin de faire avancer le jeu frame par frame. Simplifier des sections en utilisant le bouton pause est <strong>toujours</strong> interdit, même s’il ne s’agit pas de <i>pause buffering</i>. S’il n’y a pas de danger de mort présent, il est toléré d’utiliser le menu pause pour réaliser des <i>setups</i> difficiles ou répétitifs. De plus, utiliser le bouton pause peut être utilisé dans un scénario inattendu afin de laisser le temps de réfléchir. Attention, même dans un tel cas, il n’est pas autorisé de pauser plusieurs fois pour s’aligner et réaliser une séquence difficile. L’abus du bouton pause est bien distinct des techniques liées à la pause. De telles techniques sont <strong>toujours autorisées</strong>, et incluent le <i>slowfall</i> via la pause pour éviter de sauter, mettre en pause pour setup un <i>bino control storage</i>, ainsi que le <i>spinner stun</i> (voir Règle 9). On notera que, comme pour le cas de la variante étendue <i>No Freeze Frames</i> (Désactiver les “freeze frames”), quelques anciennes entrées violant cette règle existent toujours, mais seraient aujourd’hui rejetées."
           },
           {
             "heading": "Spinner Freeze / Stun",
@@ -1484,11 +1484,11 @@
           },
           {
             "heading": "Absence de golden",
-            "text": "Si une map ne possède pas de golden, il est <strong>permis</strong> d’en faire apparaître en utilisant la commande <code>give_golden</code> dans la console. Cette commande <strong>doit</strong> être utilisée dans la <strong>première</strong> salle de la map à un endroit trivialement accessible depuis le début du chapitre. Il est aussi permis d’utiliser <CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink> ou <CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink> pour directement ajouter une golden dans la map à un endroit facilement accessible depuis le début de la map."
+            "text": "Si une map ne possède pas de golden, il est <strong>permis</strong> d’en faire apparaître en utilisant la commande <code>give_golden</code> dans la console. Cette commande <strong>doit</strong> être utilisée dans la <strong>première</strong> salle de la map à un endroit trivialement accessible depuis le début du chapitre. Il est aussi permis d’utiliser <CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink> ou <CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink> pour directement ajouter une golden dans la map à un endroit facilement accessible depuis le début de la map. Cependant, il n’est <strong>pas autorisé</strong> d’utiliser une golden placée à la main d’une façon à se donner un avantage. Cela comprend aussi mourir durant la collection du cœur, ou utiliser la lumière émise par la golden dans une map où la visibilité fait partie du défi, comme <CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink>."
           },
           {
             "heading": "Deathless Berryless",
-            "text": "Pour les goldens (ou les fraises similaires), il n’est pas <strong>requis</strong> de collecter la fraise, tant que la run suit les mêmes règles qu’en la prenant (c’est-à-dire une run <i>deathless</i> mais sans récupérer la fraise). Si jamais prendre une golden change fondamentalement le challenge, comme avec une <i>golden room</i>, de telles entrées ne seront <strong>probablement pas</strong> acceptées. Bien que cette pratique ne soit pas encouragée, il est compréhensible que ces choses-là arrivent sans faire exprès, et une telle complétion reste tout de même légitime. Une note sera donnée à de telles runs."
+            "text": "Pour les goldens (ou les fraises similaires), il n’est pas <strong>requis</strong> de collecter la fraise, tant que la run suit les mêmes règles qu’en la prenant (c’est-à-dire une run <i>deathless</i> mais sans récupérer la fraise). Si jamais prendre une golden change fondamentalement le challenge, comme avec une <i>golden room</i>, de telles entrées <strong>ne seront pas</strong> acceptées. Bien que cette pratique ne soit pas encouragée, il est compréhensible que ces choses-là arrivent sans faire exprès, et une telle complétion reste tout de même légitime. Une note sera donnée à de telles runs."
           },
           {
             "heading": "Absence de trigger de collection",
@@ -1505,12 +1505,16 @@
           {
             "heading": "Overlay",
             "text": "Les preuves vidéo <strong>ne doivent pas</strong> contenir d’<i>overlay</i> cachant une grande partie ou une partie essentielle de l’écran. Les parties devant apparaître sont le chronomètre (ou « compteur de speedrun »), le compteur de fraises en haut à gauche, le <i>tracker</i> de fraises en bas du menu pause, et l’icône de sauvegarde en bas à droite."
+          },
+          {
+            "heading": "Version de map",
+            "text": "Les entrées peuvent être proposées sur n’importe quel(le) patch/version d’une map. Dans les cas où un ancien patch est significativement différent, niveau gameplay comme niveau difficulté, une map d’archive existe potentiellement, comme pour <CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>. Les entrées doivent collecter la golden sur la version de la map sur laquelle la run commence, indépendamment des changements potentiels d’autres patchs. Des exceptions peuvent être faites si une run meurt à cause d’un bug patché plus tard. La définition d’un \"bug\" est subjective et sera décidée au cas par cas."
           }
         ]
       },
       "full_game_additional": {
         "header": "Règles supplémentaires pour les challenges full game",
-        "explanation": "Il existe deux types de challenges \"full game\" : ceux qui complètent sans mourir un sous-ensemble pertinent de maps d’un map pack (qu’on appellera des <i>challenges full game partiels</i>), comme par exemple faire toutes les faces C ou un lobby sans mourir, et les challenges plus complets, comme par exemple faire toutes les maps sans mourir, ou même un 100 % <i>deathless</i> (qu’on appellera des <i>challenges full game complets</i>). Les règles s’appliquant seulement sur une de ces deux catégories le mentionneront.",
+        "explanation": "Il existe deux types de challenges \"full game\" : ceux qui complètent sans mourir un sous-ensemble pertinent de maps d’un map pack (qu’on appellera des <i>challenges full game partiels</i>), comme par exemple faire toutes les faces C ou un lobby sans mourir, et les challenges plus complets, comme par exemple faire toutes les maps sans mourir, ou même un 100 % <i>deathless</i> (qu’on appellera des <i>challenges full game complets</i>). Les règles s’appliquant seulement à une de ces deux catégories le mentionneront.",
         "entries": [
           {
             "heading": "Vidéo complète",
@@ -1541,7 +1545,7 @@
             "text": "Il est <strong>recommandé</strong> de ne pas faire de pauses trop longues sur le menu principal ou sur le menu pause. Il est autorisé de faire des pauses à l’intérieur d’une map sans utiliser le menu pause, bien que des pauses trop fréquentes peuvent éveiller les soupçons et nécessiter plus de preuves."
           },
           {
-            "heading": "",
+            "heading": "Segments de runs full game comme Deathless Berryless",
             "text": "Si une entrée ne collecte pas de goldens (ou de fraises similaires), elle <strong>peut</strong> être considérée comme une entrée pour une map individuelle, si le challenge suit les mêmes règles que celles mentionnées plus haut pour de telles runs."
           }
         ]
@@ -1589,6 +1593,24 @@
           },
           {
             "text": "D’autres mods sont communément utilisés dans la complétion de challenges <i>deathless</i>, comme <CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink> et <CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>."
+          },
+          {
+            "text": "Le mod <CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> met automatiquement le jeu en pause si un pic de lag est détecté, et est autorisé."
+          }
+        ]
+      }
+    },
+    "website": {
+      "header": "Règles du site",
+      "rules": {
+        "entries": [
+          {
+            "heading": "Pas de comptes alternatifs",
+            "text": "Chaque joueur·se doit avoir uniquement <strong>un compte</strong> sur le site. Utiliser plusieurs comptes pour publier des runs, voter sur des suggestions, ou manipuler le site de quelque façon que ce soit, est interdit."
+          },
+          {
+            "heading": "Pas de partage de compte",
+            "text": "Plusieurs joueurs <strong>ne doivent pas</strong> partager un unique compte. Chaque compte doit représenter une seule personne."
           }
         ]
       }

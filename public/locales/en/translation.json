@@ -70,6 +70,74 @@
     "show_all": "Show All",
     "show_less": "Show Less"
   },
+  "event": {
+    "sss26": {
+      "description": "This is your Stamp Sheet! Once you submit a new golden and mark it as a Stamp Rally submission, it will unlock the corresponding stamp and show up here! You can track your progress towards badges and check your average tier with the bar below. Be sure to check the <announcementsLink>recent announcements</announcementsLink> for Frequently Asked Questions, and any other info for the event.",
+      "runtime": "This event will be open to everyone and will run from June 1st to August 31st 2026.",
+      "total_tier": "Total Tier",
+      "total_tier_progress": "{{current}} / {{max}}",
+      "total_tier_info": "The badges shown here are only awarded if 8 or more stamps were collected!",
+      "stamp_count_badge_label": "0",
+      "stamp_count_badge_info": "This badge is awarded for collecting 8 or more stamps, regardless of your total tier.",
+      "boundary_passed_info": "You've passed this total tier boundary, but you still need to collect 8 or more stamps to actually earn this badge.",
+      "average_tier": "Average Tier: {{value}}",
+      "empty_submission": "<empty>",
+      "no_stamp_alt": "No stamp",
+      "stamp_alt": "Stamp {{number}}",
+      "edit_stamp_tooltip": "Edit stamp submission",
+      "edit_stamp_title": "Edit Stamp: {{name}}",
+      "buttons": {
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "assign": "Assign"
+      },
+      "stamps": [
+        {
+          "name": "Heartless </3",
+          "description": "Any map that doesn't end in a crystal/mini heart"
+        },
+        {
+          "name": "Ball and Chain",
+          "description": "Any map that features heavy throwables as the main gameplay",
+          "extraInfo": "Theo, Batteries, etc."
+        },
+        {
+          "name": "A New Friend",
+          "description": "Any map/challenge that only has one victor",
+          "extraInfo": "Only needs to be lonely at the beginning of the event"
+        },
+        {
+          "name": "Universal Language",
+          "description": "Any map from Music Translation Contest"
+        },
+        {
+          "name": "The Ancient Scripts",
+          "description": "Any map released in or before 2020"
+        },
+        {
+          "name": "Almost Anything",
+          "description": "Any map released after 2020"
+        },
+        {
+          "name": "The Sequel",
+          "description": "Any map with \"-Side\" in the name"
+        },
+        {
+          "name": "Time to Chill out",
+          "description": "Any Dashless map"
+        },
+        {
+          "name": "All of Me",
+          "description": "Any map that features 2 or more dashes as main gameplay"
+        },
+        {
+          "name": "Well-Read",
+          "description": "Any map with an alliterative title",
+          "extraInfo": "Maps with the same first letter in each word, like Avian Ascension or Drifting Deep"
+        }
+      ]
+    }
+  },
   "components": {
     "difficulty_select": {
       "label": "Difficulty Opinion",
@@ -104,6 +172,19 @@
     },
     "full_challenge_select": {
       "full_game_label": "Select Map OR Full Game Challenge"
+    },
+    "submission_inspect": {
+      "title": "Submission Inspection",
+      "related_submissions": "Other submissions for this Map",
+      "no_related": "No related submissions",
+      "notes_history": "Note History",
+      "no_notes": "This player has no past verifier notes",
+      "table": {
+        "date": "Date",
+        "status": "Status",
+        "note": "Note",
+        "count": "Count"
+      }
     },
     "roles": {
       "ex_helper": "Ex Helper",
@@ -1860,7 +1941,7 @@
           },
           {
             "heading": "Pre-challenge Progression",
-            "text": "Some challenges may be affected by progression outside of the challenge itself. In such cases, submissions <strong>may only use</strong> prior progression that <strong>does not</strong> depend on interaction with the challenge. For example, if a map is altered after collecting the golden strawberry, then submissions for the golden strawberry must be performed as if it was not already obtainined. If a map does not have a golden strawberry, but has a deathless challenge, then submissions must be performed as if the map has not been interacted with before. If the changes are significant enough, challenges may be split based on prior progression."
+            "text": "Some challenges may be affected by progression outside of the challenge itself. In such cases, submissions <strong>may only use</strong> prior progression that <strong>does not</strong> depend on interaction with the challenge. For example, if a map is altered after collecting the golden strawberry, then submissions for the golden strawberry must be performed as if it was not already obtained. If a map does not have a golden strawberry, but has a deathless challenge, then submissions must be performed as if the map has not been interacted with before. If the changes are significant enough, challenges may be split based on prior progression."
           },
           {
             "heading": "Overlay",

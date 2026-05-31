@@ -438,3 +438,19 @@ export const DIFFICULTY_STACKS = [
   [20],
   [19],
 ];
+
+/*
+ */
+
+export const STAMPS = {
+  0: { accent: "#5b2324" },
+  1: { accent: "#332f4f" },
+  2: { accent: "#a68d54" },
+  3: { accent: "#402143" },
+  4: { accent: "#21393d" },
+  5: { accent: "#4f6e40" },
+  6: { accent: "#b7c7db" },
+  7: { accent: "#2a1622" },
+  8: { accent: "#afc9af" },
+  9: { accent: "#1d2937" },
+};

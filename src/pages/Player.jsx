@@ -80,6 +80,7 @@ import {
 } from "../components/basic";
 import { BadgeDisplay } from "../components/badge";
 import { PlaceholderImage } from "../components/PlaceholderImage";
+import { SummerStampLink } from "../components/SummerStampLink";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
 import { WishlistCard, WishlistTable, FormWishlistLike } from "../components/likes";
 import { useModal, CustomModal } from "../hooks/useModal";
@@ -198,6 +199,8 @@ export function PlayerDisplay({ id, tab, setTab }) {
           <AccountRoleIcon account={player.account} />
           <ExRoleLabel account={player.account} />
           <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
+          <SummerStampLink playerId={id} />
+          <Box sx={{ width: 8 }} />
           <BadgeDisplay player={player} />
         </Stack>
 

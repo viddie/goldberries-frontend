@@ -222,6 +222,14 @@ export function fetchSubmissionQueue() {
   return axios.get("/submission/queue");
 }
 
+export function fetchSubmissionQueueInspect(id) {
+  return axios.get("/submission/queue-inspect", {
+    params: {
+      id: id,
+    },
+  });
+}
+
 export function fetchPlayer(id) {
   return axios.get("/player", {
     params: {
@@ -465,6 +473,13 @@ export function fetchMapData(id, { campaignId, binPath, checkExists } = {}) {
   if (checkExists) params.check_exists = true;
   return axios.get("/map/data", { params });
 }
+
+export function fetchStampSubmission(id) {
+  return axios.get("/stamp/stamp", { params: { id } });
+}
+export function fetchStampSubmissionsForPlayer(playerId) {
+  return axios.get("/stamp/get-for-player", { params: { id: playerId } });
+}
 //#endregion
 
 //#region == POST ==
@@ -599,6 +614,10 @@ export function postMapDataBin(data, { binPath, campaignId, isBinary = false }) 
   }
   return axios.post("/map/data", data, config);
 }
+
+export function postStampSubmission(data) {
+  return axios.post("/stamp/stamp", formatDataForApi(data));
+}
 //#endregion
 
 //#region == DELETE ==
@@ -721,6 +740,10 @@ export function deleteBadgePlayer(id) {
       id: id,
     },
   });
+}
+
+export function deleteStampSubmission(id) {
+  return axios.delete("/stamp/stamp", { params: { id } });
 }
 //#endregion
 
