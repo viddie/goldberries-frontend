@@ -42,7 +42,7 @@ export function NewChallengeSubmission({}) {
   const [selectedPlayer, setSelectedPlayer] = useState(auth.user?.player ?? null);
   const [showEmbed, setShowEmbed] = useState(false);
 
-  const { mutate: submitRun } = usePostSubmission((submission) => {
+  const { mutate: submitRun, isLoading: isSubmitting } = usePostSubmission((submission) => {
     navigate("/submission/" + submission.id);
   });
 
@@ -68,6 +68,10 @@ export function NewChallengeSubmission({}) {
     },
   });
   const onSubmit = form.handleSubmit((data) => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (data.new_challenge?.collectibles) {
       const filteredCollectibles = data.new_challenge.collectibles.filter(
         (item) => item[0] && item[0] !== "",
@@ -346,7 +350,7 @@ export function NewChallengeSubmission({}) {
             <TooltipInfoButton title={t_ts("date_achieved_note")} />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Button variant="contained" fullWidth onClick={onSubmit}>
+            <Button variant="contained" fullWidth onClick={onSubmit} disabled={isSubmitting}>
               {t("button")}
             </Button>
           </Grid>

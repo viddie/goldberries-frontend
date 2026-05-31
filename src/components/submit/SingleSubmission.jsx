@@ -59,7 +59,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
 
   const { mutateAsync: postPlayer } = usePostPlayer();
 
-  const { mutate: submitRun } = usePostSubmission((submission) => {
+  const { mutate: submitRun, isLoading: isSubmitting } = usePostSubmission((submission) => {
     navigate("/submission/" + submission.id);
   });
 
@@ -79,6 +79,10 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
     },
   });
   const onSubmit = form.handleSubmit((data) => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (data.is_fc === null) {
       toast.error(t("feedback.select_is_fc"));
       return;
@@ -423,7 +427,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
               variant="contained"
               fullWidth
               onClick={onSubmit}
-              disabled={challenge === null || selectedPlayer === null}
+              disabled={challenge === null || selectedPlayer === null || isSubmitting}
             >
               {t("button")}
             </Button>

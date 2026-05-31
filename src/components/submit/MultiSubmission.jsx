@@ -60,6 +60,7 @@ export function MultiSubmission() {
   const [mapDataList, setMapDataList] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(auth.user?.player ?? null);
   const [showEmbed, setShowEmbed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { mutateAsync: submitRun } = usePostSubmission();
 
@@ -70,11 +71,17 @@ export function MultiSubmission() {
     },
   });
   const onSubmit = form.handleSubmit((data) => {
+    if (isSubmitting) {
+      return;
+    }
+
     const invalidUrls = mapDataList.filter((mapData) => validateUrlNotRequired(mapData.proof_url) !== true);
     if (invalidUrls.length > 0) {
       toast.error(t("feedback.invalid_urls", { count: invalidUrls.length }));
       return;
     }
+
+    setIsSubmitting(true);
 
     const toastId = toast.loading(t("feedback.submitting", { current: 0, total: mapDataList.length }), {
       autoClose: false,
@@ -89,6 +96,7 @@ export function MultiSubmission() {
           autoClose: 10000,
           closeOnClick: true,
         });
+        setIsSubmitting(false);
         return;
       }
       const mapData = mapDataList[index];
@@ -402,7 +410,7 @@ export function MultiSubmission() {
               variant="contained"
               fullWidth
               onClick={onSubmit}
-              disabled={!submittable || !rawSessionsGood}
+              disabled={!submittable || !rawSessionsGood || isSubmitting}
             >
               {t("button", { count: mapDataList.length })}
             </Button>
