@@ -338,6 +338,7 @@ export const COLLECTIBLES = [
       { value: "1", name: "Taswell Silver", icon: "/icons/golden-taswell.png" },
       { value: "2", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
       { value: "3", name: "Rift Silver", icon: "/icons/silver-rift.png" },
+      { value: "4", name: "Modding Tools Silver", icon: "/icons/silver-riftb.png" },
     ],
   },
   {
