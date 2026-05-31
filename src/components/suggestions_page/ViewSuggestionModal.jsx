@@ -101,6 +101,7 @@ export function ViewSuggestionModal({ id }) {
       (isExpired && !auth.hasHelperPriv) ||
       (requiresComment && userText.trim().length < 10)) &&
     !hasVoted;
+  const commentFieldDisabled = hasVoted || (isExpired && !auth.hasHelperPriv && !hasVoted);
 
   const vote = (vote) => {
     if (hasVoted) {
@@ -288,7 +289,7 @@ export function ViewSuggestionModal({ id }) {
               multiline
               minRows={3}
               variant="outlined"
-              disabled={hasVoted}
+              disabled={commentFieldDisabled}
               value={userText}
               onChange={(e) => setUserText(e.target.value)}
             />
