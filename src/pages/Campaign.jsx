@@ -157,8 +157,12 @@ export function CampaignDisplay({ id, tab, setTab = () => {} }) {
         <Stack direction="row" alignItems="center" gap={1}>
           {campaign.icon_url === null && <FontAwesomeIcon icon={faBook} size="2x" />}
           <CampaignIcon campaign={campaign} height="1.7em" />
-          <Typography variant="h5">{campaign.name}</Typography>
-          <Box flexGrow={1} />
+          <Typography
+            variant="h5"
+            sx={{ flexGrow: 1, minWidth: 0, whiteSpace: "normal", overflowWrap: "anywhere" }}
+          >
+            {campaign.name}
+          </Typography>
           <CustomIconButton onClick={campaignDataModal.open}>
             <FontAwesomeIcon icon={faDatabase} />
           </CustomIconButton>
