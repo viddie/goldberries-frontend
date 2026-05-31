@@ -41,7 +41,8 @@ export function PageServerCosts({}) {
   //In euro
   const oldCosts = [
     { start: "2024-04-01", end: "2025-04-01", cost: 5.36 }, // Initial price
-    { start: "2025-05-01", end: null, cost: 6.5 }, // Current price
+    { start: "2025-05-01", end: "2026-05-01", cost: 6.5 },
+    { start: "2025-06-01", end: null, cost: 7.85 }, // Current price
   ];
   const currentVpsCost = 6.5;
   const domainCostPerMonth = 0.46;
