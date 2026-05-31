@@ -46,7 +46,26 @@ import { MapDataViewer } from "../map_data/MapDataViewer";
 import { extractCollectiblesForForm } from "../map_data/viewer/entity_definitions";
 
 import { SameCampaignNameIndicator } from "./Campaign";
-import { getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
+import { COLLECTIBLES, getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
+
+// Crystal Heart collectible type is excluded from default extraction since it's
+// most often ignored on the website.
+const EXCLUDED_DEFAULT_COLLECTIBLE_VALUES = new Set(["7"]);
+
+// Build a sort index for collectibles matching the order they appear in the
+// map collectibles editor select box (i.e. the COLLECTIBLES array order).
+const COLLECTIBLE_SORT_INDEX = new Map(COLLECTIBLES.map((c, i) => [c.value, i]));
+
+function sortAndFilterDefaultCollectibles(collectibles) {
+  const big = Number.MAX_SAFE_INTEGER;
+  return collectibles
+    .filter((item) => !EXCLUDED_DEFAULT_COLLECTIBLE_VALUES.has(item[0]))
+    .sort((a, b) => {
+      const aIdx = COLLECTIBLE_SORT_INDEX.get(a[0]) ?? big;
+      const bIdx = COLLECTIBLE_SORT_INDEX.get(b[0]) ?? big;
+      return aIdx - bIdx;
+    });
+}
 
 const GB_URL_REGEX = /gamebanana\.com\/(mods|wips)\/(\d+)/;
 const STEP_LABEL_KEYS = ["step_1.label", "step_2.label", "step_3.label", "step_4.label", "step_5.label"];
@@ -174,7 +193,9 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth, defaultUrl })
         newCache[map.binPath] = response.data;
         // Auto-extract collectibles if not already edited
         if (!newCollectibles[map.binPath]) {
-          newCollectibles[map.binPath] = extractCollectiblesForForm(response.data);
+          newCollectibles[map.binPath] = sortAndFilterDefaultCollectibles(
+            extractCollectiblesForForm(response.data),
+          );
         }
       } catch {
         newErrors[map.binPath] = true;
