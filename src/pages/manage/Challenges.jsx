@@ -46,6 +46,7 @@ import {
   ErrorDisplay,
   LoadingSpinner,
   HeadTitle,
+  StyledLink,
 } from "../../components/basic";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { FormChallengeWrapper } from "../../components/forms/Challenge";
@@ -254,7 +255,9 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                 <TableRow key={key}>
                   <TableCell align="left" width="35%">
                     <Stack direction="row" gap={1} alignItems="center" justifyContent="flex-start">
-                      <Typography variant="body2">{getCampaignName(campaign, t_g)}</Typography>
+                      <StyledLink to={"/campaign/" + campaign.id}>
+                        <Typography variant="body2">{getCampaignName(campaign, t_g)}</Typography>
+                      </StyledLink>
                       <CustomizedMenu
                         button={
                           <IconButton size="small" color="primary" aria-label="edit">
@@ -291,7 +294,9 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                   <TableCell align="left" width="35%">
                     {map && (
                       <Stack direction="row" gap={1} alignItems="center" justifyContent="flex-start">
-                        <Typography variant="body2">{getMapName(map, campaign)}</Typography>
+                        <StyledLink to={"/map/" + map.id}>
+                          <Typography variant="body2">{getMapName(map, campaign)}</Typography>
+                        </StyledLink>
                         <CustomizedMenu
                           button={
                             <IconButton
@@ -327,7 +332,9 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                   <TableCell align="left" width="30%">
                     {challenge && (
                       <Stack direction="row" gap={1} alignItems="center" justifyContent="flex-start">
-                        <Typography variant="body2">{getChallengeName(challenge)}</Typography>
+                        <StyledLink to={"/challenge/" + challenge.id}>
+                          <Typography variant="body2">{getChallengeName(challenge)}</Typography>
+                        </StyledLink>
                         <CustomizedMenu
                           button={
                             <IconButton size="small" color="primary" aria-label="edit">
