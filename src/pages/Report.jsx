@@ -286,6 +286,13 @@ function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBa
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
 
   const topicName = t_r(`topics.${selectedTopic}.name`);
+  const isUrlRequired = topicConfig?.requiresUrl && selectedSubTopic !== "other";
+
+  useEffect(() => {
+    if (!isUrlRequired) {
+      form.clearErrors("url");
+    }
+  }, [isUrlRequired, form]);
 
   const { mutate: postReport, isLoading } = usePostReport((response) => {
     toast.success(t_r("feedback.success"));
@@ -340,16 +347,16 @@ function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBa
           <Controller
             name="url"
             control={form.control}
-            rules={topicConfig?.requiresUrl ? FormOptions.UrlRequired(t_ff) : undefined}
+            rules={isUrlRequired ? FormOptions.UrlRequired(t_ff) : undefined}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                label={topicConfig?.requiresUrl ? t("url_label") : t("url_label_optional")}
+                label={isUrlRequired ? t("url_label") : t("url_label_optional")}
                 fullWidth
                 error={!!fieldState.error}
                 helperText={
                   fieldState.error?.message ||
-                  (topicConfig?.requiresUrl ? t("url_required_help") : t("url_optional_help"))
+                  (isUrlRequired ? t("url_required_help") : t("url_optional_help"))
                 }
               />
             )}
@@ -359,10 +366,10 @@ function DetailsStage({ form, topicConfig, selectedTopic, selectedSubTopic, onBa
             name="message"
             control={form.control}
             rules={{
-              required: t("validation.message_required"),
+              required: t_r("validation.message_required"),
               minLength: {
                 value: 3,
-                message: t("validation.message_min_length"),
+                message: t_r("validation.message_min_length"),
               },
             }}
             render={({ field, fieldState }) => (

@@ -29,6 +29,7 @@ TO ADD:
 - multi-room strawberry, rust berry, dream berry, core berry, water berry
   - https://goldberries.net/map/3742/view
   - https://goldberries.net/map/4574/view
+- https://goldberries.net/map/7574/view -> NonPoppingStrawberry
 */
 
 //#region Renderers

@@ -30,7 +30,7 @@ export function SummerStampLink({ playerId }) {
 
   return (
     <StyledLink
-      to={`/summer-stamp-ralley/${playerId}`}
+      to={`/event/summer-stamp-rally/${playerId}`}
       style={{ textDecoration: "none", display: "inline-block" }}
     >
       <Stack

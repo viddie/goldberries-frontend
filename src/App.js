@@ -289,7 +289,7 @@ const router = createBrowserRouter([
 
       { path: "rejected-challenges", element: <PageRejectedChallenges /> },
 
-      { path: "summer-stamp-ralley/:playerId", element: <PageSummerStampRalley /> },
+      { path: "event/summer-stamp-rally/:playerId", element: <PageSummerStampRalley /> },
 
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },

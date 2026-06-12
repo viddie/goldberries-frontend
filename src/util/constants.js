@@ -444,13 +444,13 @@ export const DIFFICULTY_STACKS = [
 
 export const STAMPS = {
   0: { accent: "#5b2324" },
-  1: { accent: "#332f4f" },
+  1: { accent: "#484177" },
   2: { accent: "#a68d54" },
-  3: { accent: "#402143" },
-  4: { accent: "#21393d" },
+  3: { accent: "#6b3771" },
+  4: { accent: "#8cb8c0" },
   5: { accent: "#4f6e40" },
   6: { accent: "#b7c7db" },
-  7: { accent: "#2a1622" },
+  7: { accent: "#ac608d" },
   8: { accent: "#afc9af" },
-  9: { accent: "#1d2937" },
+  9: { accent: "#7299c7" },
 };

@@ -29,7 +29,7 @@ import {
   TooltipInfoButton,
 } from "../components/basic";
 import { BadgeAsync } from "../components/badge";
-import { PlayerSubmissionSelect, SubmissionEmbed } from "../components/goldberries";
+import { EmoteImage, PlayerSubmissionSelect, SubmissionEmbed } from "../components/goldberries";
 import {
   getQueryData,
   useDeleteStampSubmission,
@@ -48,7 +48,7 @@ export function PageSummerStampRalley() {
 
   return (
     <BasicContainerBox maxWidth="lg" sx={{ background: "#333333" }}>
-      <HeadTitle title="Summer Stamp Ralley" />
+      <HeadTitle title="Summer Stamp Rally" />
       <SummerStampRalleyPlayer playerId={playerId} />
     </BasicContainerBox>
   );
@@ -105,11 +105,14 @@ function EventDetailsHeader() {
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>
-        Summer Stamp Rally
-      </Typography>
+      <Box
+        component="img"
+        src="/img/stamp/banner.png"
+        alt="Summer Stamp Rally"
+        sx={{ display: "block", width: "100%", maxWidth: 300, height: "auto", mb: 2, mx: "auto" }}
+      />
       <Typography variant="body2" color="text.secondary" paragraph>
-        <Trans t={t} i18nKey="description" components={{ announcementsLink: <StyledLink to="/news" /> }} />
+        <Trans t={t} i18nKey="description" components={{ announcementsLink: <StyledLink to="/news/57" /> }} />
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {t("runtime")}
@@ -145,6 +148,8 @@ function StampEntry({ playerId, stampId, stampSubmission }) {
   const info = { ...STAMPS[stampId], ...(t(`stamps.${stampId}`, { returnObjects: true }) ?? {}) };
   const hasSubmission = !!stampSubmission;
   const submission = stampSubmission?.submission ?? null;
+  const accentColor = info?.accent;
+  const accentGlowFilter = getAccentGlowFilter(hasSubmission, accentColor);
   const border = stampId > 1 ? { borderTop: "3px solid", borderColor: "#c3c3c3", pt: 1.5 } : {};
 
   return (
@@ -184,7 +189,15 @@ function StampEntry({ playerId, stampId, stampSubmission }) {
               }}
             >
               {submission ? (
-                <SubmissionEmbed submission={submission} style={{ width: "100%" }} />
+                <StyledLink to={`/submission/${submission.id}`} sx={{ width: "100%" }}>
+                  <SubmissionEmbed
+                    submission={submission}
+                    style={{
+                      width: "100%",
+                      border: `4px solid ${accentColor ?? "#c3c3c3"}`,
+                    }}
+                  />
+                </StyledLink>
               ) : (
                 <Typography variant="body2" color="text.secondary">
                   {t("empty_submission")}
@@ -276,7 +289,7 @@ function StampImage({ stampId, hasSubmission, info }) {
   const { t } = useTranslation(undefined, { keyPrefix: "event.sss26" });
   const stampPath = hasSubmission ? `/img/stamp/stamp${stampId}.png` : `/img/stamp/no_stamp.png`;
   const alt = hasSubmission ? (info?.name ?? t("stamp_alt", { number: stampId + 1 })) : t("no_stamp_alt");
-  const glow = hasSubmission && info?.accent ? `0 0 0.75rem ${info.accent}` : "none";
+  const accentGlowFilter = getAccentGlowFilter(hasSubmission, info?.accent);
   return (
     <Box
       component="img"
@@ -287,10 +300,16 @@ function StampImage({ stampId, hasSubmission, info }) {
         height: STAMP_IMAGE_SIZE,
         objectFit: "contain",
         imageRendering: "pixelated",
-        filter: glow ? `drop-shadow(${glow}) drop-shadow(${glow})` : "none",
+        filter: accentGlowFilter,
       }}
     />
   );
+}
+
+function getAccentGlowFilter(hasSubmission, accent) {
+  if (!hasSubmission || !accent) return "none";
+  const glow = `0 0 0.75rem ${accent}`;
+  return `drop-shadow(${glow}) drop-shadow(${glow})`;
 }
 
 export function calculateStampData(submissions) {
@@ -317,10 +336,49 @@ const TIER_BADGES = {
 };
 const STAMPS_REQUIRED = 8;
 
+// Overachiever milestones for total tier above 40. Each 20-increment shows an emote instead of a badge,
+// plus an info icon with a (placeholder) funny message. Emotes are random existing ones for now.
+const OVERACHIEVER_MILESTONES = [
+  {
+    threshold: 60,
+    emote: "chart_with_awesome_trend.png",
+    info: "Can't give you a badge for this, but know you're the goat.",
+  },
+  { threshold: 80, emote: "3dgospel.png", info: "A real overachiever, are we?" },
+  { threshold: 100, emote: "catpog.png", info: "Triple digits!!! What the heeeell" },
+  {
+    threshold: 120,
+    emote: "corn3dcorncorn3dcorncorn.png",
+    info: "Absolutely insane commitment, GG!",
+  },
+  {
+    threshold: 140,
+    emote: "catwashingmachine.gif",
+    info: "A t14 every 9 days, alright buddy what the fuck?????",
+  },
+  {
+    threshold: 160,
+    emote: "entity.png",
+    info: "?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????",
+  },
+  {
+    threshold: 180,
+    emote: "clowneline.png",
+    info: "Almost certainly cheater.",
+  },
+  { threshold: 200, emote: "gluckyou.png", info: "Guaranteed cheater." },
+];
+
 function TotalTierProgress({ totalTier, averageTier, stampCount }) {
   const { t } = useTranslation(undefined, { keyPrefix: "event.sss26" });
   const max = Math.max(40, totalTier);
-  const lineThresholds = totalTier > 40 ? [20, 40] : [20];
+  // Overachiever milestones only appear once the bar extends far enough to reach them.
+  const overachieverMilestones = OVERACHIEVER_MILESTONES.filter((m) => m.threshold <= max);
+  const lineThresholds = [
+    20,
+    ...(totalTier > 40 ? [40] : []),
+    ...overachieverMilestones.map((m) => m.threshold),
+  ];
   const fillPercent = max > 0 ? (totalTier / max) * 100 : 0;
   const barHeight = 28;
   const hasEnoughStamps = stampCount >= STAMPS_REQUIRED;
@@ -330,6 +388,13 @@ function TotalTierProgress({ totalTier, averageTier, stampCount }) {
     { threshold: 10, pct: 0, type: "count" },
     { threshold: 20, pct: (20 / max) * 100, type: "boundary" },
     { threshold: 40, pct: (40 / max) * 100, type: "boundary" },
+    ...overachieverMilestones.map((m) => ({
+      threshold: m.threshold,
+      pct: (m.threshold / max) * 100,
+      type: "emote",
+      emote: m.emote,
+      info: m.info,
+    })),
   ];
 
   return (
@@ -409,6 +474,14 @@ function TotalTierProgress({ totalTier, averageTier, stampCount }) {
             infoText = t("stamp_count_badge_info");
             infoWarning = false;
             label = t("stamp_count_badge_label");
+          } else if (type === "emote") {
+            // Overachiever milestones: unlock purely based on total tier, always show the funny info text.
+            unlocked = totalTier >= threshold;
+            greyscale = !unlocked;
+            glowColor = unlocked ? "rgba(255, 255, 255," : null;
+            infoText = item.info;
+            infoWarning = false;
+            label = threshold;
           } else {
             const boundaryPassed = totalTier >= threshold;
             unlocked = boundaryPassed && hasEnoughStamps;
@@ -477,7 +550,11 @@ function TotalTierProgress({ totalTier, averageTier, stampCount }) {
                   },
                 }}
               >
-                <BadgeAsync id={TIER_BADGES[threshold]} inline={false} />
+                {type === "emote" ? (
+                  <EmoteImage emote={item.emote} alt={String(label)} height="32px" />
+                ) : (
+                  <BadgeAsync id={TIER_BADGES[threshold]} inline={false} />
+                )}
               </Box>
               <Stack direction="row" alignItems="center" gap={0.25}>
                 <Typography variant="caption" sx={{ fontWeight: "bold", lineHeight: 1 }}>
