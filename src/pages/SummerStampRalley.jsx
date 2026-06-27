@@ -299,7 +299,6 @@ function StampImage({ stampId, hasSubmission, info }) {
         width: STAMP_IMAGE_SIZE,
         height: STAMP_IMAGE_SIZE,
         objectFit: "contain",
-        imageRendering: "pixelated",
         filter: accentGlowFilter,
       }}
     />

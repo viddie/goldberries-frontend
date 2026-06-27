@@ -53,6 +53,10 @@ export function DifficultySelectControlled({
   if (maxSort !== null) {
     difficulties = difficulties.filter((d) => d.sort <= maxSort);
   }
+
+  //Invert order of difficulties
+  difficulties.sort((a, b) => b.sort - a.sort);
+
   //Add "No Selection" option at the start with id = 0
   difficulties.unshift({ id: 0 });
 

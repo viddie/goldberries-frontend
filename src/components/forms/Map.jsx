@@ -326,8 +326,9 @@ export const COLLECTIBLES = [
       { value: "18", name: "Diamond Berry", displayName: "Diamond Berry", icon: "/icons/diamondberry.png" },
       { value: "19", name: "Rift Golden", icon: "/icons/strawberry-rift.png" },
       { value: "20", name: "Glitchtophen Golden", icon: "/icons/golden-glitchtophen.png" },
-      { value: "21", name: "Neon Birb Golden", icon: "/icons/golden_neonbirb.png" },
+      { value: "21", name: "Neon Birb Golden", icon: "/icons/golden-neonbirb.png" },
       { value: "22", name: "Moon Berry Golden", icon: "/icons/moonberry-8x.png" },
+      { value: "23", name: "Last Stop Golden", icon: "/icons/golden-laststop.png" },
     ],
   },
   {

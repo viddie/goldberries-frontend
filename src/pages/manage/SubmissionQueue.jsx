@@ -37,7 +37,7 @@ import {
   getDifficultyName,
   getMapName,
 } from "../../util/data_util";
-import { DifficultyChip, SubmissionFcIcon } from "../../components/goldberries";
+import { DifficultyChip, PlayerNotesIcon, SubmissionFcIcon } from "../../components/goldberries";
 import {
   getQueryData,
   useDeleteVerificationNotice,
@@ -483,6 +483,7 @@ function SubmissionQueueTableRow({
   const diff = challenge === null ? submission.suggested_difficulty : challenge.difficulty;
   const isNewChallenge = challenge === null;
   const markDateAchieved = shouldMarkSubmissionDateAchieved(submission);
+  const hasPlayerNotes = submission.player_notes?.trim();
 
   let noticeTooltipText = null;
   let noticeButtonColor = "primary";
@@ -548,6 +549,7 @@ function SubmissionQueueTableRow({
                   </svg>
                 </Tooltip>
               )}
+              {hasPlayerNotes && <PlayerNotesIcon notes={submission.player_notes} />}
             </Stack>
             <Typography variant="body1">{submission.id}</Typography>
           </Stack>

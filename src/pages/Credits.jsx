@@ -43,7 +43,7 @@ export function PageCredits() {
           </TableRow>
           <TableRow>
             <TableCell>{t("russian_translation")}</TableCell>
-            <TableCell>Kurome & Vagrant</TableCell>
+            <TableCell>Kurome & whiskersick</TableCell>
           </TableRow>
         </TableBody>
       </Table>
