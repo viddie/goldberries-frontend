@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
@@ -10,6 +10,7 @@ import {
   faArrowRight,
   faCircleCheck,
   faCircleXmark,
+  faClock,
   faEyeSlash,
   faPlus,
   faQuestionCircle,
@@ -21,6 +22,7 @@ import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
 import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../util/data_util";
+import { jsonDateToJsDate } from "../util/util";
 import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_page/SuggestionsList";
 import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
 import { CreateSuggestionModal } from "../components/suggestions_page/CreateSuggestionModal";
@@ -242,6 +244,54 @@ export function SuggestionName({ suggestion, expired }) {
       )}
     </Stack>
   );
+}
+
+const SUGGESTION_ACTIVE_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+
+export function SuggestionCountdown({ suggestion, ...props }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.countdown" });
+  const theme = useTheme();
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!suggestion.date_verified) return null;
+
+  const endTime = jsonDateToJsDate(suggestion.date_verified).getTime() + SUGGESTION_ACTIVE_DURATION_MS;
+  const diff = endTime - now;
+  if (diff <= 0) return null;
+
+  return (
+    <Tooltip
+      title={t("tooltip", { date: new Date(endTime).toLocaleString(navigator.language) })}
+      arrow
+      placement="top"
+    >
+      <Stack
+        direction="row"
+        gap={0.5}
+        alignItems="center"
+        sx={{ color: theme.palette.text.secondary, whiteSpace: "nowrap" }}
+        {...props}
+      >
+        <FontAwesomeIcon icon={faClock} />
+        <Typography variant="body2">{t("label", { time: getShorthandTimeLeft(diff, t) })}</Typography>
+      </Stack>
+    </Tooltip>
+  );
+}
+
+function getShorthandTimeLeft(diffMs, t) {
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0) return t("days_hours", { days, hours });
+  if (hours > 0) return t("hours_minutes", { hours, minutes });
+  return t("minutes", { minutes });
 }
 
 export function SuggestionAcceptedIcon({ isAccepted, height = "1.5em" }) {

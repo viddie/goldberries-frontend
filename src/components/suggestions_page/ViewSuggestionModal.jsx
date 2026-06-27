@@ -33,6 +33,7 @@ import {
   CharsCountLabel,
   DifficultyMoveDisplay,
   SuggestionCommentDisplay,
+  SuggestionCountdown,
   SuggestionName,
 } from "../../pages/Suggestions";
 import { CustomMenu } from "../Menu";
@@ -78,9 +79,10 @@ export function ViewSuggestionModal({ id }) {
     return <ErrorDisplay error={query.error} />;
   }
 
-  const dateCreated = new Date(suggestion.date_created);
+  const dateVerified = suggestion.date_verified ? new Date(suggestion.date_verified) : null;
   const isExpired =
-    suggestion.is_accepted !== null || dateCreated < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    suggestion.is_accepted !== null ||
+    (dateVerified !== null && dateVerified < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
   const isGeneral = suggestion.challenge_id === null;
   const challenge = suggestion.challenge;
   const hasMap = challenge?.map_id;
@@ -209,6 +211,9 @@ export function ViewSuggestionModal({ id }) {
             <CustomMenu title="Modify" variant="outlined" items={modifyItems} />
           </Grid>
         )}
+        <Grid item xs={12} sm="auto" sx={{ mt: 1 }}>
+          <SuggestionCountdown suggestion={suggestion} />
+        </Grid>
         {suggestion.challenge !== null && suggestion.suggested_difficulty !== null && (
           <Grid item xs={12}>
             <DifficultyMoveDisplay

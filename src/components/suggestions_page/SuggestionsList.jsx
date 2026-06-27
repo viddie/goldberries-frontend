@@ -14,7 +14,12 @@ import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
 import { getSortedSuggestedDifficulties } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
-import { DifficultyMoveDisplay, SuggestionCommentDisplay, SuggestionName } from "../../pages/Suggestions";
+import {
+  DifficultyMoveDisplay,
+  SuggestionCommentDisplay,
+  SuggestionCountdown,
+  SuggestionName,
+} from "../../pages/Suggestions";
 
 export function SuggestionsList({
   expired,
@@ -155,13 +160,16 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         <Grid item xs={12} sm>
           <SuggestionName suggestion={suggestion} expired={expired} />
         </Grid>
-        {canDelete && (
-          <Grid item xs={12} sm="auto">
-            <IconButton color="error" onClick={askDeleteSuggestion} size="small">
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-          </Grid>
-        )}
+        <Grid item xs={12} sm="auto">
+          <Stack direction="row" gap={1} alignItems="center">
+            {canDelete && (
+              <IconButton color="error" onClick={askDeleteSuggestion} size="small">
+                <FontAwesomeIcon icon={faTrash} />
+              </IconButton>
+            )}
+            <SuggestionCountdown suggestion={suggestion} />
+          </Stack>
+        </Grid>
       </Grid>
 
       {suggestion.challenge !== null && suggestion.suggested_difficulty !== null && (

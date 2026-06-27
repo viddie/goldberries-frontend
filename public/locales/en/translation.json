@@ -1674,6 +1674,13 @@
       "deleted_player": "(deleted player)",
       "no_votes": "No votes yet"
     },
+    "countdown": {
+      "label": "{{time}} left",
+      "tooltip": "Active until {{date}}",
+      "days_hours": "{{days}}d {{hours}}h",
+      "hours_minutes": "{{hours}}h {{minutes}}m",
+      "minutes": "{{minutes}}m"
+    },
     "name": {
       "general": "General Suggestion",
       "pending": "Pending Verification",
