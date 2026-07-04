@@ -533,7 +533,7 @@ function SubmissionQueueTableRow({
           colSpan={1}
         >
           <Stack direction="row">
-            <Stack direction="row" sx={{ flex: 1 }} gap={0.25} alignItems="center">
+            <Stack direction="row" sx={{ flex: 1 }} gap={0.5} alignItems="center">
               <Typography variant="body1">{textTop}</Typography>
               {markDateAchieved && (
                 <Tooltip
