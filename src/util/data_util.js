@@ -52,7 +52,7 @@ export function getChallengeSuffix(challenge, checkDifferent = false) {
 }
 
 export function getChallengeIcon(challenge) {
-  if (challenge.icon_url !== null) {
+  if (challenge.icon_url !== null && challenge.icon_url !== undefined) {
     return challenge.icon_url;
   }
   return challenge.objective.icon_url;
