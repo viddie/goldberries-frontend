@@ -429,7 +429,7 @@
         "deleted": "地图包已删除"
       },
       "name_feedback": {
-        "generic_error": "Error searching for campaign name",
+        "generic_error": "搜索地图包名称时出错",
         "duplicate": "名称已存在",
         "unique": "名称可用"
       },
@@ -636,6 +636,7 @@
       "faq": "常见问题解答",
       "news": "新闻",
       "changelog": "更新日志",
+      "map_viewer": "地图预览",
       "report": "问题报告"
     },
     "internal_menu": {
@@ -1226,12 +1227,21 @@
   "map": {
     "buttons": {
       "edit": "编辑",
-      "view_challenge": "查看挑战项目"
+      "view_challenge": "查看挑战项目",
+      "submit": "提交你的内容",
+      "map_data_view": "查看地图预览",
+      "map_data_unavailable": "该地图暂无预览"
     },
     "no_challenges": "该地图暂无挑战项目",
     "info_boxes": {
       "collectibles": "收集物",
-      "golden_changes": "金草莓造成的地图变化"
+      "total_likes": "总喜欢",
+      "golden_changes": {
+        "label": "金草莓造成的地图变化",
+        "no_changes": "金草莓不造成地图变化",
+        "show": "显示"
+      },
+      "map_data": "地图预览"
     }
   },
   "player": {
@@ -2037,5 +2047,93 @@
     "view_on_gamebanana": "查看Gamebanana上的个人资料",
     "maps_text": "作者在其他人的地图包中制作的地图",
     "campaigns_text": "整个地图包都由这位作者制作."
+  },
+  "map_data": {
+    "campaign_data": {
+      "title": "地图包数据",
+      "not_available": "这个地图包还没有被处理过，或者因其他原因不可用。",
+      "bin_count": "{{count}} .bin文件",
+      "unmatched_bins": "{{count}}个无对应地图的.bin文件。",
+      "unmatched_maps": "{{count}}个无对应.bin文件的地图。",
+      "process_button": "处理地图包",
+      "processing": "处理中...",
+      "process_success": "地图包已处理。",
+      "edit_button": "编辑",
+      "exit_edit_button": "完成",
+      "delete_bin_confirm": "删除{{name}}的.bin数据？",
+      "delete_bin_confirm_text": "删除{{name}}的.bin数据？",
+      "delete_bin_success": "地图.bin数据已删除",
+      "delete_all": "删除全部数据",
+      "delete_all_confirm": "这会删除全部地图包数据，包括所有地图的.bin文件。该操作不能被撤销。你确定要这么做吗？",
+      "delete_all_success": "已删除全部地图包数据。",
+      "add_bin": {
+        "title": "添加.bin文件",
+        "bin_path": ".bin路径",
+        "drop_zone": "上传.bin或.json文件",
+        "submit": "上传",
+        "uploading": "上传中...",
+        "success": "已上传.bin文件数据。",
+        "no_file": "请选择一个文件。",
+        "invalid_file": "请选择一个.bin或.json文件。",
+        "invalid_json": "选择的文件不包含有效JSON。"
+      },
+      "structure": {
+        "unknown_map": "未知地图",
+        "unmatched_tooltip": "该.bin文件在数据库里没有对应地图。它可能是一个大厅，一个地图的旧版本，或者只是和数据库中的地图名称不同。",
+        "show_unmatched": "显示{{count}}个无对应地图的.bin文件",
+        "hide_unmatched": "隐藏无对应地图的.bin文件"
+      },
+      "bin_assignments": {
+        "title": "Bin文件分配",
+        "no_entries": "暂无分配。",
+        "select_bin": ".bin文件",
+        "select_map": "地图",
+        "add": "添加",
+        "save": "保存",
+        "saving": "保存中...",
+        "save_success": "已保存分配。"
+      }
+    },
+    "map_data": {
+      "rooms": {
+        "title": "房间 ({{count}})",
+        "col_name": "名称",
+        "col_position": "位置",
+        "col_size": "大小",
+        "col_entities": "实体",
+        "col_count": "Count",
+        "search_placeholder": "筛选实体..."
+      },
+      "room_details": {
+        "tab_entities": "实体",
+        "tab_triggers": "Triggers",
+        "tab_solids": "实心平台",
+        "col_name": "名称",
+        "col_position": "位置",
+        "col_size": "大小",
+        "no_entities": "这个房间里没有实体。",
+        "no_triggers": "这个房间里没有Trigger。"
+      },
+      "collectibles": {
+        "title": "收集物 ({{count}})",
+        "col_type": "类型",
+        "col_room": "房间",
+        "col_position": "位置"
+      }
+    }
+  },
+  "map_viewer": {
+    "title": "地图预览",
+    "url_label": "GameBanana链接",
+    "url_placeholder": "https://gamebanana.com/mods/123456",
+    "view_map": "查看地图",
+    "login_required": "你必须登录并绑定玩家才能使用地图预览。",
+    "invalid_url": "请输入一个有效的GameBanana链接(比如https://gamebanana.com/mods/123456)",
+    "processing": "正在处理GameBanana链接...",
+    "processing_warning": "如果Mod比较大，处理可能需要一段时间。如果耗时超过100秒，Cloudflare会终止连接并且处理会失败。",
+    "error": "处理地图包时出错了。",
+    "bin_files": "地图文件",
+    "unknown_map": "未知地图",
+    "no_bins": "未在该Mod中找到.bin文件。"
   }
 }
