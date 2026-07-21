@@ -13,16 +13,11 @@ const PATHS = {
 };
 
 const TILE_SIZE = 8; // used only for the tiling step (i * 8) along the repeat axis
-// True sprite sizes. Each sprite has transparent padding baked in on one edge, so simply
-// rendering at the true size with the original 8px-tile offsets already produces the correct
-// lean on the intended edge — the padding absorbs the rest invisibly.
 const REPEAT_SPRITE_SIZE = 10; // true size along the axis spikes repeat along
 const PERP_SPRITE_SIZE = 9; // true size along the perpendicular axis
 
-// The perpendicular size grew by 1 (8 -> 9), an odd delta — centering it as-is would split
-// that extra pixel evenly and shift the mounting edge (the side flush with the surface the
-// spike is attached to) by half a pixel. Shifting the perpendicular offset by half the delta,
-// away from the mounting edge, keeps that edge fixed and puts the whole extra pixel on the tip.
+// The perpendicular size grew by 1 (8 -> 9), an odd delta — centering it as-is splits
+// that extra pixel and shifts the sprite by half a pixel. So we shift the perpendicular offset by half the delta.
 const PERP_OFFSET_SHIFT = (PERP_SPRITE_SIZE - TILE_SIZE) / 2;
 
 const OFFSETS = {
