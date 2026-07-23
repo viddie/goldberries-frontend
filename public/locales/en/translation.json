@@ -177,6 +177,8 @@
       "title": "Submission Inspection",
       "related_submissions": "Other submissions for this Map",
       "no_related": "No related submissions",
+      "mark_obsolete": "Mark submission obsolete",
+      "unmark_obsolete": "Unmark submission obsolete",
       "notes_history": "Note History",
       "no_notes": "This player has no past verifier notes",
       "table": {

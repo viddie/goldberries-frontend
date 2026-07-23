@@ -1,9 +1,20 @@
-import { Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import {
+  Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassChart } from "@fortawesome/free-solid-svg-icons";
 
-import { getQueryData, useGetSubmissionQueueInspect } from "../../hooks/useApi";
+import { getQueryData, useGetSubmissionQueueInspect, usePostSubmission } from "../../hooks/useApi";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { CustomIconButton, ErrorDisplay, LoadingSpinner } from "../basic";
 
@@ -39,13 +50,18 @@ export function SubmissionInspectButton({ id, sx = {} }) {
       </Tooltip>
 
       <CustomModal modalHook={modal} options={{}} maxWidth="md">
-        <SubmissionInspectModalContent query={query} data={data} t={t} />
+        <SubmissionInspectModalContent query={query} data={data} t={t} id={id} />
       </CustomModal>
     </>
   );
 }
 
-function SubmissionInspectModalContent({ query, data, t }) {
+function SubmissionInspectModalContent({ query, data, t, id }) {
+  const queryClient = useQueryClient();
+  const { mutate: updateSubmission, isLoading: isUpdating } = usePostSubmission(() => {
+    queryClient.invalidateQueries(["submission_queue_inspect", id]);
+  });
+
   if (query.isLoading) return <LoadingSpinner />;
   if (query.isError) return <ErrorDisplay error={query.error} />;
 
@@ -69,6 +85,14 @@ function SubmissionInspectModalContent({ query, data, t }) {
             <Stack key={sub.id} direction="row" alignItems="center" gap={1} flexWrap="wrap">
               <ChallengeInline challenge={sub.challenge} submission={sub} showChallenge />
               {sub.is_verified === null && <VerificationStatusChip isVerified={null} size="small" />}
+              <Tooltip arrow placement="top" title={t(sub.is_obsolete ? "unmark_obsolete" : "mark_obsolete")}>
+                <Switch
+                  size="small"
+                  checked={sub.is_obsolete}
+                  onChange={() => updateSubmission({ ...sub, is_obsolete: !sub.is_obsolete })}
+                  disabled={isUpdating}
+                />
+              </Tooltip>
             </Stack>
           ))
         )}
