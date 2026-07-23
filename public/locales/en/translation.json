@@ -2179,6 +2179,7 @@
     "chinese_translation": "Chinese Translation",
     "french_translation": "French Translation",
     "russian_translation": "Russian Translation",
+    "korean_translation": "Korean Translation",
     "domain": "Domain",
     "domain_text": "{{name}} (managing and paying for the domain & Cloudflare, as well as making the original goldberries.net!)"
   },
