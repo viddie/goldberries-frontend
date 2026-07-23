@@ -11,6 +11,7 @@ export const LANGUAGES = [
   { code: "cn", name: "Chinese" },
   { code: "fr", name: "French" },
   { code: "ru", name: "Russian" },
+  { code: "kr", name: "Korean" },
 ];
 
 const DETECTION_OPTIONS = {
