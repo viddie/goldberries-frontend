@@ -650,6 +650,36 @@ export const COLLECTIBLES = [
         icon: "/icons/terraria-underworldplant.png",
       },
       {
+        value: "20",
+        name: "Terraria Fishing Pole",
+        displayName: "Fishing Pole",
+        icon: "/icons/terraria-fishingpole.png",
+      },
+      {
+        value: "21",
+        name: "Terraria Critter Guide",
+        displayName: "Critter Guide",
+        icon: "/icons/terraria-critterguide.png",
+      },
+      {
+        value: "22",
+        name: "Terraria Mechanical Key",
+        displayName: "Mechanical Key",
+        icon: "/icons/terraria-mechanicalkey.png",
+      },
+      {
+        value: "23",
+        name: "Terraria Sunken Coral",
+        displayName: "Sunken Coral",
+        icon: "/icons/terraria-sunkencoral.png",
+      },
+      {
+        value: "24",
+        name: "Terraria Wrench",
+        displayName: "Wrench",
+        icon: "/icons/terraria-wrench.png",
+      },
+      {
         value: "14",
         name: "Xaphan Upgrade",
         displayName: "Xaphan Upgrade",
