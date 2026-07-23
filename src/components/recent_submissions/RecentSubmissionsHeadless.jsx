@@ -27,6 +27,7 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
+  ObsoleteIcon,
 } from "../goldberries";
 import { ErrorDisplay, StyledLink } from "../basic";
 import { getChallengeCampaign, getChallengeSuffix, getMapName } from "../../util/data_util";
@@ -251,6 +252,7 @@ function RecentSubmissionsTableRow({ submission, hasPlayer }) {
               </Typography>
             )}
             <SubmissionFcIcon submission={submission} height="1.3em" />
+            {submission.is_obsolete && <ObsoleteIcon />}
             {submission.verifier_notes && (
               <VerifierNotesIcon notes={submission.verifier_notes} fontSize="1.0em" />
             )}

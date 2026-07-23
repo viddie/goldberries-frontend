@@ -27,6 +27,7 @@ import {
   VerificationStatusChip,
   PlayerChip,
   SubmissionFcIcon,
+  ObsoleteIcon,
 } from "../components/goldberries";
 import {
   displayDate,
@@ -356,7 +357,10 @@ function SubmissionDetailsGrid({ submission }) {
             </DetailCell>
             <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
               <Stack direction="column" gap={0.5} alignItems="flex-start">
-                <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                <Stack direction="row" gap={0.5} alignItems="center">
+                  <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                  {submission.is_obsolete && <ObsoleteIcon />}
+                </Stack>
                 <DateWithTooltip
                   date={submission.date_verified}
                   style={{ fontSize: "0.8rem", opacity: 0.7 }}
@@ -367,7 +371,10 @@ function SubmissionDetailsGrid({ submission }) {
         ) : (
           <>
             <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
-              <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+              <Stack direction="row" gap={0.5} alignItems="center">
+                <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                {submission.is_obsolete && <ObsoleteIcon />}
+              </Stack>
             </DetailCell>
             <DetailCell label={t("submitted")} icon={<FontAwesomeIcon icon={faClock} fixedWidth />}>
               <DateWithTooltip date={submission.date_created} />
