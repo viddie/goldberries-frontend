@@ -376,10 +376,6 @@
           "label": "Prefer Map Images",
           "note": "By default, the first clearer's youtube thumbnail is shown. Enable this to prefer showing the map image."
         },
-        "show_images": {
-          "label": "Show Images",
-          "note": "Disabling this hides the images, which will improve performance."
-        },
         "compact_mode": {
           "label": "Compact Mode",
           "note": "A compact layout closer to the original layout of the Top Golden List."
