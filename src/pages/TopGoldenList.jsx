@@ -594,7 +594,6 @@ function ChallengeInfoBox({
   if (!showFractionalTiers && !showLikeCounts) columnCount--;
   const columnWidth = 12 / columnCount;
 
-  const hideImage = !options.showImages;
   const handleClick = (e) => {
     if (!isPlayer) {
       showMap(map?.id, challenge.id, !map);
@@ -735,16 +734,14 @@ function ChallengeInfoBox({
     element = (
       <Box sx={{ ...boxBaseStyles, p: 1.5 }} onClick={handleClick}>
         <Stack direction="row" gap={2}>
-          {!hideImage && (
-            <ChallengePreviewImageLink
-              challenge={challenge}
-              map={map}
-              campaign={campaign}
-              width="122px"
-              style={{ flexShrink: "0" }}
-              preferMapImages={options.preferMapImages}
-            />
-          )}
+          <ChallengePreviewImageLink
+            challenge={challenge}
+            map={map}
+            campaign={campaign}
+            width="122px"
+            style={{ flexShrink: "0" }}
+            preferMapImages={options.preferMapImages}
+          />
           <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
             <Stack direction="row" gap={0.5} alignItems="center">
               <CampaignIcon {...campaignIconProps} style={{ marginRight: "2px" }} />

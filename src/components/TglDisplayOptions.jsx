@@ -74,7 +74,6 @@ export function TglMoreButton({
       } else {
         if (options.version === 1) {
           console.log("Updating options from version 1: flipping hide/show options");
-          options.showImages = !options.hideImages;
           delete options.hideImages;
           options.showFractionalTiers = !options.hideFractionalTiers;
           delete options.hideFractionalTiers;
@@ -88,6 +87,11 @@ export function TglMoreButton({
           console.log("Updating options from version 2: minimum darkenTierColors adjustment");
           options.darkenTierColors = Math.max(60, options.darkenTierColors);
           options.version = 3;
+        }
+        if (options.version === 3) {
+          console.log("Updating options from version 3: removing showImages option");
+          delete options.showImages;
+          options.version = 4;
         }
         console.log("Updated options:", options);
       }
@@ -170,11 +174,6 @@ export function TglMoreButton({
               tKey="prefer_map_images"
               value={localOptions.preferMapImages}
               setValue={(newValue) => changedOption("preferMapImages", newValue)}
-            />
-            <BoolOption
-              tKey="show_images"
-              value={localOptions.showImages}
-              setValue={(newValue) => changedOption("showImages", newValue)}
             />
             <Divider sx={{ my: 0.5 }} />
             <BoolOption
@@ -302,7 +301,6 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     compactMode: isOverall,
     sort: "fractional-tiers",
     sortOrder: "desc",
-    showImages: true,
     preferMapImages: false,
     stackTiers: false,
     showFractionalTiers: true,
@@ -311,6 +309,6 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     showLikeCounts: true,
     useDifficultyOpinions: false,
     highlightPlayerId: playerId,
-    version: 3,
+    version: 4,
   };
 }
