@@ -241,7 +241,7 @@ export function AverageTimeTaken({ challenge }) {
 
   const sanitizedSubmissions = challenge.submissions.filter(s => s.time_taken !== null).map(s => s.time_taken);
 
-  if (sanitizedSubmissions.length == 0) {
+  if (sanitizedSubmissions.length === 0) {
     return null;
   }
 
