@@ -240,6 +240,11 @@ export function AverageTimeTaken({ challenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
 
   const sanitizedSubmissions = challenge.submissions.filter(s => s.time_taken !== null).map(s => s.time_taken);
+
+  if (sanitizedSubmissions.length == 0) {
+    return null;
+  }
+
   const averageTimeTaken = Math.round(sanitizedSubmissions.reduce((total, current) => total + current, 0) / sanitizedSubmissions.length);
 
   return <Typography align="center" paddingTop="20px" variant="body2">
