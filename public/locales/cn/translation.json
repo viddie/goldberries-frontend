@@ -1096,6 +1096,8 @@
     "difficulty_suggestions": "难度建议",
     "is_full_game": "是否为多地图一命项目",
     "lobby_info": "大厅信息",
+    "average_time_taken": "平均耗时: ",
+    "few_submissions": "(只有少量提交内容)",
     "description": "挑战描述",
     "submission_table": {
       "suggestion": "难度建议",

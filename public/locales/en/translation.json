@@ -1304,6 +1304,8 @@
     "calculated_tier_tooltip": "Calculated tier based on player difficulty opinions",
     "is_full_game": "Full Game?",
     "lobby_info": "Lobby Info",
+    "average_time_taken": "Average Time Taken: ",
+    "few_submissions": "(Few submissions)",
     "description": "Challenge Description",
     "status": "Challenge Status",
     "submission_table": {
