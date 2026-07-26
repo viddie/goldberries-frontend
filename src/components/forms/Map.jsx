@@ -398,6 +398,12 @@ export const COLLECTIBLES = [
         icon: "/icons/moonberry-floppydisk-riftb.png",
       },
       { value: "17", name: "Glitchtophen Moon Berry", icon: "/icons/moonberry-glitchtophen.png" },
+      {
+        value: "18",
+        name: "Reverse Moon Berry",
+        displayName: "Reverse Berry",
+        icon: "/icons/moonberry-reverse.png",
+      },
     ],
   },
   {

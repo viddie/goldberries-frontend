@@ -30,6 +30,7 @@ TO ADD:
   - https://goldberries.net/map/3742/view
   - https://goldberries.net/map/4574/view
 - https://goldberries.net/map/7574/view -> NonPoppingStrawberry
+- MaxHelpingHand/SecretBerry -> Moonberry
 */
 
 //#region Renderers
