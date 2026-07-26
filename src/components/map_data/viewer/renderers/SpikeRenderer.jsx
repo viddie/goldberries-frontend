@@ -12,11 +12,19 @@ const PATHS = {
   spikesRight: "spike_right.png",
 };
 
+const TILE_SIZE = 8; // used only for the tiling step (i * 8) along the repeat axis
+const REPEAT_SPRITE_SIZE = 10; // true size along the axis spikes repeat along
+const PERP_SPRITE_SIZE = 9; // true size along the perpendicular axis
+
+// The perpendicular size grew by 1 (8 -> 9), an odd delta — centering it as-is splits
+// that extra pixel and shifts the sprite by half a pixel. So we shift the perpendicular offset by half the delta.
+const PERP_OFFSET_SHIFT = (PERP_SPRITE_SIZE - TILE_SIZE) / 2;
+
 const OFFSETS = {
-  spikesUp: [4, 3],
-  spikesDown: [4, -3],
-  spikesLeft: [-3, -4],
-  spikesRight: [3, -4],
+  spikesUp: [4, 3 + PERP_OFFSET_SHIFT],
+  spikesDown: [4, -3 - PERP_OFFSET_SHIFT],
+  spikesLeft: [-3 - PERP_OFFSET_SHIFT, -4],
+  spikesRight: [3 + PERP_OFFSET_SHIFT, -4],
 };
 
 const HORIZONTAL = new Set(["spikesUp", "spikesDown"]);
@@ -36,6 +44,8 @@ export function SpikeRenderer({ entities }) {
   const texture = usePixelTexture(`/icons/game/${PATHS[name]}`);
   const offset = OFFSETS[name];
   const isHorizontal = HORIZONTAL.has(name);
+  const scaleX = isHorizontal ? REPEAT_SPRITE_SIZE : PERP_SPRITE_SIZE;
+  const scaleY = isHorizontal ? PERP_SPRITE_SIZE : REPEAT_SPRITE_SIZE;
 
   const entries = useMemo(
     () =>
@@ -48,13 +58,13 @@ export function SpikeRenderer({ entities }) {
             x: e.attributes.x + offset[0] + (isHorizontal ? i * 8 : 0),
             y: -e.attributes.y + offset[1] - (isHorizontal ? 0 : i * 8),
             z: LAYERS.COMMON_ENTITIES - 1,
-            scaleX: 8,
-            scaleY: 8,
+            scaleX,
+            scaleY,
           });
         }
         return results;
       }),
-    [entities, offset, isHorizontal],
+    [entities, offset, isHorizontal, scaleX, scaleY],
   );
 
   return <InstancedPlane entries={entries} texture={texture} />;
