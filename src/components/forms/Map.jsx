@@ -404,6 +404,12 @@ export const COLLECTIBLES = [
         displayName: "Reverse Berry",
         icon: "/icons/moonberry-reverse.png",
       },
+      {
+        value: "19",
+        name: "Blue Raspberry Moon Berry",
+        displayName: "Blue Raspberry",
+        icon: "/icons/moonberry-blueraspberry.png",
+      },
     ],
   },
   {
