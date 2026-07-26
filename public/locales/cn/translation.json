@@ -1,4 +1,4 @@
-{
+﻿{
   "hello_world": "你好，世界!",
   "general": {
     "campaign_one": "地图包",
@@ -1842,7 +1842,7 @@
     },
     "issues": {
       "header": "问题反馈",
-      "text": "如果你发现任何问题，请在Github上创建<CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">New issue</CustomExternalLink>或在金榜服务器@viddie，最好用这个<CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">网站专用频道</CustomExternalLink>。"
+      "text": "如果你发现任何问题，请在Github上创建<CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">New issue</CustomExternalLink>或在金榜服务器@viddie，最好用这个<CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">网站专用频道</CustomExternalLink>。"
     },
     "global_stats": {
       "header": "全球统计",
