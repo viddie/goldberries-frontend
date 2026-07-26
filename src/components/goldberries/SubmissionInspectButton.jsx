@@ -12,7 +12,7 @@ import {
 import { useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassChart } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faMagnifyingGlassChart } from "@fortawesome/free-solid-svg-icons";
 
 import { getQueryData, useGetSubmissionQueueInspect, usePostSubmission } from "../../hooks/useApi";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
@@ -20,6 +20,7 @@ import { CustomIconButton, ErrorDisplay, LoadingSpinner } from "../basic";
 
 import { ChallengeInline } from "./ChallengeInline";
 import { VerificationStatusChip } from "./VerificationStatusChip";
+import { SubmissionFcIcon } from "./ChallengeFcIcon";
 
 export function SubmissionInspectButton({ id, sx = {} }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.submission_inspect" });
@@ -84,6 +85,12 @@ function SubmissionInspectModalContent({ query, data, t, id }) {
           related.map((sub) => (
             <Stack key={sub.id} direction="row" alignItems="center" gap={1} flexWrap="wrap">
               <ChallengeInline challenge={sub.challenge} submission={sub} showChallenge />
+              {sub.is_fc && sub.challenge.has_fc && (
+                <>
+                  <FontAwesomeIcon icon={faArrowRight} size="xs" style={{ opacity: 0.5 }} />
+                  <SubmissionFcIcon submission={sub} height="1.2em" />
+                </>
+              )}
               {sub.is_verified === null && <VerificationStatusChip isVerified={null} size="small" />}
               <Tooltip arrow placement="top" title={t(sub.is_obsolete ? "unmark_obsolete" : "mark_obsolete")}>
                 <Switch
