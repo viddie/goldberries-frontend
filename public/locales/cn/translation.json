@@ -1029,15 +1029,6 @@
           }
         }
       },
-      "top_golden_list": {
-        "label": "金草莓排行榜",
-        "display_options_notice": "自定义设置已移至金榜(Top Golden List)的“显示选项(Display Options)”菜单中。",
-        "darken_colors": {
-          "label": "加深层级颜色",
-          "tooltip": "在深色模式下使等级颜色变暗。0%保持原色，100%变为纯黑色。",
-          "note": "此设置仅影响深色模式下的颜色！"
-        }
-      },
       "difficulty_colors": {
         "label": "层级颜色",
         "description": "上位和下位的颜色都是根据中位颜色计算出的，你可以明确填写出上位和下位的颜色来覆盖。",

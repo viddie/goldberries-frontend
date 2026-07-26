@@ -1253,15 +1253,6 @@
           }
         }
       },
-      "top_golden_list": {
-        "label": "Top Golden List",
-        "display_options_notice": "Customizations were moved to the \"Display Options\" menu on the Top Golden List pages.",
-        "darken_colors": {
-          "label": "Darken Tier Colors",
-          "tooltip": "In dark-mode, makes the tier colors darker. 0% doesn't change the colors, 100% makes them entirely black.",
-          "note": "This setting only affects the dark-mode colors!"
-        }
-      },
       "difficulty_colors": {
         "label": "Difficulty Colors",
         "description": "High and Low subtier colors are calculated based on the Mid color. You can overwrite this by explicitly setting the High and Low subtier colors.",
