@@ -1891,7 +1891,8 @@
     "testing": "测试与反馈",
     "people": "金榜服务器#goldberries-net子区中许多很棒的人",
     "chinese_translation": "汉语",
-    "french_translation": "法语"
+    "french_translation": "法语",
+    "korean_translation": "韩语"
   },
   "stats": {
     "title": "统计数据",
@@ -2124,3 +2125,4 @@
     "no_bins": "未在该Mod中找到.bin文件。"
   }
 }
+

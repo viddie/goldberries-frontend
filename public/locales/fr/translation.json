@@ -1,4 +1,4 @@
-{
+﻿{
   "hello_world": "Bonjour, monde !",
   "general": {
     "campaign_one": "Campagne",
@@ -1729,7 +1729,8 @@
     "testing": "Tests et retours",
     "people": "plein plein de personnes géniales du fil goldberries-net du Discord de la Modded Golden Team",
     "chinese_translation": "Traduction chinoise",
-    "french_translation": "Traduction française"
+    "french_translation": "Traduction française",
+    "korean_translation": "Traduction coréenne"
   },
   "stats": {
     "title": "Stats",
@@ -1813,3 +1814,4 @@
     }
   }
 }
+

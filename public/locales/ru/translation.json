@@ -1,4 +1,4 @@
-{
+﻿{
   "hello_world": "Hello World!",
   "general": {
     "campaign_one": "Кампания",
@@ -1754,7 +1754,8 @@
     "people": "много замечательных людей из #goldberries-net в Modded Golden Team Discord",
     "chinese_translation": "Китайский перевод",
     "french_translation": "Французский перевод",
-    "russian_translation": "Русский перевод"
+    "russian_translation": "Русский перевод",
+    "korean_translation": "Корейский перевод"
   },
   "stats": {
     "title": "Статистика",
@@ -1838,3 +1839,4 @@
     }
   }
 }
+
