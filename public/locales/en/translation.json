@@ -2128,7 +2128,7 @@
     },
     "issues": {
       "header": "Report Issues",
-      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website."
+      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website."
     },
     "global_stats": {
       "header": "Global Stats",
