@@ -44,6 +44,7 @@ import {
   DifficultySelectControlled,
   DateAchievedTimePicker,
   SubmissionInspectButton,
+  OpenUrlButton,
 } from "../goldberries";
 import { jsonDateToJsDate } from "../../util/util";
 import { FormOptions } from "../../util/constants";
@@ -178,7 +179,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
         </Stack>
 
         {isHelper ? (
-          <FullChallengeSelect challenge={challenge} setChallenge={setChallenge} />
+          <FullChallengeSelect challenge={challenge} setChallenge={setChallenge} showOpenButtons />
         ) : (
           new_challenge_id === null && <FullChallengeDisplay challenge={challenge} />
         )}
@@ -237,7 +238,15 @@ export function FormSubmission({ submission, onSave, ...props }) {
         <Divider sx={{ my: 2 }} />
 
         {isHelper ? (
-          <PlayerSelect type="all" value={player} onChange={(e, v) => setPlayer(v)} sx={{ mt: 2, mb: 1 }} />
+          <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 2, mb: 1 }}>
+            <PlayerSelect
+              type="all"
+              value={player}
+              onChange={(e, v) => setPlayer(v)}
+              sx={{ flex: 1 }}
+            />
+            <OpenUrlButton url={player && `/player/${player.id}`} />
+          </Stack>
         ) : (
           <Stack direction="row" gap={2} sx={{ mt: 2, mb: 1 }}>
             <Typography variant="h6">{t_g("player", { count: 1 })}:</Typography>
@@ -322,14 +331,19 @@ export function FormSubmission({ submission, onSave, ...props }) {
         {proofUrlDebounced && <ProofEmbed url={proofUrlDebounced} />}
 
         {(submission.raw_session_url || isHelper) && (
-          <TextField
-            {...form.register("raw_session_url")}
-            label={t("raw_session_url")}
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={!isHelper}
-            InputLabelProps={{ shrink: true }}
-          />
+          <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 2 }}>
+            <TextField
+              {...form.register("raw_session_url")}
+              label={t("raw_session_url")}
+              fullWidth
+              disabled={!isHelper}
+              InputLabelProps={{ shrink: true }}
+              sx={{ flex: 1 }}
+            />
+            {isHelper && (
+              <OpenUrlButton url={form.watch("raw_session_url")} />
+            )}
+          </Stack>
         )}
         <TextField
           {...form.register("player_notes")}
