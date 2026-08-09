@@ -276,7 +276,15 @@ function RoomRenderer({ room }) {
               <meshBasicMaterial map={tilesTexture} transparent />
             </mesh>
           )}
-          <Text position={[5, -5, LAYERS.UI]} fontSize={18} anchorX="left" anchorY="top" color="white">
+          <Text
+            position={[5, 0, LAYERS.UI]}
+            fontSize={18}
+            anchorX="left"
+            anchorY="top"
+            color="white"
+            outlineWidth={0.2}
+            outlineColor="black"
+          >
             {name}
           </Text>
           <EntityListRenderer
