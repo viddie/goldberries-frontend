@@ -15,6 +15,7 @@ import {
 import { useTheme } from "@emotion/react";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import Color from "color";
 
 import { getChallengeNameClean, getDifficultyName } from "../util/data_util";
 import { getNewDifficultyColors } from "../util/constants";
@@ -123,6 +124,15 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
       name: getDifficultyName(difficulty),
       color: getNewDifficultyColors(settings, difficulty.id).color,
       time_taken: [min_time_taken, max_time_taken],
+      challenge_times: dataScatter
+        .filter((data) => data.difficulty.id === difficulty.id)
+        .map((data) => ({
+          id: data.challenge.id,
+          name: data.name,
+          time_taken: data.time_taken,
+        }))
+        .sort((a, b) => a.time_taken - b.time_taken)
+        .slice(1, -1),
       id: difficulty.id,
       is_same: is_same,
     });
@@ -172,6 +182,7 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
                 id="time-taken-tier-bar"
                 dataKey="time_taken"
                 fill={theme.palette.text.primary}
+                shape={<ChallengeTimeBar />}
                 label={(props) => {
                   return (
                     <text
@@ -257,5 +268,38 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
         </>
       )}
     </Stack>
+  );
+}
+
+function ChallengeTimeBar({ x, y, width, height, fill, payload }) {
+  const [minTime, maxTime] = payload.time_taken;
+  const timeRange = maxTime - minTime;
+  const markerWidth = 3;
+  const markerColor = new Color(fill).darken(0.5).hex();
+
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill={fill} />
+      {payload.challenge_times.map((challenge) => {
+        const markerX =
+          timeRange === 0
+            ? x + width / 2
+            : x + ((challenge.time_taken - minTime) / timeRange) * width;
+
+        return (
+          <rect
+            key={challenge.id}
+            x={markerX - markerWidth / 2}
+            y={y}
+            width={markerWidth}
+            height={height}
+            fill={markerColor}
+            fillOpacity={0.35}
+          >
+            <title>{challenge.name}</title>
+          </rect>
+        );
+      })}
+    </g>
   );
 }
