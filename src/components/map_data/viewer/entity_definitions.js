@@ -29,7 +29,8 @@ TO NOTE:
 
 TO ADD:
 - multi-room strawberry
-  - https://goldberries.net/map/4574/view
+  - glitchtophen
+  - collapsing skyline
 */
 
 //#region Renderers

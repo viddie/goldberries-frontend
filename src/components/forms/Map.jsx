@@ -468,6 +468,16 @@ export const COLLECTIBLES = [
         name: "World Domination Contest Strawberry",
         icon: "/icons/strawberry-worlddominationcontest.png",
       },
+      {
+        value: "40",
+        name: "Glitchtophen Strawberry B",
+        icon: "/icons/strawberry-glitchtophen-b.png",
+      },
+      {
+        value: "41",
+        name: "Silver Strawberry",
+        icon: "/icons/silverberry-8x.png",
+      },
     ],
   },
   {
