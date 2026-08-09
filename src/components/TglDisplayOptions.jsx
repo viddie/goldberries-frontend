@@ -27,6 +27,7 @@ const sortOptions = [
   { value: "campaign", label: "campaign" },
   { value: "fractional-tiers", label: "fractional_tier" },
   { value: "clear-count", label: "clear_count" },
+  { value: "like-count", label: "like_count" },
   { value: "first-clear-date", label: "first_clear_date" },
 ];
 const personalTglSortOptions = [{ value: "time-taken", label: "time_taken" }];

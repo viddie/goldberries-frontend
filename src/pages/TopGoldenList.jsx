@@ -1380,6 +1380,8 @@ export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sor
         return sortByFractionalTier(a, b, isPlayer, ascending);
       case "clear-count":
         return sortByClearCount(a, b, ascending);
+      case "like-count":
+        return sortByLikeCount(a, b, ascending);
       case "first-clear-date":
         return sortByFirstClearDate(a, b, ascending);
       case "time-taken":
@@ -1420,6 +1422,14 @@ function sortByFractionalTier(a, b, isPlayer, ascending) {
 function sortByClearCount(a, b, ascending) {
   const countA = a.data.submission_count;
   const countB = b.data.submission_count;
+  if (countA !== countB) {
+    return ascending ? countA - countB : countB - countA;
+  }
+  return 0;
+}
+function sortByLikeCount(a, b, ascending) {
+  const countA = a.likes ?? 0;
+  const countB = b.likes ?? 0;
   if (countA !== countB) {
     return ascending ? countA - countB : countB - countA;
   }
