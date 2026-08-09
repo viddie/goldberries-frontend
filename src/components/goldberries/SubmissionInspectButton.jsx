@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faMagnifyingGlassChart } from "@fortawesome/free-solid-svg-icons";
 
+import { getChallengeCampaign } from "../../util/data_util";
 import { getQueryData, useGetSubmissionQueueInspect, usePostSubmission } from "../../hooks/useApi";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { CustomIconButton, ErrorDisplay, LoadingSpinner } from "../basic";
@@ -30,7 +31,7 @@ export function SubmissionInspectButton({ id, sx = {} }) {
   const data = getQueryData(query);
 
   const notes = data?.notes ?? [];
-  const related = data?.related ?? [];
+  const related = (data?.related ?? []).slice().sort(compareRelatedSubmissions);
   const hasNotes = notes.length > 0;
   const hasRelated = related.length > 0;
 
@@ -57,6 +58,42 @@ export function SubmissionInspectButton({ id, sx = {} }) {
   );
 }
 
+function compareRelatedSubmissions(a, b) {
+  const challengeA = a.challenge;
+  const challengeB = b.challenge;
+  if (challengeA === null || challengeA === undefined) return challengeB === null || challengeB === undefined ? 0 : 1;
+  if (challengeB === null || challengeB === undefined) return -1;
+
+  const campaignA = getChallengeCampaign(challengeA);
+  const campaignB = getChallengeCampaign(challengeB);
+  const campaignComparison =
+    compareNullable(campaignA?.name, campaignB?.name, (left, right) => left.localeCompare(right)) ||
+    compareNullable(campaignA?.id, campaignB?.id);
+  if (campaignComparison !== 0) return campaignComparison;
+
+  const mapA = challengeA.map;
+  const mapB = challengeB.map;
+  for (const field of ["sort_major", "sort_minor", "sort_order"]) {
+    const comparison = compareNullable(mapA?.[field], mapB?.[field]);
+    if (comparison !== 0) return comparison;
+  }
+
+  const mapNameComparison = compareNullable(mapA?.name, mapB?.name, (left, right) => left.localeCompare(right));
+  if (mapNameComparison !== 0) return mapNameComparison;
+
+  return (
+    compareNullable(challengeA.sort, challengeB.sort) ||
+    compareNullable(challengeB.difficulty?.sort, challengeA.difficulty?.sort) ||
+    compareNullable(challengeA.id, challengeB.id)
+  );
+}
+
+function compareNullable(a, b, compare = (left, right) => left - right) {
+  if (a === null || a === undefined) return b === null || b === undefined ? 0 : 1;
+  if (b === null || b === undefined) return -1;
+  return compare(a, b);
+}
+
 function SubmissionInspectModalContent({ query, data, t, id }) {
   const queryClient = useQueryClient();
   const { mutate: updateSubmission, isLoading: isUpdating } = usePostSubmission(() => {
@@ -67,7 +104,7 @@ function SubmissionInspectModalContent({ query, data, t, id }) {
   if (query.isError) return <ErrorDisplay error={query.error} />;
 
   const notes = data?.notes ?? [];
-  const related = data?.related ?? [];
+  const related = (data?.related ?? []).slice().sort(compareRelatedSubmissions);
 
   return (
     <Stack direction="column" gap={2}>
