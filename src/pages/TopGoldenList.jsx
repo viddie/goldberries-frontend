@@ -260,6 +260,7 @@ function TopGoldenListHeader({ type, id }) {
 
 function TopGoldenList({ type, id, filter, options, showMap, editSubmission, openSubmissionFilter }) {
   const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
+  const isPlayer = type === "player";
 
   const key = getTglRenderKey(type, id, filter, options);
   const [renderUpTo, setRenderUpTo] = useState({ key: key, index: 0 });
@@ -348,7 +349,12 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
           options={options}
         />
       ))}
-      <HiddenTiersNotice filter={filter} compactMode={compactMode} onClick={openSubmissionFilter} />
+      <HiddenTiersNotice
+        filter={filter}
+        compactMode={compactMode}
+        isPlayer={isPlayer}
+        onClick={openSubmissionFilter}
+      />
     </Stack>
   );
 }
@@ -1017,7 +1023,7 @@ function DifficultyNumber({
   );
 }
 
-function HiddenTiersNotice({ filter, compactMode, onClick }) {
+function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
   const { t: t_sf } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
   const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
@@ -1080,7 +1086,7 @@ function HiddenTiersNotice({ filter, compactMode, onClick }) {
   }
 
   // Country
-  if (filter.country !== null && filter.country !== "" && filter.country !== undefined) {
+  if (!isPlayer && filter.country !== null && filter.country !== "" && filter.country !== undefined) {
     const countryName = COUNTRY_CODES[filter.country] || filter.country;
     activeFilters.push({
       label: t("hidden_tiers.filters.country", { country: countryName }),
@@ -1089,7 +1095,7 @@ function HiddenTiersNotice({ filter, compactMode, onClick }) {
   }
 
   // Input method
-  if (filter.input_method !== null && filter.input_method !== "" && filter.input_method !== undefined) {
+  if (!isPlayer && filter.input_method !== null && filter.input_method !== "" && filter.input_method !== undefined) {
     activeFilters.push({
       label: t("hidden_tiers.filters.input_method", { method: t_im(filter.input_method) }),
       icon: <InputMethodIcon method={filter.input_method} />,

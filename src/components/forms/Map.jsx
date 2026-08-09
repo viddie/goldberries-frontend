@@ -717,6 +717,7 @@ export const COLLECTIBLES = [
       { value: "17", name: "Lost Bib", displayName: "Lost Bib", icon: "/icons/haolk-lostbib.png" },
       { value: "18", name: "Moon Shoes", displayName: "Moon Shoes", icon: "/icons/haolk-moonshoes.png" },
       { value: "19", name: "X-ray Visor", displayName: "X-ray Visor", icon: "/icons/haolk-xrayvisor.png" },
+      { value: "25", name: "Touch Switch", displayName: "Other", icon: "/icons/touchswitch.png" },
     ],
   },
 ];
