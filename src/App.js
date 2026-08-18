@@ -107,6 +107,7 @@ import { PageAppSettings } from "./pages/AppSettings";
 import { PageCampaign } from "./pages/Campaign";
 import { PageChallenge } from "./pages/Challenge";
 import { PageClaimPlayer } from "./pages/ClaimPlayer";
+import { PageCompareChallenges } from "./pages/CompareChallenges";
 import { PageCredits } from "./pages/Credits";
 import { PageFAQ } from "./pages/FAQ";
 import { PageGoldenList } from "./pages/GoldenList";
@@ -294,6 +295,7 @@ const router = createBrowserRouter([
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },
       { path: "challenge/:id", element: <PageChallenge /> },
+      { path: "compare-challenges/:id_a?/:id_b?", element: <PageCompareChallenges /> },
       { path: "map/:id/*", element: <PageMap /> },
       { path: "campaign/:id/:tab?", element: <PageCampaign /> },
       { path: "author/:name", element: <PageAuthor /> },

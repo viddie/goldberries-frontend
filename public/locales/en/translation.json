@@ -1288,7 +1288,9 @@
   "challenge": {
     "buttons": {
       "submit": "Submit a Run",
-      "edit": "Edit Challenge"
+      "edit": "Edit Challenge",
+      "more": "More",
+      "compare": "Compare Challenge"
     },
     "difficulty_suggestions": "Difficulty Opinions",
     "calculated_tier_tooltip": "Calculated tier based on player difficulty opinions",
@@ -1302,6 +1304,12 @@
       "show_all": "Show All {{count}} Submissions",
       "show_less": "Show Less"
     }
+  },
+  "compare_challenges": {
+    "title": "Compare Challenges",
+    "compare_to": "Compare To",
+    "only_show_both": "Only show players who completed both challenges",
+    "match_order": "Match order of first challenge"
   },
   "claim_player": {
     "title": "Claim a Player",

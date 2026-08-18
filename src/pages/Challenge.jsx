@@ -19,7 +19,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -57,6 +57,7 @@ import {
   StyledLink,
   TooltipLineBreaks,
 } from "../components/basic";
+import { CustomMenu } from "../components/Menu";
 import {
   ChallengeFcIcon,
   DifficultyChip,
@@ -129,6 +130,7 @@ export function PageChallenge({}) {
 export function ChallengeDisplay({ id, isCompact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
+  const navigate = useNavigate();
   const query = useGetChallenge(id);
 
   const editChallengeModal = useModal();
@@ -185,27 +187,40 @@ export function ChallengeDisplay({ id, isCompact = false }) {
       <Box sx={{ ...contentPadding, mt: 1.5 }}>
         <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
           <LikeButton challengeId={challenge.id} />
-          {auth.hasPlayerClaimed && (
-            <Stack direction="row" alignItems="center" gap={1} sx={{ ml: { xs: 0, sm: "auto" } }}>
-              {!challenge.is_rejected && (
-                <Link to={"/submit/single-challenge/" + id}>
-                  <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} size="small">
-                    {t("buttons.submit")}
+          <Stack direction="row" alignItems="center" gap={1} sx={{ ml: { xs: 0, sm: "auto" } }}>
+            {auth.hasPlayerClaimed && (
+              <>
+                {!challenge.is_rejected && (
+                  <Link to={"/submit/single-challenge/" + id}>
+                    <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} size="small">
+                      {t("buttons.submit")}
+                    </Button>
+                  </Link>
+                )}
+                {auth.hasHelperPriv && (
+                  <Button
+                    onClick={editChallengeModal.open}
+                    variant="outlined"
+                    size="small"
+                    startIcon={<FontAwesomeIcon icon={faEdit} />}
+                  >
+                    {t("buttons.edit")}
                   </Button>
-                </Link>
-              )}
-              {auth.hasHelperPriv && (
-                <Button
-                  onClick={editChallengeModal.open}
-                  variant="outlined"
-                  size="small"
-                  startIcon={<FontAwesomeIcon icon={faEdit} />}
-                >
-                  {t("buttons.edit")}
-                </Button>
-              )}
-            </Stack>
-          )}
+                )}
+              </>
+            )}
+            <CustomMenu
+              title={t("buttons.more")}
+              variant="outlined"
+              triggerSize="small"
+              items={[
+                {
+                  text: t("buttons.compare"),
+                  onClick: () => navigate("/compare-challenges/" + challenge.id),
+                },
+              ]}
+            />
+          </Stack>
         </Stack>
       </Box>
 
@@ -1015,12 +1030,13 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
 
   const [showAll, setShowAll] = useState(false);
 
-  const allSubmissionsLength = challenge.submissions.length;
+  const submissionsData = challenge.submissions ?? [];
+  const allSubmissionsLength = submissionsData.length;
   const showsTooMany = allSubmissionsLength > onlyShowFirst;
   const submissions =
     showsTooMany && !showAll && onlyShowFirst
-      ? challenge.submissions.slice(0, onlyShowFirst)
-      : challenge.submissions;
+      ? submissionsData.slice(0, onlyShowFirst)
+      : submissionsData;
 
   return (
     <TableContainer component={Paper} {...props}>
@@ -1089,7 +1105,7 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
               </TableCell>
             </TableRow>
           )}
-          {allSubmissionsLength.length === 0 && (
+          {allSubmissionsLength === 0 && (
             <TableRow>
               <TableCell colSpan={99}>{t("empty")}</TableCell>
             </TableRow>
