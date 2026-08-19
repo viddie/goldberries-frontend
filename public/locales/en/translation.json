@@ -1288,7 +1288,7 @@
   "challenge": {
     "buttons": {
       "submit": "Submit a Run",
-      "edit": "Edit Challenge",
+      "edit": "Edit",
       "more": "More",
       "compare": "Compare Challenge"
     },
@@ -1518,6 +1518,7 @@
     "no_players": "No players found",
     "authors": "Authors",
     "no_authors": "No authors found",
+    "farewell_notice": "Farewell and other vanilla maps are not tracked on this website. For the list of Farewell Golden runs, check <StyledExternalLink>this</StyledExternalLink> link.",
     "and_more_maps": "and {{count}} more maps...",
     "and_more_campaigns": "and {{count}} more campaigns..."
   },

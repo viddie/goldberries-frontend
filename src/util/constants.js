@@ -10,6 +10,8 @@ export const DISCORD_AUTH_URL = API_URL + "/auth/discord_auth";
 export const APP_NAME_SHORT = "GBN";
 export const APP_NAME_LONG = "Goldberries.net";
 export const DISCORD_INVITE = "https://discord.gg/GeJvmMycaC";
+export const FWG_SHEET =
+  "https://docs.google.com/spreadsheets/d/1FesTb6qkgMz-dCn7YdioRydToWSQNTg1axFEIHU4FF8/edit?gid=571489394#gid=571489394";
 export const IS_DEBUG = process.env.NODE_ENV === "development";
 export const CURRENT_VERSION = process.env.REACT_APP_VERSION;
 
