@@ -240,12 +240,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
 
         {isHelper ? (
           <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 2, mb: 1 }}>
-            <PlayerSelect
-              type="all"
-              value={player}
-              onChange={(e, v) => setPlayer(v)}
-              sx={{ flex: 1 }}
-            />
+            <PlayerSelect type="all" value={player} onChange={(e, v) => setPlayer(v)} sx={{ flex: 1 }} />
             <OpenUrlButton url={player && `/player/${player.id}`} />
           </Stack>
         ) : (
@@ -312,19 +307,10 @@ export function FormSubmission({ submission, onSave, ...props }) {
               <Tooltip arrow placement="top" title={t("challenge_information")}>
                 <CustomIconButton
                   onClick={() => mapCollectiblesModal.open(submission.challenge.map)}
-                  variant={
-                    submission.challenge.map.note ||
-                    submission.challenge.map.campaign?.note ||
-                    submission.challenge.description ||
-                    (submission.challenge.label && submission.challenge.label !== submission.challenge.objective.name)
-                      ? "contained"
-                      : "outlined"
-                  }
                   color={
                     submission.challenge.map.note ||
                     submission.challenge.map.campaign?.note ||
-                    submission.challenge.description ||
-                    (submission.challenge.label && submission.challenge.label !== submission.challenge.objective.name)
+                    submission.challenge.description
                       ? "warning"
                       : "primary"
                   }
@@ -357,9 +343,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
               InputLabelProps={{ shrink: true }}
               sx={{ flex: 1 }}
             />
-            {isHelper && (
-              <OpenUrlButton url={form.watch("raw_session_url")} />
-            )}
+            {isHelper && <OpenUrlButton url={form.watch("raw_session_url")} />}
           </Stack>
         )}
         <TextField
@@ -561,10 +545,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 {mapCollectiblesModal.data.id}
               </StyledLink>
               ) <FontAwesomeIcon icon={faArrowRight} /> {t("challenge_information")} (
-              <StyledLink to={"/challenge/" + submission.challenge.id}>
-                {submission.challenge.id}
-              </StyledLink>
-              )
+              <StyledLink to={"/challenge/" + submission.challenge.id}>{submission.challenge.id}</StyledLink>)
             </Typography>
             <ChallengeDetailsListWrapper id={mapCollectiblesModal.data.id} />
             {submission.challenge?.description && (

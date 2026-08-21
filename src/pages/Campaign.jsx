@@ -56,6 +56,7 @@ import {
   InfoBoxIconTextLine,
   LoadingSpinner,
   StyledLink,
+  TooltipInfoButton,
   TooltipLineBreaks,
 } from "../components/basic";
 import { CustomModal, useModal } from "../hooks/useModal";
@@ -822,26 +823,34 @@ function CampaignMapListMapEntry({ map, campaign, sx = {}, ...props }) {
     <BorderedBox sx={{ p: 1, borderRadius: 1, ...sx }} {...props}>
       <Stack direction="row" gap={1} alignItems="center">
         <Stack direction="column" gap={0.25}>
-          <StyledLink to={"/map/" + map.id}>
-            <Typography variant="h6">{getMapName(map, campaign)}</Typography>
-          </StyledLink>
+          <Stack direction="row" gap={0.75} alignItems="center">
+            <StyledLink to={"/map/" + map.id}>
+              <Typography variant="h6">{getMapName(map, campaign)}</Typography>
+            </StyledLink>
+            {map.note && <TooltipInfoButton title={map.note} sx={{ fontSize: "0.8em" }} />}
+          </Stack>
           <Stack direction="column" gap={0.5} sx={{ pl: 2 }}>
             {map.challenges.map((challenge) => (
               <Stack direction="row" gap={2} alignItems="center">
-                <StyledLink to={"/challenge/" + challenge.id} key={challenge.id}>
-                  <Stack direction="row" gap={1} alignItems="center">
-                    {getChallengeNameShort(
-                      challenge,
-                      true,
-                      isMdScreen ? true : useTextFcIcons ? true : false,
-                    )}
-                    <ObjectiveIcon objective={challenge.objective} challenge={challenge} />
-                    <ChallengeFcIcon
-                      challenge={challenge}
-                      style={{ display: isMdScreen ? "block" : useTextFcIcons ? "none" : "block" }}
-                    />
-                  </Stack>
-                </StyledLink>
+                <Stack direction="row" gap={0.75} alignItems="center">
+                  <StyledLink to={"/challenge/" + challenge.id} key={challenge.id}>
+                    <Stack direction="row" gap={1} alignItems="center">
+                      {getChallengeNameShort(
+                        challenge,
+                        true,
+                        isMdScreen ? true : useTextFcIcons ? true : false,
+                      )}
+                      <ObjectiveIcon objective={challenge.objective} challenge={challenge} />
+                      <ChallengeFcIcon
+                        challenge={challenge}
+                        style={{ display: isMdScreen ? "block" : useTextFcIcons ? "none" : "block" }}
+                      />
+                    </Stack>
+                  </StyledLink>
+                  {challenge.description && (
+                    <TooltipInfoButton title={challenge.description} sx={{ fontSize: "0.8em" }} />
+                  )}
+                </Stack>
                 <DifficultyChip difficulty={challenge.difficulty} />
               </Stack>
             ))}
