@@ -52,7 +52,7 @@ import { FullChallengeDisplay } from "../../pages/Submission";
 import { getQueryData, usePostSubmission } from "../../hooks/useApi";
 import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
-import { ChallengeDetailsListWrapper, CollectiblesInfoBox } from "../../pages/Challenge";
+import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
 import { durationToSeconds, secondsToDuration } from "../../util/data_util";
 
@@ -93,6 +93,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_a } = useTranslation();
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
+  const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
   const mapCollectiblesModal = useModal(null, undefined, {
     actions: [ModalButtons.close],
@@ -308,9 +309,25 @@ export function FormSubmission({ submission, onSave, ...props }) {
           {submission.challenge?.map && (
             <>
               {!isHelper && <span style={{ flexGrow: 1 }} />}
-              <Tooltip arrow placement="top" title={t("map_information")}>
+              <Tooltip arrow placement="top" title={t("challenge_information")}>
                 <CustomIconButton
                   onClick={() => mapCollectiblesModal.open(submission.challenge.map)}
+                  variant={
+                    submission.challenge.map.note ||
+                    submission.challenge.map.campaign?.note ||
+                    submission.challenge.description ||
+                    (submission.challenge.label && submission.challenge.label !== submission.challenge.objective.name)
+                      ? "contained"
+                      : "outlined"
+                  }
+                  color={
+                    submission.challenge.map.note ||
+                    submission.challenge.map.campaign?.note ||
+                    submission.challenge.description ||
+                    (submission.challenge.label && submission.challenge.label !== submission.challenge.objective.name)
+                      ? "warning"
+                      : "primary"
+                  }
                   sx={{ alignSelf: "stretch" }}
                 >
                   <FontAwesomeIcon icon={faBasketShopping} />
@@ -539,13 +556,24 @@ export function FormSubmission({ submission, onSave, ...props }) {
               <StyledLink to={"/campaign/" + mapCollectiblesModal.data.campaign_id}>
                 {mapCollectiblesModal.data.campaign_id}
               </StyledLink>
-              ) <FontAwesomeIcon icon={faArrowRight} /> {t("map_information")} (
+              ) <FontAwesomeIcon icon={faArrowRight} /> {t_g("map", { count: 1 })} (
               <StyledLink to={"/map/" + mapCollectiblesModal.data.id}>
                 {mapCollectiblesModal.data.id}
+              </StyledLink>
+              ) <FontAwesomeIcon icon={faArrowRight} /> {t("challenge_information")} (
+              <StyledLink to={"/challenge/" + submission.challenge.id}>
+                {submission.challenge.id}
               </StyledLink>
               )
             </Typography>
             <ChallengeDetailsListWrapper id={mapCollectiblesModal.data.id} />
+            {submission.challenge?.description && (
+              <NoteDisclaimer
+                title={t_c("description")}
+                note={submission.challenge.description}
+                sx={{ mt: 2 }}
+              />
+            )}
           </>
         )}
       </CustomModal>

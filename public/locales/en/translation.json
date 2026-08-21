@@ -656,6 +656,7 @@
       "verifier": "Verifier",
       "verifier_notes": "Verifier Notes",
       "map_information": "Map Information",
+      "challenge_information": "Challenge Information",
       "golden_changes": "Golden Changes",
       "buttons": {
         "update": "Update Submission",
@@ -1518,7 +1519,7 @@
     "no_players": "No players found",
     "authors": "Authors",
     "no_authors": "No authors found",
-    "farewell_notice": "Farewell and other vanilla maps are not tracked on this website. For the list of Farewell Golden runs, check <StyledExternalLink>this</StyledExternalLink> link.",
+    "farewell_notice": "Farewell and other vanilla maps are not tracked on this website. For the list of completed Farewell Golden runs, check <StyledExternalLink>this</StyledExternalLink> link.",
     "and_more_maps": "and {{count}} more maps...",
     "and_more_campaigns": "and {{count}} more campaigns..."
   },

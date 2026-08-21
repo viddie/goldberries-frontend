@@ -557,6 +557,13 @@ function SubmissionQueueTableRow({
             <Stack direction="row" gap={1} alignItems="center" sx={{ flex: 1 }}>
               <Typography variant="body2">{textBottom}</Typography>
               <SubmissionFcIcon submission={submission} />
+              {challenge?.label && (
+                <TooltipLineBreaks title={challenge.label}>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    [{challenge.label}]
+                  </Typography>
+                </TooltipLineBreaks>
+              )}
             </Stack>
             <DifficultyChip difficulty={diff} />
           </Stack>
