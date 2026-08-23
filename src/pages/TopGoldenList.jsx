@@ -56,6 +56,7 @@ import {
   getChallengeSuffix,
   getDifficultyName,
   getMapName,
+  getNavigatorLanguage,
   secondsToDuration,
 } from "../util/data_util";
 import { COUNTRY_CODES } from "../util/country_codes";
@@ -1070,7 +1071,7 @@ function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
     filter.start_date !== null && filter.start_date !== "" && filter.start_date !== undefined;
   const hasEndDate = filter.end_date !== null && filter.end_date !== "" && filter.end_date !== undefined;
   if (hasStartDate || hasEndDate) {
-    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(navigator.language);
+    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(getNavigatorLanguage());
     let dateLabel;
     if (hasStartDate && hasEndDate) {
       dateLabel = t("hidden_tiers.filters.date_range.both", {

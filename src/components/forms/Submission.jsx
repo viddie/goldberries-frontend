@@ -54,7 +54,11 @@ import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
-import { durationToSeconds, secondsToDuration } from "../../util/data_util";
+import {
+  durationToSeconds,
+  getNavigatorLanguage,
+  secondsToDuration,
+} from "../../util/data_util";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -450,7 +454,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
         <List dense sx={{ pb: 0 }}>
           <ListItem>
             <ListItemText
-              primary={jsonDateToJsDate(submission.date_created).toLocaleString(navigator.language)}
+              primary={jsonDateToJsDate(submission.date_created).toLocaleString(getNavigatorLanguage())}
               secondary={t("date_submitted")}
             />
           </ListItem>
@@ -460,7 +464,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 <ListItemText
                   primary={
                     submission.date_verified
-                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(navigator.language)
+                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(getNavigatorLanguage())
                       : "-"
                   }
                   secondary={t("date_verified")}

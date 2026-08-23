@@ -12,7 +12,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
 import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { getSortedSuggestedDifficulties } from "../../util/data_util";
+import { getNavigatorLanguage, getSortedSuggestedDifficulties } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
 import {
   DifficultyMoveDisplay,
@@ -226,7 +226,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
             <Typography variant="body2">&middot;</Typography>
             <Typography variant="body2">
               <Tooltip
-                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(navigator.language)}
+                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(getNavigatorLanguage())}
                 arrow
                 placement="top"
               >

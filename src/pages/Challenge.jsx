@@ -77,6 +77,7 @@ import {
   getGamebananaEmbedUrl,
   getMapLobbyInfo,
   getMapName,
+  getNavigatorLanguage,
   getPlayerNameColorStyle,
 } from "../util/data_util";
 import { CustomModal, useModal } from "../hooks/useModal";
@@ -1181,7 +1182,7 @@ export function ChallengeSubmissionRow({ submission, index, compact }) {
         <TableCell width={1} align="center" sx={{ p: 0, ...displayNoneOnMobile }}>
           <Link to={"/submission/" + submission.id} style={linkStyle}>
             {submission.date_achieved &&
-              jsonDateToJsDate(submission.date_achieved).toLocaleDateString(navigator.language, {
+              jsonDateToJsDate(submission.date_achieved).toLocaleDateString(getNavigatorLanguage(), {
                 year: "2-digit",
                 month: "2-digit",
                 day: "2-digit",

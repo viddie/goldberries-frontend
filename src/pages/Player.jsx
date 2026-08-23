@@ -42,6 +42,7 @@ import {
   getCampaignName,
   getChallengeCampaign,
   getDifficultyNameShort,
+  getNavigatorLanguage,
   getPlayerNameColorStyle,
   secondsToDuration,
 } from "../util/data_util";
@@ -333,7 +334,7 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
         label={t("first_golden")}
         icon={<FontAwesomeIcon icon={faCalendar} fixedWidth />}
       >
-        {new Date(stats.first_submission_date).toLocaleDateString(navigator.language, {
+        {new Date(stats.first_submission_date).toLocaleDateString(getNavigatorLanguage(), {
           year: "numeric",
           month: "short",
           day: "numeric",
@@ -925,7 +926,7 @@ function BigTimelineLabel({ label, isLast = false, isNow = false }) {
 }
 
 function TimelineDay({ date, submissions, isLast, groupCampaigns, showDifficulty }) {
-  const dateStr = new Date(date).toLocaleDateString(navigator.language, { month: "short", day: "numeric" });
+  const dateStr = new Date(date).toLocaleDateString(getNavigatorLanguage(), { month: "short", day: "numeric" });
 
   const groupedByCampaign = [];
   submissions.forEach((submission) => {

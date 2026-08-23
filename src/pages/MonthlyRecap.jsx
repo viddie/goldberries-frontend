@@ -21,6 +21,7 @@ import {
   getChallengeCampaign,
   getChallengeSuffix,
   getMapName,
+  getNavigatorLanguage,
   isMapSameNameAsCampaign,
 } from "../util/data_util";
 import {
@@ -298,7 +299,7 @@ function MonthlyRecapTimelineItem({
   hideChangelog = false,
 }) {
   //Show date as locale date string with month and day numbers
-  const dateStr = date.toLocaleDateString(navigator.language, { month: "short", day: "numeric" });
+  const dateStr = date.toLocaleDateString(getNavigatorLanguage(), { month: "short", day: "numeric" });
   const totalEntries =
     submissions_t0.length + newly_cleared_t3.length + (hideChangelog ? 0 : challenge_changes.length);
 
