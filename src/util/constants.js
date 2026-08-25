@@ -15,6 +15,9 @@ export const FWG_SHEET =
 export const IS_DEBUG = process.env.NODE_ENV === "development";
 export const CURRENT_VERSION = process.env.REACT_APP_VERSION;
 
+// This constant determines how long the vote count of a suggestion is hidden once the suggestion is created (Measured in minutes)
+export const SUGGESTION_VOTE_HIDE_MINUTES = 10;
+
 export const FormOptions = {
   PlayerName: (t) => ({
     required: {

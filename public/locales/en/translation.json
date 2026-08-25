@@ -1672,7 +1672,8 @@
     },
     "display": {
       "deleted_player": "(deleted player)",
-      "no_votes": "No votes yet"
+      "no_votes": "No votes yet",
+      "hidden_vote_count": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion"
     },
     "countdown": {
       "label": "{{time}} left",
@@ -1724,7 +1725,8 @@
           "reject_verification": "Reject Verification",
           "reject_change": "Reject Change",
           "set_to_pending": "Set to Pending"
-        }
+        },
+        "hidden_vote_count": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion"
       },
       "create": {
         "feedback": {

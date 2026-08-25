@@ -12,7 +12,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
 import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { getSortedSuggestedDifficulties } from "../../util/data_util";
+import { getSortedSuggestedDifficulties, shouldHideVoteCount } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
 import {
   DifficultyMoveDisplay,
@@ -20,6 +20,7 @@ import {
   SuggestionCountdown,
   SuggestionName,
 } from "../../pages/Suggestions";
+import { SUGGESTION_VOTE_HIDE_MINUTES } from "../../util/constants";
 
 export function SuggestionsList({
   expired,
@@ -141,6 +142,8 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const didChallengeTooltip = t_sv("did_challenge");
   const othersTooltip = t_sv("others");
 
+  const dateCreated = jsonDateToJsDate(suggestion.date_created);
+
   return (
     <BasicBox
       sx={{
@@ -226,18 +229,20 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
             <Typography variant="body2">&middot;</Typography>
             <Typography variant="body2">
               <Tooltip
-                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(navigator.language)}
+                title={dateCreated.toLocaleString(navigator.language)}
                 arrow
                 placement="top"
               >
-                <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created), t_g)}</span>
+                <span>{dateToTimeAgoString(dateCreated, t_g)}</span>
               </Tooltip>
             </Typography>
           </Stack>
         </Grid>
       </Grid>
 
-      {suggestion.votes.length === 0 ? (
+      {shouldHideVoteCount(suggestion) ? (
+        <Typography variant="body2">{t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })}</Typography>
+      ) : suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
       ) : (
         <Grid container columnSpacing={1} rowSpacing={0.5}>
