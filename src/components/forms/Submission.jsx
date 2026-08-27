@@ -154,6 +154,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
 
   const isHelper = auth.hasHelperPriv;
   const submitDisabled = player === null || (challenge === null && !submission.new_challenge_id);
+  const verificationDisabled = submitDisabled || auth.isPlayerWithId(submission.player.id);
 
   const new_challenge_id = form.watch("new_challenge_id");
   const new_challenge = form.watch("new_challenge");
@@ -508,7 +509,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 color="success"
                 fullWidth
                 onClick={onVerifySubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.verify")}
               </Button>
@@ -517,7 +518,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 fullWidth
                 color="error"
                 onClick={onRejectSubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.reject")}
               </Button>
