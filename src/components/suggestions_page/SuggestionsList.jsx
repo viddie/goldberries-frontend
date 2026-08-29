@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { Grid, IconButton, Pagination, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useDebounce } from "@uidotdev/usehooks";
 import Color from "color";
 
@@ -241,7 +241,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
       </Grid>
 
       {shouldHideVoteCount(suggestion) ? (
-        <Typography variant="body2">{t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })}</Typography>
+        <HiddenVoteBar />
       ) : suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
       ) : (
@@ -307,5 +307,42 @@ function VotesDisplay({ votes, hasSubmission, style = {} }) {
       ownVoteType={ownVoteType}
       style={style}
     />
+  );
+}
+
+export function HiddenVoteBar() {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
+
+  const theme = useTheme();
+  const borderColor = theme.palette.grey[800];
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        height: 20,
+        width: "100%",
+        border: `1px solid ${borderColor}`,
+        borderRadius: "8px"
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: theme.palette.background.paper,
+          width: "100%",
+          borderRadius: "8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <span style={{ color: theme.palette.text.secondary }}>
+          <Tooltip title={t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })}>
+            <FontAwesomeIcon icon={faEyeSlash} />
+          </Tooltip>
+        </span>
+      </div>
+    </div>
   );
 }
