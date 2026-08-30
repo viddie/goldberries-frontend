@@ -105,7 +105,8 @@ function RecentSubmissionsTable({
   const isLoading = data.submissions === null;
   const hasSubmissions = data.submissions !== null && data.submissions.length > 0;
   const hasMoreThanOnePage = data.max_count !== null && data.max_count > perPage;
-  const showPagination = isLoading || (hasSubmissions && (!paginationOptional || hasMoreThanOnePage || perPage > 25));
+  const showPagination =
+    isLoading || (hasSubmissions && (!paginationOptional || hasMoreThanOnePage || perPage > 25));
   return (
     <TableContainer component={Paper}>
       {showPagination && (
@@ -159,6 +160,7 @@ function RecentSubmissionsTable({
 }
 function RecentSubmissionsTablePagination({ isLoading, count, page, perPage, setPage, setPerPage }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
+  const theme = useTheme();
   const paginationProps = {
     component: "div",
     count: isLoading ? -1 : (count ?? -1),
@@ -166,6 +168,7 @@ function RecentSubmissionsTablePagination({ isLoading, count, page, perPage, set
     rowsPerPage: perPage,
     rowsPerPageOptions: [10, 15, 25, 50, 100],
     labelRowsPerPage: t("submissions_per_page"),
+    sx: { borderBottom: `1px solid ${theme.palette.tableRowBorder}` },
     slotProps: {
       select: {
         MenuProps: {
@@ -209,7 +212,7 @@ function RecentSubmissionsTableRowFakeout({ hasPlayer }) {
         </TableCell>
       )}
       <TableCell sx={{ pl: 0.5, pr: 1 }}>
-        <Skeleton variant="text" width={70} height={24} />
+        <Skeleton variant="text" width={50} height={24} sx={{ mx: "auto" }} />
       </TableCell>
     </TableRow>
   );
