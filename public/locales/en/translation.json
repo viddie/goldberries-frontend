@@ -1726,7 +1726,8 @@
           "reject_change": "Reject Change",
           "set_to_pending": "Set to Pending"
         },
-        "hidden_vote_count": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion"
+        "hidden_vote_count_desc": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion",
+        "hidden_vote_count": "Vote Count Hidden"
       },
       "create": {
         "feedback": {

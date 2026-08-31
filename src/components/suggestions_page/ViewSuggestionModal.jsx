@@ -6,6 +6,7 @@ import {
   faCheck,
   faComment,
   faEquals,
+  faEyeSlash,
   faHorse,
   faInfoCircle,
   faQuestion,
@@ -321,7 +322,17 @@ export function ViewSuggestionModal({ id }) {
 
         {shouldHideVoteCount(suggestion) ? (
           <Grid item xs={12}>
-            <Typography variant="body2" textAlign="center">{t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })}</Typography>
+            <Tooltip title={t("hidden_vote_count_desc", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
+              <Typography variant="body2" color={(t) => t.palette.text.secondary} textAlign="center">
+                {t("hidden_vote_count")}
+                <FontAwesomeIcon
+                  icon={faEyeSlash}
+                  style={{
+                    marginLeft: "4px"
+                  }}
+                />
+              </Typography>
+            </Tooltip>
           </Grid>
         ) : (
           <>

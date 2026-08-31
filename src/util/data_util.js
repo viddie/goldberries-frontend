@@ -508,8 +508,8 @@ export function durationToSeconds(duration) {
 
 export function shouldHideVoteCount(suggestion) {
   const now = new Date();
-  const dateCreated = jsonDateToJsDate(suggestion.date_created);
-  const diff = now - dateCreated;
+  const dateVerified = jsonDateToJsDate(suggestion.date_verified);
+  const diff = now - dateVerified;
 
   return diff < SUGGESTION_VOTE_HIDE_MINUTES * 1000 * 60;
 }

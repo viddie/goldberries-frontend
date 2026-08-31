@@ -312,24 +312,24 @@ function VotesDisplay({ votes, hasSubmission, style = {} }) {
 
 export function HiddenVoteBar() {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
-
   const theme = useTheme();
-  const borderColor = theme.palette.grey[800];
 
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        height: 20,
+        justifyContent: "center",
+        height: "20px",
         width: "100%",
-        border: `1px solid ${borderColor}`,
+        border: `1px solid ${theme.palette.grey[800]}`,
         borderRadius: "8px"
       }}
     >
       <div
         style={{
           backgroundColor: theme.palette.background.paper,
+          height: "100%",
           width: "100%",
           borderRadius: "8px",
           display: "flex",
@@ -337,8 +337,13 @@ export function HiddenVoteBar() {
           justifyContent: "center"
         }}
       >
-        <span style={{ color: theme.palette.text.secondary }}>
-          <Tooltip title={t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })}>
+        <span 
+          style={{ 
+            color: theme.palette.text.secondary,
+            fontSize: "small",
+          }}
+        >
+          <Tooltip title={t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
             <FontAwesomeIcon icon={faEyeSlash} />
           </Tooltip>
         </span>
