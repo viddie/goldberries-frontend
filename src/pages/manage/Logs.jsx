@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAuth } from "../../hooks/AuthProvider";
 import { jsonDateToJsDate } from "../../util/util";
+import { getNavigatorLanguage } from "../../util/data_util";
 import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../../components/basic";
 import { getQueryData, useDeleteLogEntry, useGetLogs } from "../../hooks/useApi";
 
@@ -232,10 +233,10 @@ function LogsTable({ logs, maxCount, deleteLog, page, setPage, perPage, setPerPa
           {logs.map((log) => (
             <TableRow key={log.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               <TableCell component="th" scope="row">
-                {jsonDateToJsDate(log.date).toLocaleDateString(navigator.language)}
+                {jsonDateToJsDate(log.date).toLocaleDateString(getNavigatorLanguage())}
               </TableCell>
               <TableCell component="th" scope="row">
-                {jsonDateToJsDate(log.date).toLocaleTimeString(navigator.language)}
+                {jsonDateToJsDate(log.date).toLocaleTimeString(getNavigatorLanguage())}
               </TableCell>
               <TableCell align="center" sx={{ textTransform: "capitalize" }}>
                 {log.level}

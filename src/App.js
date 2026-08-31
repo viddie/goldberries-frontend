@@ -136,7 +136,7 @@ import { PageManageServerSettings } from "./pages/manage/ServerSettings";
 import { PageManageActions } from "./pages/manage/Actions";
 import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
-import { getPlayerNameColorStyle } from "./util/data_util";
+import { getNavigatorLanguage, getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { PageMapViewer } from "./pages/MapViewer";
@@ -440,7 +440,7 @@ export function AuthWrapper({ children }) {
   return <AuthProvider>{children}</AuthProvider>;
 }
 export function DateLibraryWrapper({ children }) {
-  const adapterLocale = navigator.language === "en-US" ? "en" : "en-gb";
+  const adapterLocale = getNavigatorLanguage() === "en-US" ? "en" : "en-gb";
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale}>
       {children}

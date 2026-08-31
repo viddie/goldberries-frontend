@@ -1,4 +1,4 @@
-﻿{
+{
   "hello_world": "你好，世界!",
   "general": {
     "campaign_one": "地图包",
@@ -306,7 +306,7 @@
         "clear_dates": "清除"
       },
       "country": {
-        "label": "国家"
+        "label": "国家/地区"
       },
       "input_method": {
         "label": "游玩设备",
@@ -317,7 +317,7 @@
       "label": "({{count}}/{{max}})"
     },
     "country_select": {
-      "label": "国家",
+      "label": "国家/地区",
       "not_specified": "不显示"
     },
     "time_taken_graph": {
@@ -1236,7 +1236,7 @@
     "personal_tgl": "个人金草莓排行榜",
     "wishlist": "愿望单",
     "details": {
-      "country": "国家",
+      "country": "国家/地区",
       "input_method": "游玩设备",
       "total_goldens": "总金草莓",
       "hardest_tier": "最高Tier",
@@ -1266,6 +1266,9 @@
         "description": "以下是该玩家完成的所有挑战记录的时间线！",
         "group_campaigns": "将来自同一地图包的提交内容归类到同一组",
         "show_difficulty_ratio": "提交的内容里，显示缩略图的内容所占的比例"
+      },
+      "wishlist": {
+        "label": "愿望单"
       }
     }
   },
@@ -1931,8 +1934,57 @@
         "difficulties": {
           "header": "层级",
           "text": "在该层级至少完成一个挑战的玩家所占的百分比",
-          "axis_label": "% of players"
+          "axis_label": "玩家百分比"
         }
+      },
+      "verifier_stats": {
+        "label": "验证者",
+        "header": "验证者数据",
+        "most_verified": {
+          "header": "提交内容",
+          "text": "这些验证者验证了最多的提交内容。"
+        },
+        "most_created": {
+          "header": "地图创建",
+          "text": "这些验证者创建了最多的地图包、地图、以及挑战。"
+        }
+      },
+      "tier_clears": {
+        "label": "层级提交内容",
+        "header": "每个层级的最高提交内容数量",
+        "group_by": {
+          "label": "分组",
+          "player": "玩家",
+          "country": "国家/地区",
+          "input_method": "游玩设备"
+        },
+        "column": {
+          "player": "玩家",
+          "country": "国家/地区",
+          "input_method": "游玩设备"
+        },
+        "highlight_country": "高亮地区",
+        "show_unknown": "显示未知/未设定",
+        "unknown": "未知",
+        "total_submissions": "总提交内容",
+        "total_clears": "提交内容数量"
+      },
+      "biggest_difficulty_gap": {
+        "label": "难度差距",
+        "header": "最大难度差距",
+        "text": "个人最难金草莓与第二难金草莓的难度差距最大的玩家。",
+        "player": "玩家",
+        "hardest": "最难金草莓",
+        "second_hardest": "第二难金草莓",
+        "gap": "差距"
+      },
+      "collectible_counts": {
+        "label": "收集物",
+        "header": "所有地图中的总收集物数量",
+        "text": "这个表格显示了数据库中所有地图中的每种收集物的总数量。",
+        "total": "总计",
+        "collectible": "收集物",
+        "count": "数量"
       }
     }
   },

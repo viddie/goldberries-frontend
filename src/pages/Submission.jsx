@@ -35,6 +35,7 @@ import {
   getChallengeNameShort,
   getGamebananaEmbedUrl,
   getMapName,
+  getNavigatorLanguage,
   getSubmissionVerifier,
   secondsToDuration,
 } from "../util/data_util";
@@ -531,7 +532,7 @@ function ChallengeInfoBoxes({ challenge, map, campaign, hideMap = false, showObj
 export function DateWithTooltip({ date, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const tooltip =
-    date === null || date === undefined ? "" : jsonDateToJsDate(date).toLocaleString(navigator.language);
+    date === null || date === undefined ? "" : jsonDateToJsDate(date).toLocaleString(getNavigatorLanguage());
   return (
     <TooltipLineBreaks title={tooltip}>
       <span {...props}>{displayDate(date, t_g)}</span>
@@ -542,7 +543,7 @@ export function DateWithTooltip({ date, ...props }) {
 export function TimeDiffWithTooltip({ date, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const jsDate = jsonDateToJsDate(date);
-  const tooltip = date === null || date === undefined ? "" : jsDate.toLocaleString(navigator.language);
+  const tooltip = date === null || date === undefined ? "" : jsDate.toLocaleString(getNavigatorLanguage());
   return (
     <TooltipLineBreaks title={tooltip}>
       <span {...props}>{dateToTimeAgoString(jsDate, t_g)}</span>
