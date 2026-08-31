@@ -209,12 +209,16 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 </Stack>
               )}
             </Stack>
-            <TextField
-              label={t_g("url")}
-              disabled={!isHelper}
-              fullWidth
-              {...form.register("new_challenge.url", FormOptions.UrlRequired(t_ff))}
-            />
+            <Stack direction="row" gap={1} alignItems="center">
+              <TextField
+                label={t_g("url")}
+                disabled={!isHelper}
+                fullWidth
+                sx={{ flex: 1 }}
+                {...form.register("new_challenge.url", FormOptions.UrlRequired(t_ff))}
+              />
+              {isHelper && <OpenUrlButton url={form.watch("new_challenge.url")} />}
+            </Stack>
             <TextField
               label={t_g("name")}
               disabled={!isHelper}

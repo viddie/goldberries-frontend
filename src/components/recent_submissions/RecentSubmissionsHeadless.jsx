@@ -168,12 +168,25 @@ function RecentSubmissionsTablePagination({ isLoading, count, page, perPage, set
     rowsPerPage: perPage,
     rowsPerPageOptions: [10, 15, 25, 50, 100],
     labelRowsPerPage: t("submissions_per_page"),
-    sx: { borderBottom: `1px solid ${theme.palette.tableRowBorder}` },
+    sx: {
+      borderBottom: `1px solid ${theme.palette.tableRowBorder}`,
+      ".MuiTablePagination-toolbar": {
+        minHeight: 40,
+      },
+      ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+        marginTop: "6px",
+        marginBottom: "6px",
+      },
+    },
     slotProps: {
       select: {
         MenuProps: {
           disableScrollLock: true,
         },
+      },
+      actions: {
+        previousButton: { size: "small" },
+        nextButton: { size: "small" },
       },
     },
   };
