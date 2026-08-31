@@ -54,7 +54,11 @@ import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
-import { durationToSeconds, secondsToDuration } from "../../util/data_util";
+import {
+  durationToSeconds,
+  getNavigatorLanguage,
+  secondsToDuration,
+} from "../../util/data_util";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -150,6 +154,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
 
   const isHelper = auth.hasHelperPriv;
   const submitDisabled = player === null || (challenge === null && !submission.new_challenge_id);
+  const verificationDisabled = submitDisabled || auth.isPlayerWithId(submission.player.id);
 
   const new_challenge_id = form.watch("new_challenge_id");
   const new_challenge = form.watch("new_challenge");
@@ -450,7 +455,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
         <List dense sx={{ pb: 0 }}>
           <ListItem>
             <ListItemText
-              primary={jsonDateToJsDate(submission.date_created).toLocaleString(navigator.language)}
+              primary={jsonDateToJsDate(submission.date_created).toLocaleString(getNavigatorLanguage())}
               secondary={t("date_submitted")}
             />
           </ListItem>
@@ -460,7 +465,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 <ListItemText
                   primary={
                     submission.date_verified
-                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(navigator.language)
+                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(getNavigatorLanguage())
                       : "-"
                   }
                   secondary={t("date_verified")}
@@ -504,7 +509,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 color="success"
                 fullWidth
                 onClick={onVerifySubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.verify")}
               </Button>
@@ -513,7 +518,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 fullWidth
                 color="error"
                 onClick={onRejectSubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.reject")}
               </Button>

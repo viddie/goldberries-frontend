@@ -36,6 +36,7 @@ import {
   getChallengeSuffix,
   getDifficultyName,
   getMapName,
+  getNavigatorLanguage,
 } from "../../util/data_util";
 import { DifficultyChip, PlayerNotesIcon, SubmissionFcIcon } from "../../components/goldberries";
 import {
@@ -539,7 +540,7 @@ function SubmissionQueueTableRow({
                 <Tooltip
                   title={
                     "Date Achieved set to more than 4 weeks ago: " +
-                    jsonDateToJsDate(submission.date_achieved).toLocaleString(navigator.language)
+                    jsonDateToJsDate(submission.date_achieved).toLocaleString(getNavigatorLanguage())
                   }
                   placement="top"
                   arrow

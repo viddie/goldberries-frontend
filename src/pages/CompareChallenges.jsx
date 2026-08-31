@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../components/basic";
-import { ChallengeInline, FullChallengeSelect } from "../components/goldberries";
+import { ChallengeInline, DifficultyChip, FullChallengeSelect } from "../components/goldberries";
 import { getQueryData, useGetChallenge } from "../hooks/useApi";
 import { getChallengeCampaign, getGamebananaEmbedUrl, getMapName } from "../util/data_util";
 
@@ -199,6 +199,7 @@ function ChallengeSummary({ challenge }) {
         />
       )}
       <ChallengeInline challenge={challenge} showChallenge />
+      <DifficultyChip difficulty={challenge.difficulty} />
     </Stack>
   );
 }

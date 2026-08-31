@@ -90,6 +90,12 @@ export function getDifficultyName(difficulty) {
   return subtierPrefix + difficulty.name;
 }
 
+export function getNavigatorLanguage() {
+  const language = navigator.language;
+  if (language === null || language === undefined || language === "") return "en";
+  return language;
+}
+
 /**
  * Calculates the average fractional tier for a challenge based on its submissions.
  *
@@ -178,7 +184,7 @@ export function getChallengeInvertHierarchy(campaign, map, challenge) {
 
 export function displayDate(dateObj, t) {
   if (dateObj === null || dateObj === undefined) return "<" + t("unknown_date") + ">";
-  return jsonDateToJsDate(dateObj).toLocaleDateString(navigator.language);
+  return jsonDateToJsDate(dateObj).toLocaleDateString(getNavigatorLanguage());
 }
 
 export function getGamebananaEmbedUrl(url, size = "medium") {
