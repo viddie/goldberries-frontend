@@ -6,6 +6,7 @@ import {
   faCheck,
   faComment,
   faEquals,
+  faEyeSlash,
   faHorse,
   faInfoCircle,
   faQuestion,
@@ -28,7 +29,7 @@ import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic";
 import { PlayerChip } from "../goldberries";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
-import { getChallengeNameShort } from "../../util/data_util";
+import { getChallengeNameShort, shouldHideVoteCount } from "../../util/data_util";
 import {
   CharsCountLabel,
   DifficultyMoveDisplay,
@@ -37,6 +38,7 @@ import {
   SuggestionName,
 } from "../../pages/Suggestions";
 import { CustomMenu } from "../Menu";
+import { SUGGESTION_VOTE_HIDE_MINUTES } from "../../util/constants";
 
 export function ViewSuggestionModal({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.view" });
@@ -317,61 +319,81 @@ export function ViewSuggestionModal({ id }) {
             <Chip label={t_s("votes.label")} size="small" />
           </Divider>
         </Grid>
-        {!isGeneral && (
+
+        {shouldHideVoteCount(suggestion) ? (
+          <Grid item xs={12}>
+            <Tooltip title={t("hidden_vote_count_desc", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
+              <Typography variant="body2" color={(t) => t.palette.text.secondary} textAlign="center">
+                {t("hidden_vote_count")}
+                <FontAwesomeIcon
+                  icon={faEyeSlash}
+                  style={{
+                    marginLeft: "4px"
+                  }}
+                />
+              </Typography>
+            </Tooltip>
+          </Grid>
+        ) : (
           <>
+            {!isGeneral && (
+              <>
+                <Grid item xs={12} sm={12}>
+                  <Typography variant="body1">{t("done_challenge")}</Typography>
+                  <Grid container columnSpacing={1}>
+                    <Grid item xs={12} sm={4}>
+                      <VotesDetailsDisplay votes={suggestion.votes} voteType="+" hasSubmission={true} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <VotesDetailsDisplay votes={suggestion.votes} voteType="-" hasSubmission={true} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <VotesDetailsDisplay votes={suggestion.votes} voteType="i" hasSubmission={true} />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+              </>
+            )}
+          
             <Grid item xs={12} sm={12}>
-              <Typography variant="body1">{t("done_challenge")}</Typography>
+              {!isGeneral && <Typography variant="body1">{t("not_done_challenge")}</Typography>}
               <Grid container columnSpacing={1}>
                 <Grid item xs={12} sm={4}>
-                  <VotesDetailsDisplay votes={suggestion.votes} voteType="+" hasSubmission={true} />
+                  <VotesDetailsDisplay
+                    votes={suggestion.votes}
+                    voteType="+"
+                    hasSubmission={false}
+                    highlightedPlayers={highlightedPlayers}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <VotesDetailsDisplay votes={suggestion.votes} voteType="-" hasSubmission={true} />
+                  <VotesDetailsDisplay
+                    votes={suggestion.votes}
+                    voteType="-"
+                    hasSubmission={false}
+                    highlightedPlayers={highlightedPlayers}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <VotesDetailsDisplay votes={suggestion.votes} voteType="i" hasSubmission={true} />
+                  <VotesDetailsDisplay
+                    votes={suggestion.votes}
+                    voteType="i"
+                    hasSubmission={false}
+                    highlightedPlayers={highlightedPlayers}
+                  />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
           </>
         )}
-        <Grid item xs={12} sm={12}>
-          {!isGeneral && <Typography variant="body1">{t("not_done_challenge")}</Typography>}
-          <Grid container columnSpacing={1}>
-            <Grid item xs={12} sm={4}>
-              <VotesDetailsDisplay
-                votes={suggestion.votes}
-                voteType="+"
-                hasSubmission={false}
-                highlightedPlayers={highlightedPlayers}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <VotesDetailsDisplay
-                votes={suggestion.votes}
-                voteType="-"
-                hasSubmission={false}
-                highlightedPlayers={highlightedPlayers}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <VotesDetailsDisplay
-                votes={suggestion.votes}
-                voteType="i"
-                hasSubmission={false}
-                highlightedPlayers={highlightedPlayers}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
 
         {suggestion.challenge_id !== null && (
           <>
             <Grid item xs={12}>
-              <Divider sx={{ mt: 2 }}>
+              <Divider>
                 <Chip label={t("stats")} size="small" />
               </Divider>
             </Grid>

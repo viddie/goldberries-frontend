@@ -1,6 +1,6 @@
 import { darkTheme } from "../App";
 
-import { sortToDifficulty, sortToDifficultyId } from "./constants";
+import { sortToDifficulty, sortToDifficultyId, SUGGESTION_VOTE_HIDE_MINUTES } from "./constants";
 import { jsonDateToJsDate } from "./util";
 
 export function getChallengeIsFullGame(challenge) {
@@ -510,4 +510,12 @@ export function durationToSeconds(duration) {
   let seconds = parseInt(match[3]);
 
   return hours * 3600 + minutes * 60 + seconds;
+}
+
+export function shouldHideVoteCount(suggestion) {
+  const now = new Date();
+  const dateVerified = jsonDateToJsDate(suggestion.date_verified);
+  const diff = now - dateVerified;
+
+  return diff < SUGGESTION_VOTE_HIDE_MINUTES * 1000 * 60;
 }

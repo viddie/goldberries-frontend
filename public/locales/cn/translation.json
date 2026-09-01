@@ -1431,7 +1431,8 @@
     },
     "display": {
       "deleted_player": "（已删除的玩家）",
-      "no_votes": "暂无投票"
+      "no_votes": "暂无投票",
+      "hidden_vote_count": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。"
     },
     "name": {
       "general": "通用建议",
@@ -1474,7 +1475,9 @@
           "accept": "通过变更",
           "reject_verification": "拒绝此建议",
           "reject_change": "拒绝变更"
-        }
+        },
+        "hidden_vote_count_desc": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。",
+        "hidden_vote_count": "投票数量已隐藏"
       },
       "create": {
         "feedback": {
