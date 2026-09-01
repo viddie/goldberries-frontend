@@ -461,7 +461,7 @@ function ProtectedRoute({
   if (auth.user === null) {
     return <Navigate to={"/login/" + encodeURIComponent(redirect)} replace />;
   }
-  if (needsPlayerClaimed && auth.user.player === null) {
+  if (needsPlayerClaimed && !auth.hasPlayerClaimed) {
     return <PageNoPlayerClaimed />;
   }
   if (needsNewsWriter && !auth.hasNewsWriterPriv) {
