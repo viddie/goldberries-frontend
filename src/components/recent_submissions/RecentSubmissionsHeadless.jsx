@@ -27,6 +27,7 @@ import {
   SubmissionFcIcon,
   VerificationStatusChip,
   VerifierNotesIcon,
+  ObsoleteIcon,
 } from "../goldberries";
 import { ErrorDisplay, StyledLink } from "../basic";
 import { getChallengeCampaign, getChallengeSuffix, getMapName } from "../../util/data_util";
@@ -101,12 +102,25 @@ function RecentSubmissionsTable({
   const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const noFoundStr = verified === null ? t("no_pending") : verified ? t("no_verified") : t("no_rejected");
+  const isLoading = data.submissions === null;
   const hasSubmissions = data.submissions !== null && data.submissions.length > 0;
   const hasMoreThanOnePage = data.max_count !== null && data.max_count > perPage;
+  const showPagination =
+    isLoading || (hasSubmissions && (!paginationOptional || hasMoreThanOnePage || perPage > 25));
   return (
     <TableContainer component={Paper}>
+      {showPagination && (
+        <RecentSubmissionsTablePagination
+          isLoading={isLoading}
+          count={data.max_count}
+          page={page}
+          perPage={perPage}
+          setPage={setPage}
+          setPerPage={setPerPage}
+        />
+      )}
       <Table size="small">
-        {hasSubmissions && (
+        {(isLoading || hasSubmissions) && (
           <TableHead>
             <TableRow>
               <TableCell sx={{ pl: 1.5, pr: 0.5 }}>{t_g("submission", { count: 1 })}</TableCell>
@@ -141,29 +155,62 @@ function RecentSubmissionsTable({
           )}
         </TableBody>
       </Table>
-      {hasSubmissions && (!paginationOptional || hasMoreThanOnePage || perPage > 25) && (
-        <TablePagination
-          component="div"
-          count={data.max_count ?? -1}
-          page={page - 1}
-          rowsPerPage={perPage}
-          onPageChange={(event, newPage) => setPage(newPage + 1)}
-          rowsPerPageOptions={[10, 15, 25, 50, 100]}
-          labelRowsPerPage={t("submissions_per_page")}
-          onRowsPerPageChange={(event) => {
-            setPerPage(event.target.value);
-            setPage(1);
-          }}
-          slotProps={{
-            select: {
-              MenuProps: {
-                disableScrollLock: true,
-              },
-            },
-          }}
-        />
-      )}
     </TableContainer>
+  );
+}
+function RecentSubmissionsTablePagination({ isLoading, count, page, perPage, setPage, setPerPage }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
+  const theme = useTheme();
+  const paginationProps = {
+    component: "div",
+    count: isLoading ? -1 : (count ?? -1),
+    page: page - 1,
+    rowsPerPage: perPage,
+    rowsPerPageOptions: [10, 15, 25, 50, 100],
+    labelRowsPerPage: t("submissions_per_page"),
+    sx: {
+      borderBottom: `1px solid ${theme.palette.tableRowBorder}`,
+      ".MuiTablePagination-toolbar": {
+        minHeight: 40,
+      },
+      ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+        marginTop: "6px",
+        marginBottom: "6px",
+      },
+    },
+    slotProps: {
+      select: {
+        MenuProps: {
+          disableScrollLock: true,
+        },
+      },
+      actions: {
+        previousButton: { size: "small" },
+        nextButton: { size: "small" },
+      },
+    },
+  };
+
+  if (isLoading) {
+    return (
+      <TablePagination
+        {...paginationProps}
+        onPageChange={() => undefined}
+        labelDisplayedRows={() => <Skeleton variant="text" width={70} />}
+        onRowsPerPageChange={() => undefined}
+      />
+    );
+  }
+
+  return (
+    <TablePagination
+      {...paginationProps}
+      onPageChange={(event, newPage) => setPage(newPage + 1)}
+      onRowsPerPageChange={(event) => {
+        setPerPage(event.target.value);
+        setPage(1);
+      }}
+    />
   );
 }
 function RecentSubmissionsTableRowFakeout({ hasPlayer }) {
@@ -178,7 +225,7 @@ function RecentSubmissionsTableRowFakeout({ hasPlayer }) {
         </TableCell>
       )}
       <TableCell sx={{ pl: 0.5, pr: 1 }}>
-        <Skeleton variant="text" width={70} height={24} />
+        <Skeleton variant="text" width={50} height={24} sx={{ mx: "auto" }} />
       </TableCell>
     </TableRow>
   );
@@ -251,6 +298,7 @@ function RecentSubmissionsTableRow({ submission, hasPlayer }) {
               </Typography>
             )}
             <SubmissionFcIcon submission={submission} height="1.3em" />
+            {submission.is_obsolete && <ObsoleteIcon />}
             {submission.verifier_notes && (
               <VerifierNotesIcon notes={submission.verifier_notes} fontSize="1.0em" />
             )}

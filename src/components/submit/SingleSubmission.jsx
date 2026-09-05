@@ -69,7 +69,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
       proof_url: "",
       raw_session_url: "",
       player_notes: "",
-      is_fc: null,
+      is_fc: getIsFcForChallenge(defaultChallenge),
       suggested_difficulty_id: null,
       frac: 50,
       is_personal: false,
@@ -132,15 +132,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
 
   const onChallengeSelect = (challenge) => {
     setChallenge(challenge);
-    if (challenge !== null) {
-      if (challenge.has_fc) {
-        form.setValue("is_fc", null);
-      } else {
-        form.setValue("is_fc", challenge.requires_fc);
-      }
-    } else {
-      form.setValue("is_fc", null);
-    }
+    form.setValue("is_fc", getIsFcForChallenge(challenge));
   };
   //#endregion
 
@@ -440,3 +432,16 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
   //#endregion
 }
 //#endregion
+
+function getIsFcForChallenge(challenge) {
+  if (challenge === null || challenge === undefined) {
+    return null;
+  }
+  if (challenge.requires_fc) {
+    return true;
+  }
+  if (challenge.has_fc) {
+    return null;
+  }
+  return false;
+}

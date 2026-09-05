@@ -149,7 +149,6 @@ function StampEntry({ playerId, stampId, stampSubmission }) {
   const hasSubmission = !!stampSubmission;
   const submission = stampSubmission?.submission ?? null;
   const accentColor = info?.accent;
-  const accentGlowFilter = getAccentGlowFilter(hasSubmission, accentColor);
   const border = stampId > 1 ? { borderTop: "3px solid", borderColor: "#c3c3c3", pt: 1.5 } : {};
 
   return (

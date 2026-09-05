@@ -44,6 +44,7 @@ import {
   DifficultySelectControlled,
   DateAchievedTimePicker,
   SubmissionInspectButton,
+  OpenUrlButton,
 } from "../goldberries";
 import { jsonDateToJsDate } from "../../util/util";
 import { FormOptions } from "../../util/constants";
@@ -51,9 +52,13 @@ import { FullChallengeDisplay } from "../../pages/Submission";
 import { getQueryData, usePostSubmission } from "../../hooks/useApi";
 import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
-import { ChallengeDetailsListWrapper, CollectiblesInfoBox } from "../../pages/Challenge";
+import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
-import { durationToSeconds, secondsToDuration } from "../../util/data_util";
+import {
+  durationToSeconds,
+  getNavigatorLanguage,
+  secondsToDuration,
+} from "../../util/data_util";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -92,6 +97,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_a } = useTranslation();
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
+  const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
   const mapCollectiblesModal = useModal(null, undefined, {
     actions: [ModalButtons.close],
@@ -148,6 +154,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
 
   const isHelper = auth.hasHelperPriv;
   const submitDisabled = player === null || (challenge === null && !submission.new_challenge_id);
+  const verificationDisabled = submitDisabled || auth.isPlayerWithId(submission.player.id);
 
   const new_challenge_id = form.watch("new_challenge_id");
   const new_challenge = form.watch("new_challenge");
@@ -178,7 +185,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
         </Stack>
 
         {isHelper ? (
-          <FullChallengeSelect challenge={challenge} setChallenge={setChallenge} />
+          <FullChallengeSelect challenge={challenge} setChallenge={setChallenge} showOpenButtons />
         ) : (
           new_challenge_id === null && <FullChallengeDisplay challenge={challenge} />
         )}
@@ -202,12 +209,16 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 </Stack>
               )}
             </Stack>
-            <TextField
-              label={t_g("url")}
-              disabled={!isHelper}
-              fullWidth
-              {...form.register("new_challenge.url", FormOptions.UrlRequired(t_ff))}
-            />
+            <Stack direction="row" gap={1} alignItems="center">
+              <TextField
+                label={t_g("url")}
+                disabled={!isHelper}
+                fullWidth
+                sx={{ flex: 1 }}
+                {...form.register("new_challenge.url", FormOptions.UrlRequired(t_ff))}
+              />
+              {isHelper && <OpenUrlButton url={form.watch("new_challenge.url")} />}
+            </Stack>
             <TextField
               label={t_g("name")}
               disabled={!isHelper}
@@ -237,7 +248,10 @@ export function FormSubmission({ submission, onSave, ...props }) {
         <Divider sx={{ my: 2 }} />
 
         {isHelper ? (
-          <PlayerSelect type="all" value={player} onChange={(e, v) => setPlayer(v)} sx={{ mt: 2, mb: 1 }} />
+          <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 2, mb: 1 }}>
+            <PlayerSelect type="all" value={player} onChange={(e, v) => setPlayer(v)} sx={{ flex: 1 }} />
+            <OpenUrlButton url={player && `/player/${player.id}`} />
+          </Stack>
         ) : (
           <Stack direction="row" gap={2} sx={{ mt: 2, mb: 1 }}>
             <Typography variant="h6">{t_g("player", { count: 1 })}:</Typography>
@@ -299,9 +313,16 @@ export function FormSubmission({ submission, onSave, ...props }) {
           {submission.challenge?.map && (
             <>
               {!isHelper && <span style={{ flexGrow: 1 }} />}
-              <Tooltip arrow placement="top" title={t("map_information")}>
+              <Tooltip arrow placement="top" title={t("challenge_information")}>
                 <CustomIconButton
                   onClick={() => mapCollectiblesModal.open(submission.challenge.map)}
+                  color={
+                    submission.challenge.map.note ||
+                    submission.challenge.map.campaign?.note ||
+                    submission.challenge.description
+                      ? "warning"
+                      : "primary"
+                  }
                   sx={{ alignSelf: "stretch" }}
                 >
                   <FontAwesomeIcon icon={faBasketShopping} />
@@ -322,14 +343,17 @@ export function FormSubmission({ submission, onSave, ...props }) {
         {proofUrlDebounced && <ProofEmbed url={proofUrlDebounced} />}
 
         {(submission.raw_session_url || isHelper) && (
-          <TextField
-            {...form.register("raw_session_url")}
-            label={t("raw_session_url")}
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={!isHelper}
-            InputLabelProps={{ shrink: true }}
-          />
+          <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 2 }}>
+            <TextField
+              {...form.register("raw_session_url")}
+              label={t("raw_session_url")}
+              fullWidth
+              disabled={!isHelper}
+              InputLabelProps={{ shrink: true }}
+              sx={{ flex: 1 }}
+            />
+            {isHelper && <OpenUrlButton url={form.watch("raw_session_url")} />}
+          </Stack>
         )}
         <TextField
           {...form.register("player_notes")}
@@ -435,7 +459,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
         <List dense sx={{ pb: 0 }}>
           <ListItem>
             <ListItemText
-              primary={jsonDateToJsDate(submission.date_created).toLocaleString(navigator.language)}
+              primary={jsonDateToJsDate(submission.date_created).toLocaleString(getNavigatorLanguage())}
               secondary={t("date_submitted")}
             />
           </ListItem>
@@ -445,7 +469,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 <ListItemText
                   primary={
                     submission.date_verified
-                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(navigator.language)
+                      ? jsonDateToJsDate(submission.date_verified).toLocaleString(getNavigatorLanguage())
                       : "-"
                   }
                   secondary={t("date_verified")}
@@ -489,7 +513,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 color="success"
                 fullWidth
                 onClick={onVerifySubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.verify")}
               </Button>
@@ -498,7 +522,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
                 fullWidth
                 color="error"
                 onClick={onRejectSubmit}
-                disabled={submitDisabled}
+                disabled={verificationDisabled}
               >
                 {t("buttons.reject")}
               </Button>
@@ -525,13 +549,21 @@ export function FormSubmission({ submission, onSave, ...props }) {
               <StyledLink to={"/campaign/" + mapCollectiblesModal.data.campaign_id}>
                 {mapCollectiblesModal.data.campaign_id}
               </StyledLink>
-              ) <FontAwesomeIcon icon={faArrowRight} /> {t("map_information")} (
+              ) <FontAwesomeIcon icon={faArrowRight} /> {t_g("map", { count: 1 })} (
               <StyledLink to={"/map/" + mapCollectiblesModal.data.id}>
                 {mapCollectiblesModal.data.id}
               </StyledLink>
-              )
+              ) <FontAwesomeIcon icon={faArrowRight} /> {t("challenge_information")} (
+              <StyledLink to={"/challenge/" + submission.challenge.id}>{submission.challenge.id}</StyledLink>)
             </Typography>
             <ChallengeDetailsListWrapper id={mapCollectiblesModal.data.id} />
+            {submission.challenge?.description && (
+              <NoteDisclaimer
+                title={t_c("description")}
+                note={submission.challenge.description}
+                sx={{ mt: 2 }}
+              />
+            )}
           </>
         )}
       </CustomModal>

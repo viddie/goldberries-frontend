@@ -1,4 +1,4 @@
-{
+﻿{
   "hello_world": "Hello World!",
   "general": {
     "campaign_one": "Кампания",
@@ -1704,7 +1704,7 @@
     },
     "issues": {
       "header": "Докладывайте о проблемах",
-      "text": "Если вы обнаружили какие-либо проблемы, пожалуйста, сообщите о них, создав <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">новую тему на GitHub</CustomExternalLink> или написав @ viddie на сервере Modded Golden Team Discord, предпочтительно в <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">выделенным канале</CustomExternalLink> для этого веб-сайта"
+      "text": "Если вы обнаружили какие-либо проблемы, пожалуйста, сообщите о них, создав <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">новую тему на GitHub</CustomExternalLink> или написав @ viddie на сервере Modded Golden Team Discord, предпочтительно в <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">выделенным канале</CustomExternalLink> для этого веб-сайта"
     },
     "global_stats": {
       "header": "Глобальная статистика",
@@ -1754,7 +1754,8 @@
     "people": "много замечательных людей из #goldberries-net в Modded Golden Team Discord",
     "chinese_translation": "Китайский перевод",
     "french_translation": "Французский перевод",
-    "russian_translation": "Русский перевод"
+    "russian_translation": "Русский перевод",
+    "korean_translation": "Корейский перевод"
   },
   "stats": {
     "title": "Статистика",
@@ -1838,3 +1839,4 @@
     }
   }
 }
+

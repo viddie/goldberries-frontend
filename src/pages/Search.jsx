@@ -4,9 +4,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
 
+import { FWG_SHEET } from "../util/constants";
 import {
   getCampaignName,
   getMapLobbyInfo,
@@ -24,6 +25,7 @@ import {
   HeadTitle,
   LoadingSpinner,
   StyledLink,
+  StyledExternalLink,
 } from "../components/basic";
 
 export function PageSearch({ isDirectSearch = false }) {
@@ -109,6 +111,17 @@ export function PageSearch({ isDirectSearch = false }) {
           crumbling cliffside or crystal comet?
           <br />
           Next time, be more clear with your abbreviations
+        </Typography>
+      )}
+      {search && ["farewell", "fwg"].includes(search.toLocaleLowerCase()) && (
+        <Typography variant="body1" color="gray" sx={{ my: 1.5 }}>
+          <Trans
+            t={t}
+            i18nKey="farewell_notice"
+            components={{
+              StyledExternalLink: <StyledExternalLink href={FWG_SHEET} />,
+            }}
+          />
         </Typography>
       )}
       {search && search.length >= 1 && <SearchDisplay search={search} />}

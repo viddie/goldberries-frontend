@@ -24,12 +24,13 @@ export const LAYERS = {
 };
 
 /*
+TO NOTE:
+- MaxHelpingHand/SecretBerry -> CAN BE EVERYTHING. Dont add as any single renderer, just fill in the collectible type via the sprite attribute.
+
 TO ADD:
-- birdForsakenCityGem as Crystal heart renderer
-- multi-room strawberry, rust berry, dream berry, core berry, water berry
-  - https://goldberries.net/map/3742/view
-  - https://goldberries.net/map/4574/view
-- https://goldberries.net/map/7574/view -> NonPoppingStrawberry
+- multi-room strawberry
+  - glitchtophen
+  - collapsing skyline
 */
 
 //#region Renderers
@@ -38,7 +39,9 @@ export const IndividualEntityMap = {
   goldenBerry: () => GoldenBerryRenderer,
   "MaxHelpingHand/GoldenStrawberryCustomConditions": () => GoldenBerryRenderer,
   "CustomPoints/CustomPointsGolden": () => GoldenBerryRenderer,
+
   "CollabUtils2/SilverBerry": () => SilverBerryRenderer,
+
   strawberry: () => StrawberryRenderer,
   "DSidesHelper/TeleportMoonBerry": () => StrawberryRenderer,
   "SpringCollab2020/returnBerry": () => StrawberryRenderer,
@@ -46,19 +49,27 @@ export const IndividualEntityMap = {
   "SorbetHelper/ReturnBerry": () => StrawberryRenderer,
   "FrostTemple/ReturnStrawberry": () => StrawberryRenderer,
   "MaxHelpingHand/CustomizableBerry": () => StrawberryRenderer,
-  // "MaxHelpingHand/SecretBerry": () => StrawberryRenderer,
+  "MaxHelpingHand/NonPoppingStrawberry": () => StrawberryRenderer,
+  "ParrotHelper/FlagBerry": () => StrawberryRenderer,
+
   blackGem: () => CrystalHeartRenderer,
   "MaxHelpingHand/ReskinnableCrystalHeart": () => CrystalHeartRenderer,
   "AdventureHelper/CustomCrystalHeart": () => CrystalHeartRenderer,
+  birdForsakenCityGem: () => CrystalHeartRenderer,
+
   "CollabUtils2/MiniHeart": () => MiniHeartRenderer,
   "CollabUtils2/FakeMiniHeart": () => MiniHeartRenderer,
+
   "CollabUtils2/RainbowBerry": () => RainbowBerryRenderer,
+
   "PlatinumStrawberry/PlatinumStrawberry": () => PlatinumBerryRenderer,
   "DSidesPlatinum/PlatinumStrawberry": () => PlatinumBerryRenderer,
+
   cassette: () => CassetteRenderer,
   "XaphanHelper/CustomCollectable": (attr) =>
     attr.sprite?.indexOf("cassette") >= 0 ? CassetteRenderer : null,
-  "ParrotHelper/FlagBerry": () => StrawberryRenderer,
+  "AltSidesHelper/AltSideCassette": () => CassetteRenderer,
+
   memorialTextController: () => WingedGoldenBerryRenderer,
   "JungleHelper/TreeDepthController": () => WingedGoldenBerryRenderer,
   "RosewoodHelper/OneDashWingedStrawberry": () => WingedGoldenBerryRenderer,
@@ -175,6 +186,7 @@ const colors = {
   heart: "#3962e1",
   npc: "#ffe100",
   chapterPanel: "#37f0c8",
+  rust: "#b86f3c",
 };
 
 const defaultCassetteColor = (index) => {
@@ -1207,6 +1219,7 @@ group(
     "VivHelper/EvilBumper": { name: "EvilBumper" },
     "CherryHelper/ShadowBumper": { color: colors.shadowDash, name: "ShadowBumper" },
     "MaxHelpingHand/MultiNodeBumper": { name: "MultiNodeBumper" },
+    "VivHelper/DashBumper": { name: "DashBumper" },
   },
 );
 
@@ -1593,6 +1606,22 @@ group(
     },
     "SpringCollab2020/MultiRoomStrawberry": "MaxHelpingHand/MultiRoomStrawberry",
     "SpringCollab2020/MultiRoomStrawberrySeed": "MaxHelpingHand/MultiRoomStrawberrySeed",
+    "ScuffedHelper/WaterBerry": {
+      name: (attr) => "WaterBerry",
+      color: colors.water,
+    },
+    "FrostHelper/CoreBerry": {
+      name: (attr) => "CoreBerry",
+      color: (attr) => (attr.isIce ? colors.coreIce : colors.coreFire),
+    },
+    "CommunalHelper/DreamStrawberry": {
+      name: (attr) => "DreamStrawberry",
+      color: colors.dream,
+    },
+    "FactoryHelper/RustBerry": {
+      name: (attr) => "RustBerry",
+      color: colors.rust,
+    },
   },
 );
 const strawberrySpriteMap = {
@@ -2106,9 +2135,7 @@ cd["MaxHelpingHand/GoldenStrawberryCustomConditions"] = [
   { match: (attr) => !attr.winged, collectible: { name: "Golden Berry", formValue: "0" } },
 ];
 cd["CustomPoints/CustomPointsGolden"] = cd.goldenBerry;
-cd.memorialTextController = [
-  { match: () => true, collectible: { name: "Winged Golden Berry", formValue: "4" } },
-];
+cd.memorialTextController = [{ collectible: { name: "Winged Golden Berry", formValue: "4" } }];
 cd["JungleHelper/TreeDepthController"] = cd.memorialTextController;
 cd["RosewoodHelper/OneDashWingedStrawberry"] = cd.memorialTextController;
 cd["ShroomHelper/OneDashWingedStrawberry"] = cd.memorialTextController;
@@ -2127,19 +2154,16 @@ cd["SorbetHelper/ReturnBerry"] = cd.strawberry;
 cd["ParrotHelper/FlagBerry"] = cd.strawberry;
 cd["FrostTemple/ReturnStrawberry"] = cd.strawberry;
 cd["MaxHelpingHand/CustomizableBerry"] = cd.strawberry;
+cd["MaxHelpingHand/NonPoppingStrawberry"] = cd.strawberry;
 
 cd["DSidesHelper/TeleportMoonBerry"] = [
   { match: (attr) => !!attr.moon && !attr.winged, collectible: { name: "Moon Berry", formValue: "3" } },
 ];
 
-cd["CollabUtils2/SilverBerry"] = [
-  { match: () => true, collectible: { name: "Silver Berry", formValue: "1" } },
-];
-cd["CollabUtils2/SpeedBerry"] = [
-  { match: () => true, collectible: { name: "Speed Berry", formValue: "10" } },
-];
+cd["CollabUtils2/SilverBerry"] = [{ collectible: { name: "Silver Berry", formValue: "1" } }];
+cd["CollabUtils2/SpeedBerry"] = [{ collectible: { name: "Speed Berry", formValue: "10" } }];
 cd["CollabUtils2/RainbowBerry"] = [
-  { match: () => true, collectible: { name: "Rainbow Berry", formValue: "13", formVariant: "3" } },
+  { collectible: { name: "Rainbow Berry", formValue: "13", formVariant: "3" } },
 ];
 
 cd["MaxHelpingHand/SecretBerry"] = [
@@ -2152,19 +2176,39 @@ cd["MaxHelpingHand/SecretBerry"] = [
     collectible: { name: "Gem Berry", formValue: "13", formVariant: "6" },
   },
   {
-    match: () => true,
+    match: (attr) => attr.strawberrySprite === "blueraspberry",
+    collectible: { name: "Blue Raspberry", formValue: "3", formVariant: "19" },
+  },
+  {
     collectible: { name: "Strawberry", formValue: "2" },
   },
 ];
-
-cd["PlatinumStrawberry/PlatinumStrawberry"] = [
-  { match: () => true, collectible: { name: "Platinum Berry", formValue: "5" } },
+cd["ScuffedHelper/WaterBerry"] = [
+  { collectible: { name: "Water Berry", formValue: "13", formVariant: "9" } },
 ];
+cd["FrostHelper/CoreBerry"] = [
+  {
+    collectible: { name: "Core Berry", formValue: "2", formVariant: "14" },
+  },
+];
+cd["CommunalHelper/DreamStrawberry"] = [
+  {
+    collectible: { name: "Dream Berry", formValue: "13", formVariant: "7" },
+  },
+];
+cd["FactoryHelper/RustBerry"] = [
+  {
+    collectible: { name: "Rust Berry", formValue: "13", formVariant: "8" },
+  },
+];
+
+cd["PlatinumStrawberry/PlatinumStrawberry"] = [{ collectible: { name: "Platinum Berry", formValue: "5" } }];
 cd["DSidesPlatinum/PlatinumStrawberry"] = cd["PlatinumStrawberry/PlatinumStrawberry"];
 
-cd.cassette = [{ match: () => true, collectible: { name: "Cassette", formValue: "6" } }];
+cd.cassette = [{ collectible: { name: "Cassette", formValue: "6" } }];
+cd["AltSidesHelper/AltSideCassette"] = cd.cassette;
 
-const crystalHeartDef = [{ match: () => true, collectible: { name: "Crystal Heart", formValue: "7" } }];
+const crystalHeartDef = [{ collectible: { name: "Crystal Heart", formValue: "7" } }];
 cd.blackGem = crystalHeartDef;
 cd["CollabUtils2/CrystalHeart"] = crystalHeartDef;
 cd["CollabUtils2/MiniHeart"] = crystalHeartDef;
@@ -2187,7 +2231,7 @@ export function extractCollectibles(mapData) {
       const defs = COLLECTIBLE_DEFS[entity.name];
       if (!defs) continue;
       for (const def of defs) {
-        if (def.match(entity.attributes || {})) {
+        if (def.match === undefined || def.match(entity.attributes || {})) {
           results.push({
             name: def.collectible.name,
             formValue: def.collectible.formValue,

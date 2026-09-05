@@ -56,6 +56,7 @@ import {
   getChallengeSuffix,
   getDifficultyName,
   getMapName,
+  getNavigatorLanguage,
   secondsToDuration,
 } from "../util/data_util";
 import { COUNTRY_CODES } from "../util/country_codes";
@@ -260,6 +261,7 @@ function TopGoldenListHeader({ type, id }) {
 
 function TopGoldenList({ type, id, filter, options, showMap, editSubmission, openSubmissionFilter }) {
   const query = useGetTopGoldenList(type, id, filter, options.highlightPlayerId);
+  const isPlayer = type === "player";
 
   const key = getTglRenderKey(type, id, filter, options);
   const [renderUpTo, setRenderUpTo] = useState({ key: key, index: 0 });
@@ -348,7 +350,12 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
           options={options}
         />
       ))}
-      <HiddenTiersNotice filter={filter} compactMode={compactMode} onClick={openSubmissionFilter} />
+      <HiddenTiersNotice
+        filter={filter}
+        compactMode={compactMode}
+        isPlayer={isPlayer}
+        onClick={openSubmissionFilter}
+      />
     </Stack>
   );
 }
@@ -594,7 +601,6 @@ function ChallengeInfoBox({
   if (!showFractionalTiers && !showLikeCounts) columnCount--;
   const columnWidth = 12 / columnCount;
 
-  const hideImage = !options.showImages;
   const handleClick = (e) => {
     if (!isPlayer) {
       showMap(map?.id, challenge.id, !map);
@@ -735,16 +741,14 @@ function ChallengeInfoBox({
     element = (
       <Box sx={{ ...boxBaseStyles, p: 1.5 }} onClick={handleClick}>
         <Stack direction="row" gap={2}>
-          {!hideImage && (
-            <ChallengePreviewImageLink
-              challenge={challenge}
-              map={map}
-              campaign={campaign}
-              width="122px"
-              style={{ flexShrink: "0" }}
-              preferMapImages={options.preferMapImages}
-            />
-          )}
+          <ChallengePreviewImageLink
+            challenge={challenge}
+            map={map}
+            campaign={campaign}
+            width="122px"
+            style={{ flexShrink: "0" }}
+            preferMapImages={options.preferMapImages}
+          />
           <Stack direction="column" gap={0} sx={{ width: { xs: "100%", sm: "200px" }, minWidth: 0 }}>
             <Stack direction="row" gap={0.5} alignItems="center">
               <CampaignIcon {...campaignIconProps} style={{ marginRight: "2px" }} />
@@ -1020,7 +1024,7 @@ function DifficultyNumber({
   );
 }
 
-function HiddenTiersNotice({ filter, compactMode, onClick }) {
+function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
   const { t: t_sf } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
   const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
@@ -1067,7 +1071,7 @@ function HiddenTiersNotice({ filter, compactMode, onClick }) {
     filter.start_date !== null && filter.start_date !== "" && filter.start_date !== undefined;
   const hasEndDate = filter.end_date !== null && filter.end_date !== "" && filter.end_date !== undefined;
   if (hasStartDate || hasEndDate) {
-    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(navigator.language);
+    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(getNavigatorLanguage());
     let dateLabel;
     if (hasStartDate && hasEndDate) {
       dateLabel = t("hidden_tiers.filters.date_range.both", {
@@ -1083,7 +1087,7 @@ function HiddenTiersNotice({ filter, compactMode, onClick }) {
   }
 
   // Country
-  if (filter.country !== null && filter.country !== "" && filter.country !== undefined) {
+  if (!isPlayer && filter.country !== null && filter.country !== "" && filter.country !== undefined) {
     const countryName = COUNTRY_CODES[filter.country] || filter.country;
     activeFilters.push({
       label: t("hidden_tiers.filters.country", { country: countryName }),
@@ -1092,7 +1096,7 @@ function HiddenTiersNotice({ filter, compactMode, onClick }) {
   }
 
   // Input method
-  if (filter.input_method !== null && filter.input_method !== "" && filter.input_method !== undefined) {
+  if (!isPlayer && filter.input_method !== null && filter.input_method !== "" && filter.input_method !== undefined) {
     activeFilters.push({
       label: t("hidden_tiers.filters.input_method", { method: t_im(filter.input_method) }),
       icon: <InputMethodIcon method={filter.input_method} />,
@@ -1383,6 +1387,8 @@ export function sortChallengesForTGLNew(challenges, maps, campaigns, sortBy, sor
         return sortByFractionalTier(a, b, isPlayer, ascending);
       case "clear-count":
         return sortByClearCount(a, b, ascending);
+      case "like-count":
+        return sortByLikeCount(a, b, ascending);
       case "first-clear-date":
         return sortByFirstClearDate(a, b, ascending);
       case "time-taken":
@@ -1423,6 +1429,14 @@ function sortByFractionalTier(a, b, isPlayer, ascending) {
 function sortByClearCount(a, b, ascending) {
   const countA = a.data.submission_count;
   const countB = b.data.submission_count;
+  if (countA !== countB) {
+    return ascending ? countA - countB : countB - countA;
+  }
+  return 0;
+}
+function sortByLikeCount(a, b, ascending) {
+  const countA = a.likes ?? 0;
+  const countB = b.likes ?? 0;
   if (countA !== countB) {
     return ascending ? countA - countB : countB - countA;
   }

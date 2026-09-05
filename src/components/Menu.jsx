@@ -28,7 +28,7 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
  *   ]}
  * />
  */
-export function CustomMenu({ title, variant = "contained", button, items, ...props }) {
+export function CustomMenu({ title, variant = "contained", triggerSize, button, items, ...props }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -52,6 +52,7 @@ export function CustomMenu({ title, variant = "contained", button, items, ...pro
   const TriggerButton = button ?? (
     <Button
       variant={variant}
+      size={triggerSize}
       disableElevation
       endIcon={<FontAwesomeIcon icon={faChevronDown} style={{ fontSize: "0.9em" }} />}
     >

@@ -27,6 +27,7 @@ import {
   VerificationStatusChip,
   PlayerChip,
   SubmissionFcIcon,
+  ObsoleteIcon,
 } from "../components/goldberries";
 import {
   displayDate,
@@ -34,6 +35,7 @@ import {
   getChallengeNameShort,
   getGamebananaEmbedUrl,
   getMapName,
+  getNavigatorLanguage,
   getSubmissionVerifier,
   secondsToDuration,
 } from "../util/data_util";
@@ -356,7 +358,10 @@ function SubmissionDetailsGrid({ submission }) {
             </DetailCell>
             <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
               <Stack direction="column" gap={0.5} alignItems="flex-start">
-                <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                <Stack direction="row" gap={0.5} alignItems="center">
+                  <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                  {submission.is_obsolete && <ObsoleteIcon />}
+                </Stack>
                 <DateWithTooltip
                   date={submission.date_verified}
                   style={{ fontSize: "0.8rem", opacity: 0.7 }}
@@ -367,7 +372,10 @@ function SubmissionDetailsGrid({ submission }) {
         ) : (
           <>
             <DetailCell label={t("status")} icon={<FontAwesomeIcon icon={faShield} fixedWidth />}>
-              <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+              <Stack direction="row" gap={0.5} alignItems="center">
+                <VerificationStatusChip isVerified={submission.is_verified} size="small" />
+                {submission.is_obsolete && <ObsoleteIcon />}
+              </Stack>
             </DetailCell>
             <DetailCell label={t("submitted")} icon={<FontAwesomeIcon icon={faClock} fixedWidth />}>
               <DateWithTooltip date={submission.date_created} />
@@ -524,7 +532,7 @@ function ChallengeInfoBoxes({ challenge, map, campaign, hideMap = false, showObj
 export function DateWithTooltip({ date, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const tooltip =
-    date === null || date === undefined ? "" : jsonDateToJsDate(date).toLocaleString(navigator.language);
+    date === null || date === undefined ? "" : jsonDateToJsDate(date).toLocaleString(getNavigatorLanguage());
   return (
     <TooltipLineBreaks title={tooltip}>
       <span {...props}>{displayDate(date, t_g)}</span>
@@ -535,7 +543,7 @@ export function DateWithTooltip({ date, ...props }) {
 export function TimeDiffWithTooltip({ date, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const jsDate = jsonDateToJsDate(date);
-  const tooltip = date === null || date === undefined ? "" : jsDate.toLocaleString(navigator.language);
+  const tooltip = date === null || date === undefined ? "" : jsDate.toLocaleString(getNavigatorLanguage());
   return (
     <TooltipLineBreaks title={tooltip}>
       <span {...props}>{dateToTimeAgoString(jsDate, t_g)}</span>

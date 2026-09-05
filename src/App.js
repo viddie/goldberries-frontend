@@ -107,6 +107,7 @@ import { PageAppSettings } from "./pages/AppSettings";
 import { PageCampaign } from "./pages/Campaign";
 import { PageChallenge } from "./pages/Challenge";
 import { PageClaimPlayer } from "./pages/ClaimPlayer";
+import { PageCompareChallenges } from "./pages/CompareChallenges";
 import { PageCredits } from "./pages/Credits";
 import { PageFAQ } from "./pages/FAQ";
 import { PageGoldenList } from "./pages/GoldenList";
@@ -135,7 +136,7 @@ import { PageManageServerSettings } from "./pages/manage/ServerSettings";
 import { PageManageActions } from "./pages/manage/Actions";
 import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
 import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
-import { getPlayerNameColorStyle } from "./util/data_util";
+import { getNavigatorLanguage, getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { PageMapViewer } from "./pages/MapViewer";
@@ -294,6 +295,7 @@ const router = createBrowserRouter([
       { path: "player/:id/:tab?", element: <PagePlayer /> },
       { path: "submission/:id", element: <PageSubmission /> },
       { path: "challenge/:id", element: <PageChallenge /> },
+      { path: "compare-challenges/:id_a?/:id_b?", element: <PageCompareChallenges /> },
       { path: "map/:id/*", element: <PageMap /> },
       { path: "campaign/:id/:tab?", element: <PageCampaign /> },
       { path: "author/:name", element: <PageAuthor /> },
@@ -438,7 +440,7 @@ export function AuthWrapper({ children }) {
   return <AuthProvider>{children}</AuthProvider>;
 }
 export function DateLibraryWrapper({ children }) {
-  const adapterLocale = navigator.language === "en-US" ? "en" : "en-gb";
+  const adapterLocale = getNavigatorLanguage() === "en-US" ? "en" : "en-gb";
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale}>
       {children}
@@ -459,7 +461,7 @@ function ProtectedRoute({
   if (auth.user === null) {
     return <Navigate to={"/login/" + encodeURIComponent(redirect)} replace />;
   }
-  if (needsPlayerClaimed && auth.user.player === null) {
+  if (needsPlayerClaimed && !auth.hasPlayerClaimed) {
     return <PageNoPlayerClaimed />;
   }
   if (needsNewsWriter && !auth.hasNewsWriterPriv) {

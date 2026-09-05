@@ -36,6 +36,7 @@ import {
   getChallengeSuffix,
   getDifficultyName,
   getMapName,
+  getNavigatorLanguage,
 } from "../../util/data_util";
 import { DifficultyChip, PlayerNotesIcon, SubmissionFcIcon } from "../../components/goldberries";
 import {
@@ -533,13 +534,13 @@ function SubmissionQueueTableRow({
           colSpan={1}
         >
           <Stack direction="row">
-            <Stack direction="row" sx={{ flex: 1 }} gap={0.25} alignItems="center">
+            <Stack direction="row" sx={{ flex: 1 }} gap={0.5} alignItems="center">
               <Typography variant="body1">{textTop}</Typography>
               {markDateAchieved && (
                 <Tooltip
                   title={
                     "Date Achieved set to more than 4 weeks ago: " +
-                    jsonDateToJsDate(submission.date_achieved).toLocaleString(navigator.language)
+                    jsonDateToJsDate(submission.date_achieved).toLocaleString(getNavigatorLanguage())
                   }
                   placement="top"
                   arrow
@@ -557,6 +558,13 @@ function SubmissionQueueTableRow({
             <Stack direction="row" gap={1} alignItems="center" sx={{ flex: 1 }}>
               <Typography variant="body2">{textBottom}</Typography>
               <SubmissionFcIcon submission={submission} />
+              {challenge?.label && (
+                <TooltipLineBreaks title={challenge.label}>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    [{challenge.label}]
+                  </Typography>
+                </TooltipLineBreaks>
+              )}
             </Stack>
             <DifficultyChip difficulty={diff} />
           </Stack>

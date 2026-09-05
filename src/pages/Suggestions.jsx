@@ -21,7 +21,12 @@ import { useAuth } from "../hooks/AuthProvider";
 import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
 import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
-import { getChallengeCampaign, getChallengeSuffix, getMapNameClean } from "../util/data_util";
+import {
+  getChallengeCampaign,
+  getChallengeSuffix,
+  getMapNameClean,
+  getNavigatorLanguage,
+} from "../util/data_util";
 import { jsonDateToJsDate } from "../util/util";
 import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_page/SuggestionsList";
 import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
@@ -266,7 +271,7 @@ export function SuggestionCountdown({ suggestion, ...props }) {
 
   return (
     <Tooltip
-      title={t("tooltip", { date: new Date(endTime).toLocaleString(navigator.language) })}
+      title={t("tooltip", { date: new Date(endTime).toLocaleString(getNavigatorLanguage()) })}
       arrow
       placement="top"
     >

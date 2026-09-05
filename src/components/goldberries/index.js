@@ -8,6 +8,7 @@ export { DifficultySelectControlled } from "./DifficultySelectControlled";
 export { ObjectiveSelect } from "./ObjectiveSelect";
 export { VerificationStatusChip } from "./VerificationStatusChip";
 export { FullChallengeSelect } from "./FullChallengeSelect";
+export { OpenUrlButton } from "./FullChallengeSelect";
 export { FullMapSelect } from "./FullMapSelect";
 export { PlayerIdSelect } from "./PlayerIdSelect";
 export { PlayerSelect } from "./PlayerSelect";

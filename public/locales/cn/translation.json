@@ -306,7 +306,7 @@
         "clear_dates": "清除"
       },
       "country": {
-        "label": "国家"
+        "label": "国家/地区"
       },
       "input_method": {
         "label": "游玩设备",
@@ -317,7 +317,7 @@
       "label": "({{count}}/{{max}})"
     },
     "country_select": {
-      "label": "国家",
+      "label": "国家/地区",
       "not_specified": "不显示"
     },
     "time_taken_graph": {
@@ -349,10 +349,6 @@
         "prefer_map_images": {
           "label": "优先显示地图图片",
           "note": "默认显示首位通关者的YouTube缩略图，开启本选项后将优先显示地图图片"
-        },
-        "show_images": {
-          "label": "展示地图图片",
-          "note": "禁用此选项将隐藏地图图片，可提升加载速度"
         },
         "compact_mode": {
           "label": "紧凑模式",
@@ -429,7 +425,7 @@
         "deleted": "地图包已删除"
       },
       "name_feedback": {
-        "generic_error": "Error searching for campaign name",
+        "generic_error": "搜索地图包名称时出错",
         "duplicate": "名称已存在",
         "unique": "名称可用"
       },
@@ -636,6 +632,7 @@
       "faq": "常见问题解答",
       "news": "新闻",
       "changelog": "更新日志",
+      "map_viewer": "地图预览",
       "report": "问题报告"
     },
     "internal_menu": {
@@ -976,7 +973,7 @@
         "delete_account": {
           "label": "慎入",
           "description": "永久删除你的账户",
-          "note": "请注意这不会删除任何已经验证通过的内容，只会将你的玩家名称变回未绑定状态，如果你想移除你的提交内容，请联系验证者（一般来说私信我就行：Kongtiao）",
+          "note": "请注意这不会删除任何已经验证通过的内容，只会将你的玩家名称变回未绑定状态，如果你想移除你的提交内容，请联系验证者（一般来说B站私信我就行：妖怪八度）",
           "confirm": "输入DELETE以确认",
           "button": "删除账号"
         }
@@ -1006,10 +1003,6 @@
         "show_rejected_submissions": {
           "label": "显示自己被拒绝的提交",
           "note": "在你的个人页面上显示被拒绝的提交"
-        },
-        "show_average_time_taken": {
-          "label": "显示平均花费时间",
-          "note": "在挑战页面上显示挑战的平均花费时间"
         }
       },
       "visual": {
@@ -1034,15 +1027,6 @@
             "tooltip": "这将替换上面已经设置好的背景（在浏览器暗色模式下图片可能会无法显示）",
             "placeholder": "图片链接"
           }
-        }
-      },
-      "top_golden_list": {
-        "label": "金草莓排行榜",
-        "display_options_notice": "自定义设置已移至金榜(Top Golden List)的“显示选项(Display Options)”菜单中。",
-        "darken_colors": {
-          "label": "加深层级颜色",
-          "tooltip": "在深色模式下使等级颜色变暗。0%保持原色，100%变为纯黑色。",
-          "note": "此设置仅影响深色模式下的颜色！"
         }
       },
       "difficulty_colors": {
@@ -1100,8 +1084,6 @@
     "difficulty_suggestions": "难度建议",
     "is_full_game": "是否为多地图一命项目",
     "lobby_info": "大厅信息",
-    "average_time_taken": "平均耗时: ",
-    "few_submissions": "(只有少量提交内容)",
     "description": "挑战描述",
     "submission_table": {
       "suggestion": "难度建议",
@@ -1145,7 +1127,7 @@
     },
     "claim_made": {
       "title": "绑定请求已提交！",
-      "info": "你的绑定请求已提交！请在<CustomLink>金榜服务器</CustomLink>联系验证者以通过你提交的绑定请求（对于国内，请直接私信Parabones来解决问题）",
+      "info": "你的绑定请求已提交！请在<CustomLink>金榜服务器</CustomLink>联系验证者以通过你提交的绑定请求（对于国内，请直接B站私信妖怪八度来解决问题）",
       "your_data": {
         "title": "你的数据",
         "account_id": "账号ID",
@@ -1232,12 +1214,21 @@
   "map": {
     "buttons": {
       "edit": "编辑",
-      "view_challenge": "查看挑战项目"
+      "view_challenge": "查看挑战项目",
+      "submit": "提交你的内容",
+      "map_data_view": "查看地图预览",
+      "map_data_unavailable": "该地图暂无预览"
     },
     "no_challenges": "该地图暂无挑战项目",
     "info_boxes": {
       "collectibles": "收集物",
-      "golden_changes": "金草莓造成的地图变化"
+      "total_likes": "总喜欢",
+      "golden_changes": {
+        "label": "金草莓造成的地图变化",
+        "no_changes": "金草莓不造成地图变化",
+        "show": "显示"
+      },
+      "map_data": "地图预览"
     }
   },
   "player": {
@@ -1245,7 +1236,7 @@
     "personal_tgl": "个人金草莓排行榜",
     "wishlist": "愿望单",
     "details": {
-      "country": "国家",
+      "country": "国家/地区",
       "input_method": "游玩设备",
       "total_goldens": "总金草莓",
       "hardest_tier": "最高Tier",
@@ -1275,6 +1266,9 @@
         "description": "以下是该玩家完成的所有挑战记录的时间线！",
         "group_campaigns": "将来自同一地图包的提交内容归类到同一组",
         "show_difficulty_ratio": "提交的内容里，显示缩略图的内容所占的比例"
+      },
+      "wishlist": {
+        "label": "愿望单"
       }
     }
   },
@@ -1437,7 +1431,8 @@
     },
     "display": {
       "deleted_player": "（已删除的玩家）",
-      "no_votes": "暂无投票"
+      "no_votes": "暂无投票",
+      "hidden_vote_count": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。"
     },
     "name": {
       "general": "通用建议",
@@ -1480,7 +1475,9 @@
           "accept": "通过变更",
           "reject_verification": "拒绝此建议",
           "reject_change": "拒绝变更"
-        }
+        },
+        "hidden_vote_count_desc": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。",
+        "hidden_vote_count": "投票数量已隐藏"
       },
       "create": {
         "feedback": {
@@ -1851,7 +1848,7 @@
     },
     "issues": {
       "header": "问题反馈",
-      "text": "如果你发现任何问题，请在Github上创建<CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">New issue</CustomExternalLink>或在金榜服务器@viddie，最好用这个<CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">网站专用频道</CustomExternalLink>。"
+      "text": "如果你发现任何问题，请在Github上创建<CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">New issue</CustomExternalLink>或在金榜服务器@viddie，最好用这个<CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">网站专用频道</CustomExternalLink>。"
     },
     "global_stats": {
       "header": "全球统计",
@@ -1900,7 +1897,8 @@
     "testing": "测试与反馈",
     "people": "金榜服务器#goldberries-net子区中许多很棒的人",
     "chinese_translation": "汉语",
-    "french_translation": "法语"
+    "french_translation": "法语",
+    "korean_translation": "韩语"
   },
   "stats": {
     "title": "统计数据",
@@ -1936,8 +1934,57 @@
         "difficulties": {
           "header": "层级",
           "text": "在该层级至少完成一个挑战的玩家所占的百分比",
-          "axis_label": "% of players"
+          "axis_label": "玩家百分比"
         }
+      },
+      "verifier_stats": {
+        "label": "验证者",
+        "header": "验证者数据",
+        "most_verified": {
+          "header": "提交内容",
+          "text": "这些验证者验证了最多的提交内容。"
+        },
+        "most_created": {
+          "header": "地图创建",
+          "text": "这些验证者创建了最多的地图包、地图、以及挑战。"
+        }
+      },
+      "tier_clears": {
+        "label": "层级提交内容",
+        "header": "每个层级的最高提交内容数量",
+        "group_by": {
+          "label": "分组",
+          "player": "玩家",
+          "country": "国家/地区",
+          "input_method": "游玩设备"
+        },
+        "column": {
+          "player": "玩家",
+          "country": "国家/地区",
+          "input_method": "游玩设备"
+        },
+        "highlight_country": "高亮地区",
+        "show_unknown": "显示未知/未设定",
+        "unknown": "未知",
+        "total_submissions": "总提交内容",
+        "total_clears": "提交内容数量"
+      },
+      "biggest_difficulty_gap": {
+        "label": "难度差距",
+        "header": "最大难度差距",
+        "text": "个人最难金草莓与第二难金草莓的难度差距最大的玩家。",
+        "player": "玩家",
+        "hardest": "最难金草莓",
+        "second_hardest": "第二难金草莓",
+        "gap": "差距"
+      },
+      "collectible_counts": {
+        "label": "收集物",
+        "header": "所有地图中的总收集物数量",
+        "text": "这个表格显示了数据库中所有地图中的每种收集物的总数量。",
+        "total": "总计",
+        "collectible": "收集物",
+        "count": "数量"
       }
     }
   },
@@ -2043,5 +2090,94 @@
     "view_on_gamebanana": "查看Gamebanana上的个人资料",
     "maps_text": "作者在其他人的地图包中制作的地图",
     "campaigns_text": "整个地图包都由这位作者制作."
+  },
+  "map_data": {
+    "campaign_data": {
+      "title": "地图包数据",
+      "not_available": "这个地图包还没有被处理过，或者因其他原因不可用。",
+      "bin_count": "{{count}} .bin文件",
+      "unmatched_bins": "{{count}}个无对应地图的.bin文件。",
+      "unmatched_maps": "{{count}}个无对应.bin文件的地图。",
+      "process_button": "处理地图包",
+      "processing": "处理中...",
+      "process_success": "地图包已处理。",
+      "edit_button": "编辑",
+      "exit_edit_button": "完成",
+      "delete_bin_confirm": "删除{{name}}的.bin数据？",
+      "delete_bin_confirm_text": "删除{{name}}的.bin数据？",
+      "delete_bin_success": "地图.bin数据已删除",
+      "delete_all": "删除全部数据",
+      "delete_all_confirm": "这会删除全部地图包数据，包括所有地图的.bin文件。该操作不能被撤销。你确定要这么做吗？",
+      "delete_all_success": "已删除全部地图包数据。",
+      "add_bin": {
+        "title": "添加.bin文件",
+        "bin_path": ".bin路径",
+        "drop_zone": "上传.bin或.json文件",
+        "submit": "上传",
+        "uploading": "上传中...",
+        "success": "已上传.bin文件数据。",
+        "no_file": "请选择一个文件。",
+        "invalid_file": "请选择一个.bin或.json文件。",
+        "invalid_json": "选择的文件不包含有效JSON。"
+      },
+      "structure": {
+        "unknown_map": "未知地图",
+        "unmatched_tooltip": "该.bin文件在数据库里没有对应地图。它可能是一个大厅，一个地图的旧版本，或者只是和数据库中的地图名称不同。",
+        "show_unmatched": "显示{{count}}个无对应地图的.bin文件",
+        "hide_unmatched": "隐藏无对应地图的.bin文件"
+      },
+      "bin_assignments": {
+        "title": "Bin文件分配",
+        "no_entries": "暂无分配。",
+        "select_bin": ".bin文件",
+        "select_map": "地图",
+        "add": "添加",
+        "save": "保存",
+        "saving": "保存中...",
+        "save_success": "已保存分配。"
+      }
+    },
+    "map_data": {
+      "rooms": {
+        "title": "房间 ({{count}})",
+        "col_name": "名称",
+        "col_position": "位置",
+        "col_size": "大小",
+        "col_entities": "实体",
+        "col_count": "Count",
+        "search_placeholder": "筛选实体..."
+      },
+      "room_details": {
+        "tab_entities": "实体",
+        "tab_triggers": "Triggers",
+        "tab_solids": "实心平台",
+        "col_name": "名称",
+        "col_position": "位置",
+        "col_size": "大小",
+        "no_entities": "这个房间里没有实体。",
+        "no_triggers": "这个房间里没有Trigger。"
+      },
+      "collectibles": {
+        "title": "收集物 ({{count}})",
+        "col_type": "类型",
+        "col_room": "房间",
+        "col_position": "位置"
+      }
+    }
+  },
+  "map_viewer": {
+    "title": "地图预览",
+    "url_label": "GameBanana链接",
+    "url_placeholder": "https://gamebanana.com/mods/123456",
+    "view_map": "查看地图",
+    "login_required": "你必须登录并绑定玩家才能使用地图预览。",
+    "invalid_url": "请输入一个有效的GameBanana链接(比如https://gamebanana.com/mods/123456)",
+    "processing": "正在处理GameBanana链接...",
+    "processing_warning": "如果Mod比较大，处理可能需要一段时间。如果耗时超过100秒，Cloudflare会终止连接并且处理会失败。",
+    "error": "处理地图包时出错了。",
+    "bin_files": "地图文件",
+    "unknown_map": "未知地图",
+    "no_bins": "未在该Mod中找到.bin文件。"
   }
 }
+

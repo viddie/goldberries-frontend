@@ -24,6 +24,7 @@ yarn-error.log*
 /.vscode
 /public/badges
 /public/img/map
+/public/img/post
 .github/copilot-instructions.md
 .github/goldberries.sql
 .github/bin_structure.json

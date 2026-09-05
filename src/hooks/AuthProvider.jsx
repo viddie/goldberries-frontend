@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
 
 import { APP_URL, DISCORD_AUTH_URL, IS_DEBUG } from "../util/constants";
-import { getErrorMessage } from "../components/basic";
+import { getErrorMessage, LoadingSpinner } from "../components/basic";
 
 import { getDefaultSettings } from "./AppSettingsProvider";
 
@@ -38,6 +38,7 @@ export function isAdmin(account) {
 export function AuthProvider({ children }) {
   const { t } = useTranslation(undefined, { keyPrefix: "hooks.auth" });
   const [user, setUser] = useLocalStorage("user", null);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
 
   //For role override during dev settings
   const [settings] = useLocalStorage("app_settings", getDefaultSettings());
@@ -95,12 +96,14 @@ export function AuthProvider({ children }) {
       const user = await response.data;
       setUser(user);
     } catch (err) {
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         // Unauthorized, but check succeeded
         setUser(null);
       } else {
         console.log("Failed session check", err);
       }
+    } finally {
+      setIsCheckingSession(false);
     }
   };
 
@@ -126,7 +129,7 @@ export function AuthProvider({ children }) {
   const hasVerifierPriv = isVerifier || isAdmin;
   const hasAdminPriv = isAdmin;
 
-  const hasPlayerClaimed = isLoggedIn && user.player_id !== null;
+  const hasPlayerClaimed = isLoggedIn && user.player?.id != null;
   const isPlayerWithId = (id) => hasPlayerClaimed && user.player_id === id;
 
   return (
@@ -151,7 +154,7 @@ export function AuthProvider({ children }) {
         isPlayerWithId,
       }}
     >
-      {children}
+      {isCheckingSession ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 }

@@ -56,7 +56,12 @@ export function ChallengeInline({
           </Typography>
         )}
         {showChallenge && (
-          <ObjectiveIcon objective={challenge.objective} height="1.1em" style={{ marginBottom: "-2px" }} />
+          <ObjectiveIcon
+            objective={challenge.objective}
+            challenge={challenge}
+            height="1.1em"
+            style={{ marginBottom: "-2px" }}
+          />
         )}
         {submission ? (
           <StyledLink to={"/submission/" + submission.id} style={{ lineHeight: "1" }}>

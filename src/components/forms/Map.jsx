@@ -398,6 +398,18 @@ export const COLLECTIBLES = [
         icon: "/icons/moonberry-floppydisk-riftb.png",
       },
       { value: "17", name: "Glitchtophen Moon Berry", icon: "/icons/moonberry-glitchtophen.png" },
+      {
+        value: "18",
+        name: "Reverse Moon Berry",
+        displayName: "Reverse Berry",
+        icon: "/icons/moonberry-reverse.png",
+      },
+      {
+        value: "19",
+        name: "Blue Raspberry Moon Berry",
+        displayName: "Blue Raspberry",
+        icon: "/icons/moonberry-blueraspberry.png",
+      },
     ],
   },
   {
@@ -455,6 +467,16 @@ export const COLLECTIBLES = [
         value: "39",
         name: "World Domination Contest Strawberry",
         icon: "/icons/strawberry-worlddominationcontest.png",
+      },
+      {
+        value: "40",
+        name: "Glitchtophen Strawberry B",
+        icon: "/icons/strawberry-glitchtophen-b.png",
+      },
+      {
+        value: "41",
+        name: "Silver Strawberry",
+        icon: "/icons/silverberry-8x.png",
       },
     ],
   },
@@ -650,6 +672,36 @@ export const COLLECTIBLES = [
         icon: "/icons/terraria-underworldplant.png",
       },
       {
+        value: "20",
+        name: "Terraria Fishing Pole",
+        displayName: "Fishing Pole",
+        icon: "/icons/terraria-fishingpole.png",
+      },
+      {
+        value: "21",
+        name: "Terraria Critter Guide",
+        displayName: "Critter Guide",
+        icon: "/icons/terraria-critterguide.png",
+      },
+      {
+        value: "22",
+        name: "Terraria Mechanical Key",
+        displayName: "Mechanical Key",
+        icon: "/icons/terraria-mechanicalkey.png",
+      },
+      {
+        value: "23",
+        name: "Terraria Sunken Coral",
+        displayName: "Sunken Coral",
+        icon: "/icons/terraria-sunkencoral.png",
+      },
+      {
+        value: "24",
+        name: "Terraria Wrench",
+        displayName: "Wrench",
+        icon: "/icons/terraria-wrench.png",
+      },
+      {
         value: "14",
         name: "Xaphan Upgrade",
         displayName: "Xaphan Upgrade",
@@ -665,6 +717,7 @@ export const COLLECTIBLES = [
       { value: "17", name: "Lost Bib", displayName: "Lost Bib", icon: "/icons/haolk-lostbib.png" },
       { value: "18", name: "Moon Shoes", displayName: "Moon Shoes", icon: "/icons/haolk-moonshoes.png" },
       { value: "19", name: "X-ray Visor", displayName: "X-ray Visor", icon: "/icons/haolk-xrayvisor.png" },
+      { value: "25", name: "Touch Switch", displayName: "Other", icon: "/icons/touchswitch.png" },
     ],
   },
 ];

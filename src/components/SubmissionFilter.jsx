@@ -387,36 +387,42 @@ export function SubmissionFilter({
                 {t("date_range.clear_dates")}
               </Button>
 
-              <Divider sx={{ my: 1 }} />
+              {!isPlayer && (
+                <>
+                  <Divider sx={{ my: 1 }} />
 
-              <CountrySelect
-                value={localFilter.country ?? ""}
-                setValue={(value) => changedFilter("country", value === "" ? null : value)}
-                label={t("country.label")}
-                size="small"
-              />
-              <TextField
-                select
-                fullWidth
-                size="small"
-                label={t("input_method.label")}
-                value={localFilter.input_method ?? ""}
-                onChange={(e) => changedFilter("input_method", e.target.value === "" ? null : e.target.value)}
-                SelectProps={{
-                  MenuProps: { disableScrollLock: true },
-                }}
-                sx={{ mt: 1 }}
-              >
-                <MenuItem value="">
-                  <em>{t("input_method.all")}</em>
-                </MenuItem>
-                {Object.keys(INPUT_METHOD_ICONS).map((method) => (
-                  <MenuItem key={method} value={method}>
-                    {t_im(method)}
-                    <InputMethodIcon method={method} style={{ marginLeft: "8px" }} />
-                  </MenuItem>
-                ))}
-              </TextField>
+                  <CountrySelect
+                    value={localFilter.country ?? ""}
+                    setValue={(value) => changedFilter("country", value === "" ? null : value)}
+                    label={t("country.label")}
+                    size="small"
+                  />
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label={t("input_method.label")}
+                    value={localFilter.input_method ?? ""}
+                    onChange={(e) =>
+                      changedFilter("input_method", e.target.value === "" ? null : e.target.value)
+                    }
+                    SelectProps={{
+                      MenuProps: { disableScrollLock: true },
+                    }}
+                    sx={{ mt: 1 }}
+                  >
+                    <MenuItem value="">
+                      <em>{t("input_method.all")}</em>
+                    </MenuItem>
+                    {Object.keys(INPUT_METHOD_ICONS).map((method) => (
+                      <MenuItem key={method} value={method}>
+                        {t_im(method)}
+                        <InputMethodIcon method={method} style={{ marginLeft: "8px" }} />
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </>
+              )}
 
               <Button
                 variant="contained"

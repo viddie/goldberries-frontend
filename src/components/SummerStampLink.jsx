@@ -12,7 +12,7 @@ function getSummerStampRemainingString() {
   const now = new Date();
   const target = now < SUMMER_STAMP_EVENT_START ? SUMMER_STAMP_EVENT_START : SUMMER_STAMP_EVENT_END;
   const diffMs = target - now;
-  if (diffMs <= 0) return null;
+  if (diffMs <= 0) return "-";
   const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   return `${days}d`;
 }
@@ -23,8 +23,6 @@ export function SummerStampLink({ playerId }) {
   const count = Math.min(stamps.length, SUMMER_STAMP_TOTAL);
   const progress = (count / SUMMER_STAMP_TOTAL) * 100;
   const remaining = getSummerStampRemainingString();
-
-  if (remaining === null) return null;
 
   const imageSize = 64;
 

@@ -1,6 +1,6 @@
 import { darkTheme } from "../App";
 
-import { sortToDifficulty, sortToDifficultyId } from "./constants";
+import { sortToDifficulty, sortToDifficultyId, SUGGESTION_VOTE_HIDE_MINUTES } from "./constants";
 import { jsonDateToJsDate } from "./util";
 
 export function getChallengeIsFullGame(challenge) {
@@ -52,7 +52,7 @@ export function getChallengeSuffix(challenge, checkDifferent = false) {
 }
 
 export function getChallengeIcon(challenge) {
-  if (challenge.icon_url !== null) {
+  if (challenge.icon_url !== null && challenge.icon_url !== undefined) {
     return challenge.icon_url;
   }
   return challenge.objective.icon_url;
@@ -88,6 +88,12 @@ export function getDifficultyName(difficulty) {
   //capitalize first letter
   subtierPrefix = subtierPrefix.charAt(0).toUpperCase() + subtierPrefix.slice(1);
   return subtierPrefix + difficulty.name;
+}
+
+export function getNavigatorLanguage() {
+  const language = navigator.language;
+  if (language === null || language === undefined || language === "") return "en";
+  return language;
 }
 
 /**
@@ -178,7 +184,7 @@ export function getChallengeInvertHierarchy(campaign, map, challenge) {
 
 export function displayDate(dateObj, t) {
   if (dateObj === null || dateObj === undefined) return "<" + t("unknown_date") + ">";
-  return jsonDateToJsDate(dateObj).toLocaleDateString(navigator.language);
+  return jsonDateToJsDate(dateObj).toLocaleDateString(getNavigatorLanguage());
 }
 
 export function getGamebananaEmbedUrl(url, size = "medium") {
@@ -504,4 +510,12 @@ export function durationToSeconds(duration) {
   let seconds = parseInt(match[3]);
 
   return hours * 3600 + minutes * 60 + seconds;
+}
+
+export function shouldHideVoteCount(suggestion) {
+  const now = new Date();
+  const dateVerified = jsonDateToJsDate(suggestion.date_verified);
+  const diff = now - dateVerified;
+
+  return diff < SUGGESTION_VOTE_HIDE_MINUTES * 1000 * 60;
 }

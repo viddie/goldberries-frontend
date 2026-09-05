@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { Grid, IconButton, Pagination, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useDebounce } from "@uidotdev/usehooks";
 import Color from "color";
 
@@ -12,7 +12,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
 import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { getSortedSuggestedDifficulties } from "../../util/data_util";
+import { getSortedSuggestedDifficulties, shouldHideVoteCount, getNavigatorLanguage } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
 import {
   DifficultyMoveDisplay,
@@ -20,6 +20,7 @@ import {
   SuggestionCountdown,
   SuggestionName,
 } from "../../pages/Suggestions";
+import { SUGGESTION_VOTE_HIDE_MINUTES } from "../../util/constants";
 
 export function SuggestionsList({
   expired,
@@ -141,6 +142,8 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const didChallengeTooltip = t_sv("did_challenge");
   const othersTooltip = t_sv("others");
 
+  const dateCreated = jsonDateToJsDate(suggestion.date_created);
+
   return (
     <BasicBox
       sx={{
@@ -226,18 +229,20 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
             <Typography variant="body2">&middot;</Typography>
             <Typography variant="body2">
               <Tooltip
-                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(navigator.language)}
+                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(getNavigatorLanguage())}
                 arrow
                 placement="top"
               >
-                <span>{dateToTimeAgoString(jsonDateToJsDate(suggestion.date_created), t_g)}</span>
+                <span>{dateToTimeAgoString(dateCreated, t_g)}</span>
               </Tooltip>
             </Typography>
           </Stack>
         </Grid>
       </Grid>
 
-      {suggestion.votes.length === 0 ? (
+      {shouldHideVoteCount(suggestion) ? (
+        <HiddenVoteBar />
+      ) : suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
       ) : (
         <Grid container columnSpacing={1} rowSpacing={0.5}>
@@ -302,5 +307,47 @@ function VotesDisplay({ votes, hasSubmission, style = {} }) {
       ownVoteType={ownVoteType}
       style={style}
     />
+  );
+}
+
+export function HiddenVoteBar() {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
+  const theme = useTheme();
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "20px",
+        width: "100%",
+        border: `1px solid ${theme.palette.grey[800]}`,
+        borderRadius: "8px"
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: theme.palette.background.paper,
+          height: "100%",
+          width: "100%",
+          borderRadius: "8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <span 
+          style={{ 
+            color: theme.palette.text.secondary,
+            fontSize: "small",
+          }}
+        >
+          <Tooltip title={t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
+            <FontAwesomeIcon icon={faEyeSlash} />
+          </Tooltip>
+        </span>
+      </div>
+    </div>
   );
 }

@@ -18,7 +18,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { MuiColorInput } from "mui-color-input";
@@ -67,13 +67,11 @@ export function PageAppSettings({ isModal = false }) {
       >
         <Tab label={t("tabs.general.label")} value="general" />
         <Tab label={t("tabs.visual.label")} value="visual" />
-        <Tab label={t("tabs.top_golden_list.label")} value="top-golden-list" />
         <Tab label={t("tabs.difficulty_colors.label")} value="difficulty-colors" />
         {IS_DEBUG && <Tab label={t("tabs.dev.label")} value="dev" />}
       </Tabs>
       {selectedTab === "general" && <AppSettingsGeneralForm />}
       {selectedTab === "visual" && <AppSettingsVisualForm />}
-      {selectedTab === "top-golden-list" && <AppSettingsTopGoldenListForm />}
       {selectedTab === "difficulty-colors" && <AppSettingsDifficultyColorsForm />}
       {IS_DEBUG && selectedTab === "dev" && <AppSettingsDevForm />}
     </BasicContainerBox>
@@ -468,39 +466,6 @@ export function AppSettingsVisualForm() {
           placeholder={t_b("custom.placeholder")}
         />
       </SettingsEntry>
-
-      <Footnote />
-    </form>
-  );
-}
-
-function AppSettingsTopGoldenListForm() {
-  const { t } = useTranslation(undefined, { keyPrefix: "app_settings.tabs.top_golden_list" });
-  const { settings, setSettings } = useAppSettings();
-
-  const form = useForm({
-    defaultValues: settings.visual,
-  });
-  const doSubmit = (data) => {
-    setSettings({
-      ...settings,
-      visual: {
-        ...data,
-      },
-    });
-  };
-
-  useEffect(() => {
-    const subscription = form.watch(form.handleSubmit(doSubmit));
-    return () => subscription.unsubscribe();
-  }, [form.handleSubmit, form.watch]);
-
-  return (
-    <form>
-      <Typography variant="body2" color={(t) => t.palette.warning.main} sx={{ mt: 2 }}>
-        <FontAwesomeIcon icon={faArrowRight} style={{ marginRight: 6 }} />
-        {t("display_options_notice")}
-      </Typography>
 
       <Footnote />
     </form>

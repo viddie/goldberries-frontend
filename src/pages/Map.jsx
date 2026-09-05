@@ -553,12 +553,12 @@ function GoldenChangesDetailsRow({ map }) {
 
   return (
     <DetailsRow label={t("label")} icon={<FontAwesomeIcon icon={faInfoCircle} fixedWidth />}>
-      {showChanges ? (
-        <Typography variant="body2" sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>
-          {map.golden_changes ?? t("no_changes")}
-        </Typography>
-      ) : (
-        <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+      <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+        {showChanges ? (
+          <Typography variant="body2" sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>
+            {map.golden_changes ?? t("no_changes")}
+          </Typography>
+        ) : (
           <Button
             variant="outlined"
             size="small"
@@ -567,19 +567,19 @@ function GoldenChangesDetailsRow({ map }) {
           >
             {t("show")}
           </Button>
-          {auth.hasHelperPriv && map.golden_changes === "Unknown" && (
-            <Button
-              variant="outlined"
-              color="warning"
-              size="small"
-              onClick={setNoChanges}
-              sx={{ py: 0, px: 1, minWidth: 0, fontSize: "0.8rem" }}
-            >
-              Set to "No changes"
-            </Button>
-          )}
-        </Stack>
-      )}
+        )}
+        {auth.hasHelperPriv && map.golden_changes === "Unknown" && (
+          <Button
+            variant="outlined"
+            color="warning"
+            size="small"
+            onClick={setNoChanges}
+            sx={{ py: 0, px: 1, minWidth: 0, fontSize: "0.8rem" }}
+          >
+            Set to "No changes"
+          </Button>
+        )}
+      </Stack>
     </DetailsRow>
   );
 }

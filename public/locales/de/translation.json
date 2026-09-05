@@ -1230,7 +1230,7 @@
     },
     "issues": {
       "header": "Problem Melden",
-      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website"
+      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website"
     },
     "global_stats": {
       "header": "Globale Stats",
@@ -1268,7 +1268,8 @@
     "testing": "Testing & Feedback",
     "people": "many many wonderful people from the goldberries-net thread in the Modded Golden Team Discord",
     "chinese_translation": "Chinese Translation",
-    "french_translation": "French Translation"
+    "french_translation": "French Translation",
+    "korean_translation": "Korean Translation"
   },
   "stats": {
     "title": "Stats",

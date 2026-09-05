@@ -177,6 +177,8 @@
       "title": "Submission Inspection",
       "related_submissions": "Other submissions for this Map",
       "no_related": "No related submissions",
+      "mark_obsolete": "Mark submission obsolete",
+      "unmark_obsolete": "Unmark submission obsolete",
       "notes_history": "Note History",
       "no_notes": "This player has no past verifier notes",
       "table": {
@@ -376,10 +378,6 @@
           "label": "Prefer Map Images",
           "note": "By default, the first clearer's youtube thumbnail is shown. Enable this to prefer showing the map image."
         },
-        "show_images": {
-          "label": "Show Images",
-          "note": "Disabling this hides the images, which will improve performance."
-        },
         "compact_mode": {
           "label": "Compact Mode",
           "note": "A compact layout closer to the original layout of the Top Golden List."
@@ -390,6 +388,7 @@
           "campaign": "Campaign",
           "fractional_tier": "Fractional Tier",
           "clear_count": "Clear Count",
+          "like_count": "Like Count",
           "first_clear_date": "First Clear Date",
           "time_taken": "Time Taken"
         },
@@ -657,6 +656,7 @@
       "verifier": "Verifier",
       "verifier_notes": "Verifier Notes",
       "map_information": "Map Information",
+      "challenge_information": "Challenge Information",
       "golden_changes": "Golden Changes",
       "buttons": {
         "update": "Update Submission",
@@ -1259,15 +1259,6 @@
           }
         }
       },
-      "top_golden_list": {
-        "label": "Top Golden List",
-        "display_options_notice": "Customizations were moved to the \"Display Options\" menu on the Top Golden List pages.",
-        "darken_colors": {
-          "label": "Darken Tier Colors",
-          "tooltip": "In dark-mode, makes the tier colors darker. 0% doesn't change the colors, 100% makes them entirely black.",
-          "note": "This setting only affects the dark-mode colors!"
-        }
-      },
       "difficulty_colors": {
         "label": "Difficulty Colors",
         "description": "High and Low subtier colors are calculated based on the Mid color. You can overwrite this by explicitly setting the High and Low subtier colors.",
@@ -1302,7 +1293,9 @@
   "challenge": {
     "buttons": {
       "submit": "Submit a Run",
-      "edit": "Edit Challenge"
+      "edit": "Edit",
+      "more": "More",
+      "compare": "Compare Challenge"
     },
     "difficulty_suggestions": "Difficulty Opinions",
     "calculated_tier_tooltip": "Calculated tier based on player difficulty opinions",
@@ -1318,6 +1311,12 @@
       "show_all": "Show All {{count}} Submissions",
       "show_less": "Show Less"
     }
+  },
+  "compare_challenges": {
+    "title": "Compare Challenges",
+    "compare_to": "Compare To",
+    "only_show_both": "Only show players who completed both challenges",
+    "match_order": "Match order of first challenge"
   },
   "claim_player": {
     "title": "Claim a Player",
@@ -1526,6 +1525,7 @@
     "no_players": "No players found",
     "authors": "Authors",
     "no_authors": "No authors found",
+    "farewell_notice": "Farewell and other vanilla maps are not tracked on this website. For the list of completed Farewell Golden runs, check <StyledExternalLink>this</StyledExternalLink> link.",
     "and_more_maps": "and {{count}} more maps...",
     "and_more_campaigns": "and {{count}} more campaigns..."
   },
@@ -1678,7 +1678,8 @@
     },
     "display": {
       "deleted_player": "(deleted player)",
-      "no_votes": "No votes yet"
+      "no_votes": "No votes yet",
+      "hidden_vote_count": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion"
     },
     "countdown": {
       "label": "{{time}} left",
@@ -1730,7 +1731,9 @@
           "reject_verification": "Reject Verification",
           "reject_change": "Reject Change",
           "set_to_pending": "Set to Pending"
-        }
+        },
+        "hidden_vote_count_desc": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion",
+        "hidden_vote_count": "Vote Count Hidden"
       },
       "create": {
         "feedback": {
@@ -2134,7 +2137,7 @@
     },
     "issues": {
       "header": "Report Issues",
-      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website."
+      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website."
     },
     "global_stats": {
       "header": "Global Stats",
@@ -2185,6 +2188,7 @@
     "chinese_translation": "Chinese Translation",
     "french_translation": "French Translation",
     "russian_translation": "Russian Translation",
+    "korean_translation": "Korean Translation",
     "domain": "Domain",
     "domain_text": "{{name}} (managing and paying for the domain & Cloudflare, as well as making the original goldberries.net!)"
   },
