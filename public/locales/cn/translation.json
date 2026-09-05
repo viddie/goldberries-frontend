@@ -1006,6 +1006,10 @@
         "show_rejected_submissions": {
           "label": "显示自己被拒绝的提交",
           "note": "在你的个人页面上显示被拒绝的提交"
+        },
+        "show_average_time_taken": {
+          "label": "显示平均花费时间",
+          "note": "在挑战页面上显示挑战的平均花费时间"
         }
       },
       "visual": {

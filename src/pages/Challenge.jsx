@@ -130,6 +130,7 @@ export function PageChallenge({}) {
 export function ChallengeDisplay({ id, isCompact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
+  const { settings } = useAppSettings();
   const query = useGetChallenge(id);
 
   const editChallengeModal = useModal();
@@ -213,7 +214,7 @@ export function ChallengeDisplay({ id, isCompact = false }) {
       {/* Submission table */}
       <Box sx={{ ...contentPadding, mt: 2 }}>
         <ChallengeSubmissionTable challenge={challenge} />
-        <AverageTimeTaken challenge={challenge} />
+        {settings.general.showAverageTimeTaken && <AverageTimeTaken challenge={challenge} />}
       </Box>
 
       <Box sx={{ ...contentPadding }}>
@@ -247,7 +248,7 @@ export function AverageTimeTaken({ challenge }) {
 
   const averageTimeTaken = Math.round(sanitizedSubmissions.reduce((total, current) => total + current, 0) / sanitizedSubmissions.length);
 
-  return <Typography align="center" paddingTop="20px" variant="body2">
+  return <Typography align="center" sx={{ mt: 2 }} variant="body2">
     {t("average_time_taken")}
     {secondsToDuration(averageTimeTaken, true)} {sanitizedSubmissions.length < 5 && t("few_submissions")}
   </Typography>;
