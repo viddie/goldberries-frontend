@@ -61,6 +61,7 @@ import { MapDataDialog } from "../components/map_data/MapDataDialog";
 import { MapNoProgressTooltip } from "./Campaign";
 import {
   AuthorDetailsRow,
+  AverageTimeTaken,
   CalculatedFractionalTierChip,
   CampaignDetailsRow,
   ChallengeSubmissionTable,
@@ -115,6 +116,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
   const { t } = useTranslation(undefined, { keyPrefix: "map" });
   const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const { settings } = useAppSettings();
   const auth = useAuth();
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -306,6 +308,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
             </StyledLink>
           </Stack>
           <ChallengeSubmissionTable key={selectedChallenge.id} challenge={selectedChallenge} />
+          {settings.general.showAverageTimeTaken && <AverageTimeTaken challenge={selectedChallenge} />}
           <Divider sx={{ my: 2 }}>
             <Chip label={t_c("difficulty_suggestions")} size="small" />
           </Divider>

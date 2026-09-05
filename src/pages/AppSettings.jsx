@@ -191,6 +191,21 @@ export function AppSettingsGeneralForm() {
         />
       </SettingsEntry>
 
+      <SettingsEntry note={t("show_average_time_taken.note")}>
+        <Controller
+          name="showAverageTimeTaken"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("show_average_time_taken.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
       {isAprilFools && (
         <Button
           fullWidth

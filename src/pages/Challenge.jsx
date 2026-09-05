@@ -79,6 +79,7 @@ import {
   getMapName,
   getNavigatorLanguage,
   getPlayerNameColorStyle,
+  secondsToDuration,
 } from "../util/data_util";
 import { CustomModal, useModal } from "../hooks/useModal";
 import { useAuth } from "../hooks/AuthProvider";
@@ -131,6 +132,7 @@ export function PageChallenge({}) {
 export function ChallengeDisplay({ id, isCompact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
   const auth = useAuth();
+  const { settings } = useAppSettings();
   const navigate = useNavigate();
   const query = useGetChallenge(id);
 
@@ -228,6 +230,7 @@ export function ChallengeDisplay({ id, isCompact = false }) {
       {/* Submission table */}
       <Box sx={{ ...contentPadding, mt: 2 }}>
         <ChallengeSubmissionTable challenge={challenge} />
+        {settings.general.showAverageTimeTaken && <AverageTimeTaken challenge={challenge} />}
       </Box>
 
       <Box sx={{ ...contentPadding }}>
@@ -248,6 +251,23 @@ export function ChallengeDisplay({ id, isCompact = false }) {
       </CustomModal>
     </Box>
   );
+}
+
+export function AverageTimeTaken({ challenge }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
+
+  const sanitizedSubmissions = challenge.submissions.filter(s => s.time_taken !== null).map(s => s.time_taken);
+
+  if (sanitizedSubmissions.length === 0) {
+    return null;
+  }
+
+  const averageTimeTaken = Math.round(sanitizedSubmissions.reduce((total, current) => total + current, 0) / sanitizedSubmissions.length);
+
+  return <Typography align="center" sx={{ mt: 2 }} variant="body2">
+    {t("average_time_taken")}
+    {secondsToDuration(averageTimeTaken, true)} {sanitizedSubmissions.length < 5 && t("few_submissions")}
+  </Typography>;
 }
 
 //#region Fading Map Banner

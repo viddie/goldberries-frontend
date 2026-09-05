@@ -1231,6 +1231,10 @@
         "show_rejected_submissions": {
           "label": "Show Own Rejected Submissions",
           "note": "Show rejected submissions on your player profile."
+        },
+        "show_average_time_taken": {
+          "label": "Show Average Time Taken",
+          "note": "Show average time taken on the challenge page."
         }
       },
       "visual": {
@@ -1297,6 +1301,8 @@
     "calculated_tier_tooltip": "Calculated tier based on player difficulty opinions",
     "is_full_game": "Full Game?",
     "lobby_info": "Lobby Info",
+    "average_time_taken": "Average Time Taken: ",
+    "few_submissions": "(Few submissions)",
     "description": "Challenge Description",
     "status": "Challenge Status",
     "submission_table": {
