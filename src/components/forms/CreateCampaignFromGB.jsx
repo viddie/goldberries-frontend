@@ -326,6 +326,13 @@ export function FormCreateCampaignFromGB({ onSuccess, setMaxWidth, defaultUrl })
     if (setMaxWidth) setMaxWidth(false);
   };
   const closeViewerEditor = () => {
+    const map = mapList[editingMapIndex];
+    if (map?.binPath) {
+      setMapCollectibles((prev) => ({
+        ...prev,
+        [map.binPath]: (prev[map.binPath] ?? []).filter((item) => item[0] && item[0] !== ""),
+      }));
+    }
     setEditingMapIndex(null);
     if (setMaxWidth) setMaxWidth("md");
   };
