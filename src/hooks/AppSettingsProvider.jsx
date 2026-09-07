@@ -11,6 +11,7 @@ export const getDefaultSettings = () => {
       showOldTierNames: false,
       showFractionalTiers: true,
       showRejectedSubmissions: true,
+      showAverageTimeTaken: true,
       settingsVersion: 1,
     },
     visual: {
