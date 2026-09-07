@@ -54,11 +54,7 @@ import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
-import {
-  durationToSeconds,
-  getNavigatorLanguage,
-  secondsToDuration,
-} from "../../util/data_util";
+import { durationToSeconds, getNavigatorLanguage, secondsToDuration } from "../../util/data_util";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -98,6 +94,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const { t: t_a } = useTranslation();
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
   const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
+  const { t: t_sts } = useTranslation(undefined, { keyPrefix: "submit.tabs.single" });
   const auth = useAuth();
   const mapCollectiblesModal = useModal(null, undefined, {
     actions: [ModalButtons.close],
@@ -275,34 +272,34 @@ export function FormSubmission({ submission, onSave, ...props }) {
             )}
           />
           {isHelper && submission.is_verified !== null && (
-            <>
-              <Controller
-                control={form.control}
-                name="is_verified"
-                defaultValue={submission.is_verified}
-                render={({ field }) => (
-                  <FormControlLabel
-                    onChange={field.onChange}
-                    label={t("is_verified")}
-                    checked={field.value}
-                    control={<Checkbox />}
-                  />
-                )}
-              />
-              <Controller
-                control={form.control}
-                name="is_obsolete"
-                defaultValue={submission.is_obsolete}
-                render={({ field }) => (
-                  <FormControlLabel
-                    onChange={field.onChange}
-                    label={t("is_obsolete")}
-                    checked={field.value}
-                    control={<Checkbox />}
-                  />
-                )}
-              />
-            </>
+            <Controller
+              control={form.control}
+              name="is_verified"
+              defaultValue={submission.is_verified}
+              render={({ field }) => (
+                <FormControlLabel
+                  onChange={field.onChange}
+                  label={t("is_verified")}
+                  checked={field.value}
+                  control={<Checkbox />}
+                />
+              )}
+            />
+          )}
+          {isHelper && (
+            <Controller
+              control={form.control}
+              name="is_obsolete"
+              defaultValue={submission.is_obsolete}
+              render={({ field }) => (
+                <FormControlLabel
+                  onChange={field.onChange}
+                  label={t("is_obsolete")}
+                  checked={field.value}
+                  control={<Checkbox />}
+                />
+              )}
+            />
           )}
           {isHelper && (
             <>
@@ -557,6 +554,9 @@ export function FormSubmission({ submission, onSave, ...props }) {
               <StyledLink to={"/challenge/" + submission.challenge.id}>{submission.challenge.id}</StyledLink>)
             </Typography>
             <ChallengeDetailsListWrapper id={mapCollectiblesModal.data.id} />
+            {submission.challenge?.map?.note && (
+              <NoteDisclaimer title={t_sts("map_note")} note={submission.challenge.map.note} sx={{ mt: 2 }} />
+            )}
             {submission.challenge?.description && (
               <NoteDisclaimer
                 title={t_c("description")}

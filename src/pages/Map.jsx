@@ -117,6 +117,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
   const { t: t_c } = useTranslation(undefined, { keyPrefix: "challenge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { settings } = useAppSettings();
+  const { t: t_sts } = useTranslation(undefined, { keyPrefix: "submit.tabs.single" });
   const auth = useAuth();
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -216,7 +217,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
 
       {map.note && (
         <Box sx={{ ...contentPadding, mt: 1.5 }}>
-          <NoteDisclaimer note={map.note} title={"Map Note"} />
+          <NoteDisclaimer note={map.note} title={t_sts("map_note")} />
         </Box>
       )}
 
