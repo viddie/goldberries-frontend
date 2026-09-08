@@ -42,8 +42,8 @@ import { DIFF_CONSTS } from "../../util/constants";
 import { CollectibleChip, ObjectiveSelect } from "../goldberries";
 import { LoadingSpinner } from "../basic";
 import { StringListEditor } from "../StringListEditor";
-import { MapDataViewer } from "../map_data/MapDataViewer";
-import { extractCollectiblesForForm } from "../map_data/viewer/entity_definitions";
+import { MapDataViewer } from "../map_data/MapDataViewerLazy";
+import { extractCollectiblesForForm } from "../map_data/viewer/entity_data";
 
 import { SameCampaignNameIndicator } from "./Campaign";
 import { COLLECTIBLES, getCollectibleOptions, getCollectibleVariantOptions } from "./Map";
