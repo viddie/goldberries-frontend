@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   Divider,
   FormControlLabel,
@@ -27,6 +28,7 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendar,
+  faChevronDown,
   faClock,
   faFlag,
   faGamepad,
@@ -80,8 +82,8 @@ import {
   parseYouTubeUrl,
 } from "../components/basic";
 import { BadgeDisplay } from "../components/badge";
+import { CustomMenu } from "../components/Menu";
 import { PlaceholderImage } from "../components/PlaceholderImage";
-import { SummerStampLink } from "../components/SummerStampLink";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
 import { WishlistCard, WishlistTable, FormWishlistLike } from "../components/likes";
 import { useModal, CustomModal } from "../hooks/useModal";
@@ -200,9 +202,8 @@ export function PlayerDisplay({ id, tab, setTab }) {
           <AccountRoleIcon account={player.account} />
           <ExRoleLabel account={player.account} />
           <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
-          <SummerStampLink playerId={id} />
-          <Box sx={{ width: 8 }} />
           <BadgeDisplay player={player} />
+          <PlayerMoreMenu playerId={id} />
         </Stack>
 
         {/* Main content: About Me + Details Table side by side on desktop */}
@@ -259,6 +260,43 @@ export function PlayerDisplay({ id, tab, setTab }) {
 //#endregion
 
 //#region Player Header Components
+function PlayerMoreMenu({ playerId }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "player" });
+  const navigate = useNavigate();
+
+  return (
+    <CustomMenu
+      variant="outlined"
+      triggerSize="small"
+      button={
+        <Button
+          variant="outlined"
+          size="small"
+          aria-label={t("buttons.more")}
+          sx={{
+            minWidth: { xs: 40, sm: "auto" },
+            px: { xs: 1, sm: 1.5 },
+            "& .MuiButton-endIcon": {
+              ml: { xs: 0, sm: 1 },
+            },
+          }}
+          endIcon={<FontAwesomeIcon icon={faChevronDown} style={{ fontSize: "0.9em" }} />}
+        >
+          <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+            {t("buttons.more")}
+          </Box>
+        </Button>
+      }
+      items={[
+        {
+          text: t("buttons.summer_stamp_rally"),
+          onClick: () => navigate(`/event/summer-stamp-rally/${playerId}`),
+        },
+      ]}
+    />
+  );
+}
+
 const ABOUT_ME_MAX_HEIGHT = 120;
 
 function PlayerAboutMe({ aboutMe }) {

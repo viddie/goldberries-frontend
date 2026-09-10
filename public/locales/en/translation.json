@@ -1465,6 +1465,10 @@
     "title": "Profile",
     "personal_tgl": "Personal Top Golden List",
     "wishlist": "Wishlist",
+    "buttons": {
+      "more": "More",
+      "summer_stamp_rally": "Summer Stamp Rally"
+    },
     "details": {
       "country": "Country",
       "input_method": "Input Method",
