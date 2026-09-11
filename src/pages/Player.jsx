@@ -262,7 +262,6 @@ export function PlayerDisplay({ id, tab, setTab }) {
 //#region Player Header Components
 function PlayerMoreMenu({ playerId }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player" });
-  const navigate = useNavigate();
 
   return (
     <CustomMenu
@@ -274,15 +273,25 @@ function PlayerMoreMenu({ playerId }) {
           size="small"
           aria-label={t("buttons.more")}
           sx={{
-            minWidth: { xs: 40, sm: "auto" },
+            minWidth: { xs: 0, sm: "auto" },
             px: { xs: 1, sm: 1.5 },
             "& .MuiButton-endIcon": {
               ml: { xs: 0, sm: 1 },
+              mr: { xs: 0, sm: -0.25 },
             },
           }}
           endIcon={<FontAwesomeIcon icon={faChevronDown} style={{ fontSize: "0.9em" }} />}
         >
-          <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+          <Box
+            component="span"
+            sx={{
+              display: "inline-block",
+              width: { xs: 0, sm: "auto" },
+              overflow: "hidden",
+              visibility: { xs: "hidden", sm: "visible" },
+              whiteSpace: "nowrap",
+            }}
+          >
             {t("buttons.more")}
           </Box>
         </Button>
@@ -290,7 +299,7 @@ function PlayerMoreMenu({ playerId }) {
       items={[
         {
           text: t("buttons.summer_stamp_rally"),
-          onClick: () => navigate(`/event/summer-stamp-rally/${playerId}`),
+          href: `/event/summer-stamp-rally/${playerId}`,
         },
       ]}
     />

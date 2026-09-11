@@ -12,6 +12,7 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
  * @param {Array} props.items - Array of menu item definitions
  * @param {Object} [props.items[].icon] - FontAwesome icon or React node for the menu item
  * @param {string} props.items[].text - Text label for the menu item
+ * @param {string} [props.items[].href] - URL for a native anchor link instead of an action
  * @param {Function} props.items[].onClick - Callback function when item is clicked
  * @param {string} [props.items[].color] - MUI color variant (e.g., "error", "primary")
  * @param {boolean} [props.items[].divider] - If true, renders a divider instead of a menu item
@@ -71,10 +72,12 @@ export function CustomMenu({ title, variant = "contained", triggerSize, button, 
 
           const color = item.color ?? "inherit";
           const isIconFontAwesome = item.icon && typeof item.icon === "object" && item.icon.iconName;
+          const linkProps = item.href ? { component: "a", href: item.href } : {};
 
           return (
             <MenuItem
               key={index}
+              {...linkProps}
               onClick={() => handleItemClick(item)}
               disabled={item.disabled}
               sx={{
