@@ -55,6 +55,7 @@ import {
   LoadingSpinner,
   StyledExternalLink,
   StyledLink,
+  TooltipInfoButton,
   TooltipLineBreaks,
 } from "../components/basic";
 import { CustomMenu } from "../components/Menu";
@@ -230,7 +231,7 @@ export function ChallengeDisplay({ id, isCompact = false }) {
       {/* Submission table */}
       <Box sx={{ ...contentPadding, mt: 2 }}>
         <ChallengeSubmissionTable challenge={challenge} />
-        {settings.general.showAverageTimeTaken && <AverageTimeTaken challenge={challenge} />}
+        {settings.general.showMedianTimeTaken && <MedianTimeTaken challenge={challenge} />}
       </Box>
 
       <Box sx={{ ...contentPadding }}>
@@ -253,21 +254,31 @@ export function ChallengeDisplay({ id, isCompact = false }) {
   );
 }
 
-export function AverageTimeTaken({ challenge }) {
+export function MedianTimeTaken({ challenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
 
-  const sanitizedSubmissions = challenge.submissions.filter(s => s.time_taken !== null).map(s => s.time_taken);
+  const sanitizedSubmissions = challenge.submissions
+    .filter((submission) => submission.time_taken !== null)
+    .map((submission) => submission.time_taken)
+    .sort((a, b) => a - b);
 
   if (sanitizedSubmissions.length === 0) {
     return null;
   }
 
-  const averageTimeTaken = Math.round(sanitizedSubmissions.reduce((total, current) => total + current, 0) / sanitizedSubmissions.length);
+  const middleIndex = Math.floor(sanitizedSubmissions.length / 2);
+  const medianTimeTaken =
+    sanitizedSubmissions.length % 2 === 0
+      ? Math.round((sanitizedSubmissions[middleIndex - 1] + sanitizedSubmissions[middleIndex]) / 2)
+      : sanitizedSubmissions[middleIndex];
 
-  return <Typography align="center" sx={{ mt: 2 }} variant="body2">
-    {t("average_time_taken")}
-    {secondsToDuration(averageTimeTaken, true)} {sanitizedSubmissions.length < 5 && t("few_submissions")}
-  </Typography>;
+  return (
+    <Typography align="center" sx={{ mt: 2 }} variant="body2">
+      {t("median_time_taken")}
+      {secondsToDuration(medianTimeTaken, true)}{" "}
+      {sanitizedSubmissions.length < 5 && <TooltipInfoButton title={t("few_submissions")} fontSize="0.8em" />}
+    </Typography>
+  );
 }
 
 //#region Fading Map Banner

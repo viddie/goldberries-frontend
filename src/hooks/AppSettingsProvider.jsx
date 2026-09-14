@@ -11,8 +11,8 @@ export const getDefaultSettings = () => {
       showOldTierNames: false,
       showFractionalTiers: true,
       showRejectedSubmissions: true,
-      showAverageTimeTaken: true,
-      settingsVersion: 1,
+      showMedianTimeTaken: true,
+      settingsVersion: 2,
     },
     visual: {
       darkmode: true,
@@ -71,7 +71,7 @@ export function AppSettingsProvider({ children }) {
       settings.general.settingsVersion === undefined ||
       settings.general.settingsVersion < defaultSettings.general.settingsVersion
     ) {
-      fixSettings(defaultSettings, settings);
+      fixSettings(settings, defaultSettings);
       hadChange = true;
     }
     return hadChange;
@@ -79,10 +79,9 @@ export function AppSettingsProvider({ children }) {
 
   useEffect(() => {
     const defaultSettings = getDefaultSettings();
-    if (deepCompareObjects(defaultSettings, settings)) {
-      setSettings({ ...settings });
-    }
-    if (checkSettingsVersion(defaultSettings, settings)) {
+    const settingsVersionChanged = checkSettingsVersion(defaultSettings, settings);
+    const settingsChanged = deepCompareObjects(defaultSettings, settings);
+    if (settingsVersionChanged || settingsChanged) {
       setSettings({ ...settings });
     }
   }, []);
@@ -258,10 +257,10 @@ export const COLOR_PRESETS = [
 
 //Use this function to fix settings issues when a new version is released
 function fixSettings(settings, defaultSettings) {
-  // // Initial Fix not necessary
-  // if (version === undefined || version < 1) {
-
-  // }
+  if (settings.general.showMedianTimeTaken === undefined && settings.general.showAverageTimeTaken !== undefined) {
+    settings.general.showMedianTimeTaken = settings.general.showAverageTimeTaken;
+    delete settings.general.showAverageTimeTaken;
+  }
 
   // Update version to current
   settings.general.settingsVersion = defaultSettings.general.settingsVersion;
