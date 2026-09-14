@@ -231,7 +231,13 @@ export function PageTopGoldenList({ defaultType = null, defaultId = null }) {
         filter={filter}
         options={options}
       />
-      <TimeTakenTiersGraphModal modalHook={statsModal} id={actualId} filter={filter} options={options} />
+      <TimeTakenTiersGraphModal
+        modalHook={statsModal}
+        id={actualId}
+        filter={filter}
+        options={options}
+        useSuggested={options.useDifficultyOpinions}
+      />
     </Box>
   );
 }

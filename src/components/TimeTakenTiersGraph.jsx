@@ -71,8 +71,9 @@ function TimeTakenTiersGraph({ id, filter, options, useSuggested }) {
   const difficulties = tgl.tiers;
 
   //Step 2: extract the time taken for each difficulty
-  let diffFunction = (challenge) => challenge.difficulty_id;
-  if (useSuggested) diffFunction = (challenge) => challenge.submissions[0].suggested_difficulty_id;
+  const diffFunction = useSuggested
+    ? (challenge) => challenge.submissions[0].suggested_difficulty_id ?? challenge.difficulty_id
+    : (challenge) => challenge.difficulty_id;
 
   difficulties.forEach((difficulty) => {
     //Filter the challenges from tgl.challenges, based on challenge.difficulty_id matching the current difficulty.id
