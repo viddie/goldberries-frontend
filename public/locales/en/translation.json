@@ -908,7 +908,8 @@
         },
         "delete_challenge": {
           "title": "Delete Challenge",
-          "description": "Are you sure you want to delete the challenge <strong>'{{name}}'</strong> for the map <strong>'{{map}}'</strong> and <strong>all of the attached submissions</strong>?"
+          "description": "Are you sure you want to delete the challenge <strong>'{{name}}'</strong> for the map <strong>'{{map}}'</strong> and <strong>all of the attached submissions</strong>?",
+          "description_fgr": "Are you sure you want to delete the challenge <strong>'{{name}}'</strong> for the campaign <strong>'{{campaign}}'</strong> and <strong>all of the attached submissions</strong>?"
         },
         "mark_personal": {
           "title": "Mark As Personal",
@@ -1917,7 +1918,7 @@
           },
           {
             "heading": "End Screen",
-            "text": "Submissions <strong>must</strong> show the end screen of a map upon completing the challenge. If an end screen does not exist, it is recommended but not required to show the journal after exiting. <strong>IMPORTANT: For collab maps you have to enable the mod option</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>AND enable the speedrun timer for the end screen to show up</strong>. If you don't like the timer being always visible, SpeedrunTool has an option to automatically show the timer only for the end screen at <code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>."
+            "text": "Submissions <strong>must</strong> show the end screen of a map upon completing the challenge, with the timer and game version visible. If an end screen does not exist, it is recommended but not required to show the journal after exiting. <strong>IMPORTANT: The speedrun timer must be enabled for the required information to appear on the end screen.</strong> If you don't like the timer always being visible, SpeedrunTool has an option to show the timer only for the end screen at <code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>. <strong>For collab maps specifically, you also have to enable the mod option <code>Collab Utils 2 → Display End Screen For All Maps</code> for the end screen to appear.</strong>"
           },
           {
             "heading": "Session",

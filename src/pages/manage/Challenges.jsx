@@ -371,7 +371,7 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                           <Divider sx={{ my: 0.5 }} />
                           <MenuItem disableRipple disableGutters sx={{ py: 0 }}>
                             <Button
-                              onClick={() => openModal(modalRefs.challenge.delete, challenge)}
+                              onClick={() => openModal(modalRefs.challenge.delete, challengeForSplitMerge)}
                               color="error"
                               disableRipple
                               sx={{ px: "16px" }}
@@ -530,10 +530,15 @@ function ManageModalContainer({ modalRefs }) {
       >
         <Typography variant="body1">
           <Trans
-            i18nKey="manage.challenges.modals.delete_challenge.description"
+            i18nKey={
+              deleteChallengeModal.data?.map
+                ? "manage.challenges.modals.delete_challenge.description"
+                : "manage.challenges.modals.delete_challenge.description_fgr"
+            }
             values={{
               name: deleteChallengeModal.data ? getChallengeName(deleteChallengeModal.data) : "",
               map: deleteChallengeModal.data?.map?.name,
+              campaign: deleteChallengeModal.data?.campaign?.name,
             }}
           />
         </Typography>
