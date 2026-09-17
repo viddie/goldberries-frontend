@@ -1,7 +1,8 @@
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCreativeCommonsBy, faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faCreativeCommonsBy, faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
+  faBug,
   faCircleQuestion,
   faFileLines,
   faLegal,
@@ -138,6 +139,28 @@ export function UsefulLinksComponent() {
           <FontAwesomeIcon icon={faDiscord} color="#5865f2" />{" "}
           <StyledExternalLink href={DISCORD_INVITE} target="_blank" rel="noreferrer">
             {t("modded_golden_team_discord")}
+          </StyledExternalLink>
+        </li>
+      </ul>
+
+      <Typography variant="h6">{t("header_sources")}</Typography>
+      <ul style={{ listStyleType: "none" }}>
+        <li>
+          <FontAwesomeIcon icon={faGithub} />{" "}
+          <StyledExternalLink href="https://github.com/viddie/goldberries-frontend" target="_blank" rel="noreferrer">
+            {t("frontend_repository")}
+          </StyledExternalLink>
+        </li>
+        <li>
+          <FontAwesomeIcon icon={faGithub} />{" "}
+          <StyledExternalLink href="https://github.com/viddie/goldberries-backend" target="_blank" rel="noreferrer">
+            {t("backend_repository")}
+          </StyledExternalLink>
+        </li>
+        <li>
+          <FontAwesomeIcon icon={faBug} />{" "}
+          <StyledExternalLink href="https://github.com/viddie/gb-issues/issues" target="_blank" rel="noreferrer">
+            {t("issue_tracker")}
           </StyledExternalLink>
         </li>
       </ul>

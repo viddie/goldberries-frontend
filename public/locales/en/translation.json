@@ -2125,6 +2125,7 @@
     },
     "links": {
       "header": "Important Links",
+      "header_sources": "Sources",
       "header_other": "Other Links",
       "header_other_lists": "Other Lists",
       "rules": "Rules",
@@ -2135,6 +2136,9 @@
       "modded_golden_team_discord": "Modded Golden Team Discord",
       "fwg_sheet": "Farewell Golden Collectors' List",
       "survivors_list": "Celeste Survivors List (Deathless runs of vanilla Celeste)",
+      "frontend_repository": "Frontend Repository",
+      "backend_repository": "Backend Repository",
+      "issue_tracker": "Issue Tracker",
       "legal_notice": "Legal Notice",
       "api_docs": "API Documentation",
       "server_costs": "Overview of Server Costs",
