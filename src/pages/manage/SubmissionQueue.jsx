@@ -233,6 +233,7 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
     if (difficulty) {
       text += " " + getDifficultyName(difficulty);
     }
+    text += " " + submission.proof_url;
 
     //Find if the submission is locked by another verifier (present in the notices)
     const notice = notices.find((notice) => notice.submission_id === submission.id);
