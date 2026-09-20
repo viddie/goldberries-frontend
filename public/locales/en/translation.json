@@ -1724,7 +1724,6 @@
         "claim_player": "Claim a player to be able to vote on suggestions!",
         "your_comment": "Your Comment",
         "comment_required": "Please provide a comment for your vote!",
-        "comment_note": "To change your comment after you voted, remove your vote and vote again.",
         "stats": "Stats",
         "totals": "Totals",
         "done_challenge": "Done Challenge",
@@ -1735,7 +1734,8 @@
           "accept": "Accept Change",
           "reject_verification": "Reject Verification",
           "reject_change": "Reject Change",
-          "set_to_pending": "Set to Pending"
+          "set_to_pending": "Set to Pending",
+          "update_comment": "Update Comment"
         },
         "hidden_vote_count_desc": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion",
         "hidden_vote_count": "Vote Count Hidden"

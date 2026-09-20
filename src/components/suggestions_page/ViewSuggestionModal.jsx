@@ -50,10 +50,10 @@ export function ViewSuggestionModal({ id }) {
   const query = useGetSuggestion(id);
   const suggestion = getQueryData(query);
 
-  const { mutateAsync: deleteVote } = useDeleteSuggestionVote(() => {
+  const { mutateAsync: deleteVote, isLoading: deleteVoteLoading } = useDeleteSuggestionVote(() => {
     // query.refetch();
   });
-  const { mutateAsync: postVote } = usePostSuggestionVote(() => {
+  const { mutateAsync: postVote, isLoading: postVoteLoading } = usePostSuggestionVote(() => {
     query.refetch();
   });
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
@@ -91,9 +91,12 @@ export function ViewSuggestionModal({ id }) {
 
   const hasVoted =
     auth.hasPlayerClaimed && suggestion.votes.some((vote) => vote.player_id === auth.user.player.id);
-  const userVote = hasVoted
-    ? suggestion.votes.find((vote) => vote.player_id === auth.user.player.id).vote
+  const userVoteObj = hasVoted
+    ? suggestion.votes.find((vote) => vote.player_id === auth.user.player.id)
     : null;
+  const userVote = userVoteObj?.vote ?? null;
+  const commentChanged = userVoteObj !== null && userText !== (userVoteObj.comment ?? "");
+  const voteMutationLoading = deleteVoteLoading || postVoteLoading;
   const selfHasDoneChallenge =
     auth.hasPlayerClaimed &&
     suggestion.challenge !== null &&
@@ -105,11 +108,11 @@ export function ViewSuggestionModal({ id }) {
       (isExpired && !auth.hasHelperPriv) ||
       (requiresComment && userText.trim().length < 10)) &&
     !hasVoted;
-  const commentFieldDisabled = hasVoted || (isExpired && !auth.hasHelperPriv && !hasVoted);
+  const commentFieldDisabled = voteMutationLoading || (isExpired && !auth.hasHelperPriv && !hasVoted);
 
   const vote = (vote) => {
     if (hasVoted) {
-      const voteObj = suggestion.votes.find((vote) => vote.player_id === auth.user.player.id);
+      const voteObj = userVoteObj;
       deleteVote(voteObj.id).then(() => {
         if (vote !== userVote) {
           postVote({
@@ -130,6 +133,18 @@ export function ViewSuggestionModal({ id }) {
         comment: userText === "" ? null : userText,
       });
     }
+  };
+
+  const updateComment = () => {
+    if (!userVoteObj || !commentChanged || (requiresComment && userText.trim().length < 10)) return;
+
+    deleteVote(userVoteObj.id).then(() => {
+      postVote({
+        suggestion_id: suggestion.id,
+        vote: userVoteObj.vote,
+        comment: userText === "" ? null : userText,
+      });
+    });
   };
 
   const isUnverified = suggestion.is_verified !== true;
@@ -299,6 +314,8 @@ export function ViewSuggestionModal({ id }) {
               disabled={commentFieldDisabled}
               value={userText}
               onChange={(e) => setUserText(e.target.value)}
+              color={commentChanged ? "warning" : undefined}
+              focused={commentChanged}
             />
             <Stack direction="row" gap={1} alignItems="center">
               <CharsCountLabel text={userText} maxChars={1500} minChars={10} />
@@ -308,9 +325,17 @@ export function ViewSuggestionModal({ id }) {
                 </Typography>
               )}
             </Stack>
-            <Typography variant="body2" color={(t) => t.palette.text.secondary} sx={{ mt: 0.25 }}>
-              <FontAwesomeIcon icon={faInfoCircle} /> {t("comment_note")}
-            </Typography>
+            {commentChanged && (
+              <Button
+                variant="outlined"
+                onClick={updateComment}
+                disabled={voteMutationLoading || (requiresComment && userText.trim().length < 10)}
+                startIcon={voteMutationLoading && <FontAwesomeIcon icon={faSpinner} spin />}
+                sx={{ my: 1 }}
+              >
+                {t("buttons.update_comment")}
+              </Button>
+            )}
           </Grid>
         )}
 
@@ -328,7 +353,7 @@ export function ViewSuggestionModal({ id }) {
                 <FontAwesomeIcon
                   icon={faEyeSlash}
                   style={{
-                    marginLeft: "4px"
+                    marginLeft: "4px",
                   }}
                 />
               </Typography>
@@ -357,7 +382,7 @@ export function ViewSuggestionModal({ id }) {
                 </Grid>
               </>
             )}
-          
+
             <Grid item xs={12} sm={12}>
               {!isGeneral && <Typography variant="body1">{t("not_done_challenge")}</Typography>}
               <Grid container columnSpacing={1}>
