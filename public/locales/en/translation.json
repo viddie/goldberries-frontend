@@ -400,6 +400,9 @@
         "show_time_taken": {
           "label": "Show Total Grind Time"
         },
+        "show_obsolete_submissions": {
+          "label": "Show Obsolete Submissions"
+        },
         "show_fractional_tiers": {
           "label": "Show Fractional Tiers"
         },

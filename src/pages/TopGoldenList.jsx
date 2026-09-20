@@ -298,6 +298,11 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
   const stackTiers = options.stackTiers;
   const hideEmptyTiers = !options.showEmptyTiers;
   const compactMode = options.compactMode;
+  const showObsoleteSubmissions = options.showObsoleteSubmissions !== false;
+  const visibleChallenges =
+    isPlayer && !showObsoleteSubmissions
+      ? challenges.filter((challenge) => !challenge.submissions[0].is_obsolete)
+      : challenges;
 
   // Stacked tiers: if enabled, use DIFFICULTY_STACKS (array of arrays of tier IDs) to determine the grouping.
   // If disabled, just put each tier in its own group. Then use TierStack to render each group.
@@ -321,7 +326,9 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
     useOpinions ? (c.submissions[0].suggested_difficulty?.id ?? c.difficulty_id) : c.difficulty_id;
   const filteredTierGroups = tierGroups.filter((tierGroup) => {
     if (!hideEmptyTiers) return true;
-    const hasChallenges = tierGroup.some((tier) => challenges.some((c) => getEffectiveDiffId(c) === tier.id));
+    const hasChallenges = tierGroup.some((tier) =>
+      visibleChallenges.some((c) => getEffectiveDiffId(c) === tier.id),
+    );
     return hasChallenges;
   });
 
@@ -347,7 +354,7 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
           render={index <= renderUpTo.index}
           onFinishRendering={onFinishRendering}
           tiers={tierGroup}
-          challenges={challenges}
+          challenges={visibleChallenges}
           maps={maps}
           campaigns={campaigns}
           type={type}

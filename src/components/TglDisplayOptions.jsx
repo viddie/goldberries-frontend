@@ -94,6 +94,11 @@ export function TglMoreButton({
           delete options.showImages;
           options.version = 4;
         }
+        if (options.version === 4) {
+          console.log("Updating options from version 4: adding showObsoleteSubmissions option");
+          options.showObsoleteSubmissions = true;
+          options.version = 5;
+        }
         console.log("Updated options:", options);
       }
       options.version = defaultOptions.version;
@@ -194,6 +199,14 @@ export function TglMoreButton({
                 tKey="show_time_taken"
                 value={localOptions.showTimeTaken}
                 setValue={(newValue) => changedOption("showTimeTaken", newValue)}
+                noNote
+              />
+            )}
+            {isPlayer && (
+              <BoolOption
+                tKey="show_obsolete_submissions"
+                value={localOptions.showObsoleteSubmissions ?? true}
+                setValue={(newValue) => changedOption("showObsoleteSubmissions", newValue)}
                 noNote
               />
             )}
@@ -307,9 +320,10 @@ export function getDefaultOptions(isOverall = false, playerId = null) {
     showFractionalTiers: true,
     showEmptyTiers: false,
     showTimeTaken: true,
+    showObsoleteSubmissions: true,
     showLikeCounts: true,
     useDifficultyOpinions: false,
     highlightPlayerId: playerId,
-    version: 4,
+    version: 5,
   };
 }
