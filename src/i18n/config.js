@@ -6,12 +6,12 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { CURRENT_VERSION, IS_DEBUG } from "../util/constants";
 
 export const LANGUAGES = [
-  { code: "en", name: "English" },
-  { code: "de", name: "German" },
-  { code: "cn", name: "Chinese" },
-  { code: "fr", name: "French" },
-  { code: "ru", name: "Russian" },
-  { code: "ko", name: "Korean" },
+  { code: "en", name: "English", flagCode: "en" },
+  { code: "de", name: "German", flagCode: "de" },
+  { code: "cn", name: "Chinese", flagCode: "cn" },
+  { code: "fr", name: "French", flagCode: "fr" },
+  { code: "ru", name: "Russian", flagCode: "ru" },
+  { code: "ko", name: "Korean", flagCode: "kr" },
 ];
 
 const DETECTION_OPTIONS = {

@@ -122,7 +122,7 @@ export function AppSettingsGeneralForm() {
                     justifyContent: "space-around",
                   }}
                 >
-                  <LanguageFlag code={lang.code} height="32" />
+                  <LanguageFlag code={lang.flagCode} height="32" />
                 </Box>
                 {lang.name}
               </Stack>
