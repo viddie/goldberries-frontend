@@ -17,6 +17,12 @@
     "objective_other": "Ziele",
     "account_one": "Account",
     "account_other": "Accounts",
+    "post_one": "Beitrag",
+    "post_other": "Beiträge",
+    "badge_one": "Abzeichen",
+    "badge_other": "Abzeichen",
+    "news": "Neuigkeiten",
+    "changelog": "Änderungsprotokoll",
     "table_rows_per_page": "Zeilen pro Seite:",
     "modals": {
       "buttons": {
@@ -24,7 +30,8 @@
         "cancel": "Abbrechen",
         "save": "Speichern",
         "close": "Schließen",
-        "update": "Aktualisieren"
+        "update": "Aktualisieren",
+        "submit": "Einreichen"
       }
     },
     "name": "Name",
@@ -38,16 +45,110 @@
     "time": "Zeit",
     "by": "von",
     "unknown_author": "Unbekannter Autor",
-    "unknown_date": "Unbekanntes Datum"
+    "unknown_date": "Unbekanntes Datum",
+    "loading": "Wird geladen...",
+    "id": "ID",
+    "error_handling": {
+      "header": "Etwas ist schiefgelaufen!",
+      "default": "Leere den Browser-Cache (Strg + F5) oder melde dich in #gb-report, falls das Problem weiterhin besteht.",
+      "404": "Der angeforderte Inhalt wurde nicht gefunden."
+    },
+    "time_ago": {
+      "years_one": "vor {{count}} Jahr",
+      "years_other": "vor {{count}} Jahren",
+      "months_one": "vor {{count}} Monat",
+      "months_other": "vor {{count}} Monaten",
+      "days_one": "vor {{count}} Tag",
+      "days_other": "vor {{count}} Tagen",
+      "hours_one": "vor {{count}} Stunde",
+      "hours_other": "vor {{count}} Stunden",
+      "minutes_one": "vor {{count}} Minute",
+      "minutes_other": "vor {{count}} Minuten",
+      "seconds_one": "vor {{count}} Sekunde",
+      "seconds_other": "vor {{count}} Sekunden"
+    },
+    "show_all": "Alle anzeigen",
+    "show_less": "Weniger anzeigen"
+  },
+  "event": {
+    "sss26": {
+      "description": "Das ist dein Stempelbogen! Sobald du ein neues Golden einreichst und es als Stamp-Rally-Submission markierst, wird der entsprechende Stempel freigeschaltet und hier angezeigt. Mit dem Balken unten kannst du deinen Fortschritt bei den Abzeichen verfolgen und deine durchschnittliche Tier prüfen. Sieh dir auch die <announcementsLink>aktuellen Ankündigungen</announcementsLink> an – dort findest du häufig gestellte Fragen und weitere Informationen zum Event.",
+      "runtime": "Das Event ist für alle geöffnet und läuft vom 1. Juni bis zum 31. August 2026.",
+      "total_tier": "Tier insgesamt",
+      "total_tier_progress": "{{current}} / {{max}}",
+      "total_tier_info": "Die hier angezeigten Abzeichen werden nur vergeben, wenn mindestens 8 Stempel gesammelt wurden!",
+      "stamp_count_badge_label": "0",
+      "stamp_count_badge_info": "Dieses Abzeichen erhältst du, wenn du mindestens 8 Stempel sammelst – unabhängig von deiner Gesamt-Tierzahl.",
+      "boundary_passed_info": "Du hast diese Tier-Grenze überschritten, musst aber noch mindestens 8 Stempel sammeln, um dieses Abzeichen tatsächlich zu erhalten.",
+      "average_tier": "Durchschnittliche Tierstufe: {{value}}",
+      "empty_submission": "<empty>",
+      "no_stamp_alt": "Kein Stempel",
+      "stamp_alt": "Stempel {{number}}",
+      "edit_stamp_tooltip": "Stempel-Submission bearbeiten",
+      "edit_stamp_title": "Stempel bearbeiten: {{name}}",
+      "buttons": {
+        "cancel": "Abbrechen",
+        "remove": "Entfernen",
+        "assign": "Zuweisen"
+      },
+      "stamps": [
+        {
+          "name": "Herzlos </3",
+          "description": "Eine Map, die nicht mit einem Crystal Heart oder Mini-Heart endet"
+        },
+        {
+          "name": "Kugel und Kette",
+          "description": "Eine Map, in der schwere Wurfobjekte das zentrale Gameplay ausmachen",
+          "extraInfo": "Theo, Batterien usw."
+        },
+        {
+          "name": "Ein neuer Freund",
+          "description": "Eine Map oder Challenge, die nur einen Gewinner hat",
+          "extraInfo": "Es reicht, wenn zu Beginn des Events nur eine Person dabei ist"
+        },
+        {
+          "name": "Universelle Sprache",
+          "description": "Eine Map aus dem Music Translation Contest"
+        },
+        {
+          "name": "Die alten Schriften",
+          "description": "Eine Map, die 2020 oder früher veröffentlicht wurde"
+        },
+        {
+          "name": "Fast alles",
+          "description": "Eine Map, die nach 2020 veröffentlicht wurde"
+        },
+        {
+          "name": "Die Fortsetzung",
+          "description": "Eine Map, die „-Side“ im Namen hat"
+        },
+        {
+          "name": "Zeit zum Abkühlen",
+          "description": "Eine Dashless-Map"
+        },
+        {
+          "name": "Ich ganz allein",
+          "description": "Eine Map, bei der mindestens zwei Dashes zum zentralen Gameplay gehören"
+        },
+        {
+          "name": "Wortgewandt",
+          "description": "Eine Map mit einem alliterativen Titel",
+          "extraInfo": "Maps, deren Wörter alle mit demselben Buchstaben anfangen, zum Beispiel Avian Ascension oder Drifting Deep"
+        }
+      ]
+    }
   },
   "components": {
     "difficulty_select": {
       "label": "Empfohlene Schwierigkeit",
+      "label_no_opinion": "Schwierigkeit",
       "no_suggestion": "Keine Empfehlung",
-      "no_selection": "Keine Auswahl"
+      "no_selection": "Keine Auswahl",
+      "no_options": "Keine Optionen"
     },
     "difficulty_chip": {
-      "personal_tooltip": "Diese Schwierigkeitsempfehlung ist persönlich und sollte nicht für offizielle Platzierung verwendet werden"
+      "personal_tooltip": "Diese Schwierigkeitsempfehlung ist persönlich und sollte nicht für offizielle Platzierung verwendet werden",
+      "trivial_explanation": "Nicht eingestufte Challenges bergen keine Todesgefahr oder unterscheiden sich nicht von einem regulären Clear der Map."
     },
     "verification_status_chip": {
       "verified": "Verifiziert",
@@ -72,9 +173,30 @@
     "full_challenge_select": {
       "full_game_label": "Wähle Map ODER Full Game Challenge"
     },
-    "verifier_icon": "Teil des Modded Golden Teams",
-    "admin_icon": "Website Admin",
-    "temp_verifier_icon": "Vorrübergehender Verifier",
+    "submission_inspect": {
+      "title": "Submission-Prüfung",
+      "related_submissions": "Weitere Submissions für diese Map",
+      "no_related": "Keine zugehörigen Submissions",
+      "mark_obsolete": "Submission als veraltet markieren",
+      "unmark_obsolete": "Markierung als veraltet aufheben",
+      "notes_history": "Notizverlauf",
+      "no_notes": "Für diesen Player gibt es keine früheren Verifier-Notizen",
+      "table": {
+        "date": "Datum",
+        "status": "Status",
+        "note": "Notiz",
+        "count": "Anzahl"
+      }
+    },
+    "roles": {
+      "ex_helper": "Ehemaliger Helper",
+      "ex_verifier": "Ehemaliger Verifier",
+      "ex_admin": "Ehemaliger Admin",
+      "news_writer": "News-Redakteur",
+      "helper": "Helper",
+      "verifier": "Verifier",
+      "admin": "Admin"
+    },
     "suspended_icon": {
       "with_reason": "Dieser Benutzer ist suspendiert: {{reason}}",
       "no_reason": "Dieser Benutzer ist suspendiert"
@@ -104,6 +226,9 @@
       "copy_link": "Link kopieren",
       "copied": "Kopiert!"
     },
+    "copy_to_clipboard_button": {
+      "copy": "Kopieren"
+    },
     "recent_submissions": {
       "title": "Kürzliche Submissions",
       "show": "Zeige:",
@@ -125,27 +250,45 @@
     "stats": {
       "no_suggestions_yet": "Keine Schwierigkeitsempfehlungen bisher"
     },
+    "alert_banner": {
+      "hide_for_day": "Ausblenden",
+      "hide_permanently": "Nicht mehr anzeigen",
+      "profile_settings": {
+        "message": "Du hast noch kein Land und keine Eingabemethode angegeben. Trag diese Informationen in deinen <SettingsLink>Account-Einstellungen</SettingsLink> ein, um unsere <StatsLink>Statistikseite</StatsLink> zu verbessern!"
+      }
+    },
     "top_golden_list": {
       "use_suggested": "Verwende Schwierigkeitsempfehlungen für das Ranking",
       "toggle_edit_mode": "Submission Editiermodus Umschalten",
       "empty": "Ziemlich leer hier. Mach ein paar Goldens von der Top Golden Liste, um deine eigene Liste zu füllen!",
       "note_number_people": "Diese Tier hat {{challenges}} Challenges mit {{submissions}} Submissions",
       "note_suggested_difficulties": "Schwierigkeitsempfehlungen dieses Spielers",
-      "note_video_link": "Diese Links führen zu dem Video des Players, der diese Challenge als erstes abgeschlossen hat",
+      "suggestion_abbreviated": "Empf.",
+      "note_video_link_personal": "Diese Links führen zum Video des jeweiligen Players für jede Challenge.",
+      "note_video_link_other": "Diese Links führen zum Video des ersten Clears einer Challenge.",
+      "note_time_taken": "Vom Benutzer angegebene Zeit für die Challenge",
       "obsolete_notice": "This submission is marked as obsolete",
+      "stable_explanation": "Die Schwierigkeit dieser Challenge ist stabil eingestuft.",
       "placement_difficulty": "Offizielle Schwierigkeit:",
+      "export_button_tooltip": "Top Golden List exportieren",
+      "stats_button_tooltip": "Verteilung der gesamten Grind-Zeit anzeigen",
+      "clear_one": "Clear",
+      "clear_other": "Clears",
       "export": {
         "feedback": {
           "copied": "Copied to clipboard",
           "error": "Error copying to clipboard"
         },
+        "challenge_name": "Name der Challenge",
         "submission_count": "Submission Count",
         "first_clear_url": "First Clear URL",
+        "time_taken": "Gesamte Grind-Zeit",
         "header": "Export Top Golden List",
         "text": "Use the button below to copy all visible challenges to your clipboard.",
         "include_header": "Include data header",
         "include_submission_count": "Include submission count",
         "include_first_clear_url": "Include first clear URL",
+        "include_time_taken": "Gesamte Grind-Zeit einschließen",
         "button": "Copy to Clipboard"
       }
     },
@@ -160,8 +303,126 @@
       "additional_filters": "Weitere Filter",
       "show_archived": "Zeige Archivierte Maps",
       "show_arbitrary": "Zeige Willkürliche Challenges",
+      "show_undetermined": "Unbestimmte Tier anzeigen",
+      "minimum_tier": "Mindest-Tier",
+      "tier_slider": "Max./Min.-Tier",
       "categories_hidden_one": "{{count}} Kategorie Versteckt",
-      "categories_hidden_other": "{{count}} Kategorien Versteckt"
+      "categories_hidden_other": "{{count}} Kategorien Versteckt",
+      "all": "Alle",
+      "none": "Keine",
+      "apply": "Filter anwenden",
+      "clear_state": {
+        "label": "Clear-Status",
+        "all": "Alle Challenges",
+        "only_c": "Nur reguläre Clears",
+        "only_fc": "Nur Full Clears",
+        "no_c": "Keine regulären Clears",
+        "no_fc": "Keine Full Clears"
+      },
+      "submission_count": {
+        "label": "Anzahl der Submissions",
+        "explanation": "Nur Challenges mit mindestens oder höchstens dieser Anzahl an Submissions anzeigen.",
+        "none": "Kein Filter",
+        "max": "max.",
+        "min": "min."
+      },
+      "date_range": {
+        "label": "Zeitraum",
+        "explanation": "Berücksichtigt nur Submissions, die innerhalb dieses Zeitraums eingereicht wurden.\nWird zusätzlich der Filter für die Anzahl der Submissions verwendet, muss die angegebene Anzahl innerhalb dieses Zeitraums erreicht werden.",
+        "start_date": "Startdatum",
+        "end_date": "Enddatum",
+        "clear_dates": "Daten löschen"
+      },
+      "country": {
+        "label": "Land"
+      },
+      "input_method": {
+        "label": "Eingabemethode",
+        "all": "Alle"
+      }
+    },
+    "chars_count_label": {
+      "label": "({{count}}/{{max}} Zeichen)"
+    },
+    "country_select": {
+      "label": "Land",
+      "not_specified": "Nicht angegeben"
+    },
+    "time_taken_graph": {
+      "title": "Verteilung der gesamten Grind-Zeit",
+      "description": "Dieses Diagramm zeigt, wie lange dieser Player für Challenges jeder Tier gebraucht hat. Dieselben Submission-Filter werden angewendet.",
+      "x_axis": "Stunden",
+      "show_scatter": "Als Streudiagramm anzeigen",
+      "scatter_description": "Dieselben Daten als Streudiagramm."
+    },
+    "markdown": {
+      "player_chip": {
+        "loading": "<loading>"
+      },
+      "challenge_inline": {
+        "error": "<Challenge not found: {{id}}>"
+      }
+    },
+    "tgl_more_button": {
+      "label": "Anzeigeoptionen",
+      "type": {
+        "overall": "Optionen: Gesamtansicht",
+        "player": "Optionen: Player-Ansicht",
+        "campaign": "Optionen: Campaign-Ansicht"
+      },
+      "options": {
+        "stack_tiers": {
+          "label": "Tiers stapeln"
+        },
+        "prefer_map_images": {
+          "label": "Map-Bilder bevorzugen",
+          "note": "Standardmäßig wird das YouTube-Vorschaubild des ersten Clears angezeigt. Aktiviere diese Option, um stattdessen das Map-Bild zu bevorzugen."
+        },
+        "compact_mode": {
+          "label": "Kompaktmodus",
+          "note": "Ein kompaktes Layout, das dem ursprünglichen Layout der Top Golden List ähnelt."
+        },
+        "sort": {
+          "label": "Sortieren nach",
+          "alphabetical": "Alphabetisch",
+          "campaign": "Campaign",
+          "fractional_tier": "Fractional Tier",
+          "clear_count": "Anzahl der Clears",
+          "like_count": "Anzahl der Likes",
+          "first_clear_date": "Datum des ersten Clears",
+          "time_taken": "Benötigte Zeit"
+        },
+        "sort_order": {
+          "label": "Reihenfolge",
+          "ascending": "Aufsteigend",
+          "descending": "Absteigend"
+        },
+        "show_time_taken": {
+          "label": "Gesamte Grind-Zeit anzeigen"
+        },
+        "show_obsolete_submissions": {
+          "label": "Veraltete Submissions anzeigen"
+        },
+        "show_fractional_tiers": {
+          "label": "Fractional Tiers anzeigen"
+        },
+        "show_empty_tiers": {
+          "label": "Leere Tiers anzeigen"
+        },
+        "darken_tier_colors": {
+          "label": "Tier-Farben abdunkeln",
+          "note": "Tier-Farbe abdunkeln. 0 % = Originalfarbe, 100 % = Schwarz."
+        },
+        "highlight_player": {
+          "label": "Player hervorheben"
+        },
+        "show_like_counts": {
+          "label": "Like-Schaltfläche anzeigen"
+        },
+        "use_difficulty_opinions": {
+          "label": "Schwierigkeitsempfehlungen für die Einstufung verwenden"
+        }
+      }
     }
   },
   "forms": {
@@ -185,6 +446,7 @@
       "is_verifier": "Ist Verifier",
       "is_admin": "Ist Admin",
       "logout_user": "Benutzer Abmelden",
+      "role": "Rolle",
       "delete": {
         "title": "Account Löschen",
         "description": "Bist du sicher, dass du diesen Account löschen möchtest? Diese Aktion ist nicht rückgängig zu machen.",
@@ -234,6 +496,64 @@
         "save_maps": "Maps Speichern"
       }
     },
+    "create_campaign_from_gb": {
+      "title": "Campaign von GameBanana erstellen",
+      "step": "Schritt {{current}} / {{total}}",
+      "next": "Weiter",
+      "back": "Zurück",
+      "step_1": {
+        "label": "GameBanana-URL",
+        "url_label": "GameBanana-Mod-URL",
+        "url_placeholder": "https://gamebanana.com/mods/123456",
+        "process_button": "URL verarbeiten",
+        "clear_cache": "Cache ignorieren (falls der Mod bereits verarbeitet wurde)",
+        "invalid_url": "Ungültige GameBanana-Mod-URL. Erwartetes Format: https://gamebanana.com/mods/<id>"
+      },
+      "step_2": {
+        "label": "Verarbeitung",
+        "processing": "Mod-Dateien werden verarbeitet...",
+        "error": "Beim Verarbeiten des Mods ist ein Fehler aufgetreten.",
+        "retry": "Erneut versuchen"
+      },
+      "step_3": {
+        "label": "Campaign und Maps",
+        "campaign_name": "Campaign-Name",
+        "author_gb_id": "GameBanana-ID des Autors",
+        "author_gb_name": "GameBanana-Name des Autors",
+        "maps_found_one": "{{count}} Map gefunden",
+        "maps_found_other": "{{count}} Maps gefunden",
+        "no_maps": "In den Mod-Daten wurden keine Maps gefunden.",
+        "map_name": "Map-Name",
+        "bin_path": "BIN-Datei",
+        "add_map": "Map hinzufügen",
+        "unassigned_bins": "Nicht zugewiesene BIN-Dateien",
+        "remove_map": "Map entfernen"
+      },
+      "step_4": {
+        "label": "Collectibles",
+        "loading_map_data": "Map-Daten werden geladen...",
+        "edit": "Collectibles bearbeiten",
+        "done": "Fertig",
+        "collectible_summary": "Collectibles",
+        "no_collectibles": "Keine Collectibles gefunden",
+        "loading_error": "Map-Daten für diese BIN-Datei konnten nicht geladen werden."
+      },
+      "step_5": {
+        "label": "Challenges",
+        "helper": "Lege fest, welche Challenges für jede Map erstellt werden sollen.",
+        "generate_challenges": "Challenges erstellen",
+        "c_fc_distinct": "Clear und FC getrennt",
+        "create_all": "Alle erstellen"
+      },
+      "feedback": {
+        "creating_one": "Wird erstellt ({{current}}/{{count}})",
+        "creating_other": "Wird erstellt ({{current}}/{{count}})",
+        "campaign_created": "Campaign erstellt",
+        "maps_created": "Maps und Challenges erstellt",
+        "mapping_saved": "Zuordnung gespeichert",
+        "error": "Beim Erstellen ist ein Fehler aufgetreten"
+      }
+    },
     "campaign_mass_add_maps": {
       "feedback": {
         "adding_one": "Erstelle Map ({{current}}/{{count}})",
@@ -265,6 +585,9 @@
       "requires_fc": "Erfordert FC",
       "has_fc": "Hat FC",
       "is_arbitrary": "Ist Willkürlich",
+      "is_rejected": "Ist abgelehnt",
+      "reject_note": "Ablehnungsnotiz",
+      "reject_note_not_rejected": "Einstufungsnotiz",
       "sort_order": "Sortierung",
       "skip_webhook": "Skip Placement Change Webhook",
       "buttons": {
@@ -293,18 +616,22 @@
         "updated": "Map aktualisiert"
       },
       "same_name_exists": "This map name already exists in the campaign",
-      "is_rejected": "Ist Abgelehnt",
       "is_archived": "Ist Archiviert",
+      "is_progress": "Zählt zum Campaign-Fortschritt",
       "collectibles": {
         "label": "Collectibles",
         "variant": "Variante",
+        "note": "Notiz (optional)",
         "count": "Anzahl (Standard: 1)",
-        "note": "Notiz (optional)"
+        "global_count": "Globale Anzahl überschreiben"
       },
-      "rejection_reason": "Ablehnungsgrund",
       "note": "Notiz",
       "golden_changes": "Golden-Änderungen",
       "author_note": "Lass diese Felder leer, wenn sie dem Autor der Campaign entsprechen.",
+      "counts_for_map": {
+        "label": "Wird für Map gezählt",
+        "note": "Diese Map in der Campaign-Ansicht für eine andere Map zählen lassen"
+      },
       "buttons": {
         "create": "Map Erstellen",
         "update": "Map Aktualisieren"
@@ -323,11 +650,17 @@
       "player_notes": "Player Notiz",
       "is_personal": "Ist Persönlich",
       "personal_note": "'Persönliche' Schwierigkeitsempfehlungen zeigen, dass diese Empfehlung nicht für offizielle Platzierungen verwendet werden soll.",
+      "frac_header": "Fractional Tier",
+      "frac_note": "Du kannst angeben, wo die Challenge deiner Meinung nach innerhalb der Tier liegt. Standard ist 0,5 (genau in der Mitte).",
+      "time_taken": "Gesamte Grind-Zeit",
       "date_submitted": "Datum Eingereicht",
+      "date_achieved": "Erreicht am",
       "date_verified": "Datum Verifiziert",
       "verifier": "Verifier",
       "verifier_notes": "Verifier Notiz",
       "map_information": "Map Information",
+      "challenge_information": "Challenge-Informationen",
+      "golden_changes": "Golden-Änderungen",
       "buttons": {
         "update": "Submission Aktualisieren",
         "verify": "Verifizieren",
@@ -361,8 +694,84 @@
         "invalid": "Ungültige URL",
         "disallowed": "Diese Art von URL ist für Submissions nicht erlaubt (<CustomLink to=\"/rules#submissions-all\">Submissions > Rule 1</CustomLink>)",
         "disallowed_variant": "This website is allowed for submissions, but you have to use the direct video link instead!"
+      },
+      "time_taken": {
+        "invalid": "Die Dauer muss dem Format „(hh:)mm:ss“ entsprechen."
+      }
+    },
+    "post": {
+      "feedback": {
+        "created": "Beitrag erstellt",
+        "updated": "Beitrag aktualisiert"
+      },
+      "title": "Titel",
+      "content": "Inhalt",
+      "type": "Beitragstyp",
+      "short_preview": "Kurzvorschau",
+      "types": {
+        "news": "Neuigkeiten",
+        "changelog": "Änderungsprotokoll"
+      },
+      "image_url": "Bild-URL",
+      "buttons": {
+        "create": "Beitrag erstellen",
+        "update": "Beitrag aktualisieren",
+        "goto": "Zum Beitrag"
+      }
+    },
+    "badge": {
+      "title": "Titel",
+      "color": "Farbe",
+      "shiny": "Glänzend",
+      "glow": "Leuchten",
+      "level1": "Bronze-Stufe",
+      "level2": "Silber-Stufe",
+      "level3": "Gold-Stufe",
+      "buttons": {
+        "create": "Abzeichen erstellen",
+        "update": "Abzeichen aktualisieren"
+      },
+      "feedback": {
+        "created": "Abzeichen erstellt",
+        "updated": "Abzeichen aktualisiert",
+        "deleted": "Abzeichen gelöscht"
+      }
+    },
+    "wishlist_like": {
+      "title": "Wunschlisteneintrag bearbeiten",
+      "state": "Status",
+      "progress": "Fortschritt",
+      "add_progress": "Fortschritt hinzufügen",
+      "remove_progress": "Fortschritt entfernen",
+      "comment": "Kommentar",
+      "time_taken": "Gesamte Grind-Zeit",
+      "low_death_placeholder": "PB",
+      "save": "Speichern",
+      "remove_wishlist": "Von der Wunschliste entfernen",
+      "feedback": {
+        "updated": "Wunschlisteneintrag aktualisiert",
+        "removed": "Wunschlisteneintrag entfernt"
       }
     }
+  },
+  "likes": {
+    "wishlist": "Zur Wunschliste hinzufügen",
+    "completed": "Abgeschlossen",
+    "not_completed": "Nicht abgeschlossen",
+    "no_likes": "Keine",
+    "sign_in_to_like": "Du musst angemeldet sein und einen Player beansprucht haben, um Challenges zu liken.",
+    "state": {
+      "none": "Kein Status",
+      "current": "Aktuell",
+      "on_hold": "Pausiert",
+      "soon": "Demnächst",
+      "backlog": "Später"
+    },
+    "wishlist_card": {
+      "comment": "Kommentar"
+    },
+    "low_death": "{{count}}",
+    "quick_like_label": "Likes insgesamt: {{count}}"
   },
   "hooks": {
     "auth": {
@@ -375,22 +784,31 @@
     "campaigns_menu": {
       "name": "Campaigns",
       "campaign_list": "Campaign Liste",
-      "rejected_maps": "Abgelehnte Maps"
+      "rejected_challenges": "Abgelehnte Challenges"
     },
     "other_menu": {
       "name": "Andere",
       "suggestion_box": "Vorschlagsbox",
       "monthly_recap": "Monatlicher Rückblick",
       "stats": "Statistik",
-      "rules": "Rules",
-      "faq": "FAQ"
+      "rules": "Regeln",
+      "faq": "FAQ",
+      "news": "Neuigkeiten",
+      "changelog": "Änderungsprotokoll",
+      "map_viewer": "Map-Viewer",
+      "report": "Problem melden"
     },
     "internal_menu": {
       "name": "Intern",
       "logs": "Logs",
       "submission_queue": "Submission Warteschlange",
       "manage_challenges": "Verwalte Challenges",
-      "manage_accounts": "Verwalte Accounts"
+      "actions": "Aktionen",
+      "manage_accounts": "Verwalte Accounts",
+      "manage_badges": "Abzeichen verwalten",
+      "file_upload": "Datei-Upload",
+      "test": "Testseite",
+      "posts": "Neuer Beitrag"
     },
     "widgets": {
       "submission_queue": "Submissions in der Warteschlange",
@@ -408,7 +826,14 @@
       "claim_a_player": "Player Beanspruchen",
       "my_player_page": "Meine Player Seite",
       "my_top_goldens": "Meine Top Goldens",
-      "logout": "Logout"
+      "logout": "Logout",
+      "app_version": "goldberries v{{version}}"
+    },
+    "icon_tooltip": {
+      "text": "Symbol: {{icon}}{{postfix}}\nWahrscheinlichkeit für dieses Symbol und diesen Stil: {{odds}}\nDu hast goldberries.net {{count}}-mal aufgerufen.",
+      "default": "Standard",
+      "flipped": "Gespiegelt",
+      "shiny": "GLÄNZEND"
     }
   },
   "manage": {
@@ -486,7 +911,8 @@
         },
         "delete_challenge": {
           "title": "Challenge Löschen",
-          "description": "Bist du sicher, dass du die Challenge <strong>'{{name}}'</strong> für die Map <strong>'{{map}}'</strong> und <strong>alle anhängenden Submissions</strong> löschen möchtest?"
+          "description": "Bist du sicher, dass du die Challenge <strong>'{{name}}'</strong> für die Map <strong>'{{map}}'</strong> und <strong>alle anhängenden Submissions</strong> löschen möchtest?",
+          "description_fgr": "Möchtest du die Challenge <strong>'{{name}}'</strong> für die Campaign <strong>'{{campaign}}'</strong> und <strong>alle zugehörigen Submissions</strong> wirklich löschen?"
         },
         "mark_personal": {
           "title": "Markiere als Persönlich",
@@ -519,6 +945,7 @@
         "new_map": "Neue Map",
         "new_challenge": "Neue Challenge",
         "create_full_challenge": "Komplette Challenge Erstellen",
+        "create_from_gb": "Campaign aus GB erstellen",
         "mass_add_maps": "Viele Maps zu Campaign Hinzufügen"
       }
     },
@@ -546,9 +973,64 @@
       "filter_placeholder": "Player / Map / Campaign",
       "new_challenge": "Neue Challenge:",
       "or": "ODER",
+      "notice_message_modal": {
+        "title": "Nachricht anhängen",
+        "placeholder": "Nachricht"
+      },
       "buttons": {
         "verify": "'{{count}}' Ausgewählte Verifizieren",
         "reject": "'{{count}}' Ausgewählte Ablehnen"
+      }
+    },
+    "server_settings": {
+      "title": "Servereinstellungen",
+      "form": {
+        "feedback": {
+          "updated": "Servereinstellungen aktualisiert"
+        },
+        "registrations_enabled": "Registrierungen aktiviert",
+        "submissions_enabled": "Submissions aktiviert",
+        "maintenance_mode": "Wartungsmodus",
+        "global_notices": {
+          "label": "Globale Hinweise",
+          "severity": "Schweregrad",
+          "message": "Nachricht"
+        },
+        "buttons": {
+          "update": "Servereinstellungen aktualisieren"
+        }
+      }
+    },
+    "actions": {
+      "title": "Aktionen",
+      "verifier_section": "Verifier-Aktionen",
+      "admin_section": "Admin-Aktionen",
+      "confirm": "Bist du sicher?",
+      "cancel": "Abbrechen",
+      "last_result": "Letztes Aktionsergebnis"
+    },
+    "badges": {
+      "title": "Abzeichen verwalten",
+      "table_title": "Titel",
+      "actions": "Aktionen",
+      "buttons": {
+        "create": "Neues Abzeichen",
+        "edit": "Bearbeiten",
+        "assign_players": "Zuweisen",
+        "delete": "Löschen"
+      },
+      "modals": {
+        "delete_badge": {
+          "title": "Abzeichen löschen",
+          "description": "Möchtest du das Abzeichen <strong>'{{name}}'</strong> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "button": "Abzeichen löschen"
+        },
+        "assign": {
+          "title": "Player diesem Abzeichen zuweisen",
+          "players": "Player mit diesem Abzeichen ({{count}})",
+          "remove": "Zuweisung entfernen",
+          "no_players": "Diesem Abzeichen sind keine Player zugewiesen."
+        }
       }
     }
   },
@@ -648,6 +1130,10 @@
         "suggestion_created": {
           "label": "Vorschlag Erstellt",
           "description": "Um benachrichtigt zu werden, wenn ein neuer Vorschlag zu einer Challenge erstellt wird, die du abgeschlossen hast"
+        },
+        "suggestion_accepted": {
+          "label": "Status eigener Vorschläge",
+          "description": "Damit du benachrichtigt wirst, wenn sich der Status (angenommen/abgelehnt) eines deiner Vorschläge ändert"
         }
       },
       "profile": {
@@ -705,10 +1191,24 @@
       },
       "danger_zone": {
         "label": "Gefahrenzone",
-        "description": "Lösche deinen Account permanent.",
-        "note": "Bitte beachte, dass dies deinen zugehörigen Player nicht löscht! Alle Submissions bleiben unverändert, und dein 'Player' wird wieder verfügbar zum Beanspruchen. Wenn du deinen Namen von dieser Website entfernen oder deine eigenen Submissions in Massen löschen möchtest, kontaktiere ein Teammitglied!",
-        "confirm": "Tippe 'DELETE' um zu bestätigen",
-        "button": "Account Löschen"
+        "api_key": {
+          "label": "API-Schlüssel",
+          "description": "Mit deinem API-Schlüssel kannst du im Namen deines Accounts auf die goldberries.net-API zugreifen. Halte ihn geheim!",
+          "description_not_set": "Du hast noch keinen API-Schlüssel eingerichtet.",
+          "buttons": {
+            "copy": "Kopieren",
+            "reroll": "Schlüssel ändern",
+            "create": "Erstellen",
+            "revoke": "Widerrufen"
+          }
+        },
+        "delete_account": {
+          "label": "Gefahrenzone",
+          "description": "Lösche deinen Account dauerhaft.",
+          "note": "Beachte, dass dadurch dein zugehöriger Player nicht gelöscht wird! Alle Submissions bleiben unverändert, und dein „Player“ kann danach wieder beansprucht werden. Wenn du deinen Namen von dieser Website entfernen oder deine eigenen Submissions gesammelt löschen möchtest, wende dich an ein Teammitglied!",
+          "confirm": "Gib „DELETE“ ein, um zu bestätigen",
+          "button": "Account löschen"
+        }
       }
     }
   },
@@ -722,6 +1222,23 @@
         "golden_changes": {
           "label": "Verstecke Golden-Änderungen",
           "note": "Schalte dies ein, um Spoiler von golden Räumen oder anderen golden-exklusiven Map-Änderungen zu verstecken"
+        },
+        "old_tier_names": {
+          "label": "Alte Tier-Namen anzeigen",
+          "note": "Aktiviere diese Option, damit alle Schwierigkeits-Chips neben den aktuellen auch die alten Tier-Namen anzeigen.",
+          "tooltip": "Die alten Tier-Namen werden nicht überall angezeigt!"
+        },
+        "show_fractional_tiers": {
+          "label": "Fractional Tiers anzeigen",
+          "note": "Fractional Tiers an verschiedenen Stellen der Website anzeigen."
+        },
+        "show_rejected_submissions": {
+          "label": "Eigene abgelehnte Submissions anzeigen",
+          "note": "Abgelehnte Submissions auf deinem Player-Profil anzeigen."
+        },
+        "show_median_time_taken": {
+          "label": "Median der benötigten Zeit anzeigen",
+          "note": "Den Median der benötigten Zeit auf der Challenge-Seite anzeigen."
         }
       },
       "visual": {
@@ -738,8 +1255,6 @@
             "label": "Hintergrund Unschärfe",
             "tooltip": "Gaußsche Unschärfe des Hintergrunds"
           },
-          "light_mode": "Lichtmodus",
-          "dark_mode": "Dunkelmodus",
           "default": "Standardhintergrund",
           "custom": {
             "label": "Eigener Hintergrund",
@@ -747,27 +1262,6 @@
             "placeholder": "URL zum Hintergrundbild"
           }
         }
-      },
-      "top_golden_list": {
-        "label": "Top Golden Liste",
-        "darken_colors": {
-          "label": "Verdunkle Tier Farben",
-          "tooltip": "Verdunkelt die Tier Farben. 0% ändert die Farben nicht, 100% macht sie komplett schwarz.",
-          "note": "Diese Einstellungen betrifft nur den Dunkelmodus!"
-        },
-        "campaign_icons": {
-          "label": "Zeige Campaign Icons",
-          "note": "Zeigt die Icons großer Campaigns, z.B. SJ, SC, D-Sides..."
-        },
-        "text_fc_icons": {
-          "label": "Text FC Icons",
-          "note": "Ersetzt die normalen Flaggen Icons mit [C], [FC] and [C/FC] 'icons'"
-        },
-        "switch_order": {
-          "label": "Tausche Map und Challenge",
-          "note": "Tauscht das Format 'Map Name [Challenge Name]' gegen 'Challenge Name [Map Name]'"
-        },
-        "hide_empty_tiers": "Verstecke Leere Tiers"
       },
       "difficulty_colors": {
         "label": "Tierfarben",
@@ -783,6 +1277,19 @@
           "protanopia": "Protanopia",
           "deuteranopia": "Deuteranopia",
           "tritanopia": "Tritanopia"
+        },
+        "export": {
+          "label": "Farben exportieren/importieren",
+          "export": "In die Zwischenablage exportieren",
+          "export_success": "In die Zwischenablage kopiert",
+          "import": "Aus der Zwischenablage importieren"
+        }
+      },
+      "dev": {
+        "label": "Entwicklung",
+        "role_override": {
+          "label": "Rolle überschreiben",
+          "note": "Die Website aus der Perspektive einer anderen Rolle anzeigen."
         }
       }
     }
@@ -790,16 +1297,30 @@
   "challenge": {
     "buttons": {
       "submit": "Run Einreichen",
-      "edit": "Challenge Bearbeiten"
+      "edit": "Challenge Bearbeiten",
+      "more": "Mehr",
+      "compare": "Challenge vergleichen"
     },
     "difficulty_suggestions": "Schwierigkeitsempfehlungen",
+    "calculated_tier_tooltip": "Berechnete Tier basierend auf den Schwierigkeitsempfehlungen der Player",
     "is_full_game": "Full Game?",
     "lobby_info": "Lobby Info",
+    "median_time_taken": "Median der benötigten Zeit: ",
+    "few_submissions": "(Wenige Submissions)",
     "description": "Challenge Description",
+    "status": "Challenge-Status",
     "submission_table": {
       "suggestion": "Empfehlung",
-      "empty": "Keine Submissions"
+      "empty": "Keine Submissions",
+      "show_all": "Alle {{count}} Submissions anzeigen",
+      "show_less": "Weniger anzeigen"
     }
+  },
+  "compare_challenges": {
+    "title": "Challenges vergleichen",
+    "compare_to": "Vergleichen mit",
+    "only_show_both": "Nur Player anzeigen, die beide Challenges abgeschlossen haben",
+    "match_order": "Reihenfolge an die erste Challenge anpassen"
   },
   "claim_player": {
     "title": "Player Beanspruchen",
@@ -925,29 +1446,78 @@
   "map": {
     "buttons": {
       "edit": "Map Bearbeiten",
-      "view_challenge": "Challenge Ansehen"
+      "view_challenge": "Challenge Ansehen",
+      "submit": "Run einreichen",
+      "map_data_view": "Daten anzeigen",
+      "map_data_unavailable": "Daten für diese Map sind noch nicht verfügbar."
     },
     "no_challenges": "There are currently no challenges for this map.",
     "info_boxes": {
       "collectibles": "Map Collectibles",
-      "golden_changes": "Golden-Änderungen"
+      "no_collectibles": "Unbekannt",
+      "meaningful_collectibles": "(Relevante Collectibles: {{count}})",
+      "golden_changes": {
+        "label": "Golden-Änderungen",
+        "no_changes": "Keine Golden-Änderungen",
+        "show": "Anzeigen"
+      },
+      "total_likes": "Likes",
+      "map_data": "Map-Daten"
     }
   },
   "player": {
     "title": "Profil",
     "personal_tgl": "Persönliche Top Golden Liste",
-    "stats": "Player Statistik",
-    "showcase_hardest": "Schwierigste Submissions",
-    "chart": {
-      "show_standard": "Zeige Standard & Undetermined",
-      "x_axis": "Anzahl an Goldens pro Tier"
+    "wishlist": "Wunschliste",
+    "buttons": {
+      "more": "Mehr",
+      "summer_stamp_rally": "Summer Stamp Rally 2026"
+    },
+    "details": {
+      "country": "Land",
+      "input_method": "Eingabemethode",
+      "total_goldens": "Goldens insgesamt",
+      "hardest_tier": "Höchste Schwierigkeit",
+      "first_golden": "Erstes Golden",
+      "personal_tgl": "Persönliche Top Golden Liste",
+      "links": "Links",
+      "date_created": "Beigetreten",
+      "total_time": "Gesamtzeit"
+    },
+    "about_me": {
+      "no_about_me": "Dieser Player hat noch nichts über sich geschrieben, aber bestimmt macht er etwas richtig Cooles!",
+      "show_all": "Alles anzeigen",
+      "show_less": "Weniger anzeigen"
+    },
+    "tabs": {
+      "info": {
+        "label": "Player-Info",
+        "stats": "Player-Statistiken",
+        "showcase_hardest": "Schwierigste Submissions",
+        "chart": {
+          "show_standard": "Nicht eingestuft und unbestimmt anzeigen",
+          "x_axis": "Anzahl der Goldens pro Tier"
+        }
+      },
+      "timeline": {
+        "label": "Verlauf",
+        "description": "Hier siehst du den Verlauf aller Aktivitäten dieses Players!",
+        "group_campaigns": "Submissions derselben Campaign gruppieren",
+        "show_difficulty_ratio": "Vorschaubilder für diesen Anteil der sichtbaren Submissions anzeigen"
+      },
+      "wishlist": {
+        "label": "Wunschliste"
+      }
     }
   },
-  "rejected_maps": {
-    "title": "Abgelehnte Maps",
-    "info_1": "Diese Seite enthält alle Maps, für die entschieden wurde, diese nicht zur Liste hinzuzufügen, sowie Gründe, warum diese Entscheidung getroffen wurde.",
-    "info_2": "Nicht aufgelistet werden Maps oder Map Packs, die gegen <CustomLink>Regel 4</CustomLink> verstoßen (unangemessene Wörter/visuelle Inhalte/etc).",
-    "reason": "Grund"
+  "rejected_challenges": {
+    "title": "Abgelehnte Challenges",
+    "info_1": "Auf dieser Seite sind alle abgelehnten Challenges aufgeführt. Wenn du glaubst, dass eine Challenge fälschlicherweise hier steht, melde dich im Discord-Server unter #gb-report!",
+    "info_2": "Wenn die Map oder das Map-Pack gegen <CustomLink>Regel 4</CustomLink> verstößt (unangemessene Wörter, visuelle Inhalte usw.), wird sie hier nicht aufgeführt.",
+    "fullgame_notice": "Dies ist eine Full-Game-Challenge",
+    "no_rejected_challenges": "Derzeit gibt es keine abgelehnten Challenges.",
+    "reason": "Grund",
+    "video": "Video"
   },
   "search": {
     "title_content": "Suche '{{content}}'",
@@ -962,7 +1532,10 @@
     "no_maps": "Keine Maps gefunden",
     "no_players": "Keine Players gefunden",
     "authors": "Autoren",
-    "no_authors": "Keine Autoren gefunden"
+    "no_authors": "Keine Autoren gefunden",
+    "farewell_notice": "Farewell und andere Vanilla-Maps werden auf dieser Website nicht erfasst. Eine Liste abgeschlossener Farewell-Golden-Runs findest du unter <StyledExternalLink>diesem</StyledExternalLink> Link.",
+    "and_more_maps": "und {{count}} weitere Maps...",
+    "and_more_campaigns": "und {{count}} weitere Campaigns..."
   },
   "monthly_recap": {
     "title": "Monatlicher Rückblick '{{month}}'",
@@ -991,6 +1564,8 @@
     "details": {
       "new_challenge": "Neue Challenge",
       "submitted": "Eingereicht",
+      "achieved": "Erreicht",
+      "time_taken_explanation": "Vom Benutzer angegebene Zeit zum Abschließen dieser Challenge, im Format (hh:)mm:ss",
       "verification": "Verifikation",
       "status": "Status",
       "links": "Links",
@@ -1015,7 +1590,10 @@
         "header": "Run einreichen",
         "select": "Wähle eine Challenge",
         "full_game": "Wähle eine Map ODER Full Game Challenge",
+        "rejected_notice": "Diese Challenge wurde abgelehnt; Submissions werden nicht angenommen.",
         "challenge_data": "Challenge Daten",
+        "map_note": "Map-Notiz",
+        "challenge_note": "Challenge-Notiz",
         "your_run": "Dein Run",
         "verifier": {
           "player_select": "[Nur Verifier] Einreichen für Player",
@@ -1025,11 +1603,24 @@
             "add_player": "Player Hinzufügen"
           }
         },
+        "test_embed": "Einbettung testen",
+        "hide_embed": "Einbettung ausblenden",
         "proof_note": "Lade dein Beweisvideo an einen permanenten Ort hoch, wie YouTube, Bilibili, Twitch Highlight",
-        "raw_session_note": "Rohe Aufnahme der Sitzung mit dem Golden Run ist für Tier 3+ Goldens erforderlich.",
+        "raw_session_note": "Rohe Aufnahme der Sitzung mit dem Golden Run ist für Tier 8+ Goldens erforderlich.",
+        "raw_session_same_url_info": "Möchtest du wirklich dieselbe URL für die Rohaufnahme verwenden?",
         "is_fc": "Run ist Full Clear",
         "date_created": "[Nur Verifier] Datum Erstellt",
-        "button": "Einreichen"
+        "date_achieved": "Erreicht am",
+        "date_achieved_note": "Wenn du kein Datum angibst, wird die aktuelle Zeit als Zeitpunkt verwendet, an dem du diese Challenge erreicht hast. Bei einem sehr weit zurückliegenden Datum könnten Verifier einen Nachweis anfordern.",
+        "like_challenge": "Hat dir die Challenge gefallen?",
+        "button": "Einreichen",
+        "cfc_selector": {
+          "regular_clear": "Regulärer Clear",
+          "full_clear": "Full Clear"
+        },
+        "feedback": {
+          "select_is_fc": "Bitte gib an, ob dein Run ein regulärer Clear oder ein Full Clear ist."
+        }
       },
       "multi": {
         "label": "Multi-Challenge",
@@ -1051,6 +1642,7 @@
         "is_fc": "Ist FC",
         "compilation_video": "Compilation-Video",
         "remove_map": "Map Entfernen",
+        "liked_challenge": "Challenge hat gefallen",
         "button": "'{{count}}' Runs Einreichen"
       },
       "new": {
@@ -1062,6 +1654,10 @@
         "challenge_description": {
           "label": "Challenge Beschreibung",
           "placeholder": "Beschreibung der Challenge, wenn sie sich von einem normalen Deathless-Run unterscheidet"
+        },
+        "golden_changes": {
+          "label": "Golden-Änderungen",
+          "placeholder": "Beschreibung aller Golden-exklusiven Änderungen in dieser Challenge"
         },
         "button": "Einreichen"
       }
@@ -1077,7 +1673,9 @@
     "header": "Vorschlagsbox",
     "intro": "In der Vorschlagsbox kannst du Änderungen an Challenge Platzierungen, allgemeine Änderungen an einer Challenge oder allgemeine Änderungen an der Website selbst vorschlagen. Es soll es einfacher machen, Meinungen aus der Community zu sammeln. Es ist jedoch <strong>nicht</strong> für Diskussionen über Änderungen gedacht, für die du weiterhin den Modded Golden Team Discord Server verwenden solltest.",
     "language_info": "Bitte halte die Vorschlagsbox in Englisch!",
+    "search": "Suchen",
     "filter_by_type": "Filter by type",
+    "filter_by_state": "Status",
     "active": "Aktive Vorschläge",
     "undecided": "Unentschiedene Vorschläge",
     "expired": "Abgelaufene Vorschläge",
@@ -1088,7 +1686,15 @@
     },
     "display": {
       "deleted_player": "(gelöschter Player)",
-      "no_votes": "Noch keine Stimmen"
+      "no_votes": "Noch keine Stimmen",
+      "hidden_vote_count": "Die Stimmenzahl eines Vorschlags wird in den ersten {{count}} Minuten nach seiner Erstellung ausgeblendet."
+    },
+    "countdown": {
+      "label": "Noch {{time}}",
+      "tooltip": "Aktiv bis {{date}}",
+      "days_hours": "{{days}}T {{hours}}Std",
+      "hours_minutes": "{{hours}}Std {{minutes}}Min",
+      "minutes": "{{minutes}}Min"
     },
     "name": {
       "general": "Allgemeiner Vorschlag",
@@ -1120,7 +1726,7 @@
         },
         "claim_player": "Beanspruche einen Player, um in Vorschlägen abstimmen zu können!",
         "your_comment": "Dein Kommentar",
-        "comment_note": "Um deinen Kommentar zu ändern, nachdem du abgestimmt hast, entferne deine Stimme und stimme erneut ab.",
+        "comment_required": "Bitte gib einen Kommentar zu deiner Stimme ab!",
         "stats": "Stats",
         "totals": "Gesamt",
         "done_challenge": "Challenge Abgeschlossen",
@@ -1130,22 +1736,50 @@
           "verify": "Verifizieren",
           "accept": "Änderung Akzeptieren",
           "reject_verification": "Verifikation Ablehnen",
-          "reject_change": "Änderung Ablehnen"
-        }
+          "reject_change": "Änderung Ablehnen",
+          "set_to_pending": "Auf ausstehend setzen",
+          "update_comment": "Kommentar aktualisieren"
+        },
+        "hidden_vote_count_desc": "Die Stimmenzahl eines Vorschlags wird in den ersten {{count}} Minuten nach seiner Erstellung ausgeblendet.",
+        "hidden_vote_count": "Stimmenzahl ausgeblendet"
       },
       "create": {
         "feedback": {
           "created": "Vorschlag erstellt"
         },
         "header": "Neuer Vorschlag",
-        "select_challenge": "Challenge Auswählen",
-        "suggestion_type": "Vorschlagstyp",
-        "error_difficulty_general": "Eine Schwierigkeit kann nicht ausgewählt werden, wenn du einen allgemeinen Vorschlag machst.",
-        "not_placement": {
-          "label": "Kein Platzierungsvorschlag",
-          "note": "Kreuze dies an, wenn du keine Änderung an der Platzierung vorschlagen willst, z.B. wenn eine C/FC Challenge in C und FC geteilt werden soll."
+        "header_general": "Neuer allgemeiner Vorschlag",
+        "header_feature": "Neuer Feature-Wunsch",
+        "header_challenge_general": "Neuer allgemeiner Challenge-Vorschlag",
+        "header_challenge_split": "Neuer Vorschlag zur Challenge-Aufteilung",
+        "header_challenge_placement": "Neuer Vorschlag zur Challenge-Einstufung",
+        "back": "Zurück",
+        "types": {
+          "select_type": "Vorschlagstyp auswählen",
+          "general": {
+            "label": "Allgemeiner Vorschlag",
+            "description": "Eine allgemeine Änderung an der Website vorschlagen"
+          },
+          "feature": {
+            "label": "Feature-Wunsch",
+            "description": "Ein neues Feature für die Website vorschlagen"
+          },
+          "challenge_general": {
+            "label": "Allgemeine Challenge-Änderung",
+            "description": "Eine allgemeine Änderung an einer bestimmten Challenge vorschlagen (keine Änderung der Einstufung)"
+          },
+          "challenge_split": {
+            "label": "Challenge-Aufteilung",
+            "description": "Vorschlagen, eine kombinierte C/FC-Challenge in getrennte C- und FC-Challenges aufzuteilen"
+          },
+          "challenge_placement": {
+            "label": "Challenge-Einstufung",
+            "description": "Eine andere Tier für eine Challenge vorschlagen"
+          }
         },
-        "no_challenge_note": "Keine Challenge auszuwählen erstellt einen allgemeinen Vorschlag.",
+        "select_challenge": "Challenge Auswählen",
+        "suggested_placement": "Vorgeschlagene Einstufung",
+        "current_difficulty": "Aktuelle Schwierigkeit",
         "challenge_details": "Challenge Details",
         "totals": "Gesamt für alle Tiers",
         "comment": {
@@ -1153,6 +1787,16 @@
           "placeholder": "Erkläre weshalb du denkst, dass etwas geändert werden soll",
           "required": "Ein Kommentar ist verpflichtend für allgemeine Vorschläge."
         },
+        "feature_alert": "Ob ein Feature umgesetzt wird, hängt von vielen Faktoren ab (Beliebtheit, Umsetzbarkeit, Wartbarkeit). Sei also nicht enttäuscht, wenn ein Vorschlag abgelehnt wird.",
+        "feature_placeholder": "Beschreibe das Feature, das du dir wünschst",
+        "split_details": "Details zur Aufteilung",
+        "split_type_label": "Abzuspaltenen Challenge-Typ auswählen",
+        "split_type_help": "Wähle aus, welcher Challenge-Typ die neue Schwierigkeit erhalten soll",
+        "split_difficulty_label": "Schwierigkeit der abgespaltenen Challenge",
+        "split_preview": "Vorschau der Aufteilung",
+        "split_comment_placeholder": "Erkläre bei Bedarf, warum diese Challenge deiner Meinung nach aufgeteilt werden sollte",
+        "split_error_not_combined": "Diese Challenge ist keine kombinierte C/FC-Challenge und kann nicht aufgeteilt werden.",
+        "split_error_same_difficulty": "Du musst eine andere Schwierigkeit als die aktuelle auswählen.",
         "button": "Vorschlag Erstellen"
       },
       "delete": {
@@ -1169,16 +1813,41 @@
   },
   "top_golden_list": {
     "title": "Top Golden Liste",
+    "type": {
+      "overall": "Top Golden Liste",
+      "campaign": "Campaign Top Golden Liste",
+      "player": "Persönliche Top Golden Liste"
+    },
     "notes": {
       "fc": "Golden Clear mit allen optionalen Collectibles (Erdbeeren, Kassetten, etc)",
       "c_fc": "Regular Clear und Full Clear haben die selbe Schwierigkeit",
       "new_old": "Old version of the map"
+    },
+    "hidden_tiers": {
+      "notice_one": "{{count}} Tier ist ausgeblendet",
+      "notice_other": "{{count}} Tiers sind ausgeblendet",
+      "change_filter": "Ändere deine Filtereinstellungen, um sie anzuzeigen!",
+      "filter_settings": "Filtereinstellungen",
+      "filters": {
+        "hidden_objectives_one": "{{count}} Ziel ausgeblendet",
+        "hidden_objectives_other": "{{count}} Ziele ausgeblendet",
+        "clear_state": "Clear-Status: {{state}}",
+        "submission_count": "Submissions {{operator}} {{count}}",
+        "date_range": {
+          "from": "Ab {{start}}",
+          "until": "Bis {{end}}",
+          "both": "{{start}}–{{end}}"
+        },
+        "country": "Land: {{country}}",
+        "input_method": "Eingabe: {{method}}"
+      }
     }
   },
   "campaign": {
     "note": "Campaign Notiz",
     "buttons": {
-      "edit": "Campaign Bearbeiten"
+      "edit": "Campaign Bearbeiten",
+      "campaign_data": "Campaign-Daten"
     },
     "info_boxes": {
       "author": "Autor",
@@ -1190,7 +1859,8 @@
       "maps_rejected_one": "+{{count}} abgelehnte Map",
       "maps_rejected_other": "+{{count}} abgelehnte Maps",
       "links": "Links",
-      "campaign_tgl": "Campaign Top Golden Liste"
+      "campaign_tgl": "Campaign Top Golden Liste",
+      "no_download": "Diese Campaign ist nicht mehr öffentlich verfügbar."
     },
     "tabs": {
       "players": {
@@ -1199,8 +1869,253 @@
         "more_players_one": "+ {{count}} weiterer Player",
         "more_players_other": "+ {{count}} weitere Players",
         "you": "You",
-        "show_all": "Alle Anzeigen"
+        "show_all": "Alle Anzeigen",
+        "map_no_progress": "Diese Map zählt nicht zum Fortschritt der Campaign."
       }
+    }
+  },
+  "rules": {
+    "title": "Regeln",
+    "toc": "Inhaltsverzeichnis",
+    "description": "Diese Seite dient vor allem dazu, Regeln und Grenzfälle zu formalisieren. Die grundlegenden Regeln für Submissions lauten: „Nicht schummeln, keine Mods verwenden, die das Gameplay verändern, bei Challenges ab Tier 8 eine vollständige Session-Aufnahme bereitstellen und den Endbildschirm zeigen.“ Diese Formalisierung soll mögliche Unklarheiten bei bestimmten Grenzfällen und Ähnlichem abdecken. Diese Liste ist nicht vollständig – das kann sie auch nicht sein. Mapper finden ständig neue Wege, unsere Erwartungen zu umgehen. Würden wir versuchen, dieses Minenfeld vollständig zu formalisieren, kämen wir nicht weiter. Wenn ein Grenzfall in dieser Liste nicht behandelt wird oder du allgemeine Fragen dazu hast, frag uns bitte! Frag lieber vorher, bevor du eine Submission einreichst, die zu tagelangen Diskussionen führt und möglicherweise abgelehnt wird. Danke.",
+    "language_notice": "HINWEIS: Übersetzungen der Regeln können veraltet oder unvollständig sein. Bei Abweichungen ist immer die englische Version maßgeblich.",
+    "maps": {
+      "header": "Regeln für Maps und Challenges",
+      "rules": {
+        "entries": [
+          {
+            "heading": "Verfügbarkeit",
+            "text": "Die Map oder das Map-Pack <strong>muss</strong> auf <CustomExternalLink href=\"https://gamebanana.com/games/6460\">GameBanana</CustomExternalLink> hochgeladen worden sein. War eine Map früher auf GameBanana verfügbar und wurde später entfernt, wird sie in <CustomExternalLink href=\"https://archive.org/details/celeste-golden-list-removed-from-gb-maps\">diesem archive.org-Eintrag</CustomExternalLink> hochgeladen, es sei denn, der Map-Ersteller bittet ausdrücklich darum, den Download nicht mehr anzubieten."
+          },
+          {
+            "heading": "Nicht trivial",
+            "text": "Die Map oder das Map-Pack <strong>muss</strong> eine Challenge enthalten, die eine nicht unerhebliche Gefahr birgt, auch wenn diese gering sein kann. Maps, bei denen alle Challenges kaum oder gar keine Gefahr bergen, werden abgelehnt. Ein Beispiel für eine schwierige Map, die das Gefahrenkriterium dennoch nicht erfüllt, ist <CustomExternalLink href=\"https://www.youtube.com/watch?v=5YpJwGcr8ds\">Ultra Skrimbles</CustomExternalLink>. In seltenen Fällen werden Ausnahmen gemacht, meist wenn eine Map Teil einer umfangreicheren Campaign oder Lobby ist, etwa bei <CustomExternalLink href=\"https://www.youtube.com/watch?v=o5zGa_w_2wA\">Summit Down-Side Silver</CustomExternalLink>. Maps mit dieser Eigenschaft werden als „Nicht eingestuft“ gekennzeichnet."
+          },
+          {
+            "heading": "Keine Duplikate",
+            "text": "Die Map oder das Map-Pack <strong>sollte möglichst nicht</strong> einer Map aus dem Basisspiel oder einer bereits vorhandenen Custom-Map stark ähneln. Einzigartige Map-Packs wie <CustomExternalLink href=\"https://gamebanana.com/mods/150418\">Etselec</CustomExternalLink> oder durchdachtere, meist schwierigere Bearbeitungen wie <CustomExternalLink href=\"https://www.youtube.com/watch?v=aYpean9AahU\">Farewell^9</CustomExternalLink> sind beispielsweise zulässig. Maps wie <CustomExternalLink href=\"https://gamebanana.com/mods/349586\">1a Undefined</CustomExternalLink> werden dagegen wahrscheinlich abgelehnt."
+          },
+          {
+            "heading": "Keine nicht jugendfreien Inhalte",
+            "text": "Die Map oder das Map-Pack <strong>darf keine</strong> Inhalte für Erwachsene oder anstößigen Inhalte enthalten. Dazu gehören unter anderem Nacktheit, Pornografie, Gore, extreme Fetischinhalte sowie anstößige Aussagen oder Darstellungen einer geschützten Minderheit."
+          },
+          {
+            "heading": "In sich abgeschlossen",
+            "text": "Challenges in einem Map-Pack <strong>dürfen keine</strong> Aktivitäten umfassen, die außerhalb von Celeste stattfinden. Ein Beispiel dafür ist <CustomExternalLink href=\"https://goldberries.net/submission/46033\">The Golden Challenge</CustomExternalLink>."
+          }
+        ]
+      }
+    },
+    "goldens": {
+      "header": "Submissions",
+      "rules": {
+        "header": "Regeln für alle Submissions",
+        "entries": [
+          {
+            "heading": "Dauerhafte Videoquelle",
+            "text": "Das Submission-Video <strong>muss</strong> an einem dauerhaft verfügbaren Ort hochgeladen sein, für den zum Ansehen kein Account erforderlich ist. Zu den beliebtesten Plattformen für solche Videos gehören <CustomExternalLink href=\"https://www.youtube.com/\">YouTube</CustomExternalLink>, <CustomExternalLink href=\"https://www.twitch.tv/\">Twitch</CustomExternalLink>, <CustomExternalLink href=\"https://www.bilibili.com/\">bilibili</CustomExternalLink> und <CustomExternalLink href=\"https://www.nicovideo.jp/\">nicovideo</CustomExternalLink>. Videos von anderen Plattformen können aber ebenso eingereicht werden. Ein CDN eines Nachrichtendienstes (z. B. <code>cdn.discordapp.com</code> oder Ähnliches) wird nicht akzeptiert. Links, die allein durch Zeitablauf ungültig werden können (z. B. Links von <CustomExternalLink href=\"https://0x0.st\">0x0.st</CustomExternalLink>), werden ebenfalls nicht akzeptiert."
+          },
+          {
+            "heading": "Vollständige Aufnahme",
+            "text": "Das Submission-Video <strong>muss</strong> den vollständigen Abschluss der Challenge zeigen, zum Beispiel vom Aufnehmen der Golden Strawberry bis zu dem Moment, in dem sie eingesammelt wird. Es ist nicht erforderlich, nach dem Abschluss der Challenge bis zum Verlassen der Map am Leben zu bleiben (zum Beispiel bei „Heart Deaths“; ein Beispiel dafür ist der Golden-Run in <CustomExternalLink href=\"https://youtu.be/6BeQPj4UXE0?si=lob3z8BOTGtmtqLp&t=62\">Magnetic Dawn B-Side</CustomExternalLink>). Beachte, dass das Einsammeln einer Golden Strawberry nicht immer das Ende einer Challenge bedeutet, etwa wenn bei einer Full-Clear-Challenge noch eine Beere übrig ist, wie bei <CustomExternalLink href=\"https://youtu.be/tOHsr2JBfyQ?t=190\">Heather's Aquarium Full Clear</CustomExternalLink>. Ausnahmen sind sehr selten und werden im Einzelfall geprüft, zum Beispiel wenn ein Livestream für einen kurzen Moment abbricht – vorausgesetzt, die Umstände und der Player gelten als vertrauenswürdig."
+          },
+          {
+            "heading": "Endbildschirm",
+            "text": "Submissions <strong>müssen</strong> nach Abschluss der Challenge den Endbildschirm einer Map zeigen. Gibt es keinen Endbildschirm, wird empfohlen, nach dem Verlassen der Map das Journal zu zeigen, dies ist jedoch nicht erforderlich. <strong>WICHTIG: Bei Collab-Maps musst du die Mod-Option aktivieren</strong> <code>Collab Utils 2 → Display End Screen For All Maps</code> <strong>UND den Speedrun-Timer einschalten, damit der Endbildschirm angezeigt wird</strong>. Wenn du den Timer nicht ständig sehen möchtest, bietet SpeedrunTool eine Option, mit der er nur auf dem Endbildschirm automatisch angezeigt wird: <code>Speedrun Tool → More Options → Enable Timer on Area Complete</code>."
+          },
+          {
+            "heading": "Session",
+            "text": "Submissions <strong>müssen</strong> in einer einzigen, durchgehenden Spielsession abgeschlossen werden."
+          },
+          {
+            "heading": "Unverändertes Gameplay",
+            "text": "Submissions <strong>dürfen keine</strong> Mods oder Varianten verwenden, die das Gameplay verändern, und keinen Assist Mode, sofern die Map dies nicht erlaubt. Mods und Varianten, die nur die Darstellung verändern, <strong>können</strong> im Einzelfall erlaubt werden. Weitere Informationen findest du unter <CustomLink to=\"#allowed-mods\">erlaubte und empfohlene Mods</CustomLink>. Es gibt einige ältere Submissions, die gegen diese Regel verstoßen und heute abgelehnt würden, insbesondere solche mit der Variante „No Freeze Frames“ aus Extended Variants."
+          },
+          {
+            "heading": "Rohaufnahme",
+            "text": "Für Submissions von Challenges mit mindestens <strong>Tier 8</strong> <strong>muss</strong> eine Aufnahme der vollständigen Session vorliegen. Wurde die Submission relativ am Anfang der Session abgeschlossen, kann zusätzlich eine Aufnahme der vorherigen Session angefordert werden."
+          },
+          {
+            "heading": "Informations-Mods",
+            "text": "Submissions <strong>dürfen keine</strong> „Informations-Mods“ verwenden, die dir während des Gameplays Informationen liefern, die du sonst nicht hättest, etwa Input-Verlauf, Ausdauerbalken oder das Info-HUD von CelesteTAS. Haben solche Mods bei einer Challenge kaum oder gar keinen Einfluss, wird die Submission zunächst mit einer Verwarnungsnotiz versehen und später möglicherweise abgelehnt. Haben sie bei der Challenge oder Submission einen relevanten Einfluss – etwa bei pixelgenauer Ausrichtung, Challenges mit hohem Ausdauerbedarf oder beim Einschätzen von Informationen für eine Strategie oder Rettung –, wird die Submission ohne vorherige Verwarnung abgelehnt."
+          },
+          {
+            "heading": "Missbrauch der Pause",
+            "text": "Submissions <strong>dürfen die Pausentaste nicht</strong> so ausnutzen, dass das Gameplay dadurch leichter wird. Ein extremes Beispiel für einen ablehnungswürdigen Missbrauch ist <i>Pause Buffering</i>: Dabei wird die Pausentaste zwischen Pausen „gepuffert“, um das Spiel Bild für Bild voranzubringen. Eingaben durch Pausieren zu erleichtern, ist <strong>immer</strong> verboten, auch wenn das Spiel nicht Bild für Bild vorangebracht wird. Besteht keine Todesgefahr, darfst du allerdings pausieren, um ansonsten schwierige oder sich wiederholende Setups auszuführen. Während des Gameplays darfst du außerdem in unerwarteten Situationen gelegentlich pausieren, um kurz nachzudenken. Auch dann darfst du aber nicht mehrmals pausieren, um eine ansonsten schwierige Eingabe auszurichten. Missbrauch der Pause ist nicht mit Pause-Tech zu verwechseln – damit sind Techniken gemeint, die unter bestimmten Gameplay-Bedingungen die Pausentaste erfordern. Pause-Tech ist <strong>immer erlaubt</strong>. Dazu gehören Pausieren für Slowfall an einer Stelle, an der sonst ein Sprung eingegeben würde, Pausieren während des Bino-Control-Storage und Spinner Stunning, wie in Regel #9 beschrieben. Wie bei der Variante <i>No Freeze Frames</i> aus Extended Variants gibt es einige ältere Submissions, die gegen diese Regel verstoßen und heute abgelehnt würden."
+          },
+          {
+            "heading": "Spinner Freeze/Stun",
+            "text": "Submissions <strong>dürfen nicht</strong> das <i>Spinner Freezing</i> ausnutzen. Dabei wartet der Player im Spiel etwa 118 Stunden, damit bestimmte Spinner nicht geladen werden. Submissions <strong>dürfen</strong> die als <i>Spinner Stunning</i> bekannte Technik verwenden, da sie extrem framegenau ist und sich im Allgemeinen nicht für Goldens eignet. Weitere Informationen zu diesen Techniken findest du in <CustomExternalLink href=\"https://youtu.be/UGQ5rXStKXg?t=64\">diesem Video von EuniverseCat</CustomExternalLink>."
+          },
+          {
+            "heading": "Ohne Golden Berry",
+            "text": "Challenges mit dem Ziel <code>Deathless</code> haben keine Deathless-Beere in der Map, müssen aber trotzdem ohne Tode abgeschlossen werden. Bei Maps mit diesem Ziel <strong>darf</strong> der Konsolenbefehl <code>give_golden</code> verwendet werden, um sich selbst eine Golden Strawberry zu geben. Dieser Befehl <strong>muss</strong> im <strong>ersten</strong> Raum der Map an einer Stelle verwendet werden, die vom Kapitelneustart aus problemlos erreichbar ist. Alternativ kann mit <CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink> oder <CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink> im ersten Raum der Map an einer vom Kapitelneustart aus problemlos erreichbaren Stelle eine Golden Strawberry platziert werden. Eine manuell platzierte Golden Strawberry <strong>darf jedoch nicht</strong> zum eigenen Vorteil genutzt werden. Dazu zählt, während des Einsammelns eines End-Herzens zu sterben oder das Licht der Golden Strawberry zur besseren Sicht in einer Map wie <CustomExternalLink href=\"https://goldberries.net/map/4814\">dieser</CustomExternalLink> zu verwenden."
+          },
+          {
+            "heading": "Deathless ohne Beere",
+            "text": "Viele Deathless-Beeren-Challenges unterscheiden sich nicht davon, die Map einfach ohne Tode abzuschließen. Bei diesen Challenges <strong>müssen Submissions die Beere nicht</strong> einsammeln, solange der Run dieselben Challenge-Anforderungen erfüllt (also ein <i>Deathless-Run ohne Beere</i>). Runs, bei denen sich die Golden Strawberry grundlegend von einem Run ohne Golden unterscheidet – etwa durch einen Golden-Raum –, <strong>werden nicht</strong> auf diese Weise akzeptiert. Außerdem <strong>muss</strong> die Golden Strawberry auf jeder Map eingesammelt werden, auf der Golden-Änderungen, etwa Abtrennungen, dazu führen, dass die Beere verloren geht. Auch wenn Deathless-Runs ohne Beere nicht empfohlen werden und wir dazu raten, die jeweilige Beere einzusammeln, verstehen wir, dass manchmal etwas Unvorhergesehenes passiert und jemand die Challenge unerwartet schafft. Das soll niemandem die eigene Leistung nehmen. Deathless-Submissions ohne Beere erhalten eine Notiz."
+          },
+          {
+            "heading": "Kein Golden-Einsammel-Trigger",
+            "text": "Bei Submissions mit einer Golden Strawberry oder einer ähnlichen Beere <strong>darf</strong> das <strong>Ende</strong> einer Map bearbeitet werden, um einen Golden-Einsammel-Trigger hinzuzufügen, <strong>wenn und nur wenn</strong> noch kein solcher Trigger vorhanden ist. Zeigt ein Crystal Heart das Ende an, wirft den Player aber nicht aus der Map, darf es so bearbeitet werden, dass der Player hinausgeworfen wird. Da dies sehr selten vorkommt, wird jeder Fall einzeln geprüft."
+          },
+          {
+            "heading": "Vorgesehene Golden-Abtrennung",
+            "text": "Bei Submissions mit einer Golden Strawberry oder einer ähnlichen Beere <strong>darf</strong> man bei <strong>absichtlichen, in der Map vorgesehenen Abtrennungen der Golden Strawberry</strong> beliebig oft sterben. Dies gilt <strong>nicht</strong> für Abtrennungen, die einen Fehler beheben sollen (wie in <CustomExternalLink href=\"https://youtu.be/iJuGoYOPFt4?t=782\">A Beautiful Meadow</CustomExternalLink>) oder unbeabsichtigte Abtrennungen."
+          },
+          {
+            "heading": "Fortschritt vor der Challenge",
+            "text": "Manche Challenges können durch Fortschritt beeinflusst werden, der außerhalb der Challenge selbst erzielt wurde. In solchen Fällen <strong>darf eine Submission nur</strong> vorherigen Fortschritt verwenden, der <strong>nicht</strong> von Interaktionen mit der Challenge abhängt. Wenn eine Map beispielsweise nach dem Einsammeln der Golden Strawberry verändert wird, muss die Submission für diese Golden Strawberry so gespielt werden, als wäre sie noch nicht eingesammelt worden. Gibt es auf einer Map keine Golden Strawberry, aber eine Deathless-Challenge, muss die Submission so gespielt werden, als hätte es zuvor keine Interaktion mit der Map gegeben. Sind die Änderungen erheblich genug, können Challenges je nach vorherigem Fortschritt aufgeteilt werden."
+          },
+          {
+            "heading": "Bildschirm-Overlay",
+            "text": "Submissions <strong>dürfen kein</strong> Overlay enthalten, das einen großen Teil oder wichtige Bereiche des Bildschirms verdeckt. Zu den wichtigen Bereichen gehören der Timer, die Gesamtzahl der Beeren oben links, die Beerenanzeige im Pausenmenü, der Player und das Speicher-Symbol unten rechts."
+          },
+          {
+            "heading": "Map-Version",
+            "text": "Submissions dürfen mit jeder Version bzw. jedem Patch einer Map gespielt werden. Unterscheidet sich ein älterer Patch im Gameplay und/oder Schwierigkeitsgrad deutlich, kann ein archivierter Map-Eintrag erstellt werden, wie bei <CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>. Die Golden Strawberry muss auf der Version der Map eingesammelt werden, die gespielt wird – unabhängig davon, ob Gameplay in einem anderen Patch geändert oder entfernt wurde. Stirbt ein Run aufgrund eines später behobenen Fehlers, können Ausnahmen gemacht werden. Was als Fehler gilt, ist subjektiv und wird im Einzelfall entschieden."
+          }
+        ]
+      },
+      "full_game_additional": {
+        "header": "Zusätzliche Regeln für Full-Game-Submissions",
+        "explanation": "Manche Challenges sind nicht auf eine einzelne Map beschränkt, sondern erstrecken sich über mehrere Maps. Das sind <i>Full-Game-Challenges</i>, für die einige zusätzliche Regeln gelten.",
+        "entries": [
+          {
+            "heading": "Vollständige Aufnahme",
+            "text": "Das Submission-Video <strong>muss</strong> den vollständigen Run zeigen. Bei Runs, für die kein Fortschritt vor der Challenge erforderlich ist, muss das Video spätestens ab der Dateiauswahl beginnen und erst nach Abschluss der letzten Map enden. Bei Runs, für die vorheriger Fortschritt erforderlich ist, muss das Video spätestens bei der Kapitelauswahl der ersten abgeschlossenen Map beginnen und erst nach Abschluss der letzten Map enden."
+          },
+          {
+            "heading": "Fortschritt vor der Challenge",
+            "text": "Die Regel zum Fortschritt vor der Challenge betrifft Full-Game-Challenges häufiger als normale Challenges. Auch hier <strong>darf eine Submission nur</strong> vorherigen Fortschritt verwenden, der <strong>nicht</strong> von Interaktionen mit der Challenge abhängt. Als Beispiel dient das Basisspiel: Bei einem Run aller A-Sides würde die Submission in einem Zustand beginnen, in dem noch keine A-Side gespielt wurde. Dadurch müssen die A-Sides in der richtigen Reihenfolge abgeschlossen werden. Bei einem Run aller B-Sides kann davon ausgegangen werden, dass alle A-Sides vollständig abgeschlossen wurden; die B-Sides können daher in beliebiger Reihenfolge gespielt werden. Bei einem Run aller C-Sides kann davon ausgegangen werden, dass alle A- und B-Sides abgeschlossen wurden, aber noch keine C-Side gespielt wurde. Deshalb muss 8C zuletzt abgeschlossen werden, da das Heart Gate den Abschluss der anderen C-Sides voraussetzt. Bei einem 100-%-Run würde die Submission in einem Zustand beginnen, in dem noch nichts vom Spiel gespielt wurde – also mit einem neuen Speicherstand."
+          },
+          {
+            "heading": "Nicht zur Map zurückkehren",
+            "text": "Submissions <strong>dürfen „Return to Map“ oder eine ähnliche Option nicht verwenden</strong>, um den Zustand eines Raums zurückzusetzen. Dazu gehören unter anderem die Position des Players, einmalig verwendbare Dash-Kristalle, herabfallende Blöcke, Kevin-Positionen und Schalter."
+          },
+          {
+            "heading": "Einzelner Speicherstand",
+            "text": "Submissions <strong>dürfen nicht</strong> mehr als einen Speicherstand verwenden, gleich in welcher Form."
+          },
+          {
+            "heading": "Erzwungene Tode",
+            "text": "Sind in einem Run Tode erzwungen (zum Beispiel bei einer Farewell-artigen Moon Berry), <strong>darf</strong> in solchen Situationen gestorben werden, aber <strong>nicht öfter als mindestens erforderlich</strong>, um den Abschnitt zu bewältigen. Beachte, dass dies nicht dasselbe ist, wie die Map allein ohne Tode zu spielen; dazu siehe Regel #13."
+          },
+          {
+            "heading": "Datei-Timer",
+            "text": "Der „File Timer“ <strong>muss</strong> in Submissions aktiviert sein, <strong>nicht nur</strong> der Kapitel-Timer."
+          },
+          {
+            "heading": "Lange Pausen",
+            "text": "Während einer Submission <strong>sollten keine</strong> langen oder häufigen Pausen im Menü oder auf dem Pausenbildschirm eingelegt werden. Pausen innerhalb einer Map, ohne das Spiel zu pausieren, sind eher akzeptabel. Häufige Pausen könnten jedoch Verdacht erregen und dazu führen, dass weitere Nachweise angefordert werden."
+          },
+          {
+            "heading": "Einreichbare Deathless-Runs ohne Beere",
+            "text": "Sammelt eine Submission keine Golden oder Silver Berries ein, <strong>darf</strong> sie für einzelne Maps und die jeweilige Challenge eingereicht werden, sofern die Challenge dieselbe oben beschriebene Regel für Deathless-Runs ohne Beere erfüllt."
+          }
+        ]
+      }
+    },
+    "general_recommendations": {
+      "header": "Allgemeine Empfehlungen",
+      "section": {
+        "explanation": "Dies sind nicht <strong>genau</strong> Regeln, die befolgt werden müssen. Sie können aber die Aussagekraft eines Nachweises erhöhen, verhindern, dass eine Submission eine Notiz erhält, beim Abschließen einer Challenge helfen oder sind einfach eine höfliche Geste gegenüber anderen.",
+        "entries": [
+          {
+            "text": "Der Kapitel- oder Datei-Timer erhöht die Glaubwürdigkeit, ist bei Submissions für einzelne Maps aber nicht erforderlich. Denk daran: Bei Full-Game-Submissions <strong>ist</strong> der Datei-Timer vorgeschrieben."
+          },
+          {
+            "text": "Eine externe Anzeige der Eingaben kann die Glaubwürdigkeit erhöhen. Dafür eignen sich zum Beispiel <CustomExternalLink href=\"https://github.com/ThoNohT/NohBoard\">NohBoard</CustomExternalLink> für Windows, <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/kbdisplay\">kbdisplay</CustomExternalLink> für Linux (X11) oder plattformübergreifend <CustomExternalLink href=\"https://github.com/RoanH/KeysPerSecond\">KeysPerSecond</CustomExternalLink>. Wer einen Controller verwendet, kann auch Anzeigen wie <CustomExternalLink href=\"https://gamepadviewer.com\">GamePad Viewer</CustomExternalLink> oder <CustomExternalLink href=\"https://www.ballini.uk/openjoystick.htm\">Joystick Display</CustomExternalLink> nutzen. Alternativ kann der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/34273\">Input History</CustomExternalLink> als Eingabeanzeige verwendet werden, sofern die Optionen zum Anzeigen der Bildanzahl und des Eingabeverlaufs deaktiviert sind."
+          },
+          {
+            "text": "Bewahre einige vollständige Sessions auf, insbesondere bei Goldens in hohen Tiers, falls ein Verifier mehr Nachweise anfordert als vorgeschrieben."
+          }
+        ]
+      }
+    },
+    "allowed_mods": {
+      "header": "Erlaubte und empfohlene Mods",
+      "section": {
+        "explanation": "Alle hier aufgeführten Mods sind für Submissions erlaubt, sofern nicht ausdrücklich etwas anderes angegeben ist. Auch nicht aufgeführte Mods sind erlaubt, solange sie nicht gegen die Regeln zu gameplayverändernden oder informationsgebenden Mods verstoßen.",
+        "entries": [
+          {
+            "text": "Mit den Mods <CustomExternalLink href=\"https://gamebanana.com/mods/421816\">Deadzone Config</CustomExternalLink> und <CustomExternalLink href=\"https://gamebanana.com/tools/13384\">viddie's Toolbox</CustomExternalLink> können Controller-Spieler ihre Deadzone konfigurieren. Das kann insbesondere Fastfall und andere schwierige diagonale Eingaben erleichtern."
+          },
+          {
+            "text": "Bei vollständigen Full-Game-Runs kann der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/53679\">Hardcore Mode</CustomExternalLink> das schnellere Zurücksetzen von Runs erleichtern, ist aber nicht erforderlich. Mit Hardcore Mode können Golden Berries außerdem ohne den Cheat-Modus erscheinen. Dadurch können Full-Game-Runs problemlos für einzelne Maps eingereicht werden. Der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/554057\">Collab Platinums</CustomExternalLink> ist eine weitere Komfortoption für Full-Game-Runs: Damit können Player in einer Collab-Lobby eine Platinum Berry platzieren und so Runs aus einem bestehenden Speicherstand schneller zurücksetzen. Der Mod erweitert außerdem das Journal um Statistiken, die nur den aktuellen Run anzeigen. Bei Full-Game-Runs aus einem bestehenden Speicherstand mit einer Platinum Berry <strong>muss</strong> am Ende des Runs das Platinum-Journal gezeigt werden. Beachte: Eine Deathless-Beere einzusammeln, die bei einem neuen Speicherstand normalerweise nicht freigeschaltet wäre, <strong>kann zur Ablehnung führen</strong>, falls Golden-Änderungen der Map den Deathless-Run dadurch erleichtern."
+          },
+          {
+            "text": "Der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/363600\">Golden QOL</CustomExternalLink> ist für Submissions erlaubt. Er bietet nützliche Komfortfunktionen: Die Golden Berry lässt sich transparent darstellen und dauerhaft ohne Map-Editor platzieren. Außerdem kann ein Golden-Run nach einem Tod im Raum des Todes neu gestartet werden. Auch der Mod <CustomExternalLink href=\"https://gamebanana.com/tools/6924\">Strawberry Tool</CustomExternalLink> kann Follower transparent darstellen und ist für Submissions erlaubt."
+          },
+          {
+            "text": "Die Mods <CustomExternalLink href=\"https://gamebanana.com/tools/6597\">Speedrun Tool</CustomExternalLink> und <CustomExternalLink href=\"https://gamebanana.com/tools/6715\">CelesteTAS</CustomExternalLink> können dabei helfen, Strategien und Setups für Abschnitte einer Challenge zu finden. Beachte jedoch, dass während einer Challenge keine Gameplay-verändernden oder informationsgebenden Funktionen dieser Mods verwendet werden dürfen."
+          },
+          {
+            "text": "Der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/514173\">Motion Smoothing</CustomExternalLink> ermöglicht eine Bildrate über 60 FPS, ohne die Physik zu beeinträchtigen. Dieser Mod ist für Submissions erlaubt. Andere Mods, mit denen sich die Bildrate über 60 FPS erhöhen lässt, sind dagegen nicht erlaubt, wenn sie die Physik verändern."
+          },
+          {
+            "text": "Der Mod <CustomExternalLink href=\"https://gamebanana.com/mods/464283\">izumi's quality of life</CustomExternalLink> bietet viele allgemeine Komfortfunktionen: Journal-Schnappschüsse können gespeichert und mit aktuellen Statistiken verglichen werden, Statistiken für alle Seiten eines Kapitels lassen sich getrennt anzeigen, bei fehlender Aufnahme erscheint ein Warnsymbol und Tastenkürzel können zwischen Tastenkonfigurationen wechseln. Der Mod ist für Submissions erlaubt, aber während einer Challenge dürfen keine Gameplay-verändernden oder informationsgebenden Funktionen verwendet werden. Die Steuerung darf während einer Challenge nur geändert werden, wenn keine Todesgefahr besteht. In den meisten Fällen ist es beispielsweise erlaubt, die Steuerung am Boden oder beim Festhalten an einer Wand zu ändern. Während man in der Luft ist und/oder eine Eingabefolge ausführt, kann eine Änderung der Steuerung dagegen zur Ablehnung führen."
+          },
+          {
+            "text": "Weitere Mods, die häufig für Deathless-Challenges verwendet werden, sind <CustomExternalLink href=\"https://gamebanana.com/mods/358978\">Consistency Tracker</CustomExternalLink> und <CustomExternalLink href=\"https://gamebanana.com/mods/53681\">DeathTracker</CustomExternalLink>."
+          },
+          {
+            "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> pausiert das Spiel automatisch, wenn eine Verzögerung erkannt wird, und ist für Submissions erlaubt."
+          }
+        ]
+      }
+    },
+    "website": {
+      "header": "Regeln für die Website",
+      "rules": {
+        "entries": [
+          {
+            "heading": "Keine Zweitaccounts",
+            "text": "Jeder Player darf auf dieser Website nur <strong>einen Account</strong> haben. Es ist nicht erlaubt, mehrere Accounts zu nutzen, um Runs einzureichen, über Vorschläge abzustimmen oder die Website anderweitig zu manipulieren."
+          },
+          {
+            "heading": "Accounts nicht teilen",
+            "text": "Accounts <strong>dürfen nicht</strong> von mehreren Playern gemeinsam genutzt werden. Jeder Account muss einem einzelnen Player zugeordnet sein."
+          }
+        ]
+      }
+    }
+  },
+  "faq": {
+    "title": "FAQ",
+    "entries": [
+      {
+        "question": "Kann ich Maps einreichen, die noch nicht in der Liste stehen?",
+        "answer": "Ja, du kannst ein Golden für eine Map einreichen, die noch nicht in der Liste steht. In diesem Fall musst du auch einen Link zur Map angeben und sicherstellen, dass sie alle Regeln erfüllt. Selbst dann kann es Gründe geben, aus denen wir sie nicht in die Liste aufnehmen. Diese werden auf der Seite mit den abgelehnten Maps erläutert."
+      },
+      {
+        "question": "Sind Demodash-Tasten und mehrere Sprungtastenbindungen erlaubt?",
+        "answer": "Demodash-Tasten und mehrere Sprungtastenbindungen sind erlaubt. Dasselbe gilt für beliebige Kombinationen von Eingaben, die derselben Taste oder Controller-Taste zugewiesen werden können. Externe Makros, die mehrere Eingaben auf verschiedenen Frames ausführen, sind jedoch nicht erlaubt."
+      },
+      {
+        "question": "Welche Kriterien gelten für einen Full Clear?",
+        "answer": "Da Maps sehr unterschiedlich sein können, kann das stark variieren. Grundsätzlich müssen bei einem Full Clear alle Collectibles eingesammelt werden, die keine eigene Challenge darstellen. Betrachten wir zum Beispiel eine Map mit roten Erdbeeren, einer Kassette, einem Crystal Heart und einer Dashless Golden Berry. Für einen Full Clear dieser Map müssten die roten Erdbeeren, die Kassette und das Crystal Heart eingesammelt werden. Die Dashless Golden Berry steht für eine eigene Challenge – die Map ohne Dash abzuschließen – und muss daher nicht für einen Full Clear eingesammelt werden. Ist es unmöglich, alle Collectibles ohne Dash zu erhalten, wird die Dashless-Challenge nicht als Full Clear gekennzeichnet. Ist es möglich, erhalten sowohl die normale Challenge als auch die Dashless-Challenge eine Full-Clear-Kennzeichnung."
+      },
+      {
+        "question": "Warum sind manche Maps nicht für Full-Clear-Runs geeignet?",
+        "answer": "Auf manchen Maps sind bestimmte Collectibles nicht optional, etwa die Erdbeeren in Hell Gym."
+      },
+      {
+        "question": "Diese Map ist viel schwieriger, als in der Liste angegeben! Wie kann das sein?",
+        "answer": "Eine Challenge wird anhand der einfachsten möglichen Strategien zu ihrem Abschluss eingestuft. Gibt es auf einer Map einen starken Cheese, wird die Route mit diesem Cheese für die Einstufung verwendet. Außerdem sind Einstufungen subjektiv und beruhen auf den Einschätzungen derjenigen, die die Challenge abgeschlossen haben. Wenn du möchtest, kannst du für jede Challenge eine Änderung der Schwierigkeit vorschlagen."
+      },
+      {
+        "question": "Wofür gibt es die Schwierigkeit „Nicht eingestuft“?",
+        "answer": "„Nicht eingestuft“ ist Challenges vorbehalten, die im Vergleich zu einem Clear trivial abzuschließen sind. Dazu gehören Ein-Raum-Maps, bei denen ein normaler Clear genau einem Golden entspricht, sowie Campaign-Maps, auf denen man nicht sterben kann."
+      },
+      {
+        "question": "Sind Koop-Maps oder Maps mit X erlaubt?",
+        "answer": "Wenn eine Map alle Regeln für Maps erfüllt, ist sie erlaubt. Bei Koop-Maps wird die Schwierigkeit anhand der vorgesehenen Spieleranzahl der Map eingeschätzt."
+      }
+    ],
+    "vanilla_references": {
+      "question": "Warum sind Vanilla-Challenges nicht in dieser Liste?",
+      "answer": "Vanilla-Challenges werden nicht erfasst, da sie außerhalb des Umfangs einer Modded-Liste liegen und es zu viele Clears gibt, um sie sinnvoll nachzuverfolgen. Ihre Schwierigkeiten sind jedoch vielfach allgemein anerkannt. Die folgende Referenzliste zeigt ungefähr, wo Vanilla-Challenges auf der Top Golden List eingestuft würden.<br/><br/><i>Hinweis: Früher galt Farewell [No DTS] als Ausgangspunkt für Tier 8 der Top Golden List. Das ist nicht mehr der Fall; das Golden liegt nun einfach innerhalb dieser Tier. Außerdem bilden die Golden-Runs des Höllen-Trios (6B, 7B, 8B) keinen festen Ausgangspunkt für Tier 4 mehr.</i>"
     }
   },
   "index": {
@@ -1213,6 +2128,7 @@
     },
     "links": {
       "header": "Wichtige Links",
+      "header_sources": "Quellen",
       "header_other": "Andere Links",
       "header_other_lists": "Andere Listen",
       "rules": "Regeln",
@@ -1223,6 +2139,9 @@
       "modded_golden_team_discord": "Modded Golden Team Discord",
       "fwg_sheet": "Farewell Golden Collectors' List",
       "survivors_list": "Celeste Survivors List (Deathless runs of vanilla Celeste)",
+      "frontend_repository": "Frontend-Repository",
+      "backend_repository": "Backend-Repository",
+      "issue_tracker": "Issue-Tracker",
       "legal_notice": "Legal Notice",
       "api_docs": "API Documentation",
       "server_costs": "Übersicht über Serverkosten",
@@ -1230,7 +2149,7 @@
     },
     "issues": {
       "header": "Problem Melden",
-      "text": "If you find any issues, please report them by either creating a <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">new issue on GitHub</CustomExternalLink> or by @-ing viddie in the Modded Golden Team Discord server, preferably in the <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dedicated channel</CustomExternalLink> for this website"
+      "text": "Wenn dir Probleme auffallen, melde sie bitte entweder, indem du ein <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">neues Issue auf GitHub erstellst</CustomExternalLink>, oder indem du viddie im Discord-Server des Modded Golden Teams mit @ erwähnst – am besten im <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">dafür vorgesehenen Kanal</CustomExternalLink> dieser Website."
     },
     "global_stats": {
       "header": "Globale Stats",
@@ -1257,6 +2176,17 @@
       "header": "Newly Released!",
       "text": "This website has just recently been released! Given the chaotic state of data on the spreadsheet, it's to be expected that there will be wrong or inconsistent data somewhere. When you spot some, please report it in the Modded Golden Team Discord server!",
       "migration": "Migrating all of the data, as well as the entire community over to this website will take a while, so for the time being you can still make your submissions the old-fashioned way, by tagging the modded golden team in the Celeste Discord server, or the Modded Golden Team Discord server."
+    },
+    "rework": {
+      "header": "Tier-Überarbeitung!",
+      "text": "Im Februar 2025 wurde die Tier-Überarbeitung eingeführt! Diese Änderungen hatten viele Gründe: Sie erleichtern zukünftige Anpassungen der hohen Tiers und das Hinzufügen neuer höchster Tiers, verbessern den Prozess dafür und vereinheitlichen die Tiers zu einem einfachen aufsteigenden Zahlensystem.",
+      "bullet_points": [
+        "Die Tier-Namen beginnen nun bei Tier 1 für die niedrigste Schwierigkeit und steigen mit zunehmender Schwierigkeit an.",
+        "Die Schwierigkeit „Standard“ wird nun durch die drei niedrigsten Tiers dargestellt. Wegen der längeren Ladezeiten sind diese Tiers in der Top Golden List standardmäßig ausgeblendet. Du kannst sie über „Mindest-Tier“ in den Submission-Filtern einblenden.",
+        "Jede Teilstufe wird nun durch eine eigene Tierstufe dargestellt.",
+        "Zwischen der früheren hohen Tier 1 und der niedrigen Tier 0 wurde eine neue Tier eingefügt. Damit gibt es insgesamt 20 Tiers."
+      ],
+      "more_text": "Es gibt nun eine Option, die höchsten Tiers vertikal anzuordnen (standardmäßig deaktiviert). Dadurch wird die Top Golden List kompakter – wie vor der Überarbeitung."
     }
   },
   "credits": {
@@ -1269,7 +2199,10 @@
     "people": "many many wonderful people from the goldberries-net thread in the Modded Golden Team Discord",
     "chinese_translation": "Chinese Translation",
     "french_translation": "French Translation",
-    "korean_translation": "Korean Translation"
+    "russian_translation": "Russische Übersetzung",
+    "korean_translation": "Korean Translation",
+    "domain": "Domain",
+    "domain_text": "{{name}} (verwaltet und bezahlt die Domain und Cloudflare und hat außerdem das ursprüngliche goldberries.net erstellt!)"
   },
   "stats": {
     "title": "Stats",
@@ -1281,7 +2214,7 @@
         "label": "Historische Clears",
         "header": "Monatliche Tier Clears",
         "text": "Diese Charts zeigen die Anzahl an Clears für jede Tier für jeden Monat seit Beginn der Liste.",
-        "total_tiered": "Gesamt Tiered"
+        "total_submissions": "Submissions insgesamt"
       },
       "most_goldened": {
         "label": "Meiste Goldened",
@@ -1307,7 +2240,267 @@
           "text": "Für jede Tier, der Prozentsatz an Players, die mindestens einen Golden in dieser Tier gemacht haben.",
           "axis_label": "% von Player"
         }
+      },
+      "verifier_stats": {
+        "label": "Verifier-Statistiken",
+        "header": "Verifier-Statistiken",
+        "most_verified": {
+          "header": "Meiste Verifikationen",
+          "text": "Diese Verifier haben die meisten Submissions verifiziert."
+        },
+        "most_created": {
+          "header": "Meiste erstellte Einträge",
+          "text": "Diese Verifier haben die meisten Campaigns, Maps und Challenges erstellt."
+        }
+      },
+      "tier_clears": {
+        "label": "Tier-Clears",
+        "header": "Höchste Clear-Anzahlen pro Tier",
+        "group_by": {
+          "label": "Gruppieren nach",
+          "player": "Player",
+          "country": "Land",
+          "input_method": "Eingabemethode"
+        },
+        "column": {
+          "player": "Player",
+          "country": "Land",
+          "input_method": "Eingabemethode"
+        },
+        "highlight_country": "Land hervorheben",
+        "show_unknown": "Unbekannte/nicht angegebene Werte anzeigen",
+        "unknown": "Unbekannt",
+        "total_submissions": "Submissions insgesamt",
+        "total_clears": "Clears insgesamt",
+        "total_clears_header": "Clears insgesamt"
+      },
+      "biggest_difficulty_gap": {
+        "label": "Schwierigkeitsabstand",
+        "header": "Größter Schwierigkeitsabstand",
+        "text": "Player mit dem größten Tier-Abstand zwischen ihrem schwierigsten und zweitschwierigsten verifizierten Golden.",
+        "player": "Player",
+        "hardest": "Schwierigste",
+        "second_hardest": "Zweitschwierigste",
+        "gap": "Abstand"
+      },
+      "collectible_counts": {
+        "label": "Collectibles",
+        "header": "Collectibles insgesamt auf allen Maps",
+        "text": "Diese Tabelle zeigt die Gesamtanzahl jedes Collectible-Typs auf allen Maps in der Datenbank.",
+        "total": "Gesamt",
+        "collectible": "Collectible",
+        "count": "Anzahl"
       }
     }
+  },
+  "file_upload": {
+    "title": "Datei-Upload",
+    "file_input_description": "Datei hier ablegen oder zum Auswählen klicken",
+    "file_input": "Datei einfügen / zum Auswählen klicken",
+    "image_preview": "Bildvorschau",
+    "file_name": "Neuer Dateiname",
+    "file_path": "Dateipfad",
+    "destination": {
+      "icon": "Symbol",
+      "campaign_icon": "Campaign-Symbol",
+      "post": "Beitragsbild",
+      "badge": "Abzeichenbild",
+      "map_image": "Map-Bild"
+    },
+    "feedback": {
+      "success": "Datei erfolgreich hochgeladen",
+      "copy_success": "Pfad in die Zwischenablage kopiert"
+    }
+  },
+  "report": {
+    "title": "Meldung",
+    "description": "Nutze dieses Formular, um Probleme, Schwierigkeiten mit Playern oder Submissions zu melden oder Feedback zu geben. Beschreibe dein Anliegen so ausführlich wie möglich. Deine Meldung wird vertraulich an das Moderationsteam gesendet.",
+    "need_player": "Du musst einen <CustomLink to=\"/claim-player\">Player beansprucht</CustomLink> haben, um eine Meldung einzureichen.",
+    "stages": {
+      "topic_selection": {
+        "title": "Was möchtest du melden?",
+        "description": "Wähle die Hauptkategorie aus, die dein Anliegen am besten beschreibt"
+      },
+      "subtopic_selection": {
+        "title": "Wähle einen konkreten Bereich",
+        "description": "Wähle den konkreten Aspekt von „{{topic}}“, den du melden möchtest"
+      },
+      "details": {
+        "title": "Gib Details an",
+        "selected_label": "Ausgewählt: {{topic}}",
+        "url_label": "URL *",
+        "url_label_optional": "URL (optional)",
+        "url_required_help": "Bitte gib eine URL an, die mit deiner Meldung zusammenhängt",
+        "url_optional_help": "Du kannst optional eine relevante URL angeben",
+        "message_label": "Nachricht *",
+        "message_placeholder": "Beschreibe dein Anliegen ausführlich...",
+        "message_help": "Gib so viele Details wie möglich an, damit wir dein Anliegen verstehen und bearbeiten können."
+      }
+    },
+    "topics": {
+      "bug": {
+        "name": "Fehler melden",
+        "description": "Technische Probleme oder Fehler melden, auf die du gestoßen bist"
+      },
+      "player": {
+        "name": "Player",
+        "description": "Probleme mit Player-Profilen oder -Informationen",
+        "subtopics": {
+          "name": {
+            "name": "Unangemessener Name"
+          },
+          "about-me": {
+            "name": "Unangemessener „Über mich“-Text"
+          },
+          "links": {
+            "name": "Unangemessene Links"
+          },
+          "other": {
+            "name": "Sonstiges"
+          }
+        }
+      },
+      "submission": {
+        "name": "Submission",
+        "description": "Probleme mit eingereichten Inhalten oder Videos",
+        "subtopics": {
+          "unavailable-video": {
+            "name": "Video nicht verfügbar"
+          },
+          "inappropriate-video": {
+            "name": "Unangemessenes Video"
+          },
+          "difficulty-opinion": {
+            "name": "Unangemessene Schwierigkeitsempfehlung"
+          },
+          "other": {
+            "name": "Sonstiges"
+          }
+        }
+      },
+      "other": {
+        "name": "Sonstiges",
+        "description": "Allgemeines Feedback oder andere Anfragen"
+      }
+    },
+    "buttons": {
+      "back": "Zurück",
+      "back_to_topics": "Zurück zu den Themen",
+      "submit": "Meldung einreichen",
+      "submitting": "Wird eingereicht..."
+    },
+    "validation": {
+      "message_required": "Bitte beschreibe dein Anliegen ausführlich.",
+      "message_min_length": "Die Nachricht muss mindestens 3 Zeichen lang sein."
+    },
+    "feedback": {
+      "success": "Meldung erfolgreich eingereicht!"
+    }
+  },
+  "post": {
+    "list": {
+      "title_news": "Neuigkeiten",
+      "title_changelog": "Änderungsprotokoll",
+      "search": "Beiträge durchsuchen",
+      "show_more": "Mehr anzeigen..."
+    },
+    "index": {
+      "header_news": "Aktuelle Neuigkeiten",
+      "header_changelog": "Änderungsprotokoll der Website",
+      "view_all": "Alle anzeigen"
+    }
+  },
+  "author": {
+    "view_on_gamebanana": "Profil auf GameBanana anzeigen",
+    "maps_text": "Alle Maps dieses Autors in Campaigns anderer Autoren.",
+    "campaigns_text": "Alle Campaigns dieses Autors."
+  },
+  "map_data": {
+    "campaign_data": {
+      "title": "Campaign-Daten",
+      "not_available": "Diese Campaign wurde noch nicht verarbeitet oder ist aus einem anderen Grund nicht verfügbar.",
+      "bin_count": "{{count}} .bin-Dateien",
+      "unmatched_bins": "{{count}} nicht zugeordnete .bin-Dateien",
+      "unmatched_maps": "{{count}} nicht zugeordnete Maps",
+      "process_button": "Campaign verarbeiten",
+      "processing": "Wird verarbeitet...",
+      "process_success": "Campaign erfolgreich verarbeitet.",
+      "edit_button": "Bearbeiten",
+      "exit_edit_button": "Fertig",
+      "delete_bin_confirm": ".bin-Daten für „{{name}}“ löschen?",
+      "delete_bin_confirm_text": ".bin-Daten für „{{name}}“ löschen?",
+      "delete_bin_success": ".bin-Daten der Map gelöscht.",
+      "delete_all": "Alle Daten löschen",
+      "delete_all_confirm": "Dadurch werden ALLE Campaign-Daten gelöscht, einschließlich aller BIN-Zuordnungen und .bin-Dateien der Maps. Dies kann nicht rückgängig gemacht werden. Bist du sicher?",
+      "delete_all_success": "Alle Campaign-Daten gelöscht.",
+      "add_bin": {
+        "title": ".bin-Datei hinzufügen",
+        "bin_path": ".bin-Pfad",
+        "drop_zone": ".bin- oder .json-Datei hier ablegen",
+        "submit": "Hochladen",
+        "uploading": "Wird hochgeladen...",
+        "success": ".bin-Dateidaten erfolgreich hochgeladen.",
+        "no_file": "Bitte wähle eine Datei aus.",
+        "invalid_file": "Bitte wähle eine .bin- oder .json-Datei aus.",
+        "invalid_json": "Die ausgewählte Datei enthält kein gültiges JSON."
+      },
+      "structure": {
+        "unknown_map": "Unbekannte Map",
+        "unmatched_tooltip": "Diese .bin-Datei wurde keiner Map in der Datenbank zugeordnet. Sie könnte eine Lobby, eine ältere Version einer Map oder einfach anders benannt sein als die Map in der Datenbank.",
+        "show_unmatched": "{{count}} nicht zugeordnete .bin-Dateien anzeigen",
+        "hide_unmatched": "Nicht zugeordnete .bin-Dateien ausblenden"
+      },
+      "bin_assignments": {
+        "title": "BIN-Zuordnungen",
+        "no_entries": "Es wurden noch keine Zuordnungen festgelegt.",
+        "select_bin": ".bin-Datei",
+        "select_map": "Map",
+        "add": "Hinzufügen",
+        "save": "Speichern",
+        "saving": "Wird gespeichert...",
+        "save_success": "Zuordnung erfolgreich gespeichert."
+      }
+    },
+    "map_data": {
+      "rooms": {
+        "title": "Räume ({{count}})",
+        "col_name": "Name",
+        "col_position": "Position",
+        "col_size": "Größe",
+        "col_entities": "Entitäten",
+        "col_count": "Anzahl",
+        "search_placeholder": "Entitäten filtern..."
+      },
+      "room_details": {
+        "tab_entities": "Entitäten",
+        "tab_triggers": "Trigger",
+        "tab_solids": "Feste Tiles",
+        "col_name": "Name",
+        "col_position": "Position",
+        "col_size": "Größe",
+        "no_entities": "Keine Entitäten in diesem Raum.",
+        "no_triggers": "Keine Trigger in diesem Raum."
+      },
+      "collectibles": {
+        "title": "Collectibles ({{count}})",
+        "col_type": "Typ",
+        "col_room": "Raum",
+        "col_position": "Position"
+      }
+    }
+  },
+  "map_viewer": {
+    "title": "Map-Viewer",
+    "url_label": "GameBanana-URL",
+    "url_placeholder": "https://gamebanana.com/mods/123456",
+    "view_map": "Map anzeigen",
+    "login_required": "Du musst angemeldet sein und einen Player beansprucht haben, um den Map-Viewer zu verwenden.",
+    "invalid_url": "Bitte gib eine gültige GameBanana-URL ein (z. B. https://gamebanana.com/mods/123456)",
+    "processing": "GameBanana-Link wird verarbeitet...",
+    "processing_warning": "Bei großen Mods kann die Verarbeitung eine Weile dauern. Dauert sie länger als 100 Sekunden, beendet Cloudflare die Verbindung und die Verarbeitung schlägt fehl.",
+    "error": "Beim Verarbeiten der Campaign ist ein Fehler aufgetreten.",
+    "bin_files": "Map-Dateien",
+    "unknown_map": "Unbekannte Map",
+    "no_bins": "In diesem Mod wurden keine .bin-Dateien gefunden."
   }
 }
