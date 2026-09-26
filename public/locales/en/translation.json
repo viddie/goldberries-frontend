@@ -1134,6 +1134,10 @@
         "suggestion_accepted": {
           "label": "Own Suggestion State",
           "description": "To get notified when the state (accepted/rejected) on one of your suggestions is changed"
+        },
+        "new_hardest": {
+          "label": "New Hardest Discord Message",
+          "description": "When you achieve a new hardest that is tier 4 or higher, a message will be sent to the Molden Discord server."
         }
       },
       "profile": {

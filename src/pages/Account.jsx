@@ -81,6 +81,7 @@ export const NOTIFICATIONS = {
   suggestion_verified: { key: "suggestion_created", flag: 4 },
   chall_moved: { key: "challenge_moved", flag: 8 },
   suggestion_accepted: { key: "suggestion_accepted", flag: 16 },
+  new_hardest: { key: "new_hardest", flag: 32 },
 };
 export function hasFlag(flags, flag) {
   return (flags & flag) === flag;
