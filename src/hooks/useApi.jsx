@@ -121,6 +121,19 @@ import {
   fetchStampSubmissionsForPlayer,
   postStampSubmission,
   deleteStampSubmission,
+  fetchTagTree,
+  fetchTag,
+  postTag,
+  deleteTag,
+  fetchTagCategories,
+  postTagCategory,
+  deleteTagCategory,
+  fetchTagAssignment,
+  postTagAssignment,
+  deleteTagAssignment,
+  fetchChallengeTagCounts,
+  fetchChallengeTagPlayers,
+  fetchDiscovery,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -680,6 +693,9 @@ export function usePostSubmission(onSuccess) {
           queryClient.invalidateQueries(["map", response.data.challenge.map_id]);
         } else {
           queryClient.invalidateQueries(["campaign", response.data.challenge.campaign_id]);
+        }
+        if (submission.tag_value_ids?.length > 0) {
+          invalidateTagAssignmentQueries(queryClient);
         }
       }
       invalidateJointQueries(queryClient);
@@ -1424,6 +1440,166 @@ export function useGetTempMapData(url, binPath) {
     queryFn: () => fetchTempMapData(url, binPath),
     retry: false,
     enabled: !!(url && binPath),
+  });
+}
+//#endregion
+
+//#region /tag
+export function invalidateTagDefinitionQueries(queryClient) {
+  queryClient.invalidateQueries(["tag_tree"]);
+  queryClient.invalidateQueries(["tag"]);
+  queryClient.invalidateQueries(["tag_categories"]);
+}
+export function invalidateTagAssignmentQueries(queryClient) {
+  queryClient.invalidateQueries(["tag_assignment"]);
+  queryClient.invalidateQueries(["challenge_tags"]);
+  queryClient.invalidateQueries(["challenge_tag_players"]);
+  queryClient.invalidateQueries(["discovery"]);
+}
+
+export function useGetTagTree() {
+  return useQuery({
+    queryKey: ["tag_tree"],
+    queryFn: () => fetchTagTree(),
+    onError: errorToast,
+    staleTime: 30 * 60 * 1000,
+  });
+}
+export function useGetTag(id) {
+  return useQuery({
+    queryKey: ["tag", id],
+    queryFn: () => fetchTag(id),
+    onError: errorToast,
+    enabled: !!id,
+  });
+}
+export function usePostTag(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postTag(data),
+    onSuccess: (response) => {
+      invalidateTagDefinitionQueries(queryClient);
+      //Removed values also remove their assignments
+      invalidateTagAssignmentQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useDeleteTag(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteTag(id),
+    onSuccess: (response) => {
+      invalidateTagDefinitionQueries(queryClient);
+      invalidateTagAssignmentQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /tag/category
+export function useGetTagCategories() {
+  return useQuery({
+    queryKey: ["tag_categories"],
+    queryFn: () => fetchTagCategories(),
+    onError: errorToast,
+  });
+}
+export function usePostTagCategory(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postTagCategory(data),
+    onSuccess: (response) => {
+      invalidateTagDefinitionQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useDeleteTagCategory(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteTagCategory(id),
+    onSuccess: (response) => {
+      invalidateTagDefinitionQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /tag/assignment
+export function useGetTagAssignment(challengeId, playerId) {
+  return useQuery({
+    queryKey: ["tag_assignment", challengeId, playerId],
+    queryFn: () => fetchTagAssignment(challengeId, playerId),
+    onError: errorToast,
+    enabled: !!challengeId && !!playerId,
+    staleTime: 0,
+  });
+}
+export function usePostTagAssignment(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postTagAssignment(data),
+    onSuccess: (response) => {
+      invalidateTagAssignmentQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useDeleteTagAssignment(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteTagAssignment(id),
+    onSuccess: (response) => {
+      invalidateTagAssignmentQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+//#endregion
+
+//#region /tag/challenge
+export function useGetChallengeTagCounts(challengeId) {
+  return useQuery({
+    queryKey: ["challenge_tags", "challenge", challengeId],
+    queryFn: () => fetchChallengeTagCounts({ challengeIds: challengeId }),
+    onError: errorToast,
+    enabled: !!challengeId,
+  });
+}
+export function useGetMapTagCounts(mapId) {
+  return useQuery({
+    queryKey: ["challenge_tags", "map", mapId],
+    queryFn: () => fetchChallengeTagCounts({ mapId }),
+    onError: errorToast,
+    enabled: !!mapId,
+  });
+}
+export function useGetChallengeTagPlayers(challengeId, tagValueId) {
+  return useQuery({
+    queryKey: ["challenge_tag_players", challengeId, tagValueId],
+    queryFn: () => fetchChallengeTagPlayers(challengeId, tagValueId),
+    onError: errorToast,
+    enabled: !!challengeId && !!tagValueId,
+  });
+}
+//#endregion
+
+//#region /challenge/discovery
+export function useGetDiscovery(filter, group = "all", page = 1, perPage = null, seed = null) {
+  return useQuery({
+    queryKey: ["discovery", filter, group, page, perPage, seed],
+    queryFn: () => fetchDiscovery(filter, group, page, perPage, seed),
+    onError: errorToast,
+    keepPreviousData: true,
   });
 }
 //#endregion

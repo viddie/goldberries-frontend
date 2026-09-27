@@ -873,3 +873,70 @@ export function fetchPlayerLikes(playerId, wishlistOnly) {
   });
 }
 //#endregion
+
+//#region /tag
+export function fetchTagTree() {
+  return axios.get("/tag");
+}
+export function fetchTag(id) {
+  return axios.get("/tag", { params: { id: id } });
+}
+export function postTag(data) {
+  //description is required by the API, so it can't go through formatDataForApi (which turns "" into null)
+  const description = (data.description ?? "").trim();
+  return axios.post("/tag", { ...formatDataForApi({ ...data }), description });
+}
+export function deleteTag(id) {
+  return axios.delete("/tag", { params: { id: id } });
+}
+//#endregion
+
+//#region /tag/category
+export function fetchTagCategories() {
+  return axios.get("/tag/category");
+}
+export function fetchTagCategory(id) {
+  return axios.get("/tag/category", { params: { id: id } });
+}
+export function postTagCategory(data) {
+  return axios.post("/tag/category", formatDataForApi(data));
+}
+export function deleteTagCategory(id) {
+  return axios.delete("/tag/category", { params: { id: id } });
+}
+//#endregion
+
+//#region /tag/assignment
+export function fetchTagAssignment(challengeId, playerId) {
+  return axios.get("/tag/assignment", { params: { challenge_id: challengeId, player_id: playerId } });
+}
+export function postTagAssignment(data) {
+  return axios.post("/tag/assignment", data);
+}
+export function deleteTagAssignment(id) {
+  return axios.delete("/tag/assignment", { params: { id: id } });
+}
+//#endregion
+
+//#region /tag/challenge
+//Either pass challengeIds (number or array of numbers) or mapId
+export function fetchChallengeTagCounts({ challengeIds = null, mapId = null }) {
+  const params = {};
+  if (mapId !== null) params.map_id = mapId;
+  else params.challenge_id = challengeIds;
+  return axios.get("/tag/challenge", { params });
+}
+export function fetchChallengeTagPlayers(challengeId, tagValueId) {
+  return axios.get("/tag/challenge", { params: { challenge_id: challengeId, tag_value_id: tagValueId } });
+}
+//#endregion
+
+//#region /challenge/discovery
+// seed: only allowed for group "all" or "random", makes the random order reproducible
+export function fetchDiscovery(filter, group = "all", page = 1, perPage = null, seed = null) {
+  const params = { filter: JSON.stringify(filter ?? {}), group, page };
+  if (perPage !== null) params.per_page = perPage;
+  if (seed !== null) params.seed = seed;
+  return axios.get("/challenge/discovery", { params });
+}
+//#endregion

@@ -665,7 +665,8 @@
         "update": "Update Submission",
         "verify": "Verify",
         "reject": "Reject"
-      }
+      },
+      "edit_tags": "Edit this player's tags on the challenge"
     },
     "feedback": {
       "player_name": {
@@ -752,6 +753,68 @@
         "updated": "Wishlist entry updated",
         "removed": "Wishlist entry removed"
       }
+    },
+    "tag_category": {
+      "title": "Tag Category",
+      "name": "Name",
+      "color": "Color",
+      "reset_color": "No Color",
+      "sort": "Sort",
+      "sort_note": "Lower numbers are shown first",
+      "is_archived": "Archived",
+      "is_archived_note": "Archived categories are hidden from the tags editor, but their tags still show up on challenges and in the Discovery filters.",
+      "feedback": {
+        "created": "Tag category created",
+        "updated": "Tag category updated"
+      },
+      "buttons": {
+        "create": "Create Category",
+        "update": "Update Category"
+      }
+    },
+    "tag": {
+      "title": "Tag",
+      "category": "Category",
+      "name": "Name",
+      "sort": "Sort",
+      "sort_note": "Lower numbers are shown first within the category",
+      "selection_mode": {
+        "label": "Selection Mode",
+        "options": {
+          "single": "Single",
+          "multi": "Multiple",
+          "range": "Range"
+        },
+        "notes": {
+          "single": "A player can pick at most one value",
+          "multi": "A player can pick any number of values",
+          "range": "A player picks a span of values (e.g. for challenges spanning many difficulties)"
+        }
+      },
+      "is_ordinal": "Ordinal",
+      "is_ordinal_note": "The values are ordered and can be compared (e.g. 'at least long' in filters). Always on for range tags.",
+      "is_common": "Common",
+      "is_common_note": "Every challenge has this tag (e.g. Length). Highlighted in the tags editor.",
+      "is_player_assignable": "Assignable by players",
+      "is_player_assignable_note": "If disabled, only team members can assign this tag.",
+      "values": {
+        "title": "Values",
+        "note": "The order of the values is the order they are displayed and compared in. Leave the list empty for tags without qualifiers (e.g. Dashless).",
+        "none": "No values - this tag has no qualifiers.",
+        "name": "Name",
+        "description": "Description (optional, falls back to the tag description)",
+        "add": "Add Value",
+        "removed_warning": "The following values will be deleted along with all of their assignments: {{values}}"
+      },
+      "feedback": {
+        "created": "Tag created",
+        "updated": "Tag updated",
+        "value_name_required": "All values need a name"
+      },
+      "buttons": {
+        "create": "Create Tag",
+        "update": "Update Tag"
+      }
     }
   },
   "likes": {
@@ -784,7 +847,8 @@
     "campaigns_menu": {
       "name": "Campaigns",
       "campaign_list": "Campaign List",
-      "rejected_challenges": "Rejected Challenges"
+      "rejected_challenges": "Rejected Challenges",
+      "discovery": "Discovery"
     },
     "other_menu": {
       "name": "Other",
@@ -804,6 +868,7 @@
       "submission_queue": "Submission Queue",
       "manage_challenges": "Manage Challenges",
       "actions": "Actions",
+      "manage_tags": "Manage Tags",
       "manage_accounts": "Manage Accounts",
       "manage_badges": "Manage Badges",
       "file_upload": "File Upload",
@@ -1030,6 +1095,43 @@
           "players": "Players with this Badge ({{count}})",
           "remove": "Remove Assignment",
           "no_players": "No players assigned to this badge."
+        }
+      }
+    },
+    "tags": {
+      "title": "Manage Tags",
+      "description": "Manage the tags that players can assign to challenges. Categories only group tags for display, all rules are set on the tags themselves.",
+      "no_categories": "No tag categories exist yet. Create a category first.",
+      "no_tags": "No tags in this category yet.",
+      "archived": "Archived",
+      "sort_label": "Sort: {{sort}}",
+      "team_only": "Only assignable by team members",
+      "no_qualifiers": "No qualifiers",
+      "delete_category_has_tags": "Categories can only be deleted when they have no tags",
+      "table": {
+        "name": "Name",
+        "values": "Values",
+        "flags": "Flags",
+        "actions": "Actions"
+      },
+      "buttons": {
+        "create_category": "Create Category",
+        "create_tag": "Create Tag",
+        "edit_category": "Edit Category",
+        "delete_category": "Delete Category"
+      },
+      "feedback": {
+        "category_deleted": "Tag category deleted",
+        "tag_deleted": "Tag deleted"
+      },
+      "modals": {
+        "delete_category": {
+          "title": "Delete Category",
+          "description": "Are you sure you want to delete the category <strong>{{name}}</strong>?"
+        },
+        "delete_tag": {
+          "title": "Delete Tag",
+          "description": "Are you sure you want to delete the tag <strong>{{name}}</strong>? All assignments of this tag will be deleted as well."
         }
       }
     }
@@ -1318,7 +1420,8 @@
       "empty": "No submissions",
       "show_all": "Show All {{count}} Submissions",
       "show_less": "Show Less"
-    }
+    },
+    "tags": "Tags"
   },
   "compare_challenges": {
     "title": "Compare Challenges",
@@ -1453,7 +1556,8 @@
       "view_challenge": "View Challenge",
       "submit": "Submit a run",
       "map_data_view": "View Data",
-      "map_data_unavailable": "Data for this map is not yet available."
+      "map_data_unavailable": "Data for this map is not yet available.",
+      "all_tags": "All Tags"
     },
     "no_challenges": "There are currently no challenges for this map.",
     "info_boxes": {
@@ -1466,7 +1570,8 @@
         "show": "Show"
       },
       "total_likes": "Likes",
-      "map_data": "Map Data"
+      "map_data": "Map Data",
+      "tags": "Tags"
     }
   },
   "player": {
@@ -1624,6 +1729,14 @@
         },
         "feedback": {
           "select_is_fc": "Please select if your run is a Regular Clear or a Full Clear"
+        },
+        "tags": {
+          "toggle": "Add tags to this challenge...",
+          "toggle_selected_one": "{{count}} tag selected",
+          "toggle_selected_other": "{{count}} tags selected",
+          "description": "Optionally describe what the challenge is like. This helps other players find challenges they enjoy. Tags you select here replace your previous tags of the same kind on this challenge.",
+          "existing_tags": "Tags by other players",
+          "no_tags": "No one has tagged this challenge yet."
         }
       },
       "multi": {
@@ -2506,5 +2619,103 @@
     "bin_files": "Map Files",
     "unknown_map": "Unknown Map",
     "no_bins": "No .bin files were found in this mod."
+  },
+  "tags": {
+    "no_tags": "No tags yet",
+    "add": "Add",
+    "edit": "Edit",
+    "show_more": "+{{count}} more",
+    "show_less": "Show less",
+    "players_modal": {
+      "title": "Tagged By",
+      "empty": "No one has assigned this tag.",
+      "count_one": "{{count}} player",
+      "count_other": "{{count}} players",
+      "delete_tooltip": "Remove '{{label}}' from this player",
+      "feedback": {
+        "deleted": "Tag assignment removed"
+      }
+    },
+    "editor": {
+      "no_tags_available": "There are no tags available yet.",
+      "common_tooltip": "All challenges can have this tag.",
+      "team_only_tooltip": "Only team members can assign this tag",
+      "clear": "Clear",
+      "range_hint": "Click the first and last value to select a range",
+      "range_pick_end": "Now click the last value of the range",
+      "multi_hint": "Multiple values can be selected"
+    },
+    "editor_modal": {
+      "current_tags": "All Tags",
+      "no_tags": "No one has tagged this challenge yet.",
+      "feedback": {
+        "saved": "Tags saved"
+      }
+    },
+    "map_overview": {
+      "title": "Tags of all challenges in {{map}}",
+      "no_tags": "No tags yet"
+    }
+  },
+  "discovery": {
+    "title": "Discovery",
+    "no_results": "No challenges match your filter.",
+    "no_results_group": "No challenges in this category.",
+    "columns_one": "{{count}} per row",
+    "columns_other": "{{count}} per row",
+    "buttons": {
+      "show_more": "Show More",
+      "back": "Back to overview",
+      "reroll": "Reroll"
+    },
+    "groups": {
+      "popular": {
+        "title": "Most Popular"
+      },
+      "liked": {
+        "title": "Most Liked"
+      },
+      "new": {
+        "title": "New"
+      },
+      "trending": {
+        "title": "Trending",
+        "description": "Recently added challenges that are getting a lot of likes or submissions"
+      },
+      "random": {
+        "title": "Random"
+      }
+    },
+    "card": {
+      "submissions_one": "{{count}} verified submission",
+      "submissions_other": "{{count}} verified submissions",
+      "likes_one": "{{count}} like",
+      "likes_other": "{{count}} likes"
+    },
+    "filter": {
+      "title": "Filter",
+      "reset": "Reset",
+      "no_conditions": "No filter set, showing all challenges. Add a tag below to narrow down the results.",
+      "add_condition": "Add a tag to the filter...",
+      "confidence": "# of Assignments",
+      "confidence_note": "The minimum number of different players that need to have assigned a tag for it to count. Applies to included and excluded tags. Tags that only the team can assign always count.",
+      "modes": {
+        "include": "Include",
+        "exclude": "Exclude"
+      },
+      "operators": {
+        "any": "Any value",
+        "one_of": "One of",
+        "gte": "At least",
+        "lte": "At most",
+        "between": "Between"
+      },
+      "min": "From",
+      "max": "To",
+      "incomplete": "Select a value to apply this condition",
+      "apply": "Apply",
+      "collapse": "Collapse filter",
+      "expand": "Expand filter"
+    }
   }
 }

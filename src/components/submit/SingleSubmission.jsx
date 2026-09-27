@@ -16,13 +16,13 @@ import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faChevronDown, faChevronUp, faTags } from "@fortawesome/free-solid-svg-icons";
 import { Trans, useTranslation } from "react-i18next";
 
 import { durationToSeconds } from "../../util/data_util";
 import { DIFF_CONSTS, FormOptions } from "../../util/constants";
 import { useAuth } from "../../hooks/AuthProvider";
-import { ProofEmbed, StyledLink, TooltipInfoButton } from "../basic";
+import { BorderedBox, ProofEmbed, StyledLink, TooltipInfoButton } from "../basic";
 import {
   CampaignSelect,
   MapSelect,
@@ -38,6 +38,7 @@ import { DifficultyFracGrid } from "../forms/Submission";
 import { FullChallengeDisplay } from "../../pages/Submission";
 import { NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
+import { ChallengeTagChips, TagsEditor } from "../tags";
 
 import { CFCSelector, NotificationNotice, validateUrl, validateUrlNotRequired } from "./shared";
 
@@ -56,6 +57,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
   const [isAddingPlayer, setIsAddingPlayer] = useState(false);
   const [newPlayerName, setNewPlayerName] = useState("");
   const [showEmbed, setShowEmbed] = useState(false);
+  const [tagValueIds, setTagValueIds] = useState([]);
 
   const { mutateAsync: postPlayer } = usePostPlayer();
 
@@ -94,6 +96,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
       ...data,
       time_taken: durationToSeconds(data.time_taken),
       like_challenge: data.like_challenge,
+      tag_value_ids: tagValueIds.length > 0 ? tagValueIds : undefined,
     });
   });
   const errors = form.formState.errors;
@@ -133,6 +136,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
   const onChallengeSelect = (challenge) => {
     setChallenge(challenge);
     form.setValue("is_fc", getIsFcForChallenge(challenge));
+    setTagValueIds([]);
   };
   //#endregion
 
@@ -414,6 +418,16 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
           <Grid item xs="auto" display="flex" alignItems="center" justifyContent="center">
             <TooltipInfoButton title={t("date_achieved_note")} />
           </Grid>
+          {challenge !== null && !challenge.is_rejected && (
+            <Grid item xs={12} sm={12}>
+              <SubmissionTagsInput
+                challenge={challenge}
+                value={tagValueIds}
+                onChange={setTagValueIds}
+                canEditTeamTags={auth.hasHelperPriv}
+              />
+            </Grid>
+          )}
           <Grid item xs={12} sm={12}>
             <Button
               variant="contained"
@@ -430,6 +444,53 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
     </>
   );
   //#endregion
+}
+//#endregion
+
+//#region SubmissionTagsInput
+function SubmissionTagsInput({ challenge, value, onChange, canEditTeamTags }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "submit.tabs.single.tags" });
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <BorderedBox
+      sx={{
+        p: 0,
+        borderRadius: 1,
+        border: "1px solid rgba(255,255,255,0.3)",
+        "&:hover": { borderColor: "rgba(255,255,255,1)" },
+      }}
+    >
+      <Button
+        variant="text"
+        fullWidth
+        onClick={() => setExpanded(!expanded)}
+        startIcon={<FontAwesomeIcon icon={faTags} size="sm" />}
+        endIcon={<FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} size="sm" />}
+        sx={{ justifyContent: "flex-start", "& .MuiButton-endIcon": { ml: "auto" }, px: 2, py: 1.5 }}
+      >
+        {value.length > 0 ? t("toggle_selected", { count: value.length }) : t("toggle")}
+      </Button>
+      {expanded && (
+        <Stack direction="column" gap={2} sx={{ px: 2, py: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            {t("description")}
+          </Typography>
+          <Stack direction="column" gap={0.5}>
+            <Typography variant="subtitle2">{t("existing_tags")}</Typography>
+            <ChallengeTagChips
+              challengeId={challenge.id}
+              maxVisible={null}
+              clickable={false}
+              emptyText={t("no_tags")}
+            />
+          </Stack>
+          <Divider />
+          <TagsEditor value={value} onChange={onChange} canEditTeamTags={canEditTeamTags} />
+        </Stack>
+      )}
+    </BorderedBox>
+  );
 }
 //#endregion
 

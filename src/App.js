@@ -43,6 +43,8 @@ import {
   faPlayCircle,
   faQuestion,
   faRibbon,
+  faTags,
+  faCompass,
   faSearch,
   faServer,
   faSignIn,
@@ -97,7 +99,7 @@ import { PageIndex } from "./pages/Index";
 import { ProfileSettingsAlert } from "./components/AlertBanner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";
-import { JournalIcon, MemoWebsiteIcon, ObjectiveIcon } from "./components/goldberries";
+import { MemoWebsiteIcon, ObjectiveIcon } from "./components/goldberries";
 import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
 import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
 import { useKeyboardShortcut } from "./hooks/useKeyboardShortcut";
@@ -111,6 +113,7 @@ import { PageCompareChallenges } from "./pages/CompareChallenges";
 import { PageCredits } from "./pages/Credits";
 import { PageFAQ } from "./pages/FAQ";
 import { PageGoldenList } from "./pages/GoldenList";
+import { PageDiscovery } from "./pages/Discovery";
 import { LegalNoticePage } from "./pages/LegalNotice";
 import { PageMap } from "./pages/Map";
 import { PageMonthlyRecap } from "./pages/MonthlyRecap";
@@ -129,6 +132,7 @@ import { PageSuggestions } from "./pages/Suggestions";
 import { PageTest } from "./pages/Test";
 import { PageManageAccounts } from "./pages/manage/Accounts";
 import { PageManageBadges } from "./pages/manage/Badges";
+import { PageManageTags } from "./pages/manage/Tags";
 import { PageManageChallenges } from "./pages/manage/Challenges";
 import { PageFileUpload } from "./pages/manage/FileUpload";
 import { PageManagePosts } from "./pages/manage/Posts";
@@ -251,6 +255,14 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
+          {
+            path: "tags",
+            element: (
+              <ProtectedRoute needsHelper redirect="manage/tags">
+                <PageManageTags />
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
 
@@ -287,6 +299,7 @@ const router = createBrowserRouter([
 
       { path: "top-golden-list/:type?/:id?", element: <PageTopGoldenList /> },
       { path: "campaign-list/:type?", element: <PageGoldenList /> },
+      { path: "discovery", element: <PageDiscovery /> },
 
       { path: "rejected-challenges", element: <PageRejectedChallenges /> },
 
@@ -512,9 +525,9 @@ export function Layout() {
       name: t("campaigns_menu.name"),
       items: [
         {
-          name: t("campaigns_menu.campaign_list"),
-          path: "/campaign-list",
-          icon: <JournalIcon height="1.3em" />,
+          name: t("campaigns_menu.discovery"),
+          path: "/discovery",
+          icon: <FontAwesomeIcon icon={faCompass} />,
         },
         {
           name: t("campaigns_menu.rejected_challenges"),
@@ -616,6 +629,11 @@ export function Layout() {
           name: t("internal_menu.actions"),
           path: "/manage/actions",
           icon: <FontAwesomeIcon icon={faCogs} />,
+        },
+        {
+          name: t("internal_menu.manage_tags"),
+          path: "/manage/tags",
+          icon: <FontAwesomeIcon icon={faTags} />,
         },
         {
           name: t("internal_menu.test"),

@@ -23,7 +23,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faBasketShopping, faTags } from "@fortawesome/free-solid-svg-icons";
 import { inputBaseClasses } from "@mui/material/InputBase";
 
 import { useAuth } from "../../hooks/AuthProvider";
@@ -54,6 +54,7 @@ import { CreateAnyButton } from "../../pages/manage/Challenges";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { ChallengeDetailsListWrapper, CollectiblesInfoBox, NoteDisclaimer } from "../../pages/Challenge";
 import { CharsCountLabel } from "../../pages/Suggestions";
+import { ChallengeTagsEditorModal } from "../tags";
 import { durationToSeconds, getNavigatorLanguage, secondsToDuration } from "../../util/data_util";
 
 export function FormSubmissionWrapper({ id, onSave, ...props }) {
@@ -99,6 +100,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
   const mapCollectiblesModal = useModal(null, undefined, {
     actions: [ModalButtons.close],
   });
+  const tagsModal = useModal();
 
   const { mutate: saveSubmission } = usePostSubmission((submission) => {
     toast.success(t("feedback.updated"));
@@ -327,6 +329,16 @@ export function FormSubmission({ submission, onSave, ...props }) {
               </Tooltip>
             </>
           )}
+          {submission.challenge && !submission.challenge.is_rejected && (
+            <>
+              {!isHelper && !submission.challenge.map && <span style={{ flexGrow: 1 }} />}
+              <Tooltip arrow placement="top" title={t("edit_tags")}>
+                <CustomIconButton onClick={() => tagsModal.open()} sx={{ alignSelf: "stretch" }}>
+                  <FontAwesomeIcon icon={faTags} />
+                </CustomIconButton>
+              </Tooltip>
+            </>
+          )}
         </Stack>
 
         <TextField
@@ -538,6 +550,13 @@ export function FormSubmission({ submission, onSave, ...props }) {
         </Button>
       </form>
 
+      {submission.challenge && (
+        <ChallengeTagsEditorModal
+          modalHook={tagsModal}
+          challengeId={submission.challenge.id}
+          player={submission.player}
+        />
+      )}
       <CustomModal modalHook={mapCollectiblesModal} options={{}} maxWidth="md">
         {mapCollectiblesModal.data && (
           <>

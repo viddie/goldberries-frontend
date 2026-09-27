@@ -39,6 +39,7 @@ import {
   faMapLocation,
   faPlus,
   faSignsPost,
+  faTags,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
@@ -98,6 +99,7 @@ import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { jsonDateToJsDate } from "../util/util";
 import { COLLECTIBLES, getCollectibleIcon, getCollectibleName } from "../components/forms/Map";
 import { LikeButton } from "../components/likes";
+import { ChallengeTagsSection } from "../components/tags";
 import { API_BASE_URL } from "../util/constants";
 import { PlaceholderImage } from "../components/PlaceholderImage";
 
@@ -434,6 +436,12 @@ function ChallengeDetailsGrid({ map, challenge }) {
       <AuthorDetailsRow key="author" author_gb_id={map.author_gb_id} author_gb_name={map.author_gb_name} />,
     );
   }
+
+  rightItems.push(
+    <DetailsRow key="tags" label={t("tags")} icon={<FontAwesomeIcon icon={faTags} fixedWidth />}>
+      <ChallengeTagsSection challenge={challenge} maxVisible={6} showIcon={false} sx={{ rowGap: 0.5 }} />
+    </DetailsRow>,
+  );
 
   if (challenge.is_rejected) {
     rightItems.push(

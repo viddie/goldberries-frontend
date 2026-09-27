@@ -21,6 +21,7 @@ import {
   faHeart,
   faInfoCircle,
   faPlus,
+  faTags,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,7 @@ import {
   OtherIcon,
   VerificationStatusChip,
 } from "../components/goldberries";
-import { CustomModal, useModal } from "../hooks/useModal";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   FormMapWrapper,
   COLLECTIBLES,
@@ -56,6 +57,7 @@ import { Changelog } from "../components/Changelog";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../components/stats_page/Stats";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { LikeButton } from "../components/likes";
+import { ChallengeTagsSection, MapTagsOverview } from "../components/tags";
 import { MapDataDialog } from "../components/map_data/MapDataDialog";
 
 import { MapNoProgressTooltip } from "./Campaign";
@@ -136,6 +138,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
   };
 
   const editMapModal = useModal();
+  const tagsOverviewModal = useModal(null, undefined, { actions: [ModalButtons.close] });
   const mapDataModal = useModal(
     undefined,
     !isModal
@@ -212,6 +215,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
           mapDataExists={mapDataExists}
           mapDataLoading={mapDataLoading}
           onMapDataClick={handleMapDataOpen}
+          onAllTagsClick={() => tagsOverviewModal.open()}
         />
       </Box>
 
@@ -308,6 +312,11 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
               </Button>
             </StyledLink>
           </Stack>
+          <ChallengeTagsSection
+            key={"tags-" + selectedChallenge.id}
+            challenge={selectedChallenge}
+            sx={{ mb: 1 }}
+          />
           <ChallengeSubmissionTable key={selectedChallenge.id} challenge={selectedChallenge} />
           {settings.general.showMedianTimeTaken && <MedianTimeTaken challenge={selectedChallenge} />}
           <Divider sx={{ my: 2 }}>
@@ -328,6 +337,9 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
 
       <CustomModal modalHook={editMapModal} options={{ hideFooter: true }}>
         <FormMapWrapper id={id} onSave={editMapModal.close} />
+      </CustomModal>
+      <CustomModal modalHook={tagsOverviewModal} maxWidth="md">
+        {tagsOverviewModal.isVisible && <MapTagsOverview map={map} />}
       </CustomModal>
       <CustomModal modalHook={mapDataModal} options={{ hideFooter: true }} maxWidth={false} fullWidth>
         <MapDataDialog
@@ -372,7 +384,7 @@ function MapDataDetailsRow({ mapDataExists, mapDataLoading, onClick }) {
 }
 
 //#region Map Details Grid
-function MapDetailsGrid({ map, mapDataExists, mapDataLoading, onMapDataClick }) {
+function MapDetailsGrid({ map, mapDataExists, mapDataLoading, onMapDataClick, onAllTagsClick }) {
   const campaign = map.campaign;
 
   const lobbyInfo = getMapLobbyInfo(map);
@@ -425,7 +437,23 @@ function MapDetailsGrid({ map, mapDataExists, mapDataLoading, onMapDataClick }) 
     />,
   );
 
+  // Maps with many collectibles already have a tall left column
+  const tagsRow = <MapTagsDetailsRow key="tags" onClick={onAllTagsClick} />;
+  if ((map.collectibles?.length ?? 0) < 8) leftItems.push(tagsRow);
+  else rightItems.push(tagsRow);
+
   return <TwoColumnDetailsGrid leftItems={leftItems} rightItems={rightItems} />;
+}
+
+function MapTagsDetailsRow({ onClick }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "map" });
+  return (
+    <DetailsRow label={t("info_boxes.tags")} icon={<FontAwesomeIcon icon={faTags} fixedWidth />}>
+      <Button onClick={onClick} variant="outlined" size="small" startIcon={<FontAwesomeIcon icon={faTags} />}>
+        {t("buttons.all_tags")}
+      </Button>
+    </DetailsRow>
+  );
 }
 
 // challenge.likes -> this displays the total and avg likes for all challenges in the map
