@@ -2638,7 +2638,7 @@
     },
     "editor": {
       "no_tags_available": "There are no tags available yet.",
-      "common_tooltip": "All challenges can have this tag.",
+      "common_tooltip": "All challenges should have this tag.",
       "team_only_tooltip": "Only team members can assign this tag",
       "clear": "Clear",
       "range_hint": "Click the first and last value to select a range",

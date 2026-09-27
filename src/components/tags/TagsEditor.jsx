@@ -99,7 +99,7 @@ export function TagsEditor({ value, onChange, canEditTeamTags = false, disabled 
 function CategoryHeaderChip({ category, isCollapsed, onClick }) {
   const chip = (
     <SegmentedChip
-      size="medium"
+      size="large"
       onClick={onClick}
       segments={[
         {
@@ -112,7 +112,6 @@ function CategoryHeaderChip({ category, isCollapsed, onClick }) {
           key: "toggle",
           label: <FontAwesomeIcon icon={isCollapsed ? faChevronRight : faChevronDown} fixedWidth size="sm" />,
           color: getTagCategoryShadeColor(category),
-          sx: { px: 1 },
         },
       ]}
     />
@@ -163,7 +162,7 @@ function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled 
   return (
     <Box sx={{ p: 1.25, borderRadius: 1, backgroundColor: ROW_BACKGROUND }}>
       <Grid container rowSpacing={1} columnSpacing={2} alignItems="center">
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={6}>
           {!implicit && (
             <Typography variant="body1" fontWeight="bold" component="div" sx={{ mb: 0.5 }}>
               <TagNameLabel tag={tag} />
@@ -204,7 +203,7 @@ function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled 
             </Typography>
           )}
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6}>
           <Typography
             variant="caption"
             color="text.secondary"
@@ -228,7 +227,12 @@ function TagNameLabel({ tag }) {
       <span>{tag.name}</span>
       {tag.is_common && (
         <Tooltip title={t("common_tooltip")} arrow placement="top">
-          <FontAwesomeIcon icon={faStar} size="xs" color="#d4a000" />
+          <FontAwesomeIcon
+            icon={faStar}
+            size="xs"
+            color="#d4a000"
+            style={{ position: "relative", bottom: "2px" }}
+          />
         </Tooltip>
       )}
       {!tag.is_player_assignable && (

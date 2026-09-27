@@ -123,6 +123,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
   const auth = useAuth();
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isSmScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const navigate = useNavigate();
   const query = useGetMap(id);
   const mapDataExistsQuery = useCheckMapDataExists(id);
@@ -315,6 +316,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
           <ChallengeTagsSection
             key={"tags-" + selectedChallenge.id}
             challenge={selectedChallenge}
+            maxVisible={isSmScreen ? 6 : 4}
             sx={{ mb: 1 }}
           />
           <ChallengeSubmissionTable key={selectedChallenge.id} challenge={selectedChallenge} />

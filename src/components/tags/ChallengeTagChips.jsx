@@ -31,7 +31,7 @@ export function ChallengeTagChips({
   highlightedValueIds = null,
   clickable = true,
   emptyText = null,
-  size = "small",
+  size = "medium",
   sx,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
@@ -84,7 +84,7 @@ export function ChallengeTagChips({
         ))}
         {hasHidden && (
           <Chip
-            size={size}
+            size={size === "large" ? "medium" : "small"}
             variant="outlined"
             label={expanded ? t("show_less") : t("show_more", { count: resolved.length - maxVisible })}
             onClick={() => setExpanded(!expanded)}

@@ -359,6 +359,7 @@ export function FadingMapBanner({ id, alt, src, href, sx, size = "medium" }) {
 function ChallengeDetailsGrid({ map, challenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const campaign = getChallengeCampaign(challenge);
 
   const lobbyInfo = getMapLobbyInfo(map);
@@ -439,7 +440,7 @@ function ChallengeDetailsGrid({ map, challenge }) {
 
   rightItems.push(
     <DetailsRow key="tags" label={t("tags")} icon={<FontAwesomeIcon icon={faTags} fixedWidth />}>
-      <ChallengeTagsSection challenge={challenge} maxVisible={6} showIcon={false} sx={{ rowGap: 0.5 }} />
+      <ChallengeTagsSection challenge={challenge} maxVisible={isMobile ? 4 : 6} showIcon={false} sx={{ rowGap: 0.5 }} />
     </DetailsRow>,
   );
 

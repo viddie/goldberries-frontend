@@ -6,19 +6,20 @@ import { forwardRef } from "react";
 const HIGHLIGHT_SHADOW = "0 0 0 1.5px rgba(255,255,255,0.9), 0 0 6px 1px rgba(255,255,255,0.45)";
 
 const SIZES = {
-  small: { height: 24, px: 1, fontSize: "0.8125rem" },
-  medium: { height: 32, px: 1.5, fontSize: "0.875rem" },
+  small: { height: 20, outerPx: 0.75, innerPx: 0.5, fontSize: "0.7125rem" },
+  medium: { height: 24, outerPx: 1, innerPx: 0.75, fontSize: "0.8125rem" },
+  large: { height: 32, outerPx: 1.5, innerPx: 1.25, fontSize: "0.875rem" },
 };
 
 // A chip made up of multiple colored segments. Only the outer ends of the chip are rounded, inner segments are flush.
 // segments: [{ key?, label, color, textColor?, sx? }], falsy entries are skipped
 // highlighted: draws a bright ring around the chip
 export const SegmentedChip = forwardRef(function SegmentedChip(
-  { segments, size = "small", onClick, disabled = false, highlighted = false, sx, ...props },
+  { segments, size = "medium", onClick, disabled = false, highlighted = false, sx, ...props },
   ref,
 ) {
   const theme = useTheme();
-  const dims = SIZES[size] ?? SIZES.small;
+  const dims = SIZES[size] ?? SIZES.medium;
   const visibleSegments = segments.filter(Boolean);
   const isClickable = !!onClick && !disabled;
 
@@ -53,7 +54,8 @@ export const SegmentedChip = forwardRef(function SegmentedChip(
         display: "flex",
         alignItems: "center",
         minWidth: 0,
-        px: dims.px,
+        pl: index === 0 ? dims.outerPx : dims.innerPx,
+        pr: index === visibleSegments.length - 1 ? dims.outerPx : dims.innerPx,
         whiteSpace: "nowrap",
         backgroundColor: segment.color,
         color: segment.textColor ?? getSegmentTextColor(theme, segment.color),

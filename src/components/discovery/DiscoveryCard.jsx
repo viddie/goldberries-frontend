@@ -161,20 +161,19 @@ function OverlayCountChip({ icon, count, tooltip }) {
   return (
     <Tooltip title={tooltip} arrow>
       <SegmentedChip
+        size="small"
         segments={[
           {
             key: "icon",
             label: <FontAwesomeIcon icon={icon} style={{ fontSize: "0.7rem" }} />,
             color: OVERLAY_ICON_COLOR,
             textColor: "rgba(255,255,255,0.7)",
-            sx: { pl: 1, pr: 0.75 },
           },
           {
             key: "count",
             label: count,
             color: OVERLAY_COUNT_COLOR,
             textColor: OVERLAY_TEXT_COLOR,
-            sx: { pl: 0.75, pr: 1 },
           },
         ]}
       />

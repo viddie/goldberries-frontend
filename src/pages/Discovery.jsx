@@ -48,16 +48,17 @@ const GROUP_ICONS = {
 const DESCRIBED_GROUPS = ["trending"];
 // Cards per row on large screens, smaller screens always use fewer columns
 const COLUMN_OPTIONS = [3, 4];
+const DEFAULT_COLUMNS = 3;
 const OVERVIEW_ROWS = 2;
 const SEED_MAX = 2147483647;
 const PER_PAGE_GROUP = 24;
 
 export function PageDiscovery() {
   const { t } = useTranslation(undefined, { keyPrefix: "discovery" });
-  const [storedColumns, setColumns] = useLocalStorage("discovery_columns", 4);
+  const [storedColumns, setColumns] = useLocalStorage("discovery_columns", DEFAULT_COLUMNS);
   const [searchParams, setSearchParams] = useSearchParams();
   const { query: tagQuery, lookup } = useTagLookup();
-  const columns = COLUMN_OPTIONS.includes(storedColumns) ? storedColumns : 4;
+  const columns = COLUMN_OPTIONS.includes(storedColumns) ? storedColumns : DEFAULT_COLUMNS;
 
   const filterParam = searchParams.get("filter");
   const groupParam = searchParams.get("group");

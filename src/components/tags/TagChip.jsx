@@ -19,7 +19,7 @@ export function TagChip({
   onClick,
   highlighted = false,
   showTooltip = true,
-  size = "small",
+  size = "medium",
   sx,
   ...props
 }) {
@@ -42,7 +42,6 @@ export function TagChip({
           color: shade,
           sx: {
             fontWeight: "bold",
-            px: 0.75,
             borderLeft: hasQualifier ? "1px solid rgba(0,0,0,0.3)" : undefined,
           },
         },

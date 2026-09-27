@@ -58,7 +58,6 @@ function EditTagsChip({ challengeId, playerId, onClick }) {
           key: "icon",
           label: <FontAwesomeIcon icon={hasTags ? faPen : faPlus} size="sm" />,
           color: safeLighten(color, 0.45),
-          sx: { pl: 1, pr: 0.75 },
         },
         { key: "text", label: hasTags ? t("edit") : t("add"), color, sx: { fontWeight: 500 } },
       ]}
