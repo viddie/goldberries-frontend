@@ -34,6 +34,8 @@ import {
   DifficultySelectControlled,
 } from "../goldberries";
 import { usePostPlayer, usePostSubmission } from "../../hooks/useApi";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../../pages/Account";
 import { DifficultyFracGrid } from "../forms/Submission";
 import { FullChallengeDisplay } from "../../pages/Submission";
 import { NoteDisclaimer } from "../../pages/Challenge";
@@ -64,6 +66,10 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
   const { mutate: submitRun, isLoading: isSubmitting } = usePostSubmission((submission) => {
     navigate("/submission/" + submission.id);
   });
+  const { isRestricted: submitRestricted } = useRestriction(RESTRICTIONS.submit);
+  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+    RESTRICTIONS.suggest_difficulty,
+  );
 
   //#region Form Setup
   const form = useForm({
@@ -340,6 +346,8 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
                   setDifficultyId={field.onChange}
                   isSuggestion
                   fullWidth
+                  disabled={difficultyRestricted}
+                  helperText={difficultyRestrictedMessage}
                 />
               )}
             />
@@ -367,7 +375,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
                 <DifficultyFracGrid
                   value={field.value}
                   onChange={field.onChange}
-                  disabled={suggested_difficulty_id === null}
+                  disabled={suggested_difficulty_id === null || difficultyRestricted}
                 />
               )}
             />
@@ -433,7 +441,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
               variant="contained"
               fullWidth
               onClick={onSubmit}
-              disabled={challenge === null || selectedPlayer === null || isSubmitting}
+              disabled={challenge === null || selectedPlayer === null || isSubmitting || submitRestricted}
             >
               {t("button")}
             </Button>
@@ -451,6 +459,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
 function SubmissionTagsInput({ challenge, value, onChange, canEditTeamTags }) {
   const { t } = useTranslation(undefined, { keyPrefix: "submit.tabs.single.tags" });
   const [expanded, setExpanded] = useState(false);
+  const { isRestricted, message } = useRestriction(RESTRICTIONS.add_tags);
 
   return (
     <BorderedBox
@@ -465,13 +474,14 @@ function SubmissionTagsInput({ challenge, value, onChange, canEditTeamTags }) {
         variant="text"
         fullWidth
         onClick={() => setExpanded(!expanded)}
+        disabled={isRestricted}
         startIcon={<FontAwesomeIcon icon={faTags} size="sm" />}
         endIcon={<FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} size="sm" />}
         sx={{ justifyContent: "flex-start", "& .MuiButton-endIcon": { ml: "auto" }, px: 2, py: 1.5 }}
       >
-        {value.length > 0 ? t("toggle_selected", { count: value.length }) : t("toggle")}
+        {isRestricted ? message : value.length > 0 ? t("toggle_selected", { count: value.length }) : t("toggle")}
       </Button>
-      {expanded && (
+      {expanded && !isRestricted && (
         <Stack direction="column" gap={2} sx={{ px: 2, py: 2 }}>
           <Typography variant="body2" color="text.secondary">
             {t("description")}

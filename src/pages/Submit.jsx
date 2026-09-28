@@ -7,6 +7,9 @@ import { useTranslation } from "react-i18next";
 import { fetchChallenge } from "../util/api";
 import { BasicContainerBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../components/basic";
 import { SingleSubmission, MultiSubmission, NewChallengeSubmission } from "../components/submit";
+import { RestrictionNotice } from "../components/goldberries";
+
+import { RESTRICTIONS } from "./Account";
 
 //#region PageSubmit
 export function PageSubmit() {
@@ -69,6 +72,7 @@ export function PageSubmit() {
         <Tab label={t("tabs.multi.label")} value="multi-challenge" />
         <Tab label={t("tabs.new.label")} value="new-challenge" />
       </Tabs>
+      <RestrictionNotice restriction={RESTRICTIONS.submit} sx={{ mt: 2 }} />
       {selectedTab === "single-challenge" && (
         <SingleSubmission
           defaultCampaign={challenge?.map?.campaign}

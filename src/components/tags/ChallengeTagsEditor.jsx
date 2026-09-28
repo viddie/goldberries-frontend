@@ -1,15 +1,18 @@
 import { faPen, faPlus, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { useAuth } from "../../hooks/AuthProvider";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../../pages/Account";
 import { getQueryData, useGetTagAssignment, usePostTagAssignment } from "../../hooks/useApi";
 import { CustomModal, useModal } from "../../hooks/useModal";
 import { ErrorDisplay, LoadingSpinner, SegmentedChip, safeLighten } from "../basic";
+import { RestrictionNotice } from "../goldberries";
 
 import { ChallengeTagChips } from "./ChallengeTagChips";
 import { TagsEditor } from "./TagsEditor";
@@ -47,12 +50,16 @@ function EditTagsChip({ challengeId, playerId, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
   const theme = useTheme();
   const query = useGetTagAssignment(challengeId, playerId);
+  const { isRestricted, message } = useRestriction(RESTRICTIONS.add_tags);
   const hasTags = (getQueryData(query)?.tag_value_ids?.length ?? 0) > 0;
   const color = theme.palette.primary.main;
+  // Restricted players can still remove their own tags, so only block the chip if there is nothing to remove
+  const isDisabled = isRestricted && !hasTags;
 
-  return (
+  const chip = (
     <SegmentedChip
       onClick={() => onClick()}
+      disabled={isDisabled}
       segments={[
         {
           key: "icon",
@@ -62,6 +69,12 @@ function EditTagsChip({ challengeId, playerId, onClick }) {
         { key: "text", label: hasTags ? t("edit") : t("add"), color, sx: { fontWeight: 500 } },
       ]}
     />
+  );
+  if (!isDisabled) return chip;
+  return (
+    <Tooltip title={message} arrow placement="top">
+      {chip}
+    </Tooltip>
   );
 }
 //#endregion
@@ -90,6 +103,7 @@ function ChallengeTagsEditor({ challengeId, player, onClose }) {
     toast.success(t("feedback.saved"));
     onClose();
   });
+  const { isRestricted } = useRestriction(RESTRICTIONS.add_tags);
 
   const assignment = getQueryData(query);
   useEffect(() => {
@@ -104,6 +118,7 @@ function ChallengeTagsEditor({ challengeId, player, onClose }) {
 
   return (
     <Stack direction="column" gap={2}>
+      <RestrictionNotice restriction={RESTRICTIONS.add_tags} />
       <Box>
         <Typography variant="subtitle2" gutterBottom>
           {t("current_tags")}
@@ -128,6 +143,7 @@ function ChallengeTagsEditor({ challengeId, player, onClose }) {
           onChange={setValue}
           canEditTeamTags={auth.hasHelperPriv}
           disabled={isSaving}
+          allowedValueIds={isRestricted ? (assignment?.tag_value_ids ?? []) : null}
         />
       )}
       <Divider />

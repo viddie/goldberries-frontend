@@ -42,3 +42,4 @@ export { ProofExternalLinkButton } from "./ProofExternalLinkButton";
 export { ChallengeInline } from "./ChallengeInline";
 export { SubmissionInspectButton } from "./SubmissionInspectButton";
 export { CollectibleChip } from "./CollectibleChip";
+export { RestrictionNotice } from "./RestrictionNotice";

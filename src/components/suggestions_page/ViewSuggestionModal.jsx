@@ -25,8 +25,10 @@ import {
   usePostSuggestionVote,
 } from "../../hooks/useApi";
 import { useAuth } from "../../hooks/AuthProvider";
+import { useRestriction } from "../../hooks/useRestriction";
 import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic";
-import { PlayerChip } from "../goldberries";
+import { PlayerChip, RestrictionNotice } from "../goldberries";
+import { RESTRICTIONS } from "../../pages/Account";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort, shouldHideVoteCount } from "../../util/data_util";
@@ -60,6 +62,7 @@ export function ViewSuggestionModal({ id }) {
     query.refetch();
     toast.success(t("feedback.updated"));
   });
+  const { isRestricted: voteRestricted } = useRestriction(RESTRICTIONS.vote);
 
   useEffect(() => {
     if (query.isSuccess) {
@@ -103,12 +106,15 @@ export function ViewSuggestionModal({ id }) {
     challenge.submissions.some((s) => s.player_id === auth.user.player_id);
   const isPlacementSuggestion = suggestion.suggested_difficulty_id !== null;
   const requiresComment = !selfHasDoneChallenge && isPlacementSuggestion;
+  // Changing a vote or its comment deletes and re-posts the vote, so restricted players can't interact at all
   const voteButtonsDisabled =
-    (!auth.hasPlayerClaimed ||
+    voteRestricted ||
+    ((!auth.hasPlayerClaimed ||
       (isExpired && !auth.hasHelperPriv) ||
       (requiresComment && userText.trim().length < 10)) &&
-    !hasVoted;
-  const commentFieldDisabled = voteMutationLoading || (isExpired && !auth.hasHelperPriv && !hasVoted);
+      !hasVoted);
+  const commentFieldDisabled =
+    voteRestricted || voteMutationLoading || (isExpired && !auth.hasHelperPriv && !hasVoted);
 
   const vote = (vote) => {
     if (hasVoted) {
@@ -301,6 +307,7 @@ export function ViewSuggestionModal({ id }) {
                 {t("claim_player")}
               </Typography>
             )}
+            <RestrictionNotice restriction={RESTRICTIONS.vote} sx={{ mt: 0.5 }} />
           </Stack>
         </Grid>
         {auth.hasPlayerClaimed && (
@@ -325,7 +332,7 @@ export function ViewSuggestionModal({ id }) {
                 </Typography>
               )}
             </Stack>
-            {commentChanged && (
+            {commentChanged && !voteRestricted && (
               <Button
                 variant="outlined"
                 onClick={updateComment}

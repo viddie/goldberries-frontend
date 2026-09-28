@@ -1,4 +1,6 @@
 import {
+  alpha,
+  Box,
   Button,
   Checkbox,
   Divider,
@@ -21,7 +23,9 @@ import {
   faArrowDown,
   faArrowRightArrowLeft,
   faArrowUp,
+  faBan,
   faCheckSquare,
+  faCircleCheck,
   faEdit,
   faEnvelope,
   faLink,
@@ -60,10 +64,12 @@ import {
   useRevokeApiKey,
 } from "../hooks/useApi";
 import {
+  EmoteImage,
   INPUT_METHOD_ICONS,
   InputMethodIcon,
   PlayerChip,
   PlayerSubmissionSelect,
+  RestrictionNotice,
   SubmissionEmbed,
   VerificationStatusChip,
 } from "../components/goldberries";
@@ -71,6 +77,7 @@ import { API_URL, DISCORD_INVITE, FormOptions } from "../util/constants";
 import { isValidHttpUrl, jsonDateToJsDate } from "../util/util";
 import { getPlayerNameColorStyle } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
+import { useRestriction } from "../hooks/useRestriction";
 
 import { SettingsEntry } from "./AppSettings";
 import { CharsCountLabel } from "./Suggestions";
@@ -82,6 +89,15 @@ export const NOTIFICATIONS = {
   chall_moved: { key: "challenge_moved", flag: 8 },
   suggestion_accepted: { key: "suggestion_accepted", flag: 16 },
   new_hardest: { key: "new_hardest", flag: 32 },
+};
+export const RESTRICTIONS = {
+  rename: { key: "rename", flag: 1 },
+  profile: { key: "profile", flag: 2 },
+  submit: { key: "submit", flag: 4 },
+  suggest_difficulty: { key: "suggest_difficulty", flag: 8 },
+  create_suggestion: { key: "create_suggestion", flag: 16 },
+  vote: { key: "vote", flag: 32 },
+  add_tags: { key: "add_tags", flag: 64 },
 };
 export function hasFlag(flags, flag) {
   return (flags & flag) === flag;
@@ -218,6 +234,13 @@ export function UserAccountLoginMethodsForm() {
 
   return (
     <form>
+      <AccountStandingSection />
+
+      <Divider sx={{ my: 2 }} />
+
+      <Typography variant="h5" gutterBottom>
+        {t("login_header")}
+      </Typography>
       <FormHelperText>{t("note")}</FormHelperText>
 
       <Typography variant="h6" gutterBottom>
@@ -347,6 +370,58 @@ export function UserAccountLoginMethodsForm() {
   );
 }
 
+function AccountStandingSection() {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.login_methods.standing" });
+  const { t: t_r } = useTranslation(undefined, { keyPrefix: "restrictions.types" });
+  const auth = useAuth();
+
+  const activeRestrictions = Object.values(RESTRICTIONS)
+    .sort((a, b) => a.flag - b.flag)
+    .filter((restriction) => hasFlag(auth.user.restrictions ?? 0, restriction.flag));
+  const isGoodStanding = activeRestrictions.length === 0;
+  const paletteKey = isGoodStanding ? "success" : "error";
+
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        {t("header")}
+      </Typography>
+      <Box
+        sx={{
+          p: 2,
+          borderRadius: 1,
+          border: "1px solid",
+          borderColor: (theme) => alpha(theme.palette[paletteKey].main, 0.6),
+          backgroundColor: (theme) => alpha(theme.palette[paletteKey].main, 0.12),
+        }}
+      >
+        {isGoodStanding ? (
+          <Stack direction="row" alignItems="center" gap={1}>
+            <FontAwesomeIcon icon={faCircleCheck} color="green" />
+            <Typography variant="body1">{t("no_restrictions")}</Typography>
+            <EmoteImage emote="gladeline.png" height="1.5em" />
+          </Stack>
+        ) : (
+          <>
+            <Typography variant="body1">{t("has_restrictions")}</Typography>
+            <Stack direction="column" gap={0.5} sx={{ mt: 1, mb: 1 }}>
+              {activeRestrictions.map((restriction) => (
+                <Stack key={restriction.key} direction="row" alignItems="center" gap={1}>
+                  <FontAwesomeIcon icon={faBan} color="#f44336" fixedWidth />
+                  <Typography variant="body1">{t_r(restriction.key + ".label")}</Typography>
+                </Stack>
+              ))}
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              {t("contact")}
+            </Typography>
+          </>
+        )}
+      </Box>
+    </>
+  );
+}
+
 export function UserAccountNotificationsForm() {
   const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.notifications" });
   const { t: t_lm } = useTranslation(undefined, { keyPrefix: "account.tabs.login_methods" });
@@ -432,6 +507,7 @@ export function UserAccountProfileForm() {
     if (account.id === auth.user.id) auth.checkSession();
     toast.success(t("feedback.updated"));
   }, true);
+  const { isRestricted: profileRestricted } = useRestriction(RESTRICTIONS.profile);
 
   const form = useForm({
     mode: "onBlur",
@@ -575,11 +651,19 @@ export function UserAccountProfileForm() {
       <Divider sx={{ my: 2 }} />
 
       <Typography variant="h6">{t("about_me.label")}</Typography>
+      <RestrictionNotice restriction={RESTRICTIONS.profile} sx={{ mb: 1 }} />
       <Controller
         name="about_me"
         control={form.control}
         render={({ field }) => (
-          <TextField {...field} fullWidth multiline minRows={4} placeholder={t("about_me.placeholder")} />
+          <TextField
+            {...field}
+            fullWidth
+            multiline
+            minRows={4}
+            placeholder={t("about_me.placeholder")}
+            disabled={profileRestricted}
+          />
         )}
       />
       <CharsCountLabel text={formAccount.about_me} maxChars={5000} />
@@ -629,10 +713,13 @@ export function UserAccountProfileForm() {
 
       <Typography variant="h6">{t("custom_links.label")}</Typography>
       <Typography variant="body2">{t("custom_links.note")}</Typography>
+      <RestrictionNotice restriction={RESTRICTIONS.profile} sx={{ mt: 1 }} />
       <Controller
         name="links"
         control={form.control}
-        render={({ field }) => <ManageUserLinks links={field.value} setLinks={field.onChange} />}
+        render={({ field }) => (
+          <ManageUserLinks links={field.value} setLinks={field.onChange} disabled={profileRestricted} />
+        )}
       />
 
       <Divider sx={{ my: 2 }} />
@@ -651,7 +738,7 @@ export function UserAccountProfileForm() {
   );
 }
 
-export function ManageUserLinks({ links, setLinks }) {
+export function ManageUserLinks({ links, setLinks, disabled = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.custom_links" });
   const deleteLink = (index) => {
     setLinks(links.filter((_, i) => i !== index));
@@ -670,6 +757,7 @@ export function ManageUserLinks({ links, setLinks }) {
         color="primary"
         startIcon={<FontAwesomeIcon icon={faLink} />}
         onClick={addLink}
+        disabled={disabled}
         sx={{ mt: 2 }}
       >
         {t("add_link")}
@@ -687,6 +775,7 @@ export function ManageUserLinks({ links, setLinks }) {
                   value={link}
                   onChange={(e) => changeLink(index, e.target.value)}
                   fullWidth
+                  disabled={disabled}
                   error={!!error}
                   helperText={error}
                 />
@@ -695,6 +784,7 @@ export function ManageUserLinks({ links, setLinks }) {
                   color="error"
                   startIcon={<FontAwesomeIcon icon={faLinkSlash} />}
                   onClick={() => deleteLink(index)}
+                  disabled={disabled}
                 >
                   {t("remove_link")}
                 </Button>
@@ -857,6 +947,7 @@ export function UserAccountRenameForm() {
     toast.success(t("feedback.renamed"));
     auth.checkSession();
   });
+  const { isRestricted: renameRestricted } = useRestriction(RESTRICTIONS.rename);
 
   const form = useForm({
     mode: "onBlur",
@@ -916,13 +1007,14 @@ export function UserAccountRenameForm() {
           {t("cannot_rename", { time: formatTime(timeUntilRename) })}
         </Typography>
       )}
+      <RestrictionNotice restriction={RESTRICTIONS.rename} sx={{ mt: 1 }} />
 
       <form>
         <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
           <TextField
             label={t("new_name")}
             fullWidth
-            disabled={!auth.hasPlayerClaimed}
+            disabled={!auth.hasPlayerClaimed || renameRestricted}
             {...form.register("name", FormOptions.PlayerName(t_ff))}
             error={!!errors.name}
             helperText={errors.name?.message}
@@ -942,7 +1034,7 @@ export function UserAccountRenameForm() {
           <Button
             variant="contained"
             color="primary"
-            disabled={!auth.hasPlayerClaimed || !form.formState.isValid || !canRename}
+            disabled={!auth.hasPlayerClaimed || !form.formState.isValid || !canRename || renameRestricted}
             onClick={onSubmit}
             startIcon={<FontAwesomeIcon icon={faEdit} />}
           >

@@ -27,6 +27,8 @@ import { faArrowRight, faBasketShopping, faTags } from "@fortawesome/free-solid-
 import { inputBaseClasses } from "@mui/material/InputBase";
 
 import { useAuth } from "../../hooks/AuthProvider";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../../pages/Account";
 import { fetchSubmission } from "../../util/api";
 import {
   CustomIconButton,
@@ -106,6 +108,11 @@ export function FormSubmission({ submission, onSave, ...props }) {
     toast.success(t("feedback.updated"));
     if (onSave) onSave(submission);
   });
+  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+    RESTRICTIONS.suggest_difficulty,
+  );
+  // The backend only keeps the suggested difficulty of the restricted player's own submissions
+  const isOwnDifficultyRestricted = difficultyRestricted && submission.player_id === auth.user?.player_id;
 
   const [challenge, setChallenge] = useState(submission.challenge ?? null);
   const [player, setPlayer] = useState(submission.player ?? null);
@@ -393,6 +400,8 @@ export function FormSubmission({ submission, onSave, ...props }) {
                   setDifficultyId={field.onChange}
                   isSuggestion
                   fullWidth
+                  disabled={isOwnDifficultyRestricted}
+                  helperText={isOwnDifficultyRestricted ? difficultyRestrictedMessage : undefined}
                 />
               )}
             />
@@ -420,7 +429,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
             <DifficultyFracGrid
               value={field.value}
               onChange={field.onChange}
-              disabled={suggested_difficulty_id === null}
+              disabled={suggested_difficulty_id === null || isOwnDifficultyRestricted}
               compact
             />
           )}

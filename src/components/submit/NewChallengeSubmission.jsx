@@ -22,6 +22,8 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { ProofEmbed, StyledLink, TooltipInfoButton } from "../basic";
 import { PlayerSelect, PlayerChip, DateAchievedTimePicker, DifficultySelectControlled } from "../goldberries";
 import { usePostSubmission } from "../../hooks/useApi";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../../pages/Account";
 import { getCollectibleOptions, getCollectibleVariantOptions } from "../forms/Map";
 import { StringListEditor } from "../StringListEditor";
 import { DifficultyFracGrid } from "../forms/Submission";
@@ -45,6 +47,10 @@ export function NewChallengeSubmission({}) {
   const { mutate: submitRun, isLoading: isSubmitting } = usePostSubmission((submission) => {
     navigate("/submission/" + submission.id);
   });
+  const { isRestricted: submitRestricted } = useRestriction(RESTRICTIONS.submit);
+  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+    RESTRICTIONS.suggest_difficulty,
+  );
 
   //#region Form Setup
   const form = useForm({
@@ -284,6 +290,8 @@ export function NewChallengeSubmission({}) {
                   setDifficultyId={field.onChange}
                   isSuggestion
                   fullWidth
+                  disabled={difficultyRestricted}
+                  helperText={difficultyRestrictedMessage}
                 />
               )}
             />
@@ -311,7 +319,7 @@ export function NewChallengeSubmission({}) {
                 <DifficultyFracGrid
                   value={field.value}
                   onChange={field.onChange}
-                  disabled={suggested_difficulty_id === null}
+                  disabled={suggested_difficulty_id === null || difficultyRestricted}
                 />
               )}
             />
@@ -350,7 +358,7 @@ export function NewChallengeSubmission({}) {
             <TooltipInfoButton title={t_ts("date_achieved_note")} />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Button variant="contained" fullWidth onClick={onSubmit} disabled={isSubmitting}>
+            <Button variant="contained" fullWidth onClick={onSubmit} disabled={isSubmitting || submitRestricted}>
               {t("button")}
             </Button>
           </Grid>

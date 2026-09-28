@@ -447,6 +447,13 @@
       "is_admin": "Is Admin",
       "logout_user": "Logout User",
       "role": "Role",
+      "restrictions": {
+        "toggle": "Restrictions",
+        "toggle_active_one": "Restrictions ({{count}} active)",
+        "toggle_active_other": "Restrictions ({{count}} active)",
+        "description": "Restricted features can't be used by this account anymore. Changes are applied when updating the account.",
+        "no_permission": "You can't change the restrictions of this account, as it doesn't have a lower role than you and isn't your own account."
+      },
       "delete": {
         "title": "Delete Account",
         "description": "Are you sure you want to delete this account? This action is irreversible.",
@@ -1195,7 +1202,14 @@
     "no_player_claimed": "You haven't claimed a player yet. Head over to <CustomLink>this page</CustomLink> to create or claim one!",
     "tabs": {
       "login_methods": {
-        "label": "Login Methods",
+        "label": "General",
+        "standing": {
+          "header": "Account Standing",
+          "no_restrictions": "Your account has no restrictions",
+          "has_restrictions": "The following features are restricted on your account:",
+          "contact": "If you have questions about these restrictions, please contact the team."
+        },
+        "login_header": "Login",
         "feedback": {
           "updated": "Account updated"
         },
@@ -2716,6 +2730,39 @@
       "apply": "Apply",
       "collapse": "Collapse filter",
       "expand": "Expand filter"
+    }
+  },
+  "restrictions": {
+    "notice": "This feature is restricted: {{reason}}",
+    "types": {
+      "rename": {
+        "label": "Renaming yourself",
+        "description": "Can't rename your own player."
+      },
+      "profile": {
+        "label": "Editing certain profile fields",
+        "description": "Can't edit the about me and links of your profile."
+      },
+      "submit": {
+        "label": "Creating submissions",
+        "description": "Can't make new submissions."
+      },
+      "suggest_difficulty": {
+        "label": "Giving difficulty opinions",
+        "description": "Can't add or change difficulty opinions on your own submissions. Opinions on new submissions are removed."
+      },
+      "create_suggestion": {
+        "label": "Creating suggestions",
+        "description": "Can't create new suggestions."
+      },
+      "vote": {
+        "label": "Voting on suggestions",
+        "description": "Can't vote on suggestions. Your own new suggestions don't get an automatic vote."
+      },
+      "add_tags": {
+        "label": "Adding challenge tags",
+        "description": "Can't add new tags to challenges. Removing your own tags is still possible."
+      }
     }
   }
 }

@@ -47,7 +47,7 @@ export function PageManageTags() {
   return (
     <BasicContainerBox
       maxWidth="lg"
-      sx={{ backgroundColor: "#282828", border: "none", p: 0, pt: 0, pb: 0, overflow: "hidden" }}
+      sx={{ backgroundColor: "#282828", p: 0, pt: 0, pb: 0, overflow: "hidden" }}
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <HeadTitle title={t("title")} />

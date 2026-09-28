@@ -40,6 +40,8 @@ import {
   DifficultySelectControlled,
 } from "../goldberries";
 import { usePostSubmission } from "../../hooks/useApi";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../../pages/Account";
 
 import { NotificationNotice, validateUrlNotRequired } from "./shared";
 
@@ -63,6 +65,7 @@ export function MultiSubmission() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { mutateAsync: submitRun } = usePostSubmission();
+  const { isRestricted: submitRestricted } = useRestriction(RESTRICTIONS.submit);
 
   //#region Form Setup
   const form = useForm({
@@ -410,7 +413,7 @@ export function MultiSubmission() {
               variant="contained"
               fullWidth
               onClick={onSubmit}
-              disabled={!submittable || !rawSessionsGood || isSubmitting}
+              disabled={!submittable || !rawSessionsGood || isSubmitting || submitRestricted}
             >
               {t("button", { count: mapDataList.length })}
             </Button>
@@ -438,6 +441,9 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
   const { t: t_a } = useTranslation(undefined);
   const [expanded, setExpanded] = useState(
     mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo,
+  );
+  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+    RESTRICTIONS.suggest_difficulty,
   );
 
   useEffect(() => {
@@ -555,6 +561,8 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
                       }
                       isSuggestion
                       fullWidth
+                      disabled={difficultyRestricted}
+                      helperText={difficultyRestrictedMessage}
                     />
                   </TableCell>
                   <TableCell width={1}>

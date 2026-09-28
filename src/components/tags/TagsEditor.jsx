@@ -20,7 +20,14 @@ const ROW_BACKGROUND = "rgba(255,255,255,0.04)";
 //#region TagsEditor
 // Controlled editor for the tag values one player assigns to a challenge. `value` is an array of tag value ids.
 // Values of tags that aren't shown (archived categories, team-only tags) are kept untouched in `value`.
-export function TagsEditor({ value, onChange, canEditTeamTags = false, disabled = false }) {
+// `allowedValueIds`: if set, only these values can be newly selected (others can still be deselected)
+export function TagsEditor({
+  value,
+  onChange,
+  canEditTeamTags = false,
+  disabled = false,
+  allowedValueIds = null,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.editor" });
   const [rangeAnchors, setRangeAnchors] = useState({});
   const [collapsed, setCollapsed] = useState({});
@@ -33,6 +40,7 @@ export function TagsEditor({ value, onChange, canEditTeamTags = false, disabled 
   }
 
   const selected = new Set(value);
+  const allowed = allowedValueIds === null ? null : new Set(allowedValueIds);
   const groups = lookup.categories
     .filter((category) => !category.is_archived)
     .map((category) => ({
@@ -84,6 +92,7 @@ export function TagsEditor({ value, onChange, canEditTeamTags = false, disabled 
                   anchor={rangeAnchors[tag.id] ?? null}
                   setAnchor={(index) => setAnchor(tag.id, index)}
                   disabled={disabled}
+                  allowed={allowed}
                 />
               ))}
             </Stack>
@@ -126,7 +135,7 @@ function CategoryHeaderChip({ category, isCollapsed, onClick }) {
 //#endregion
 
 //#region TagEditorRow
-function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled }) {
+function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled, allowed }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.editor" });
   const selectedIds = tag.values.filter((v) => selected.has(v.id)).map((v) => v.id);
   // Tags without qualifiers have no title, their name is shown in the (single) toggle chip instead
@@ -176,7 +185,7 @@ function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled 
                 description={value.description}
                 isSelected={selected.has(value.id)}
                 isAnchor={!implicit && tag.selection_mode === "range" && anchor === index}
-                disabled={disabled}
+                disabled={disabled || (allowed !== null && !selected.has(value.id) && !allowed.has(value.id))}
                 onClick={() => onValueClick(index)}
               />
             ))}

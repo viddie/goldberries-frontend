@@ -18,8 +18,9 @@ import {
 
 import { useDeleteSuggestion } from "../hooks/useApi";
 import { useAuth } from "../hooks/AuthProvider";
+import { useRestriction } from "../hooks/useRestriction";
 import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
-import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon } from "../components/goldberries";
+import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon, RestrictionNotice } from "../components/goldberries";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   getChallengeCampaign,
@@ -32,6 +33,8 @@ import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_pa
 import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
 import { CreateSuggestionModal } from "../components/suggestions_page/CreateSuggestionModal";
 
+import { RESTRICTIONS } from "./Account";
+
 //#region Main Page Component
 
 export function PageSuggestions({}) {
@@ -43,6 +46,7 @@ export function PageSuggestions({}) {
   const [tab, setTab] = useLocalStorage("search_filter_tab", "active");
   const [search, setSearch] = useLocalStorage("suggestions_search", "");
   const searchDebounced = useDebounce(search, 500);
+  const { isRestricted: createRestricted } = useRestriction(RESTRICTIONS.create_suggestion);
 
   const newSuggestion = () => {
     modalRefs.create.current.open();
@@ -84,12 +88,20 @@ export function PageSuggestions({}) {
         </Grid>
         <Grid item xs="auto">
           {auth.hasPlayerClaimed && (
-            <Button variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={newSuggestion}>
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={faPlus} />}
+              onClick={newSuggestion}
+              disabled={createRestricted}
+            >
               {t("buttons.create")}
             </Button>
           )}
         </Grid>
       </Grid>
+      {auth.hasPlayerClaimed && (
+        <RestrictionNotice restriction={RESTRICTIONS.create_suggestion} sx={{ my: 1 }} />
+      )}
       <Typography variant="body2" sx={{ mb: 1 }}>
         {t("language_info")}
       </Typography>

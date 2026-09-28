@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  Alert,
   Autocomplete,
   Button,
   Checkbox,
@@ -36,6 +37,8 @@ import {
 import { getAccountName } from "../../util/data_util";
 import { FormAccountWrapper } from "../../components/forms/Account";
 import { useAuth } from "../../hooks/AuthProvider";
+import { useRestriction } from "../../hooks/useRestriction";
+import { RESTRICTIONS } from "../Account";
 
 
 export function PageManageAccounts({}) {
@@ -203,6 +206,9 @@ function ManagePlayerNamesTab() {
     }
     setPlayer({ ...player, name: newName });
   });
+  const { isRestricted: renameRestricted, message: renameRestrictedMessage } = useRestriction(
+    RESTRICTIONS.rename,
+  );
 
   const form = useForm({
     defaultValues: {
@@ -229,6 +235,7 @@ function ManagePlayerNamesTab() {
 
   const allPlayers = getQueryData(query);
   const newName = form.watch("name");
+  const isRenameBlocked = renameRestricted && player !== null && player.id === auth.user?.player_id;
 
   return (
     <>
@@ -266,11 +273,14 @@ function ManagePlayerNamesTab() {
               color="primary"
               fullWidth
               onClick={onSubmit}
-              disabled={newName === player.name || newName.trim() === "" || newName.length < 2}
+              disabled={
+                newName === player.name || newName.trim() === "" || newName.length < 2 || isRenameBlocked
+              }
               sx={{ mt: 2 }}
             >
               {t("button")}
             </Button>
+            {isRenameBlocked && <Alert severity="warning">{renameRestrictedMessage}</Alert>}
           </Stack>
         </>
       )}

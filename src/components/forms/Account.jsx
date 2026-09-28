@@ -9,6 +9,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -16,12 +17,20 @@ import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faLink, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBan,
+  faChevronDown,
+  faChevronUp,
+  faComment,
+  faLink,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
-import { ManageUserLinks } from "../../pages/Account";
+import { ManageUserLinks, RESTRICTIONS, hasFlag, setFlag } from "../../pages/Account";
+import { SettingsEntry } from "../../pages/AppSettings";
 import { FormOptions } from "../../util/constants";
 import { getAccountName } from "../../util/data_util";
 import {
@@ -31,9 +40,10 @@ import {
   useGetAllPlayers,
   usePostAccount,
 } from "../../hooks/useApi";
-import { PlayerSelect } from "../goldberries";
-import { ErrorDisplay, LoadingSpinner } from "../basic";
+import { PlayerSelect, RestrictionNotice } from "../goldberries";
+import { BorderedBox, ErrorDisplay, LoadingSpinner } from "../basic";
 import { ROLES, useAuth } from "../../hooks/AuthProvider";
+import { useRestriction } from "../../hooks/useRestriction";
 
 export function FormAccountWrapper({ account, id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -87,6 +97,7 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
     toast.success(t("feedback.deleted"));
     if (onSave) onSave(null); //Return null to indicate the account was deleted
   });
+  const { isRestricted: profileRestricted } = useRestriction(RESTRICTIONS.profile);
   const deleteSelectedAccount = () => {
     deleteAccount(account.id);
   };
@@ -117,6 +128,10 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
   }, [account]);
 
   const formAccount = form.watch();
+  // Verifiers and admins can also restrict themselves, for testing purposes
+  const canModifyRestrictions =
+    auth.hasVerifierPriv && (account.role < auth.user.role || account.id === auth.user.id);
+  const isSelfProfileRestricted = account.id === auth.user.id && profileRestricted;
 
   return (
     <form {...props}>
@@ -202,10 +217,17 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
         <Typography variant="h6">{t("user_links")}</Typography>
         <FontAwesomeIcon icon={faLink} />
       </Stack>
+      {isSelfProfileRestricted && <RestrictionNotice restriction={RESTRICTIONS.profile} sx={{ mt: 1 }} />}
       <Controller
         control={form.control}
         name="links"
-        render={({ field }) => <ManageUserLinks links={field.value} setLinks={field.onChange} />}
+        render={({ field }) => (
+          <ManageUserLinks
+            links={field.value}
+            setLinks={field.onChange}
+            disabled={isSelfProfileRestricted}
+          />
+        )}
       />
 
       <Stack direction="row" spacing={1} alignItems="center">
@@ -216,7 +238,14 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
         name="about_me"
         control={form.control}
         render={({ field }) => (
-          <TextField {...field} fullWidth multiline minRows={4} placeholder={t("about_me_placeholder")} />
+          <TextField
+            {...field}
+            fullWidth
+            multiline
+            minRows={4}
+            placeholder={t("about_me_placeholder")}
+            disabled={isSelfProfileRestricted}
+          />
         )}
       />
 
@@ -295,6 +324,14 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
         />
       </Stack>
 
+      <AccountRestrictionsInput
+        key={account.id}
+        value={formAccount.restrictions ?? 0}
+        onChange={(value) => form.setValue("restrictions", value)}
+        disabled={!canModifyRestrictions}
+        sx={{ mt: 1 }}
+      />
+
       <Divider sx={{ my: 2 }} />
 
       <Button variant="contained" color="primary" fullWidth onClick={onSubmit}>
@@ -323,6 +360,66 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
         </Button>
       </Stack>
     </form>
+  );
+}
+
+function AccountRestrictionsInput({ value, onChange, disabled, sx }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "forms.account.restrictions" });
+  const { t: t_r } = useTranslation(undefined, { keyPrefix: "restrictions.types" });
+  const [expanded, setExpanded] = useState(value !== 0);
+
+  const availableRestrictions = Object.values(RESTRICTIONS).sort((a, b) => a.flag - b.flag);
+  const activeCount = availableRestrictions.filter((r) => hasFlag(value, r.flag)).length;
+
+  return (
+    <BorderedBox
+      sx={{
+        p: 0,
+        borderRadius: 1,
+        border: "1px solid rgba(255,255,255,0.3)",
+        "&:hover": { borderColor: "rgba(255,255,255,1)" },
+        ...sx,
+      }}
+    >
+      <Button
+        variant="text"
+        fullWidth
+        color={activeCount > 0 ? "warning" : "primary"}
+        onClick={() => setExpanded(!expanded)}
+        startIcon={<FontAwesomeIcon icon={faBan} size="sm" />}
+        endIcon={<FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} size="sm" />}
+        sx={{ justifyContent: "flex-start", "& .MuiButton-endIcon": { ml: "auto" }, px: 2, py: 1.5 }}
+      >
+        {activeCount > 0 ? t("toggle_active", { count: activeCount }) : t("toggle")}
+      </Button>
+      {expanded && (
+        <Stack direction="column" gap={1} sx={{ px: 2, py: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            {t("description")}
+          </Typography>
+          {disabled && (
+            <Typography variant="body2" color="error">
+              {t("no_permission")}
+            </Typography>
+          )}
+          {availableRestrictions.map((restriction) => (
+            <SettingsEntry
+              key={restriction.key}
+              title={t_r(restriction.key + ".label")}
+              note={t_r(restriction.key + ".description")}
+              shiftNote
+            >
+              <FormControlLabel
+                checked={hasFlag(value, restriction.flag)}
+                onChange={(e) => onChange(setFlag(value, restriction.flag, e.target.checked))}
+                disabled={disabled}
+                control={<Switch />}
+              />
+            </SettingsEntry>
+          ))}
+        </Stack>
+      )}
+    </BorderedBox>
   );
 }
 

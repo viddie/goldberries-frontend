@@ -14,6 +14,7 @@ export function DifficultySelectControlled({
   minSort = null,
   maxSort = null,
   label,
+  helperText,
   ...props
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.difficulty_select" });
@@ -77,7 +78,11 @@ export function DifficultySelectControlled({
       loading={query.isLoading}
       loadingText={"Loading"}
       renderInput={(params) => (
-        <TextField {...params} label={label ?? t(isSuggestion ? "label" : "label_no_opinion")} />
+        <TextField
+          {...params}
+          label={label ?? t(isSuggestion ? "label" : "label_no_opinion")}
+          helperText={helperText}
+        />
       )}
       renderOption={(props, difficulty) => {
         if (difficulty.id === 0) {
