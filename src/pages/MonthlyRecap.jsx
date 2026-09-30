@@ -79,7 +79,7 @@ export function PageMonthlyRecap() {
   }, [month]);
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <Stack direction="row" spacing={2} sx={{ mb: 2 }} alignItems="center">
         <Typography variant="h4" textAlign="center">
           {t("header")}

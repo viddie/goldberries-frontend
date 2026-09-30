@@ -104,7 +104,7 @@ export function PageManageChallenges() {
   };
 
   return (
-    <BasicContainerBox maxWidth="lg" sx={{ mt: 0, p: 2 }}>
+    <BasicContainerBox modern maxWidth="lg" sx={{ mt: 0 }} innerSx={{ p: 2 }}>
       <HeadTitle title={t("title")} />
       <Grid container spacing={2}>
         <Grid item xs={12} md>

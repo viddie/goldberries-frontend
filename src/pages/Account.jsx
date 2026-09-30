@@ -132,7 +132,7 @@ export function PageAccount() {
   const claimVerified = auth.user.claimed_player !== null ? null : auth.user.player !== null;
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Typography variant="h4" gutterBottom>
         {t("title")}

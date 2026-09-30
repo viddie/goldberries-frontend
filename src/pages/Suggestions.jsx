@@ -80,7 +80,7 @@ export function PageSuggestions({}) {
   const tabExpiredValue = tab === "expired" ? true : tab === "undecided" ? null : false;
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Grid container>
         <Grid item xs>

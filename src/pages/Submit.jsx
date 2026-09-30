@@ -35,7 +35,7 @@ export function PageSubmit() {
 
   if (query.isFetching) {
     return (
-      <BasicContainerBox maxWidth="md">
+      <BasicContainerBox modern maxWidth="md">
         <Tabs
           value={selectedTab}
           onChange={(event, newValue) => setTab(newValue)}
@@ -51,7 +51,7 @@ export function PageSubmit() {
     );
   } else if (query.isError) {
     return (
-      <BasicContainerBox maxWidth="md">
+      <BasicContainerBox modern maxWidth="md">
         <ErrorDisplay error={query.error} />
       </BasicContainerBox>
     );
@@ -60,7 +60,7 @@ export function PageSubmit() {
   const challenge = query.data?.data ?? null;
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Tabs
         value={selectedTab}

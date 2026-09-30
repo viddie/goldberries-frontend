@@ -57,7 +57,7 @@ export function PagePostList({ type }) {
   //if id is not set, then show the list. otherwise, show the exact post
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       {id ? <PostDetail type={type} id={id} /> : <PostList type={type} />}
     </BasicContainerBox>
   );

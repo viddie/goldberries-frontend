@@ -67,7 +67,7 @@ export function PageFileUpload() {
   const newNameDisabled = !file || destination === "map_image";
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={title} />
       <Typography variant="h4">{title}</Typography>
       <Grid container spacing={2} sx={{ mt: 2 }}>

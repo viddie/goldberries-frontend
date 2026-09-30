@@ -22,7 +22,7 @@ export function PageRules() {
   const { t } = useTranslation(undefined, { keyPrefix: "rules" });
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <RulesList />
     </BasicContainerBox>

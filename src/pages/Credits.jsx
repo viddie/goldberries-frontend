@@ -7,7 +7,7 @@ export function PageCredits() {
   const { t } = useTranslation(undefined, { keyPrefix: "credits" });
 
   return (
-    <BasicContainerBox maxWidth="sm">
+    <BasicContainerBox modern maxWidth="sm">
       <HeadTitle title={t("title")} />
       <Typography variant="h4">{t("title")}</Typography>
       <Typography variant="body1">{t("text")}</Typography>

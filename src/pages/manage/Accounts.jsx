@@ -65,7 +65,7 @@ export function PageManageAccounts({}) {
   const activeTab = tabState || "accounts";
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Typography variant="h4">{t("title")}</Typography>
       <Tabs

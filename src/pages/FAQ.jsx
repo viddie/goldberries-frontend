@@ -23,7 +23,7 @@ export function PageFAQ() {
   const { t } = useTranslation(undefined, { keyPrefix: "faq" });
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <FAQList />
     </BasicContainerBox>

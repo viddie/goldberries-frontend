@@ -93,7 +93,7 @@ export function PageServerCosts({}) {
 
   if (status === "success") {
     return (
-      <BasicContainerBox>
+      <BasicContainerBox modern>
         <HeadTitle title={t_ty("title")} />
         <Stack direction="column" gap={2} alignItems="center">
           <Stack direction="column" gap={1} alignItems="center">
@@ -114,7 +114,7 @@ export function PageServerCosts({}) {
   return (
     <Stack direction="column" gap={1} alignItems="center">
       <HeadTitle title={t_sc("title")} />
-      <BasicContainerBox sx={{ mt: 0 }}>
+      <BasicContainerBox modern sx={{ mt: 0 }}>
         <Typography variant="h4">{t_sc("title")}</Typography>
         <Typography variant="body1">{t_sc("description")}</Typography>
         <Table size="small">

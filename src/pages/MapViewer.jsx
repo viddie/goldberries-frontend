@@ -243,7 +243,7 @@ export function PageMapViewer() {
   const bins = campaignData?.data ?? [];
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Typography variant="h4" gutterBottom>
         {t("title")}

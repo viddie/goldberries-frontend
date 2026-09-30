@@ -45,18 +45,13 @@ export function PageManageTags() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.tags" });
 
   return (
-    <BasicContainerBox
-      maxWidth="lg"
-      sx={{ backgroundColor: "#282828", p: 0, pt: 0, pb: 0, overflow: "hidden" }}
-    >
-      <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <HeadTitle title={t("title")} />
-        <Typography variant="h4">{t("title")}</Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t("description")}
-        </Typography>
-        <ManageTags />
-      </Box>
+    <BasicContainerBox maxWidth="lg" modern>
+      <HeadTitle title={t("title")} />
+      <Typography variant="h4">{t("title")}</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {t("description")}
+      </Typography>
+      <ManageTags />
     </BasicContainerBox>
   );
 }

@@ -156,7 +156,7 @@ export function PageReport() {
   return (
     <>
       <HeadTitle title={t("title")} />
-      <BasicContainerBox maxWidth="md">
+      <BasicContainerBox modern maxWidth="md">
         <Stack gap={4}>
           <Typography variant="h4" component="h1">
             {t("title")}

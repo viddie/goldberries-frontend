@@ -1,11 +1,15 @@
 import { Box, Container } from "@mui/material";
 
+const MODERN_BACKGROUND = "#282828";
+
 export function BasicContainerBox({
   maxWidth = "sm",
   children,
   sx = {},
   containerSx = {},
+  innerSx = {},
   ignoreNewMargins = false,
+  modern = false,
   ...props
 }) {
   const newMargins = ignoreNewMargins
@@ -20,6 +24,15 @@ export function BasicContainerBox({
           sm: "unset",
         },
       };
+  const modernSx = modern
+    ? {
+        backgroundColor: MODERN_BACKGROUND,
+        p: 0,
+        pt: 0,
+        pb: 0,
+        overflow: "hidden",
+      }
+    : {};
   return (
     <Container
       maxWidth={maxWidth}
@@ -56,10 +69,11 @@ export function BasicContainerBox({
           },
           border: "1px solid #cccccc99",
           boxShadow: 1,
+          ...modernSx,
           ...sx,
         }}
       >
-        {children}
+        {modern ? <Box sx={{ p: { xs: 2, sm: 3 }, ...innerSx }}>{children}</Box> : children}
       </Box>
     </Container>
   );

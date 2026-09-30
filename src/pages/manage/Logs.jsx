@@ -64,7 +64,7 @@ export function PageLogs() {
 
   if (!query.isSuccess && query.isLoading) {
     return (
-      <BasicContainerBox maxWidth="lg">
+      <BasicContainerBox modern maxWidth="lg">
         <HeadTitle title={t("title")} />
         <LogFilter filter={filter} setFilter={handleFilterChange} />
         <LoadingSpinner />
@@ -72,7 +72,7 @@ export function PageLogs() {
     );
   } else if (query.isError) {
     return (
-      <BasicContainerBox maxWidth="lg">
+      <BasicContainerBox modern maxWidth="lg">
         <HeadTitle title={t("title")} />
         <LogFilter filter={filter} setFilter={handleFilterChange} />
         <ErrorDisplay error={query.error} />
@@ -83,7 +83,7 @@ export function PageLogs() {
   const { logs, max_count: maxCount } = getQueryData(query);
 
   return (
-    <BasicContainerBox maxWidth="lg">
+    <BasicContainerBox modern maxWidth="lg">
       <HeadTitle title={t("title")} />
       <LogFilter filter={filter} setFilter={handleFilterChange} />
       {logs.length === 0 && <Typography variant="body2">{t("no_logs")}</Typography>}

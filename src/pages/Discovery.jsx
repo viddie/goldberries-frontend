@@ -106,64 +106,59 @@ export function PageDiscovery() {
   };
 
   return (
-    <BasicContainerBox
-      maxWidth="lg"
-      sx={{ backgroundColor: "#282828", p: 0, pt: 0, pb: 0, overflow: "hidden" }}
-    >
-      <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <HeadTitle title={t("title")} />
-        <Box sx={{ position: "relative", mb: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="center" gap={1.5}>
-            <FontAwesomeIcon icon={faCompass} size="2x" />
-            <Typography variant="h4">{t("title")}</Typography>
-          </Stack>
-          <ColumnsToggle
-            columns={columns}
-            setColumns={setColumns}
-            sx={{
-              display: { xs: "none", lg: "inline-flex" },
-              position: "absolute",
-              top: "50%",
-              right: 0,
-              transform: "translateY(-50%)",
-            }}
-          />
-        </Box>
-
-        {tagQuery.isLoading ? (
-          <LoadingSpinner />
-        ) : tagQuery.isError ? (
-          <ErrorDisplay error={tagQuery.error} />
-        ) : (
-          <>
-            <DiscoveryFilter filter={filter} onApply={setFilter} lookup={lookup} />
-            <Box sx={{ mt: 3 }}>
-              {group === null ? (
-                <DiscoveryOverview
-                  filter={filter}
-                  onShowGroup={setGroup}
-                  columns={columns}
-                  highlightedValueIds={highlightedValueIds}
-                />
-              ) : group === "random" && seed === null ? (
-                <LoadingSpinner />
-              ) : (
-                <DiscoveryGroup
-                  filter={filter}
-                  group={group}
-                  seed={seed}
-                  onReroll={rerollSeed}
-                  page={page}
-                  setPage={setPage}
-                  onBack={() => setGroup(null)}
-                  columns={columns}
-                  highlightedValueIds={highlightedValueIds}
-                />
-              )}
-            </Box>
-          </>
-        )}
+    <BasicContainerBox maxWidth="lg" modern>
+      <HeadTitle title={t("title")} />
+      <Box sx={{ position: "relative", mb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="center" gap={1.5}>
+          <FontAwesomeIcon icon={faCompass} size="2x" />
+          <Typography variant="h4">{t("title")}</Typography>
+        </Stack>
+        <ColumnsToggle
+          columns={columns}
+          setColumns={setColumns}
+          sx={{
+            display: { xs: "none", lg: "inline-flex" },
+            position: "absolute",
+            top: "50%",
+            right: 0,
+            transform: "translateY(-50%)",
+          }}
+        />
       </Box>
+
+      {tagQuery.isLoading ? (
+        <LoadingSpinner />
+      ) : tagQuery.isError ? (
+        <ErrorDisplay error={tagQuery.error} />
+      ) : (
+        <>
+          <DiscoveryFilter filter={filter} onApply={setFilter} lookup={lookup} />
+          <Box sx={{ mt: 3 }}>
+            {group === null ? (
+              <DiscoveryOverview
+                filter={filter}
+                onShowGroup={setGroup}
+                columns={columns}
+                highlightedValueIds={highlightedValueIds}
+              />
+            ) : group === "random" && seed === null ? (
+              <LoadingSpinner />
+            ) : (
+              <DiscoveryGroup
+                filter={filter}
+                group={group}
+                seed={seed}
+                onReroll={rerollSeed}
+                page={page}
+                setPage={setPage}
+                onBack={() => setGroup(null)}
+                columns={columns}
+                highlightedValueIds={highlightedValueIds}
+              />
+            )}
+          </Box>
+        </>
+      )}
     </BasicContainerBox>
   );
 }

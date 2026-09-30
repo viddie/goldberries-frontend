@@ -42,7 +42,7 @@ export function PageManageBadges({}) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.badges" });
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Typography variant="h4">{t("title")}</Typography>
       <ManageBadges />

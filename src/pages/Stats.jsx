@@ -125,7 +125,7 @@ export function PageStats() {
   };
 
   return (
-    <BasicContainerBox maxWidth="lg">
+    <BasicContainerBox modern maxWidth="lg">
       <HeadTitle title={t("title")} />
 
       <NavigationChips tabs={STATS_TABS} selectedTab={selectedTab} onTabSelect={updateSelectedTab} />

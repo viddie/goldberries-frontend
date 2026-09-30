@@ -15,14 +15,14 @@ export function PageManagePosts({}) {
 
   if (!id) {
     return (
-      <BasicContainerBox maxWidth="lg">
+      <BasicContainerBox modern maxWidth="lg">
         <ErrorDisplay error={{ message: "No post id provided" }} />
       </BasicContainerBox>
     );
   }
 
   return (
-    <BasicContainerBox containerSx={{ maxWidth: "1500px" }}>
+    <BasicContainerBox modern containerSx={{ maxWidth: "1500px" }}>
       <FormPostWrapper id={id === "new" ? null : id} onSave={onSave} />
     </BasicContainerBox>
   );

@@ -38,7 +38,7 @@ export function PageManageActions() {
   const adminActions = auth.hasAdminPriv ? ADMIN_ACTIONS : [];
 
   return (
-    <BasicContainerBox maxWidth="md">
+    <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
       <Typography variant="h4" gutterBottom>
         {t("title")}
