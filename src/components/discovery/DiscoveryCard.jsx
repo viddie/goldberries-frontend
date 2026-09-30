@@ -4,6 +4,7 @@ import { Box, Stack, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { API_BASE_URL } from "../../util/constants";
 import { getCampaignName, getChallengeCampaign, getGamebananaEmbedUrl } from "../../util/data_util";
 import { PlaceholderImage } from "../PlaceholderImage";
@@ -18,6 +19,7 @@ const OVERLAY_TEXT_COLOR = "rgba(255,255,255,0.9)";
 
 //#region DiscoveryCard
 export function DiscoveryCard({ challenge, highlightedValueIds = null }) {
+  const { settings } = useAppSettings();
   const campaign = getChallengeCampaign(challenge);
   const map = challenge.map ?? null;
   const hasTags = (challenge.data?.tags?.length ?? 0) > 0;
@@ -55,6 +57,7 @@ export function DiscoveryCard({ challenge, highlightedValueIds = null }) {
             counts={challenge.data.tags}
             maxVisible={4}
             highlightedValueIds={highlightedValueIds}
+            hideOutvoted={!settings.general.alwaysShowOutvotedTags}
           />
         </Box>
       )}

@@ -1,17 +1,10 @@
-import {
-  faChevronDown,
-  faChevronRight,
-  faStar,
-  faUserShield,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faStar, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Chip, Collapse, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ErrorDisplay, LoadingSpinner, SegmentedChip, safeAlpha } from "../basic";
+import { ErrorDisplay, LoadingSpinner, SegmentedChip } from "../basic";
 
 import { getTagCategoryColor, getTagCategoryShadeColor, isImplicitTag, useTagLookup } from "./tag_util";
 
@@ -19,6 +12,7 @@ const ROW_BACKGROUND = "rgba(255,255,255,0.04)";
 
 //#region TagsEditor
 // Controlled editor for the tag values one player assigns to a challenge. `value` is an array of tag value ids.
+// The values of a tag are mutually exclusive, so at most one value per tag can be selected.
 // Values of tags that aren't shown (archived categories, team-only tags) are kept untouched in `value`.
 // `allowedValueIds`: if set, only these values can be newly selected (others can still be deselected)
 export function TagsEditor({
@@ -29,7 +23,6 @@ export function TagsEditor({
   allowedValueIds = null,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.editor" });
-  const [rangeAnchors, setRangeAnchors] = useState({});
   const [collapsed, setCollapsed] = useState({});
   const { query, lookup } = useTagLookup();
 
@@ -52,9 +45,6 @@ export function TagsEditor({
   const setTagValues = (tag, tagValueIds) => {
     const ownIds = new Set(tag.values.map((v) => v.id));
     onChange([...value.filter((id) => !ownIds.has(id)), ...tagValueIds]);
-  };
-  const setAnchor = (tagId, index) => {
-    setRangeAnchors((anchors) => ({ ...anchors, [tagId]: index }));
   };
   const toggleCollapsed = (categoryId) => {
     setCollapsed((c) => ({ ...c, [categoryId]: !c[categoryId] }));
@@ -89,8 +79,6 @@ export function TagsEditor({
                   tag={tag}
                   selected={selected}
                   onChangeTag={(ids) => setTagValues(tag, ids)}
-                  anchor={rangeAnchors[tag.id] ?? null}
-                  setAnchor={(index) => setAnchor(tag.id, index)}
                   disabled={disabled}
                   allowed={allowed}
                 />
@@ -135,37 +123,12 @@ function CategoryHeaderChip({ category, isCollapsed, onClick }) {
 //#endregion
 
 //#region TagEditorRow
-function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled, allowed }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "tags.editor" });
-  const selectedIds = tag.values.filter((v) => selected.has(v.id)).map((v) => v.id);
+function TagEditorRow({ tag, selected, onChangeTag, disabled, allowed }) {
   // Tags without qualifiers have no title, their name is shown in the (single) toggle chip instead
   const implicit = isImplicitTag(tag);
 
-  const onValueClick = (valueIndex) => {
-    const valueId = tag.values[valueIndex].id;
-    const isSelected = selected.has(valueId);
-
-    if (implicit) {
-      onChangeTag(isSelected ? [] : [valueId]);
-    } else if (tag.selection_mode === "multi") {
-      onChangeTag(isSelected ? selectedIds.filter((id) => id !== valueId) : [...selectedIds, valueId]);
-    } else if (tag.selection_mode === "range") {
-      if (anchor === null) {
-        onChangeTag([valueId]);
-        setAnchor(valueIndex);
-      } else {
-        const start = Math.min(anchor, valueIndex);
-        const end = Math.max(anchor, valueIndex);
-        onChangeTag(tag.values.slice(start, end + 1).map((v) => v.id));
-        setAnchor(null);
-      }
-    } else {
-      onChangeTag(isSelected ? [] : [valueId]);
-    }
-  };
-  const onClear = () => {
-    onChangeTag([]);
-    setAnchor(null);
+  const onValueClick = (valueId) => {
+    onChangeTag(selected.has(valueId) ? [] : [valueId]);
   };
 
   return (
@@ -178,39 +141,17 @@ function TagEditorRow({ tag, selected, onChangeTag, anchor, setAnchor, disabled,
             </Typography>
           )}
           <Stack direction="row" gap={0.75} flexWrap="wrap" alignItems="center">
-            {tag.values.map((value, index) => (
+            {tag.values.map((value) => (
               <TagValueToggle
                 key={value.id}
                 label={implicit ? <TagNameLabel tag={tag} /> : value.name}
                 description={value.description}
                 isSelected={selected.has(value.id)}
-                isAnchor={!implicit && tag.selection_mode === "range" && anchor === index}
                 disabled={disabled || (allowed !== null && !selected.has(value.id) && !allowed.has(value.id))}
-                onClick={() => onValueClick(index)}
+                onClick={() => onValueClick(value.id)}
               />
             ))}
-            {tag.selection_mode === "range" && !implicit && selectedIds.length > 0 && (
-              <Tooltip title={t("clear")} arrow>
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  label={<FontAwesomeIcon icon={faXmark} />}
-                  onClick={onClear}
-                  disabled={disabled}
-                />
-              </Tooltip>
-            )}
           </Stack>
-          {tag.selection_mode === "range" && !implicit && (
-            <Typography variant="caption" color="text.secondary">
-              {anchor === null ? t("range_hint") : t("range_pick_end")}
-            </Typography>
-          )}
-          {tag.selection_mode === "multi" && !implicit && (
-            <Typography variant="caption" color="text.secondary">
-              {t("multi_hint")}
-            </Typography>
-          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography
@@ -255,27 +196,15 @@ function TagNameLabel({ tag }) {
 //#endregion
 
 //#region TagValueToggle
-function TagValueToggle({ label, description, isSelected, isAnchor = false, disabled, onClick }) {
-  const theme = useTheme();
-  const primary = theme.palette.primary.main;
-  // The anchor of a range is highlighted with an outline, since a thicker border would shift the layout
+function TagValueToggle({ label, description, isSelected, disabled, onClick }) {
   const chip = (
     <Chip
       size="small"
       label={label}
-      color={isSelected || isAnchor ? "primary" : "default"}
-      variant={isSelected && !isAnchor ? "filled" : "outlined"}
+      color={isSelected ? "primary" : "default"}
+      variant={isSelected ? "filled" : "outlined"}
       onClick={onClick}
       disabled={disabled}
-      sx={
-        isAnchor
-          ? {
-              backgroundColor: safeAlpha(primary, 0.2),
-              outline: "1px dashed " + primary,
-              outlineOffset: "2px",
-            }
-          : undefined
-      }
     />
   );
   if (!description) return chip;

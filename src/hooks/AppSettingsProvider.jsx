@@ -12,6 +12,7 @@ export const getDefaultSettings = () => {
       showFractionalTiers: true,
       showRejectedSubmissions: true,
       showMedianTimeTaken: true,
+      alwaysShowOutvotedTags: false,
       settingsVersion: 2,
     },
     visual: {

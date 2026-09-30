@@ -9,8 +9,12 @@ import {
   getTagValueLabel,
 } from "./tag_util";
 
+const TOOLTIP_DELAY = 50;
+
 //#region TagChip
 // Segments: [tag name (category color)] [qualifier (darker shade)] [count (darker shade)]
+// `dimmed` greys the chip out a bit, e.g. for values that were out-voted by another value of the same tag
+// `tooltip` replaces the default tooltip content (category, name and description)
 export function TagChip({
   tag,
   value,
@@ -18,7 +22,9 @@ export function TagChip({
   count = null,
   onClick,
   highlighted = false,
+  dimmed = false,
   showTooltip = true,
+  tooltip = null,
   size = "medium",
   sx,
   ...props
@@ -46,14 +52,19 @@ export function TagChip({
           },
         },
       ]}
-      sx={sx}
+      sx={dimmed ? { ...getDimmedSx(!!onClick), ...sx } : sx}
       {...props}
     />
   );
 
-  if (!showTooltip || !description) return chip;
+  if (!showTooltip || (tooltip === null && !description)) return chip;
   return (
-    <Tooltip title={<TagTooltipContent tag={tag} value={value} category={category} />} arrow>
+    <Tooltip
+      title={tooltip ?? <TagTooltipContent tag={tag} value={value} category={category} />}
+      enterDelay={TOOLTIP_DELAY}
+      enterNextDelay={TOOLTIP_DELAY}
+      arrow
+    >
       {chip}
     </Tooltip>
   );
@@ -75,5 +86,16 @@ export function TagTooltipContent({ tag, value, category }) {
       </Typography>
     </Stack>
   );
+}
+//#endregion
+
+//#region Utility Functions
+function getDimmedSx(isClickable) {
+  const filter = "saturate(0.25)";
+  return {
+    opacity: 0.6,
+    filter,
+    ...(isClickable && { "&:hover": { filter: filter + " brightness(1.2)" } }),
+  };
 }
 //#endregion

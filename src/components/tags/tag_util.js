@@ -4,7 +4,6 @@ import { getQueryData, useGetTagTree } from "../../hooks/useApi";
 import { isValidColor, safeDarken } from "../basic";
 
 export const DEFAULT_TAG_COLOR = "#9e9e9e";
-export const TAG_SELECTION_MODES = ["single", "multi", "range"];
 
 //#region Lookup
 export function useTagLookup() {
@@ -57,14 +56,20 @@ export function getTagCategoryShadeColor(category) {
 //#endregion
 
 //#region Sorting
-// Joins [{ tag_value_id, count, ... }] with the lookup, drops unknown values and sorts by category, then count desc
+// Joins [{ tag_value_id, count, ... }] with the lookup, drops unknown values and sorts by category, then count desc.
+// Values of a tag are mutually exclusive: all values below the tag's highest count are flagged with `isOutvoted`.
 export function resolveTagCounts(counts, lookup) {
   if (!lookup || !counts) return [];
   const resolved = [];
+  const maxCountByTag = {};
   for (const entry of counts) {
     const info = lookup.valuesById[entry.tag_value_id];
     if (!info) continue;
     resolved.push({ ...entry, ...info });
+    maxCountByTag[info.tag.id] = Math.max(maxCountByTag[info.tag.id] ?? 0, entry.count);
+  }
+  for (const entry of resolved) {
+    entry.isOutvoted = entry.count < maxCountByTag[entry.tag.id];
   }
   resolved.sort((a, b) => {
     if (a.category.sort !== b.category.sort) return a.category.sort - b.category.sort;

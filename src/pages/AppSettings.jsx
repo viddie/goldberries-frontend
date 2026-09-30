@@ -210,6 +210,21 @@ export function AppSettingsGeneralForm() {
         />
       </SettingsEntry>
 
+      <SettingsEntry note={t("always_show_outvoted_tags.note")}>
+        <Controller
+          name="alwaysShowOutvotedTags"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("always_show_outvoted_tags.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
       {isAprilFools && (
         <Button
           fullWidth

@@ -1,4 +1,4 @@
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
@@ -20,15 +20,21 @@ import { PlayerChip } from "../goldberries";
 import { TagChip } from "./TagChip";
 import { getTagValueDescription, getTagValueLabel, resolveTagCounts, useTagLookup } from "./tag_util";
 
+const MAX_TOOLTIP_VOTERS = 20;
+
 //#region ChallengeTagChips
 // Renders the aggregated tag chips of a challenge. Either pass `counts` ([{ tag_value_id, count }]) or let the
-// component fetch them for `challengeId`. Clicking a chip opens the list of players who assigned that tag.
-// Chips of `highlightedValueIds` (Set of tag value ids) are highlighted and shown first.
+// component fetch them for `challengeId`. Hovering a chip lists the players who assigned that tag, clicking it opens
+// that list in a dialog. Chips of `highlightedValueIds` (Set of tag value ids) are highlighted and shown first.
+// Values that were out-voted by another value of the same tag are greyed out. With `hideOutvoted` they are hidden
+// (unless highlighted) by default, and once all tags are shown a toggle button allows showing/hiding them. Without it
+// they are always shown and there is no toggle.
 export function ChallengeTagChips({
   challengeId,
   counts = null,
   maxVisible = 8,
   highlightedValueIds = null,
+  hideOutvoted = false,
   clickable = true,
   emptyText = null,
   size = "medium",
@@ -36,6 +42,7 @@ export function ChallengeTagChips({
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
   const [expanded, setExpanded] = useState(false);
+  const [showOutvoted, setShowOutvoted] = useState(false);
   const { query: treeQuery, lookup } = useTagLookup();
   const countsQuery = useGetChallengeTagCounts(counts === null ? challengeId : null);
   const playersModal = useModal(null, undefined, { actions: [ModalButtons.close] });
@@ -60,8 +67,18 @@ export function ChallengeTagChips({
     );
   }
 
-  const hasHidden = maxVisible !== null && resolved.length > maxVisible;
-  const visible = hasHidden && !expanded ? resolved.slice(0, maxVisible) : resolved;
+  // The collapsed view always hides out-voted values (if `hideOutvoted`), the toggle only applies once all tags are shown
+  const getShownEntries = (withOutvoted) =>
+    withOutvoted ? resolved : resolved.filter((entry) => !entry.isOutvoted || isHighlighted(entry));
+  const collapsedEntries = getShownEntries(!hideOutvoted);
+  const hasMore = maxVisible !== null && collapsedEntries.length > maxVisible;
+  const isCollapsed = hasMore && !expanded;
+  const visible = isCollapsed
+    ? collapsedEntries.slice(0, maxVisible)
+    : getShownEntries(!hideOutvoted || showOutvoted);
+  const showOutvotedToggle =
+    hideOutvoted && !isCollapsed && resolved.some((entry) => entry.isOutvoted && !isHighlighted(entry));
+  const buttonSize = size === "large" ? "medium" : "small";
 
   return (
     <>
@@ -74,6 +91,8 @@ export function ChallengeTagChips({
             category={entry.category}
             count={entry.count}
             highlighted={isHighlighted(entry)}
+            dimmed={entry.isOutvoted}
+            tooltip={<TagVotersTooltip challengeId={entry.challenge_id ?? challengeId} entry={entry} />}
             size={size}
             onClick={
               clickable
@@ -82,23 +101,71 @@ export function ChallengeTagChips({
             }
           />
         ))}
-        {hasHidden && (
+        {showOutvotedToggle && (
           <Chip
-            size={size === "large" ? "medium" : "small"}
+            size={buttonSize}
             variant="outlined"
-            label={expanded ? t("show_less") : t("show_more", { count: resolved.length - maxVisible })}
+            icon={
+              <FontAwesomeIcon
+                icon={showOutvoted ? faEyeSlash : faEye}
+                style={{ fontSize: "0.9em", marginLeft: "8px" }}
+              />
+            }
+            label={showOutvoted ? t("hide_hidden") : t("show_hidden")}
+            onClick={() => setShowOutvoted(!showOutvoted)}
+          />
+        )}
+        {hasMore && (
+          <Chip
+            size={buttonSize}
+            variant="outlined"
+            label={expanded ? t("show_less") : t("show_more", { count: collapsedEntries.length - maxVisible })}
             onClick={() => setExpanded(!expanded)}
           />
         )}
       </Stack>
       {clickable && (
-        <CustomModal modalHook={playersModal} options={{ title: t("players_modal.title") }}>
+        <CustomModal modalHook={playersModal} contentSx={{ borderTop: "none" }}>
           {playersModal.data && (
             <TagPlayersList challengeId={playersModal.data.challengeId} entry={playersModal.data.entry} />
           )}
         </CustomModal>
       )}
     </>
+  );
+}
+//#endregion
+
+//#region TagVotersTooltip
+// Only mounted while the tooltip is open, so the players are fetched lazily on hover
+function TagVotersTooltip({ challengeId, entry }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "tags" });
+  const query = useGetChallengeTagPlayers(challengeId, entry.tag_value_id);
+
+  if (query.isLoading) {
+    return <LoadingSpinner size="small" />;
+  } else if (query.isError) {
+    return <ErrorDisplay error={query.error} />;
+  }
+
+  const assignments = getQueryData(query);
+  const listed = assignments.slice(0, MAX_TOOLTIP_VOTERS);
+  return (
+    <Stack direction="column">
+      <Typography variant="caption" sx={{ opacity: 0.75 }}>
+        {getTagValueLabel(entry.tag, entry.value)}
+      </Typography>
+      {listed.map((assignment) => (
+        <Typography key={assignment.id} variant="body2">
+          {assignment.player.name}
+        </Typography>
+      ))}
+      {assignments.length > listed.length && (
+        <Typography variant="body2" sx={{ opacity: 0.75 }}>
+          {t("show_more", { count: assignments.length - listed.length })}
+        </Typography>
+      )}
+    </Stack>
   );
 }
 //#endregion

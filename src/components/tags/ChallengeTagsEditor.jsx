@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { useAuth } from "../../hooks/AuthProvider";
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useRestriction } from "../../hooks/useRestriction";
 import { RESTRICTIONS } from "../../pages/Account";
 import { getQueryData, useGetTagAssignment, usePostTagAssignment } from "../../hooks/useApi";
@@ -22,6 +23,7 @@ import { TagsEditor } from "./TagsEditor";
 export function ChallengeTagsSection({ challenge, maxVisible = 8, showIcon = true, sx }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
   const auth = useAuth();
+  const { settings } = useAppSettings();
   const editModal = useModal();
 
   const canEdit = auth.hasPlayerClaimed && !challenge.is_rejected;
@@ -29,7 +31,14 @@ export function ChallengeTagsSection({ challenge, maxVisible = 8, showIcon = tru
   return (
     <Stack direction="row" alignItems="center" gap={0.75} flexWrap="wrap" sx={sx}>
       {showIcon && <FontAwesomeIcon icon={faTags} style={{ opacity: 0.7 }} />}
-      <ChallengeTagChips challengeId={challenge.id} maxVisible={maxVisible} emptyText={t("no_tags")} />
+      {/* display: contents lets the chips wrap within this row, instead of their own wrapping box taking up a full line */}
+      <ChallengeTagChips
+        challengeId={challenge.id}
+        maxVisible={maxVisible}
+        hideOutvoted={!settings.general.alwaysShowOutvotedTags}
+        emptyText={t("no_tags")}
+        sx={{ display: "contents" }}
+      />
       {canEdit && (
         <>
           <EditTagsChip challengeId={challenge.id} playerId={auth.user.player.id} onClick={editModal.open} />

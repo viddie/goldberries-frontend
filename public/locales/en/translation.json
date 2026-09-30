@@ -785,21 +785,8 @@
       "name": "Name",
       "sort": "Sort",
       "sort_note": "Lower numbers are shown first within the category",
-      "selection_mode": {
-        "label": "Selection Mode",
-        "options": {
-          "single": "Single",
-          "multi": "Multiple",
-          "range": "Range"
-        },
-        "notes": {
-          "single": "A player can pick at most one value",
-          "multi": "A player can pick any number of values",
-          "range": "A player picks a span of values (e.g. for challenges spanning many difficulties)"
-        }
-      },
       "is_ordinal": "Ordinal",
-      "is_ordinal_note": "The values are ordered and can be compared (e.g. 'at least long' in filters). Always on for range tags.",
+      "is_ordinal_note": "The values are ordered and can be compared (e.g. 'at least long' in filters).",
       "is_common": "Common",
       "is_common_note": "Every challenge has this tag (e.g. Length). Highlighted in the tags editor.",
       "is_player_assignable": "Assignable by players",
@@ -1359,6 +1346,10 @@
         "show_median_time_taken": {
           "label": "Show Median Time Taken",
           "note": "Show median time taken on the challenge page."
+        },
+        "always_show_outvoted_tags": {
+          "label": "Always Show Out-Voted Tags",
+          "note": "Always show tag values that received fewer votes than another value of the same tag (greyed out). If disabled, they are hidden by default and can be revealed with a \"Show out-voted\" button after expanding all tags."
         }
       },
       "visual": {
@@ -2650,8 +2641,9 @@
     "edit": "Edit",
     "show_more": "+{{count}} more",
     "show_less": "Show less",
+    "show_hidden": "Show out-voted",
+    "hide_hidden": "Hide out-voted",
     "players_modal": {
-      "title": "Tagged By",
       "empty": "No one has assigned this tag.",
       "count_one": "{{count}} player",
       "count_other": "{{count}} players",
@@ -2663,11 +2655,7 @@
     "editor": {
       "no_tags_available": "There are no tags available yet.",
       "common_tooltip": "All challenges should have this tag.",
-      "team_only_tooltip": "Only team members can assign this tag",
-      "clear": "Clear",
-      "range_hint": "Click the first and last value to select a range",
-      "range_pick_end": "Now click the last value of the range",
-      "multi_hint": "Multiple values can be selected"
+      "team_only_tooltip": "Only team members can assign this tag"
     },
     "editor_modal": {
       "current_tags": "All Tags",

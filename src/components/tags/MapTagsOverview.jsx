@@ -2,6 +2,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { getQueryData, useGetMapTagCounts } from "../../hooks/useApi";
 import { getChallengeNameShort } from "../../util/data_util";
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
@@ -13,6 +14,7 @@ import { ChallengeTagChips } from "./ChallengeTagChips";
 // Lists all challenges of a map together with their tag chips
 export function MapTagsOverview({ map }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.map_overview" });
+  const { settings } = useAppSettings();
   const query = useGetMapTagCounts(map.id);
 
   if (query.isLoading) {
@@ -44,6 +46,7 @@ export function MapTagsOverview({ map }) {
               challengeId={challenge.id}
               counts={counts.filter((entry) => entry.challenge_id === challenge.id)}
               maxVisible={null}
+              hideOutvoted={!settings.general.alwaysShowOutvotedTags}
               emptyText={t("no_tags")}
             />
           </Box>
