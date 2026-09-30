@@ -12,7 +12,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
-import { useState } from "react";
 import { useTheme } from "@emotion/react";
 
 import { StyledExternalLink } from "../basic/StyledExternalLink";
@@ -40,13 +39,6 @@ const LINK_ICONS = {
 
 export function LinkIcon({ url }) {
   const theme = useTheme();
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const openTooltip = () => {
-    setTooltipOpen(true);
-  };
-  const closeTooltip = () => {
-    setTooltipOpen(false);
-  };
 
   let linkIconElement = null;
   for (const [, value] of Object.entries(LINK_ICONS)) {
@@ -61,10 +53,8 @@ export function LinkIcon({ url }) {
   }
 
   return (
-    <Tooltip title={url} open={tooltipOpen} onOpen={openTooltip} onClose={closeTooltip} arrow placement="top">
-      <StyledExternalLink href={url} onMouseEnter={openTooltip} onMouseLeave={closeTooltip}>
-        {linkIconElement}
-      </StyledExternalLink>
+    <Tooltip title={url} arrow placement="top">
+      <StyledExternalLink href={url}>{linkIconElement}</StyledExternalLink>
     </Tooltip>
   );
 }

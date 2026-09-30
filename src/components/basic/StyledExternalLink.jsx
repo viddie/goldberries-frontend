@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Dialog, DialogContent, DialogContentText, Stack } from "@mui/material";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const SafeExternalDomains = [
@@ -21,15 +21,11 @@ const SafeExternalDomains = [
   "everest:https://gamebanana.com",
 ];
 
-export function StyledExternalLink({
-  href,
-  children,
-  underline = true,
-  target = "_blank",
-  style,
-  isSafe = false,
-  ...props
-}) {
+// Forwards its ref to the <a>, so it can be used as the child of a Tooltip (which needs a DOM node as anchor)
+export const StyledExternalLink = forwardRef(function StyledExternalLink(
+  { href, children, underline = true, target = "_blank", style, isSafe = false, ...props },
+  ref,
+) {
   const theme = useTheme();
 
   //url has to start with one of the safe domains
@@ -43,6 +39,7 @@ export function StyledExternalLink({
     return (
       <>
         <a
+          ref={ref}
           href={href}
           style={{ color: theme.palette.links.main, ...style }}
           onClick={(e) => {
@@ -61,6 +58,7 @@ export function StyledExternalLink({
 
   return (
     <a
+      ref={ref}
       href={href}
       style={{ color: theme.palette.links.main, ...style }}
       {...props}
@@ -71,7 +69,7 @@ export function StyledExternalLink({
       {children}
     </a>
   );
-}
+});
 
 function OpenExternalLinkModal({ href, isOpen, onClose }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components" });
