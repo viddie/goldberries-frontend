@@ -99,6 +99,7 @@ import { PageIndex } from "./pages/Index";
 import { ProfileSettingsAlert } from "./components/AlertBanner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalNoticesIcon } from "./components/GlobalNotices";
+import { DevAccountOverrideIndicator } from "./components/DevAccountOverrideIndicator";
 import { MemoWebsiteIcon, ObjectiveIcon } from "./components/goldberries";
 import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider";
 import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
@@ -1171,6 +1172,7 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
         </Grid>
         <Grid item sm={5} sx={{ pt: "0 !important" }}>
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
+            <DevAccountOverrideIndicator />
             <GlobalNoticesIcon />
             {auth.hasHelperPriv && <VerifierStatsNavDesktop />}
             {rightMenu.map((entry, index) => {

@@ -1414,6 +1414,14 @@
         "role_override": {
           "label": "Role Override",
           "note": "To view the website through the perspective of a different role."
+        },
+        "account_override": {
+          "label": "Account Override",
+          "note": "Act as a different account in both frontend and backend, without logging in. Only works for admins in the dev environment. Changing it reloads the page.",
+          "placeholder": "None",
+          "not_logged_in": "Log in with an admin account to use this.",
+          "indicator": "Acting as",
+          "indicator_tooltip": "Dev account override is active. Click to reset back to your account."
         }
       }
     }
@@ -2656,6 +2664,7 @@
     "show_less": "Show less",
     "show_hidden": "Show out-voted",
     "hide_hidden": "Hide out-voted",
+    "more_voters": "+ {{count}} more",
     "players_modal": {
       "empty": "No one has assigned this tag.",
       "count_one": "{{count}} player",

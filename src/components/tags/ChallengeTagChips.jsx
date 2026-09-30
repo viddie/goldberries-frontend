@@ -15,12 +15,12 @@ import {
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 import { displayDate } from "../../util/data_util";
 import { CustomIconButton, ErrorDisplay, LoadingSpinner } from "../basic";
-import { PlayerChip } from "../goldberries";
+import { PlayerChip, PlayerLink } from "../goldberries";
 
 import { TagChip } from "./TagChip";
 import { getTagValueDescription, getTagValueLabel, resolveTagCounts, useTagLookup } from "./tag_util";
 
-const MAX_TOOLTIP_VOTERS = 20;
+const MAX_TOOLTIP_VOTERS = 10;
 
 //#region ChallengeTagChips
 // Renders the aggregated tag chips of a challenge. Either pass `counts` ([{ tag_value_id, count }]) or let the
@@ -102,18 +102,16 @@ export function ChallengeTagChips({
           />
         ))}
         {showOutvotedToggle && (
-          <Chip
-            size={buttonSize}
-            variant="outlined"
-            icon={
-              <FontAwesomeIcon
-                icon={showOutvoted ? faEyeSlash : faEye}
-                style={{ fontSize: "0.9em", marginLeft: "8px" }}
-              />
-            }
-            label={showOutvoted ? t("hide_hidden") : t("show_hidden")}
-            onClick={() => setShowOutvoted(!showOutvoted)}
-          />
+          <Tooltip title={showOutvoted ? t("hide_hidden") : t("show_hidden")} arrow>
+            <Chip
+              size={buttonSize}
+              variant="outlined"
+              label={
+                <FontAwesomeIcon icon={showOutvoted ? faEyeSlash : faEye} style={{ fontSize: "0.9em" }} />
+              }
+              onClick={() => setShowOutvoted(!showOutvoted)}
+            />
+          </Tooltip>
         )}
         {hasMore && (
           <Chip
@@ -157,12 +155,12 @@ function TagVotersTooltip({ challengeId, entry }) {
       </Typography>
       {listed.map((assignment) => (
         <Typography key={assignment.id} variant="body2">
-          {assignment.player.name}
+          <PlayerLink player={assignment.player} />
         </Typography>
       ))}
       {assignments.length > listed.length && (
         <Typography variant="body2" sx={{ opacity: 0.75 }}>
-          {t("show_more", { count: assignments.length - listed.length })}
+          {t("more_voters", { count: assignments.length - listed.length })}
         </Typography>
       )}
     </Stack>

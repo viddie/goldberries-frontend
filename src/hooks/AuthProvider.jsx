@@ -11,6 +11,7 @@ import { getErrorMessage, LoadingSpinner } from "../components/basic";
 import { getDefaultSettings } from "./AppSettingsProvider";
 
 const AuthContext = createContext();
+const DEV_ACCOUNT_OVERRIDE_COOKIE = "gb_dev_account_override";
 export const ROLES = {
   USER: 0,
   EX_HELPER: 10,
@@ -77,6 +78,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await axios.post("/auth/logout");
+      setDevAccountOverride(null);
       setUser(null);
       toast.success(t("logout_success"));
     } catch (err) {
@@ -132,6 +134,11 @@ export function AuthProvider({ children }) {
   const hasPlayerClaimed = isLoggedIn && user.player?.id != null;
   const isPlayerWithId = (id) => hasPlayerClaimed && user.player_id === id;
 
+  // The backend silently ignores the override for non-admins, so it's only active if the returned user matches
+  const devAccountOverride = IS_DEBUG ? getDevAccountOverride() : null;
+  const isDevAccountOverrideActive =
+    isLoggedIn && devAccountOverride !== null && user.id === devAccountOverride;
+
   return (
     <AuthContext.Provider
       value={{
@@ -152,6 +159,7 @@ export function AuthProvider({ children }) {
         logout,
         checkSession,
         isPlayerWithId,
+        isDevAccountOverrideActive,
       }}
     >
       {isCheckingSession ? <LoadingSpinner /> : children}
@@ -162,3 +170,20 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+
+//#region Dev Account Override
+// Dev-only: the backend acts as this account id (only honored with DEBUG=true and a real admin account)
+export function getDevAccountOverride() {
+  const match = document.cookie.match(new RegExp("(?:^|; )" + DEV_ACCOUNT_OVERRIDE_COOKIE + "=(\\d+)"));
+  return match ? parseInt(match[1]) : null;
+}
+
+export function setDevAccountOverride(accountId) {
+  if (accountId === null) {
+    document.cookie = DEV_ACCOUNT_OVERRIDE_COOKIE + "=; path=/; max-age=0";
+  } else {
+    document.cookie =
+      DEV_ACCOUNT_OVERRIDE_COOKIE + "=" + accountId + "; path=/; max-age=31536000; SameSite=Lax";
+  }
+}
+//#endregion

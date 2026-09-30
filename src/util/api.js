@@ -137,6 +137,9 @@ export function fetchAllPlayerClaims() {
 export function fetchAllAccounts() {
   return axios.get("/account", { params: { id: "all" } });
 }
+export function fetchDevAccountOverride() {
+  return axios.get("/auth/dev_account_override");
+}
 export function fetchAccount(id) {
   return axios.get("/account", { params: { id: id } });
 }

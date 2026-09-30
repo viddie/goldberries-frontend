@@ -109,7 +109,7 @@ export function PageSubmissionQueue() {
 
   if (query.isLoading) {
     return (
-      <BasicContainerBox sx={{ mt: 0, p: 2 }}>
+      <BasicContainerBox modern sx={{ mt: 0 }} innerSx={{ p: 2 }}>
         <Typography variant="h4" sx={{ mt: 0 }}>
           {t("title")}
         </Typography>
@@ -118,7 +118,7 @@ export function PageSubmissionQueue() {
     );
   } else if (query.isError && data === null) {
     return (
-      <BasicContainerBox sx={{ mt: 0, p: 2 }}>
+      <BasicContainerBox modern sx={{ mt: 0 }} innerSx={{ p: 2 }}>
         <Typography variant="h4" sx={{ mt: 0 }}>
           {t("title")}
         </Typography>
@@ -155,8 +155,10 @@ export function PageSubmissionQueue() {
     <>
       <HeadTitle title={title} />
       <BasicContainerBox
+        modern
         maxWidth={isSmallView ? "sm" : isBigView ? "md" : undefined}
-        sx={{ mt: 0, p: 2, position: "relative" }}
+        sx={{ mt: 0, position: "relative", overflow: "visible" }}
+        innerSx={{ p: 2 }}
       >
         <Box
           sx={{

@@ -7,6 +7,7 @@ import {
   deleteMap,
   fetchAccount,
   fetchAllAccounts,
+  fetchDevAccountOverride,
   postCampaign,
   postChallenge,
   postMap,
@@ -210,6 +211,15 @@ export function useGetAllAccounts() {
     queryKey: ["all_accounts"],
     queryFn: () => fetchAllAccounts(),
     onError: errorToast,
+  });
+}
+
+export function useGetDevAccountOverride(props = {}) {
+  return useQuery({
+    queryKey: ["dev_account_override"],
+    queryFn: () => fetchDevAccountOverride(),
+    onError: errorToast,
+    ...props,
   });
 }
 

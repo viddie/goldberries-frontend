@@ -14,6 +14,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  createFilterOptions,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -27,8 +28,18 @@ import { useTranslation } from "react-i18next";
 import { COLOR_PRESETS, useAppSettings } from "../hooks/AppSettingsProvider";
 import { IS_DEBUG, getDifficultiesSorted, getNewDifficultyColors } from "../util/constants";
 import i18n, { LANGUAGES } from "../i18n/config";
-import { BasicContainerBox, HeadTitle, LanguageFlag, LoadingSpinner } from "../components/basic";
-import { ROLES } from "../hooks/AuthProvider";
+import {
+  BasicContainerBox,
+  getErrorMessage,
+  HeadTitle,
+  LanguageFlag,
+  LoadingSpinner,
+} from "../components/basic";
+import { ROLES, setDevAccountOverride, useAuth } from "../hooks/AuthProvider";
+import { useGetDevAccountOverride } from "../hooks/useApi";
+import { AccountSelect } from "../components/goldberries";
+
+const DEV_ACCOUNT_FILTER = createFilterOptions({ limit: 100 });
 
 export function PageAppSettings({ isModal = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "app_settings" });
@@ -679,8 +690,44 @@ export function AppSettingsDevForm() {
           )}
         />
       </SettingsEntry>
+      <SettingsEntry note={t("account_override.note")} title={t("account_override.label")}>
+        <DevAccountOverrideSelect />
+      </SettingsEntry>
       <Footnote />
     </form>
+  );
+}
+
+function DevAccountOverrideSelect() {
+  const { t } = useTranslation(undefined, { keyPrefix: "app_settings.tabs.dev.account_override" });
+  const auth = useAuth();
+  const query = useGetDevAccountOverride({ enabled: auth.isLoggedIn, onError: () => {} });
+
+  if (!auth.isLoggedIn) {
+    return <Typography color="text.secondary">{t("not_logged_in")}</Typography>;
+  } else if (query.isLoading) {
+    return <LoadingSpinner />;
+  } else if (query.isError) {
+    return <Typography color="error">{getErrorMessage(query.error)}</Typography>;
+  }
+
+  const { accounts, override_account_id } = query.data.data;
+  const selected = accounts.find((account) => account.id === override_account_id) ?? null;
+
+  const onChange = (_, account) => {
+    setDevAccountOverride(account?.id ?? null);
+    window.location.reload();
+  };
+
+  return (
+    <AccountSelect
+      fullWidth
+      accounts={accounts}
+      value={selected}
+      onChange={onChange}
+      placeholder={t("placeholder")}
+      filterOptions={DEV_ACCOUNT_FILTER}
+    />
   );
 }
 

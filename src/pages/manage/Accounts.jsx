@@ -34,7 +34,7 @@ import {
   usePostAccount,
   usePostPlayer,
 } from "../../hooks/useApi";
-import { getAccountName } from "../../util/data_util";
+import { AccountSelect } from "../../components/goldberries";
 import { FormAccountWrapper } from "../../components/forms/Account";
 import { useAuth } from "../../hooks/AuthProvider";
 import { useRestriction } from "../../hooks/useRestriction";
@@ -108,11 +108,11 @@ function ManageAccountsTab() {
 
   return (
     <>
-      <Autocomplete
-        options={query.data.data}
-        getOptionLabel={(option) => getAccountName(option)}
+      <AccountSelect
+        accounts={accounts}
+        value={account}
         onChange={(event, newValue) => setAccount(newValue)}
-        renderInput={(params) => <TextField {...params} label={t("select")} />}
+        label={t("select")}
         sx={{ mt: 2 }}
       />
       {account && (
