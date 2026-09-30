@@ -30,6 +30,7 @@ import { TooltipInfoButton } from "../basic";
 import { TagChip, getTagCategoryColor, isImplicitTag } from "../tags";
 
 const MAX_CONFIDENCE = 100;
+const DEFAULT_AGREEMENT = 50;
 const MAX_CONDITIONS = 20;
 const FILTER_BACKGROUND = "#303030";
 const CONDITION_BACKGROUND = "#3a3a3a";
@@ -42,20 +43,21 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
   const [collapsed, setCollapsed] = useState(false);
   const [conditions, setConditions] = useState(() => fromApiFilter(filter, lookup));
   const [confidence, setConfidence] = useState(filter.confidence ?? 1);
-  const [confidenceInput, setConfidenceInput] = useState(String(filter.confidence ?? 1));
+  const [agreement, setAgreement] = useState(filter.agreement ?? DEFAULT_AGREEMENT);
 
   // Reset the local state if the applied filter was changed from the outside (e.g. browser navigation)
   const filterString = JSON.stringify(filter);
   useEffect(() => {
-    if (JSON.stringify(toApiFilter(conditions, confidence, lookup)) !== filterString) {
+    if (JSON.stringify(toApiFilter(conditions, confidence, agreement, lookup)) !== filterString) {
       setConditions(fromApiFilter(filter, lookup));
       setConfidence(filter.confidence ?? 1);
-      setConfidenceInput(String(filter.confidence ?? 1));
+      setAgreement(filter.agreement ?? DEFAULT_AGREEMENT);
     }
   }, [filterString]);
 
-  const localFilter = toApiFilter(conditions, confidence, lookup);
+  const localFilter = toApiFilter(conditions, confidence, agreement, lookup);
   const hasChanges = JSON.stringify(localFilter) !== filterString;
+  const isDefault = conditions.length === 0 && confidence === 1 && agreement === DEFAULT_AGREEMENT;
 
   const updateCondition = (index, changes) => {
     setConditions(conditions.map((c, i) => (i === index ? { ...c, ...changes } : c)));
@@ -66,16 +68,10 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
   const addCondition = (tag) => {
     setConditions([...conditions, createCondition(tag.id)]);
   };
-  const onConfidenceChange = (value) => {
-    setConfidenceInput(value);
-    const parsed = parseInt(value);
-    if (isNaN(parsed)) return;
-    setConfidence(Math.max(1, Math.min(MAX_CONFIDENCE, parsed)));
-  };
   const onReset = () => {
     setConditions([]);
     setConfidence(1);
-    setConfidenceInput("1");
+    setAgreement(DEFAULT_AGREEMENT);
     onApply({});
   };
   const onApplyClick = () => {
@@ -105,7 +101,7 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
           </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
-        {!collapsed && (conditions.length > 0 || confidence !== 1) && (
+        {!collapsed && !isDefault && (
           <Button
             size="small"
             variant="text"
@@ -176,17 +172,21 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
               )}
             />
             <Stack direction="row" alignItems="center" gap={1}>
-              <TextField
-                label={t("confidence")}
-                type="number"
-                size="small"
-                value={confidenceInput}
-                onChange={(e) => onConfidenceChange(e.target.value)}
-                onBlur={() => setConfidenceInput(String(confidence))}
-                inputProps={{ min: 1, max: MAX_CONFIDENCE }}
-                sx={{ width: 150 }}
+              <FilterNumberField
+                label={t("agreement")}
+                value={agreement}
+                onChange={setAgreement}
+                min={0}
+                max={100}
               />
-              <TooltipInfoButton title={t("confidence_note")} />
+              <FilterNumberField
+                label={t("confidence")}
+                value={confidence}
+                onChange={setConfidence}
+                min={1}
+                max={MAX_CONFIDENCE}
+              />
+              <TooltipInfoButton title={<FilterThresholdsNote />} />
             </Stack>
             <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
             <Button
@@ -305,6 +305,59 @@ function FilterConditionRow({ condition, lookup, onChange, onRemove }) {
 }
 //#endregion
 
+//#region FilterNumberField
+// Number input that allows typing freely, but only passes on valid (clamped) values
+function FilterNumberField({ label, value, onChange, min, max }) {
+  const [input, setInput] = useState(String(value));
+
+  useEffect(() => {
+    if (parseInt(input) !== value) setInput(String(value));
+  }, [value]);
+
+  const onInputChange = (newInput) => {
+    setInput(newInput);
+    const parsed = parseInt(newInput);
+    if (isNaN(parsed)) return;
+    onChange(Math.max(min, Math.min(max, parsed)));
+  };
+
+  return (
+    <TextField
+      label={label}
+      type="number"
+      size="small"
+      value={input}
+      onChange={(e) => onInputChange(e.target.value)}
+      onBlur={() => setInput(String(value))}
+      inputProps={{ min, max }}
+      sx={{ width: 130 }}
+    />
+  );
+}
+//#endregion
+
+//#region FilterThresholdsNote
+function FilterThresholdsNote() {
+  const { t } = useTranslation(undefined, { keyPrefix: "discovery.filter" });
+  return (
+    <Stack direction="column" gap={1}>
+      <Box>
+        <Typography variant="body2" fontWeight="bold">
+          {t("agreement")}
+        </Typography>
+        <Typography variant="body2">{t("agreement_note")}</Typography>
+      </Box>
+      <Box>
+        <Typography variant="body2" fontWeight="bold">
+          {t("confidence")}
+        </Typography>
+        <Typography variant="body2">{t("confidence_note")}</Typography>
+      </Box>
+    </Stack>
+  );
+}
+//#endregion
+
 //#region ValueSelect
 function ValueSelect({ tag, label, value, onChange }) {
   return (
@@ -362,7 +415,7 @@ function isConditionComplete(condition) {
   }
 }
 
-export function toApiFilter(conditions, confidence, lookup) {
+export function toApiFilter(conditions, confidence, agreement, lookup) {
   const apiConditions = [];
   for (const condition of conditions) {
     if (!isConditionComplete(condition)) continue;
@@ -385,6 +438,7 @@ export function toApiFilter(conditions, confidence, lookup) {
   }
   const filter = {};
   if (confidence !== 1) filter.confidence = confidence;
+  if (agreement !== DEFAULT_AGREEMENT) filter.agreement = agreement;
   if (apiConditions.length > 0) filter.conditions = apiConditions;
   return filter;
 }
@@ -455,6 +509,11 @@ export function sanitizeFilter(filter, lookup) {
   const confidence = parseInt(filter.confidence);
   const result = {};
   if (!isNaN(confidence) && confidence > 1) result.confidence = Math.min(MAX_CONFIDENCE, confidence);
+  const agreement = parseInt(filter.agreement);
+  if (!isNaN(agreement)) {
+    const clamped = Math.max(0, Math.min(100, agreement));
+    if (clamped !== DEFAULT_AGREEMENT) result.agreement = clamped;
+  }
   if (conditions.length > 0) result.conditions = conditions;
   return result;
 }

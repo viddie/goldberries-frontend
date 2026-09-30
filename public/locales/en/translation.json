@@ -2709,8 +2709,10 @@
       "reset": "Reset",
       "no_conditions": "No filter set, showing all challenges. Add a tag below to narrow down the results.",
       "add_condition": "Add a tag to the filter...",
-      "confidence": "# of Assignments",
-      "confidence_note": "The minimum number of different players that need to have assigned a tag for it to count. Applies to included and excluded tags. Tags that only the team can assign always count.",
+      "agreement": "% Agreement",
+      "agreement_note": "The minimum share of votes a tag's value needs among all votes on that tag for it to count. For \"At least\", \"At most\" and \"Between\", the votes of all values in that range are added up. Example: 9 players voted \"Long\" and 1 player voted \"Short\" — \"Long\" counts up to 90%, \"Short\" only up to 10%. Tags that only the team can assign always count.",
+      "confidence": "# Tagged",
+      "confidence_note": "The minimum number of different players that need to have assigned a tag for it to count. Tags that only the team can assign always count.",
       "modes": {
         "include": "Include",
         "exclude": "Exclude"
