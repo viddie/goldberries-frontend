@@ -1,4 +1,10 @@
-import { faChevronDown, faChevronRight, faStar, faUserShield } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckDouble,
+  faChevronDown,
+  faChevronRight,
+  faStar,
+  faUserShield,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Chip, Collapse, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
@@ -12,7 +18,7 @@ const ROW_BACKGROUND = "rgba(255,255,255,0.04)";
 
 //#region TagsEditor
 // Controlled editor for the tag values one player assigns to a challenge. `value` is an array of tag value ids.
-// The values of a tag are mutually exclusive, so at most one value per tag can be selected.
+// The values of 'single' tags are mutually exclusive, so at most one value per tag can be selected. 'multi' tags allow any number.
 // Values of tags that aren't shown (archived categories, team-only tags) are kept untouched in `value`.
 // `allowedValueIds`: if set, only these values can be newly selected (others can still be deselected)
 export function TagsEditor({
@@ -126,9 +132,16 @@ function CategoryHeaderChip({ category, isCollapsed, onClick }) {
 function TagEditorRow({ tag, selected, onChangeTag, disabled, allowed }) {
   // Tags without qualifiers have no title, their name is shown in the (single) toggle chip instead
   const implicit = isImplicitTag(tag);
+  const isMulti = tag.selection_mode === "multi" && !implicit;
 
   const onValueClick = (valueId) => {
-    onChangeTag(selected.has(valueId) ? [] : [valueId]);
+    const isSelected = selected.has(valueId);
+    if (isMulti) {
+      const selectedIds = tag.values.filter((v) => selected.has(v.id)).map((v) => v.id);
+      onChangeTag(isSelected ? selectedIds.filter((id) => id !== valueId) : [...selectedIds, valueId]);
+    } else {
+      onChangeTag(isSelected ? [] : [valueId]);
+    }
   };
 
   return (
@@ -188,6 +201,11 @@ function TagNameLabel({ tag }) {
       {!tag.is_player_assignable && (
         <Tooltip title={t("team_only_tooltip")} arrow placement="top">
           <FontAwesomeIcon icon={faUserShield} size="xs" />
+        </Tooltip>
+      )}
+      {tag.selection_mode === "multi" && !isImplicitTag(tag) && (
+        <Tooltip title={t("multi_hint")} arrow placement="top">
+          <FontAwesomeIcon icon={faCheckDouble} size="xs" />
         </Tooltip>
       )}
     </Stack>

@@ -40,7 +40,7 @@ export function TagChip({
       onClick={onClick}
       highlighted={highlighted}
       segments={[
-        { key: "tag", label: tag.name, color, sx: { fontWeight: 500 } },
+        { key: "tag", label: tag.short ?? tag.name, color, sx: { fontWeight: 500 } },
         hasQualifier && { key: "value", label: value.name, color: shade },
         count !== null && {
           key: "count",

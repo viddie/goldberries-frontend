@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 
 import { usePostTag } from "../../hooks/useApi";
 import { CustomIconButton } from "../basic";
-import { isImplicitTag } from "../tags";
+import { TAG_SELECTION_MODES, isImplicitTag } from "../tags";
 
 export function FormTag({ tag, categories, onSave, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "forms.tag" });
@@ -44,11 +44,13 @@ export function FormTag({ tag, categories, onSave, ...props }) {
       id: data.id ?? undefined,
       category_id: data.category_id,
       name: data.name,
+      short: data.short.trim() === "" ? null : data.short.trim(),
       description: data.description,
       sort: parseInt(data.sort) || 0,
       is_common: data.is_common,
       is_player_assignable: data.is_player_assignable,
       is_ordinal: data.is_ordinal,
+      selection_mode: data.selection_mode,
       values: values.map((row) => ({
         id: row.id ?? undefined,
         name: row.name,
@@ -124,6 +126,14 @@ export function FormTag({ tag, categories, onSave, ...props }) {
         {...form.register("name", { required: true, maxLength: 64 })}
       />
       <TextField
+        label={t("short")}
+        sx={{ mt: 2 }}
+        fullWidth
+        helperText={t("short_note")}
+        error={!!errors.short}
+        {...form.register("short", { maxLength: 64 })}
+      />
+      <TextField
         label={t_g("description") + " *"}
         sx={{ mt: 2 }}
         fullWidth
@@ -132,14 +142,40 @@ export function FormTag({ tag, categories, onSave, ...props }) {
         error={!!errors.description}
         {...form.register("description", { required: true })}
       />
-      <TextField
-        label={t("sort")}
-        type="number"
-        sx={{ mt: 2 }}
-        fullWidth
-        helperText={t("sort_note")}
-        {...form.register("sort")}
-      />
+      <Grid container spacing={2} sx={{ mt: 0 }}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label={t("sort")}
+            type="number"
+            fullWidth
+            helperText={t("sort_note")}
+            {...form.register("sort")}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            control={form.control}
+            name="selection_mode"
+            render={({ field }) => (
+              <TextField
+                select
+                label={t("selection_mode.label")}
+                fullWidth
+                value={field.value}
+                onChange={(e) => field.onChange(e.target.value)}
+                helperText={t("selection_mode.notes." + field.value)}
+                SelectProps={{ MenuProps: { disableScrollLock: true } }}
+              >
+                {TAG_SELECTION_MODES.map((mode) => (
+                  <MenuItem key={mode} value={mode}>
+                    {t("selection_mode.options." + mode)}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
+        </Grid>
+      </Grid>
 
       <Stack direction="column" sx={{ mt: 1 }}>
         <FormCheckbox form={form} name="is_ordinal" label={t("is_ordinal")} note={t("is_ordinal_note")} />
@@ -251,11 +287,13 @@ function getDefaultValues(tag) {
     id: tag.id,
     category_id: tag.category_id ?? null,
     name: tag.name ?? "",
+    short: tag.short ?? "",
     description: tag.description ?? "",
     sort: tag.sort ?? 0,
     is_common: tag.is_common ?? false,
     is_player_assignable: tag.is_player_assignable ?? true,
     is_ordinal: tag.is_ordinal ?? false,
+    selection_mode: tag.selection_mode ?? "single",
   };
 }
 

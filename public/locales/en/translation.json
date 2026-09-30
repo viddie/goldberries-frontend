@@ -783,8 +783,21 @@
       "title": "Tag",
       "category": "Category",
       "name": "Name",
+      "short": "Short Name",
+      "short_note": "Optional. If set, it is shown instead of the name in tag chips.",
       "sort": "Sort",
       "sort_note": "Lower numbers are shown first within the category",
+      "selection_mode": {
+        "label": "Selection Mode",
+        "options": {
+          "single": "Single",
+          "multi": "Multiple"
+        },
+        "notes": {
+          "single": "A player can pick at most one value",
+          "multi": "A player can pick any number of values"
+        }
+      },
       "is_ordinal": "Ordinal",
       "is_ordinal_note": "The values are ordered and can be compared (e.g. 'at least long' in filters).",
       "is_common": "Common",
@@ -2655,7 +2668,8 @@
     "editor": {
       "no_tags_available": "There are no tags available yet.",
       "common_tooltip": "All challenges should have this tag.",
-      "team_only_tooltip": "Only team members can assign this tag"
+      "team_only_tooltip": "Only team members can assign this tag",
+      "multi_hint": "Multiple values can be selected"
     },
     "editor_modal": {
       "current_tags": "All Tags",
@@ -2710,7 +2724,7 @@
       "no_conditions": "No filter set, showing all challenges. Add a tag below to narrow down the results.",
       "add_condition": "Add a tag to the filter...",
       "agreement": "% Agreement",
-      "agreement_note": "The minimum share of votes a tag's value needs among all votes on that tag for it to count. For \"At least\", \"At most\" and \"Between\", the votes of all values in that range are added up. Example: 9 players voted \"Long\" and 1 player voted \"Short\" — \"Long\" counts up to 90%, \"Short\" only up to 10%. Tags that only the team can assign always count.",
+      "agreement_note": "The minimum share of votes a tag's value needs among all votes on that tag for it to count. For \"At least\", \"At most\" and \"Between\", the votes of all values in that range are added up. Tags that only the team can assign, and tags that allow multiple values, always count.",
       "confidence": "# Tagged",
       "confidence_note": "The minimum number of different players that need to have assigned a tag for it to count. Tags that only the team can assign always count.",
       "modes": {

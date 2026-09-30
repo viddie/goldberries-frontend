@@ -286,6 +286,7 @@ function TagRow({ tag, category, onEdit, onDelete }) {
       </TableCell>
       <TableCell>
         <Stack direction="row" gap={1} alignItems="center" sx={{ whiteSpace: "nowrap" }}>
+          <Chip size="small" label={t_ft("selection_mode.options." + tag.selection_mode)} />
           {tag.is_ordinal && (
             <Tooltip title={t_ft("is_ordinal")} arrow>
               <FontAwesomeIcon icon={faListOl} />
