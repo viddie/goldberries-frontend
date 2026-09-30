@@ -265,6 +265,16 @@ export function SuggestionName({ suggestion, expired }) {
 
 const SUGGESTION_ACTIVE_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
+export function isSuggestionExpired(suggestion) {
+  return (
+    suggestion.is_accepted !== null ||
+    (suggestion.date_verified !== null &&
+      suggestion.date_verified !== undefined &&
+      jsonDateToJsDate(suggestion.date_verified).getTime() <
+        Date.now() - SUGGESTION_ACTIVE_DURATION_MS)
+  );
+}
+
 export function SuggestionCountdown({ suggestion, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.countdown" });
   const theme = useTheme();

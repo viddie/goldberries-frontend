@@ -358,6 +358,18 @@ export function fetchSuggestion(id) {
     },
   });
 }
+export function fetchLastPlacementSuggestion(challengeId) {
+  return axios
+    .get("/suggestion/last-placement-suggestion.php", {
+      params: {
+        challenge: challengeId,
+      },
+    })
+    .catch((error) => {
+      if (error.response?.status === 404) return null;
+      throw error;
+    });
+}
 
 export function fetchStatsGlobal(month = null) {
   const params = {};

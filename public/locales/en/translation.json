@@ -1909,6 +1909,16 @@
           }
         },
         "select_challenge": "Select Challenge",
+        "checking_challenge": "Checking challenge",
+        "no_prior_suggestions": "There are no prior suggestions.",
+        "ongoing_suggestion": "There is an ongoing <suggestionLink>suggestion</suggestionLink> for this challenge",
+        "last_suggestion_with_votes": "Last <suggestionLink>suggestion</suggestionLink> · <difficultyMove/> · {{for}} <upIcon/> | {{against}} <downIcon/> | {{indifferent}} <indifferentIcon/> · {{timeAgo}} · <status>{{status}}</status>",
+        "last_suggestion_status": {
+          "accepted": "Accepted",
+          "rejected": "Rejected",
+          "undecided": "Undecided"
+        },
+        "last_suggestion_error": "Could not check for prior suggestions.",
         "suggested_placement": "Suggested Placement",
         "current_difficulty": "Current difficulty",
         "challenge_details": "Challenge Details",

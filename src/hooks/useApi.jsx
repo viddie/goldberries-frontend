@@ -44,6 +44,7 @@ import {
   deleteLogEntry,
   deletePlayer,
   fetchSuggestions,
+  fetchLastPlacementSuggestion,
   postSuggestion,
   postSuggestionVote,
   deleteSuggestion,
@@ -463,6 +464,15 @@ export function useGetSuggestion(id) {
     queryFn: () => fetchSuggestion(id),
     onError: errorToast,
     refetchInterval: 5 * 1000,
+  });
+}
+export function useGetLastPlacementSuggestion(challengeId) {
+  return useQuery({
+    queryKey: ["last_placement_suggestion", challengeId],
+    queryFn: () => fetchLastPlacementSuggestion(challengeId),
+    onError: errorToast,
+    enabled: !!challengeId,
+    staleTime: 0,
   });
 }
 
