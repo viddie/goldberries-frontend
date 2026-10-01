@@ -177,6 +177,8 @@
       "title": "제출 검토",
       "related_submissions": "이 맵의 다른 제출",
       "no_related": "관련 제출 없음",
+      "mark_obsolete": "제출을 이전 버전으로 표시",
+      "unmark_obsolete": "제출의 이전 버전 표시 해제",
       "notes_history": "메모 기록",
       "no_notes": "이 플레이어에게 남겨진 검증자 메모가 없습니다.",
       "table": {
@@ -376,10 +378,6 @@
           "label": "맵 이미지 우선",
           "note": "기본적으로 최초 클리어 영상의 YouTube 썸네일을 표시합니다. 이 옵션을 켜면 맵 이미지를 우선 사용합니다."
         },
-        "show_images": {
-          "label": "이미지 표시",
-          "note": "끄면 이미지가 숨겨져 페이지를 더 빠르게 불러올 수 있습니다."
-        },
         "compact_mode": {
           "label": "컴팩트 모드",
           "note": "기존 황금 딸기 랭킹과 비슷한, 더 간결한 레이아웃입니다."
@@ -390,6 +388,7 @@
           "campaign": "캠페인",
           "fractional_tier": "소수점 티어",
           "clear_count": "클리어 수",
+          "like_count": "좋아요 수",
           "first_clear_date": "최초 클리어 날짜",
           "time_taken": "소요 시간"
         },
@@ -400,6 +399,9 @@
         },
         "show_time_taken": {
           "label": "총 소요 시간 표시"
+        },
+        "show_obsolete_submissions": {
+          "label": "이전 버전 제출 표시"
         },
         "show_fractional_tiers": {
           "label": "소수점 티어 표시"
@@ -445,6 +447,13 @@
       "is_admin": "관리자 권한",
       "logout_user": "강제 로그아웃",
       "role": "역할",
+      "restrictions": {
+        "toggle": "제한",
+        "toggle_active_one": "제한 ({{count}}개 활성)",
+        "toggle_active_other": "제한 ({{count}}개 활성)",
+        "description": "제한된 기능은 이 계정에서 더 이상 사용할 수 없습니다. 변경 사항은 계정을 업데이트할 때 적용됩니다.",
+        "no_permission": "이 계정은 본인보다 낮은 역할도 아니고 본인 계정도 아니므로 제한을 변경할 수 없습니다."
+      },
       "delete": {
         "title": "계정 삭제",
         "description": "이 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
@@ -657,12 +666,14 @@
       "verifier": "검증자",
       "verifier_notes": "검증자 메모",
       "map_information": "맵 정보",
+      "challenge_information": "챌린지 정보",
       "golden_changes": "황금 딸기 전용 변경 사항",
       "buttons": {
         "update": "기록 저장",
         "verify": "승인",
         "reject": "거절"
-      }
+      },
+      "edit_tags": "이 챌린지에서 이 플레이어의 태그 수정"
     },
     "feedback": {
       "player_name": {
@@ -749,6 +760,68 @@
         "updated": "위시리스트 항목을 저장했습니다.",
         "removed": "위시리스트 항목을 제거했습니다."
       }
+    },
+    "tag_category": {
+      "title": "태그 카테고리",
+      "name": "이름",
+      "color": "색상",
+      "reset_color": "색상 없음",
+      "sort": "정렬",
+      "sort_note": "낮은 숫자가 먼저 표시됩니다",
+      "is_archived": "보관됨",
+      "is_archived_note": "보관된 카테고리는 태그 편집기에서 숨겨지지만, 해당 태그는 챌린지와 Discovery 필터에 계속 표시됩니다.",
+      "feedback": {
+        "created": "태그 카테고리를 생성했습니다.",
+        "updated": "태그 카테고리를 업데이트했습니다."
+      },
+      "buttons": {
+        "create": "카테고리 생성",
+        "update": "카테고리 업데이트"
+      }
+    },
+    "tag": {
+      "title": "태그",
+      "category": "카테고리",
+      "name": "이름",
+      "short": "짧은 이름",
+      "short_note": "선택 사항입니다. 설정하면 태그 칩에서 이름 대신 표시됩니다.",
+      "sort": "정렬",
+      "sort_note": "카테고리 안에서 낮은 숫자가 먼저 표시됩니다",
+      "selection_mode": {
+        "label": "선택 방식",
+        "options": {
+          "single": "단일",
+          "multi": "복수"
+        },
+        "notes": {
+          "single": "플레이어는 최대 하나의 값만 고를 수 있습니다",
+          "multi": "플레이어는 원하는 만큼 값을 고를 수 있습니다"
+        }
+      },
+      "is_ordinal": "순서 있음",
+      "is_ordinal_note": "값에 순서가 있어 비교할 수 있습니다(예: 필터에서 '적어도 long 이상').",
+      "is_common": "공통",
+      "is_common_note": "모든 챌린지에 이 태그가 있습니다(예: Length). 태그 편집기에서 강조 표시됩니다.",
+      "is_player_assignable": "플레이어가 지정 가능",
+      "is_player_assignable_note": "비활성화하면 팀원만 이 태그를 지정할 수 있습니다.",
+      "values": {
+        "title": "값",
+        "note": "값의 순서는 표시되고 비교되는 순서입니다. 한정자가 없는 태그(예: Dashless)는 목록을 비워 두세요.",
+        "none": "값 없음 - 이 태그에는 한정자가 없습니다.",
+        "name": "이름",
+        "description": "설명 (선택 사항, 없으면 태그 설명 사용)",
+        "add": "값 추가",
+        "removed_warning": "다음 값은 모든 지정 내역과 함께 삭제됩니다: {{values}}"
+      },
+      "feedback": {
+        "created": "태그를 생성했습니다.",
+        "updated": "태그를 업데이트했습니다.",
+        "value_name_required": "모든 값에는 이름이 필요합니다"
+      },
+      "buttons": {
+        "create": "태그 생성",
+        "update": "태그 업데이트"
+      }
     }
   },
   "likes": {
@@ -781,7 +854,8 @@
     "campaigns_menu": {
       "name": "캠페인",
       "campaign_list": "캠페인 목록",
-      "rejected_challenges": "거절된 챌린지"
+      "rejected_challenges": "거절된 챌린지",
+      "discovery": "Discovery"
     },
     "other_menu": {
       "name": "기타",
@@ -801,6 +875,7 @@
       "submission_queue": "검증 대기열",
       "manage_challenges": "챌린지 관리",
       "actions": "관리 작업",
+      "manage_tags": "태그 관리",
       "manage_accounts": "계정 관리",
       "manage_badges": "배지 관리",
       "file_upload": "파일 업로드",
@@ -908,7 +983,8 @@
         },
         "delete_challenge": {
           "title": "챌린지 삭제",
-          "description": "<strong>'{{map}}'</strong> 맵의 <strong>'{{name}}'</strong> 챌린지와 <strong>연결된 모든 제출</strong>을 삭제하시겠습니까?"
+          "description": "<strong>'{{map}}'</strong> 맵의 <strong>'{{name}}'</strong> 챌린지와 <strong>연결된 모든 제출</strong>을 삭제하시겠습니까?",
+          "description_fgr": "캠페인 <strong>'{{campaign}}'</strong>의 챌린지 <strong>'{{name}}'</strong>와 <strong>연결된 모든 제출</strong>을 삭제하시겠습니까?"
         },
         "mark_personal": {
           "title": "개인차로 표시",
@@ -1028,6 +1104,43 @@
           "no_players": "이 배지를 받은 플레이어가 없습니다."
         }
       }
+    },
+    "tags": {
+      "title": "태그 관리",
+      "description": "플레이어가 챌린지에 지정할 수 있는 태그를 관리합니다. 카테고리는 표시용으로 태그를 묶기만 하며, 모든 규칙은 태그 자체에서 설정합니다.",
+      "no_categories": "아직 태그 카테고리가 없습니다. 먼저 카테고리를 생성하세요.",
+      "no_tags": "이 카테고리에는 아직 태그가 없습니다.",
+      "archived": "보관됨",
+      "sort_label": "정렬: {{sort}}",
+      "team_only": "팀원만 지정 가능",
+      "no_qualifiers": "한정자 없음",
+      "delete_category_has_tags": "태그가 없는 카테고리만 삭제할 수 있습니다",
+      "table": {
+        "name": "이름",
+        "values": "값",
+        "flags": "플래그",
+        "actions": "작업"
+      },
+      "buttons": {
+        "create_category": "카테고리 생성",
+        "create_tag": "태그 생성",
+        "edit_category": "카테고리 수정",
+        "delete_category": "카테고리 삭제"
+      },
+      "feedback": {
+        "category_deleted": "태그 카테고리를 삭제했습니다.",
+        "tag_deleted": "태그를 삭제했습니다."
+      },
+      "modals": {
+        "delete_category": {
+          "title": "카테고리 삭제",
+          "description": "카테고리 <strong>{{name}}</strong>을 삭제하시겠습니까?"
+        },
+        "delete_tag": {
+          "title": "태그 삭제",
+          "description": "태그 <strong>{{name}}</strong>을 삭제하시겠습니까? 이 태그의 모든 지정 내역도 함께 삭제됩니다."
+        }
+      }
     }
   },
   "server_costs": {
@@ -1089,7 +1202,14 @@
     "no_player_claimed": "아직 계정에 플레이어가 연동되지 않았습니다. <CustomLink>이 페이지</CustomLink>에서 새 플레이어를 만들거나 기존 플레이어를 연동해 주세요!",
     "tabs": {
       "login_methods": {
-        "label": "로그인 수단",
+        "label": "일반",
+        "standing": {
+          "header": "계정 상태",
+          "no_restrictions": "계정에 제한이 없습니다",
+          "has_restrictions": "계정에서 다음 기능이 제한되어 있습니다:",
+          "contact": "이 제한에 대해 궁금한 점이 있으면 팀에 문의해 주세요."
+        },
+        "login_header": "로그인",
         "feedback": {
           "updated": "계정을 업데이트했습니다."
         },
@@ -1130,6 +1250,10 @@
         "suggestion_accepted": {
           "label": "내 제안 처리 결과",
           "description": "내 제안이 승인되거나 거절되면 알림을 받습니다."
+        },
+        "new_hardest": {
+          "label": "새 최고 난이도 Discord 메시지",
+          "description": "티어 4 이상인 새로운 최고 난이도를 달성하면 Molden Discord 서버에 메시지가 전송됩니다."
         }
       },
       "profile": {
@@ -1231,6 +1355,14 @@
         "show_rejected_submissions": {
           "label": "내 거절된 기록 표시",
           "note": "프로필에 거절된 기록도 표시합니다."
+        },
+        "show_median_time_taken": {
+          "label": "중앙값 소요 시간 표시",
+          "note": "챌린지 페이지에 중앙값 소요 시간을 표시합니다."
+        },
+        "always_show_outvoted_tags": {
+          "label": "밀린 태그 항상 표시",
+          "note": "같은 태그의 다른 값보다 적은 표를 받은 태그 값도 항상 표시합니다(회색으로 표시). 비활성화하면 기본적으로 숨겨지며, 모든 태그를 펼친 뒤 \"밀린 태그 표시\" 버튼으로 표시할 수 있습니다."
         }
       },
       "visual": {
@@ -1253,15 +1385,6 @@
             "tooltip": "설정하면 위에서 선택한 기본 배경 대신 이 이미지를 사용합니다.",
             "placeholder": "이미지 URL"
           }
-        }
-      },
-      "top_golden_list": {
-        "label": "황금 딸기 랭킹",
-        "display_options_notice": "관련 설정은 황금 딸기 랭킹 페이지의 \"표시 옵션\" 메뉴로 이동했습니다.",
-        "darken_colors": {
-          "label": "티어 색상 어둡게",
-          "tooltip": "다크 모드에서 티어 색상을 어둡게 조절합니다. 0%는 원래 색상, 100%는 검은색입니다.",
-          "note": "이 설정은 다크 모드 색상에만 적용됩니다!"
         }
       },
       "difficulty_colors": {
@@ -1291,6 +1414,14 @@
         "role_override": {
           "label": "역할 미리보기",
           "note": "다른 역할의 사용자에게 웹사이트가 어떻게 보이는지 확인합니다."
+        },
+        "account_override": {
+          "label": "계정 오버라이드",
+          "note": "로그인하지 않고 프론트엔드와 백엔드 모두에서 다른 계정으로 행동합니다. 개발 환경의 관리자에게만 작동합니다. 변경하면 페이지가 새로고침됩니다.",
+          "placeholder": "없음",
+          "not_logged_in": "사용하려면 관리자 계정으로 로그인하세요.",
+          "indicator": "다음 계정으로 행동 중",
+          "indicator_tooltip": "개발용 계정 오버라이드가 활성화되어 있습니다. 클릭하면 내 계정으로 되돌아갑니다."
         }
       }
     }
@@ -1298,12 +1429,16 @@
   "challenge": {
     "buttons": {
       "submit": "기록 제출",
-      "edit": "챌린지 수정"
+      "edit": "수정",
+      "more": "더 보기",
+      "compare": "챌린지 비교"
     },
     "difficulty_suggestions": "난이도 의견",
     "calculated_tier_tooltip": "플레이어의 난이도 의견을 바탕으로 계산된 티어",
     "is_full_game": "풀게임 여부",
     "lobby_info": "로비 정보",
+    "median_time_taken": "중앙값 소요 시간: ",
+    "few_submissions": "(제출 적음)",
     "description": "챌린지 설명",
     "status": "챌린지 상태",
     "submission_table": {
@@ -1311,7 +1446,14 @@
       "empty": "아직 등록된 기록이 없습니다.",
       "show_all": "기록 {{count}}개 모두 보기",
       "show_less": "접기"
-    }
+    },
+    "tags": "태그"
+  },
+  "compare_challenges": {
+    "title": "챌린지 비교",
+    "compare_to": "비교 대상",
+    "only_show_both": "두 챌린지를 모두 완료한 플레이어만 표시",
+    "match_order": "첫 번째 챌린지의 순서에 맞추기"
   },
   "claim_player": {
     "title": "플레이어 연동",
@@ -1440,7 +1582,8 @@
       "view_challenge": "챌린지 보기",
       "submit": "기록 제출",
       "map_data_view": "맵 데이터 보기",
-      "map_data_unavailable": "아직 이 맵의 데이터를 확인할 수 없습니다."
+      "map_data_unavailable": "아직 이 맵의 데이터를 확인할 수 없습니다.",
+      "all_tags": "모든 태그"
     },
     "no_challenges": "이 맵에는 아직 챌린지가 없습니다.",
     "info_boxes": {
@@ -1453,13 +1596,18 @@
         "show": "표시"
       },
       "total_likes": "좋아요",
-      "map_data": "맵 데이터"
+      "map_data": "맵 데이터",
+      "tags": "태그"
     }
   },
   "player": {
     "title": "프로필",
     "personal_tgl": "개인 황금 딸기 랭킹",
     "wishlist": "위시리스트",
+    "buttons": {
+      "more": "더 보기",
+      "summer_stamp_rally": "Summer Stamp Rally 2026"
+    },
     "details": {
       "country": "국가",
       "input_method": "조작 방식",
@@ -1520,6 +1668,7 @@
     "no_players": "플레이어를 찾을 수 없습니다.",
     "authors": "제작자",
     "no_authors": "제작자를 찾을 수 없습니다.",
+    "farewell_notice": "Farewell 및 기타 바닐라 맵은 이 웹사이트에서 추적하지 않습니다. 완료된 Farewell Golden 기록 목록은 <StyledExternalLink>이</StyledExternalLink> 링크를 확인하세요.",
     "and_more_maps": "맵 {{count}}개 더...",
     "and_more_campaigns": "캠페인 {{count}}개 더..."
   },
@@ -1606,6 +1755,14 @@
         },
         "feedback": {
           "select_is_fc": "일반 클리어인지 풀 클리어인지 선택해 주세요."
+        },
+        "tags": {
+          "toggle": "이 챌린지에 태그 추가...",
+          "toggle_selected_one": "태그 {{count}}개 선택됨",
+          "toggle_selected_other": "태그 {{count}}개 선택됨",
+          "description": "선택 사항으로 챌린지가 어떤 느낌인지 설명해 주세요. 다른 플레이어가 즐길 만한 챌린지를 찾는 데 도움이 됩니다. 여기서 선택한 태그는 이 챌린지에서 같은 종류의 기존 태그를 대체합니다.",
+          "existing_tags": "다른 플레이어의 태그",
+          "no_tags": "아직 이 챌린지에 태그를 단 사람이 없습니다."
         }
       },
       "multi": {
@@ -1672,7 +1829,8 @@
     },
     "display": {
       "deleted_player": "(삭제된 플레이어)",
-      "no_votes": "아직 투표가 없습니다."
+      "no_votes": "아직 투표가 없습니다.",
+      "hidden_vote_count": "제안의 투표 수는 제안 후 처음 {{count}}분 동안 숨겨집니다"
     },
     "countdown": {
       "label": "남은 시간: {{time}}",
@@ -1712,7 +1870,6 @@
         "claim_player": "제안에 투표하려면 플레이어를 연동해야 합니다!",
         "your_comment": "내 의견",
         "comment_required": "투표 의견을 입력해 주세요!",
-        "comment_note": "투표 후 의견을 바꾸려면 기존 투표를 취소한 뒤 다시 투표해 주세요.",
         "stats": "통계",
         "totals": "합계",
         "done_challenge": "챌린지 완료",
@@ -1723,8 +1880,11 @@
           "accept": "변경 승인",
           "reject_verification": "제안 거절",
           "reject_change": "변경 거절",
-          "set_to_pending": "검토 중으로 변경"
-        }
+          "set_to_pending": "검토 중으로 변경",
+          "update_comment": "의견 업데이트"
+        },
+        "hidden_vote_count_desc": "제안의 투표 수는 제안 후 처음 {{count}}분 동안 숨겨집니다",
+        "hidden_vote_count": "투표 수 숨김"
       },
       "create": {
         "feedback": {
@@ -1761,6 +1921,16 @@
           }
         },
         "select_challenge": "챌린지 선택",
+        "checking_challenge": "챌린지 확인 중",
+        "no_prior_suggestions": "이전 제안이 없습니다.",
+        "ongoing_suggestion": "이 챌린지에 대해 진행 중인 <suggestionLink>제안</suggestionLink>이 있습니다",
+        "last_suggestion_with_votes": "마지막 <suggestionLink>제안</suggestionLink> · <difficultyMove/> · {{for}} <upIcon/> | {{against}} <downIcon/> | {{indifferent}} <indifferentIcon/> · {{timeAgo}} · <status>{{status}}</status>",
+        "last_suggestion_status": {
+          "accepted": "승인됨",
+          "rejected": "거절됨",
+          "undecided": "미결정"
+        },
+        "last_suggestion_error": "이전 제안을 확인할 수 없습니다.",
         "suggested_placement": "제안 티어",
         "current_difficulty": "현재 티어",
         "challenge_details": "챌린지 세부 정보",
@@ -1936,7 +2106,7 @@
           },
           {
             "heading": "베리 없는 노데스",
-            "text": "많은 황금 딸기 챌린지는 맵을 노데스로 클리어하는 것과 조건이 사실상 같습니다. 이런 챌린지는 실제 황금 딸기를 획득하지 않았더라도 동일한 조건으로 런을 완료했다면 기록으로 인정될 수 있습니다. 이를 <i>베리 없는 노데스</i> 런이라고 합니다. 단, 황금 딸기 보유 여부에 따라 게임플레이가 크게 달라지는 맵에는 이 규칙이 적용되지 않습니다. 예를 들어 황금 딸기를 소지해야만 들어갈 수 있는 전용 방이 있다면 황금 딸기 없이 완료한 런은 인정되지 않습니다. 또한 황금 딸기 분리처럼 진행 중 베리를 잃게 만드는 전용 변경 사항이 있는 맵에서는 황금 딸기를 <strong>반드시 획득해야 합니다</strong>. 가능한 경우 실제 황금 딸기를 획득한 런을 제출해 주세요. 베리 없는 노데스를 권장하지는 않지만, 예상치 못한 플루크로 성공한 기록까지 무효로 만들고 싶지는 않습니다. 인정된 베리 없는 노데스 기록에는 이를 알리는 메모가 추가됩니다."
+            "text": "많은 노데스 베리 챌린지는 맵을 단순히 노데스로 완료하는 것과 비교해 변경 사항이 없습니다. 이런 챌린지는 런이 동일한 챌린지 요구 사항을 따른다면 제출 기록이 베리를 획득할 <strong>필요는 없습니다</strong>(일명 <i>베리 없는 노데스</i> 런). 황금 방처럼 황금 딸기 보유 여부에 따라 게임플레이가 근본적으로 달라지는 런은 이런 방식으로 <strong>인정되지 않습니다</strong>. 또한 황금 딸기 분리처럼 베리를 잃게 만드는 황금 딸기 전용 변경 사항이 있는 맵에서는 황금 딸기를 <strong>반드시</strong> 획득해야 합니다. 베리 없는 노데스는 권장하지 않으며 가능한 경우 해당 베리를 획득한 제출을 권하지만, 때로는 예상치 못한 플루크가 일어날 수 있다는 점도 이해하며, 그런 일이 누군가의 업적을 깎아내리게 하고 싶지는 않습니다. 베리 없는 노데스 제출에는 메모가 추가됩니다."
           },
           {
             "heading": "황금 딸기 회수 트리거가 없는 경우",
@@ -2111,6 +2281,7 @@
     },
     "links": {
       "header": "주요 링크",
+      "header_sources": "출처",
       "header_other": "기타 링크",
       "header_other_lists": "다른 기록 목록",
       "rules": "규칙",
@@ -2121,6 +2292,9 @@
       "modded_golden_team_discord": "Modded Golden Team 디스코드",
       "fwg_sheet": "작별 황금 딸기 수집가 목록",
       "survivors_list": "셀레스트 서바이버 리스트(바닐라 셀레스트 노데스 기록)",
+      "frontend_repository": "프론트엔드 저장소",
+      "backend_repository": "백엔드 저장소",
+      "issue_tracker": "이슈 트래커",
       "legal_notice": "법적 고지",
       "api_docs": "API 문서",
       "server_costs": "서버 비용 개요",
@@ -2128,7 +2302,7 @@
     },
     "issues": {
       "header": "문제 신고",
-      "text": "문제를 발견했다면 <CustomExternalLink href=\"https://github.com/yoshiyoshyosh/goldberries/issues\">GitHub에 새 이슈를 등록하거나</CustomExternalLink> Modded Golden Team 디스코드 서버에서 viddie를 멘션해 주세요. 가능하면 이 웹사이트 전용 <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">채널</CustomExternalLink>을 이용해 주세요."
+      "text": "문제를 발견했다면 <CustomExternalLink href=\"https://github.com/viddie/gb-issues/issues\">GitHub에 새 이슈를 등록하거나</CustomExternalLink> Modded Golden Team 디스코드 서버에서 viddie를 @멘션해 신고해 주세요. 가능하면 이 웹사이트 전용 <CustomExternalLink href=\"https://discord.com/channels/790156040653897749/1269306272776458321\">채널</CustomExternalLink>을 이용해 주세요."
     },
     "global_stats": {
       "header": "전체 통계",
@@ -2481,5 +2655,137 @@
     "bin_files": "맵 파일",
     "unknown_map": "알 수 없는 맵",
     "no_bins": "이 모드에서 .bin 파일을 찾지 못했습니다."
+  },
+  "tags": {
+    "no_tags": "아직 태그 없음",
+    "add": "추가",
+    "edit": "수정",
+    "show_more": "+{{count}}개 더 보기",
+    "show_less": "접기",
+    "show_hidden": "밀린 태그 표시",
+    "hide_hidden": "밀린 태그 숨기기",
+    "more_voters": "+ {{count}}명 더",
+    "players_modal": {
+      "empty": "이 태그를 지정한 사람이 없습니다.",
+      "count_one": "플레이어 {{count}}명",
+      "count_other": "플레이어 {{count}}명",
+      "delete_tooltip": "이 플레이어에서 '{{label}}' 제거",
+      "feedback": {
+        "deleted": "태그 지정을 제거했습니다."
+      }
+    },
+    "editor": {
+      "no_tags_available": "아직 사용 가능한 태그가 없습니다.",
+      "common_tooltip": "모든 챌린지에 이 태그가 있어야 합니다.",
+      "team_only_tooltip": "팀원만 이 태그를 지정할 수 있습니다",
+      "multi_hint": "여러 값을 선택할 수 있습니다"
+    },
+    "editor_modal": {
+      "current_tags": "모든 태그",
+      "no_tags": "아직 이 챌린지에 태그를 단 사람이 없습니다.",
+      "feedback": {
+        "saved": "태그를 저장했습니다."
+      }
+    },
+    "map_overview": {
+      "title": "{{map}}의 모든 챌린지 태그",
+      "no_tags": "아직 태그 없음"
+    }
+  },
+  "discovery": {
+    "title": "Discovery",
+    "no_results": "필터와 일치하는 챌린지가 없습니다.",
+    "no_results_group": "이 카테고리에는 챌린지가 없습니다.",
+    "columns_one": "한 줄에 {{count}}개",
+    "columns_other": "한 줄에 {{count}}개",
+    "buttons": {
+      "show_more": "더 보기",
+      "back": "개요로 돌아가기",
+      "reroll": "다시 뽑기"
+    },
+    "groups": {
+      "popular": {
+        "title": "가장 인기 있음"
+      },
+      "liked": {
+        "title": "좋아요가 가장 많음"
+      },
+      "new": {
+        "title": "신규"
+      },
+      "trending": {
+        "title": "트렌딩",
+        "description": "최근 추가되었고 좋아요나 제출이 많이 늘고 있는 챌린지"
+      },
+      "random": {
+        "title": "랜덤"
+      }
+    },
+    "card": {
+      "submissions_one": "승인된 제출 {{count}}개",
+      "submissions_other": "승인된 제출 {{count}}개",
+      "likes_one": "좋아요 {{count}}개",
+      "likes_other": "좋아요 {{count}}개"
+    },
+    "filter": {
+      "title": "필터",
+      "reset": "초기화",
+      "no_conditions": "설정된 필터가 없어 모든 챌린지를 표시합니다. 결과를 좁히려면 아래에서 태그를 추가하세요.",
+      "add_condition": "필터에 태그 추가...",
+      "agreement": "% 동의율",
+      "agreement_note": "태그 값을 인정하기 위해, 해당 태그의 전체 투표 중 그 값이 받아야 하는 최소 투표 비율입니다. \"적어도\", \"최대\", \"사이\"의 경우 해당 범위 안의 모든 값에 대한 투표를 합산합니다. 팀만 지정할 수 있는 태그와 여러 값을 허용하는 태그는 항상 인정됩니다.",
+      "confidence": "# 태그됨",
+      "confidence_note": "태그가 인정되기 위해, 서로 다른 플레이어가 해당 태그를 지정해야 하는 최소 인원수입니다. 팀만 지정할 수 있는 태그는 항상 인정됩니다.",
+      "modes": {
+        "include": "포함",
+        "exclude": "제외"
+      },
+      "operators": {
+        "any": "아무 값",
+        "one_of": "다음 중 하나",
+        "gte": "적어도",
+        "lte": "최대",
+        "between": "사이"
+      },
+      "min": "시작",
+      "max": "끝",
+      "incomplete": "이 조건을 적용하려면 값을 선택하세요",
+      "apply": "적용",
+      "collapse": "필터 접기",
+      "expand": "필터 펼치기"
+    }
+  },
+  "restrictions": {
+    "notice": "이 기능은 제한되어 있습니다: {{reason}}",
+    "types": {
+      "rename": {
+        "label": "본인 이름 변경",
+        "description": "본인 플레이어의 이름을 변경할 수 없습니다."
+      },
+      "profile": {
+        "label": "특정 프로필 필드 수정",
+        "description": "프로필의 자기소개와 링크를 수정할 수 없습니다."
+      },
+      "submit": {
+        "label": "제출 생성",
+        "description": "새 제출을 만들 수 없습니다."
+      },
+      "suggest_difficulty": {
+        "label": "난이도 의견 제시",
+        "description": "본인 제출에 난이도 의견을 추가하거나 변경할 수 없습니다. 새 제출의 의견은 제거됩니다."
+      },
+      "create_suggestion": {
+        "label": "제안 생성",
+        "description": "새 제안을 만들 수 없습니다."
+      },
+      "vote": {
+        "label": "제안에 투표",
+        "description": "제안에 투표할 수 없습니다. 본인이 만든 새 제안에도 자동 투표가 들어가지 않습니다."
+      },
+      "add_tags": {
+        "label": "챌린지 태그 추가",
+        "description": "챌린지에 새 태그를 추가할 수 없습니다. 본인 태그를 제거하는 것은 계속 가능합니다."
+      }
+    }
   }
 }

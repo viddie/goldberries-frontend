@@ -30,7 +30,8 @@
         "cancel": "取消",
         "save": "保存",
         "close": "关闭",
-        "update": "更新"
+        "update": "更新",
+        "submit": "提交"
       }
     },
     "name": "名称",
@@ -49,8 +50,25 @@
     "id": "ID",
     "error_handling": {
       "header": "似乎发生了某些错误！",
-      "default": "如果问题仍然存在，请尝试刷新浏览器的缓存（Ctrl + F5）或在#gb-report 中询问。"
-    }
+      "default": "如果问题仍然存在，请尝试刷新浏览器的缓存（Ctrl + F5）或在#gb-report 中询问。",
+      "404": "请求的内容不存在。"
+    },
+    "time_ago": {
+      "years_one": "{{count}}年前",
+      "years_other": "{{count}}年前",
+      "months_one": "{{count}}个月前",
+      "months_other": "{{count}}个月前",
+      "days_one": "{{count}}天前",
+      "days_other": "{{count}}天前",
+      "hours_one": "{{count}}小时前",
+      "hours_other": "{{count}}小时前",
+      "minutes_one": "{{count}}分钟前",
+      "minutes_other": "{{count}}分钟前",
+      "seconds_one": "{{count}}秒前",
+      "seconds_other": "{{count}}秒前"
+    },
+    "show_all": "显示全部",
+    "show_less": "显示更少"
   },
   "event": {
     "sss26": {
@@ -59,6 +77,7 @@
       "total_tier": "总Tier",
       "total_tier_progress": "{{current}} / {{max}}",
       "total_tier_info": "这些徽章只有在至少拿到8个印章的时候才能获得！",
+      "stamp_count_badge_label": "0",
       "stamp_count_badge_info": "你需要拿到至少8个印章才能获得这个徽章，和总Tier无关。",
       "boundary_passed_info": "你已经通过了这个总Tier分界线，但你仍然需要拿到至少8个印章才能获得这个徽章。",
       "average_tier": "平均Tier: {{value}}",
@@ -79,7 +98,8 @@
         },
         {
           "name": "Ball and Chain",
-          "description": "任何主要GP为重型抛接物（比如Theo，电池）的地图"
+          "description": "任何主要GP为重型抛接物（比如Theo，电池）的地图",
+          "extraInfo": "Theo、电池等。"
         },
         {
           "name": "A New Friend",
@@ -118,25 +138,6 @@
       ]
     }
   },
-  "likes": {
-    "wishlist": "添加到愿望单",
-    "completed": "已完成",
-    "not_completed": "未完成",
-    "no_likes": "无",
-    "sign_in_to_like": "你需要注册一个账号才能喜欢挑战",
-    "state": {
-      "none": "无状态",
-      "current": "正在进行中",
-      "on_hold": "搁置",
-      "soon": "不久后",
-      "backlog": "积压"
-    },
-    "wishlist_card": {
-      "comment": "备注"
-    },
-    "low_death": "{{count}}",
-    "quick_like_label": "总喜欢: {{count}}"
-  },
   "components": {
     "difficulty_select": {
       "label": "难度建议",
@@ -171,6 +172,21 @@
     },
     "full_challenge_select": {
       "full_game_label": "选择地图或多章节挑战"
+    },
+    "submission_inspect": {
+      "title": "提交内容检查",
+      "related_submissions": "此地图的其他提交内容",
+      "no_related": "无相关提交内容",
+      "mark_obsolete": "将提交内容标记为过时",
+      "unmark_obsolete": "取消提交内容的过时标记",
+      "notes_history": "备注历史",
+      "no_notes": "此玩家没有过去的验证者备注",
+      "table": {
+        "date": "日期",
+        "status": "状态",
+        "note": "备注",
+        "count": "数量"
+      }
     },
     "roles": {
       "ex_helper": "前助手",
@@ -210,6 +226,9 @@
       "copy_link": "复制链接",
       "copied": "链接已复制！"
     },
+    "copy_to_clipboard_button": {
+      "copy": "复制"
+    },
     "recent_submissions": {
       "title": "近期提交内容",
       "show": "状态：",
@@ -231,6 +250,13 @@
     "stats": {
       "no_suggestions_yet": "暂无难度建议"
     },
+    "alert_banner": {
+      "hide_for_day": "隐藏",
+      "hide_permanently": "不再显示",
+      "profile_settings": {
+        "message": "你尚未设置国家/地区或游玩设备。建议在你的<SettingsLink>账号设置</SettingsLink>中设置它们，以改进我们的<StatsLink>统计数据页面</StatsLink>！"
+      }
+    },
     "top_golden_list": {
       "use_suggested": "使用此玩家的难度建议来排名",
       "toggle_edit_mode": "编辑模式",
@@ -246,6 +272,8 @@
       "placement_difficulty": "实际排名：",
       "export_button_tooltip": "导出",
       "stats_button_tooltip": "查看时间分布",
+      "clear_one": "通关",
+      "clear_other": "通关",
       "export": {
         "feedback": {
           "copied": "已复制到剪贴板",
@@ -357,8 +385,10 @@
         "sort": {
           "label": "排序方式",
           "alphabetical": "按字母顺序",
+          "campaign": "地图包",
           "fractional_tier": "按小数等级",
           "clear_count": "按通关人数",
+          "like_count": "喜欢数量",
           "first_clear_date": "按首通日期",
           "time_taken": "按炼金耗时"
         },
@@ -369,6 +399,9 @@
         },
         "show_time_taken": {
           "label": "显示总计耗时"
+        },
+        "show_obsolete_submissions": {
+          "label": "显示过时提交内容"
         },
         "show_fractional_tiers": {
           "label": "显示小数等级"
@@ -385,6 +418,9 @@
         },
         "show_like_counts": {
           "label": "显示喜欢数量"
+        },
+        "use_difficulty_opinions": {
+          "label": "使用难度建议进行排名"
         }
       }
     }
@@ -411,6 +447,13 @@
       "is_admin": "设为管理员",
       "logout_user": "强制登出",
       "role": "身份组",
+      "restrictions": {
+        "toggle": "限制",
+        "toggle_active_one": "限制（{{count}}项生效）",
+        "toggle_active_other": "限制（{{count}}项生效）",
+        "description": "受限功能将无法再被此账号使用。更新账号时会应用更改。",
+        "no_permission": "你不能更改此账号的限制，因为它的身份组不低于你，且不是你自己的账号。"
+      },
       "delete": {
         "title": "删除账号",
         "description": "是否要删除该账号？此操作不可撤销。",
@@ -454,10 +497,68 @@
         "delete_map": "删除地图",
         "undo_delete": "撤销",
         "confirm_delete_one": "请确认你想删除的地图，此操作不可撤销！",
-        "confirm_delete_other": "请确认你想删除的地图，此操作不可撤销！",
+        "confirm_delete_other": "请确认你想删除 {{count}} 张地图。此操作不可撤销！",
         "confirm_delete_label_one": "是的，删除1张地图及其附加的所有挑战和提交内容。",
         "confirm_delete_label_other": "是的，删除{{count}}张地图及其附加的所有挑战和提交内容。",
         "save_maps": "保存"
+      }
+    },
+    "create_campaign_from_gb": {
+      "title": "从GameBanana创建地图包",
+      "step": "第{{current}} / {{total}}步",
+      "next": "继续",
+      "back": "返回",
+      "step_1": {
+        "label": "GameBanana链接",
+        "url_label": "GameBanana Mod链接",
+        "url_placeholder": "https://gamebanana.com/mods/123456",
+        "process_button": "处理链接",
+        "clear_cache": "忽略缓存（如果此mod之前已经处理过）",
+        "invalid_url": "无效的GameBanana mod链接。预期格式：https://gamebanana.com/mods/<id>"
+      },
+      "step_2": {
+        "label": "处理中",
+        "processing": "正在处理mod文件...",
+        "error": "处理此mod时发生错误。",
+        "retry": "重试"
+      },
+      "step_3": {
+        "label": "地图包与地图",
+        "campaign_name": "地图包名称",
+        "author_gb_id": "作者GameBanana ID",
+        "author_gb_name": "作者GameBanana名称",
+        "maps_found_one": "找到{{count}}张地图",
+        "maps_found_other": "找到{{count}}张地图",
+        "no_maps": "mod数据中未找到地图。",
+        "map_name": "地图名称",
+        "bin_path": "Bin文件",
+        "add_map": "添加地图",
+        "unassigned_bins": "未分配的Bin文件",
+        "remove_map": "删除地图"
+      },
+      "step_4": {
+        "label": "收集物",
+        "loading_map_data": "正在加载地图数据...",
+        "edit": "编辑收集物",
+        "done": "完成",
+        "collectible_summary": "收集物",
+        "no_collectibles": "未检测到收集物",
+        "loading_error": "加载此bin的地图数据失败。"
+      },
+      "step_5": {
+        "label": "挑战项目",
+        "helper": "指定要为每张地图生成哪些挑战项目。",
+        "generate_challenges": "生成挑战项目",
+        "c_fc_distinct": "单金与FC分开记录",
+        "create_all": "全部创建"
+      },
+      "feedback": {
+        "creating_one": "创建中（{{current}}/{{count}}）",
+        "creating_other": "创建中（{{current}}/{{count}}）",
+        "campaign_created": "地图包已创建",
+        "maps_created": "地图与挑战项目已创建",
+        "mapping_saved": "映射已保存",
+        "error": "创建过程中发生错误"
       }
     },
     "campaign_mass_add_maps": {
@@ -501,22 +602,6 @@
         "update": "更新项目"
       }
     },
-    "wishlist_like": {
-      "title": "修改愿望单条目",
-      "state": "状态",
-      "progress": "进度",
-      "add_progress": "添加进度",
-      "remove_progress": "移除进度",
-      "comment": "备注",
-      "time_taken": "总花费时间",
-      "low_death_placeholder": "个人最佳",
-      "save": "保存",
-      "remove_wishlist": "从愿望单移除",
-      "feedback": {
-        "updated": "愿望单条目已更新",
-        "removed": "愿望单条目已移除"
-      }
-    },
     "create_full_challenge": {
       "feedback": {
         "campaign": "地图包已创建",
@@ -543,13 +628,17 @@
       "collectibles": {
         "label": "收集物",
         "variant": "皮肤",
+        "note": "备注",
         "count": "数量（默认为1）",
-        "note": "备注"
+        "global_count": "全局数量覆盖"
       },
-      "rejection_reason": "拒绝理由",
       "note": "备注",
       "golden_changes": "金草莓造成的地图变化",
       "author_note": "如果地图包与作者匹配，则将两项留空",
+      "counts_for_map": {
+        "label": "计入地图",
+        "note": "让这张地图在地图包视图中计入另一张地图"
+      },
       "buttons": {
         "create": "创建地图",
         "update": "更新地图"
@@ -568,18 +657,23 @@
       "player_notes": "玩家备注",
       "is_personal": "个人差",
       "personal_note": "用于个人路线等原因造成难度差异从而导致此建议不适用于官方难度排名的情况",
+      "frac_header": "小数点Tier",
+      "frac_note": "你可以设置你认为的这个挑战在这个Tier内部的难度，默认为0.5",
+      "time_taken": "总花费时间",
       "date_submitted": "提交日期",
+      "date_achieved": "达成日期",
       "date_verified": "通过日期",
       "verifier": "验证者",
       "verifier_notes": "验证者备注",
-      "time_taken": "总花费时间",
-      "frac_header": "小数点Tier",
-      "frac_note": "你可以设置你认为的这个挑战在这个Tier内部的难度，默认为0.5",
+      "map_information": "地图信息",
+      "challenge_information": "挑战项目信息",
+      "golden_changes": "金草莓造成的地图变化",
       "buttons": {
         "update": "更新提交内容",
         "verify": "通过",
         "reject": "拒绝"
-      }
+      },
+      "edit_tags": "编辑此玩家在该挑战项目上的标签"
     },
     "feedback": {
       "player_name": {
@@ -606,9 +700,148 @@
       "submission_url": {
         "required": "链接不可为空",
         "invalid": "无效链接",
-        "disallowed": "此类型链接不允许提交（<CustomLink to=\"/rules#submissions-all\">参考提交规则第1条</CustomLink>）"
+        "disallowed": "此类型链接不允许提交（<CustomLink to=\"/rules#submissions-all\">参考提交规则第1条</CustomLink>）",
+        "disallowed_variant": "此网站允许用于提交，但你必须改用直接视频链接！"
+      },
+      "time_taken": {
+        "invalid": "时长字符串必须符合 '(hh:)mm:ss' 格式"
+      }
+    },
+    "post": {
+      "feedback": {
+        "created": "帖子已创建",
+        "updated": "帖子已更新"
+      },
+      "title": "标题",
+      "content": "内容",
+      "type": "帖子类型",
+      "short_preview": "短预览",
+      "types": {
+        "news": "News",
+        "changelog": "网站日志"
+      },
+      "image_url": "图片链接",
+      "buttons": {
+        "create": "创建帖子",
+        "update": "更新帖子",
+        "goto": "前往帖子"
+      }
+    },
+    "badge": {
+      "title": "标题",
+      "color": "颜色",
+      "shiny": "闪亮",
+      "glow": "发光",
+      "level1": "青铜等级",
+      "level2": "白银等级",
+      "level3": "黄金等级",
+      "buttons": {
+        "create": "创建徽章",
+        "update": "更新徽章"
+      },
+      "feedback": {
+        "created": "徽章已创建",
+        "updated": "徽章已更新",
+        "deleted": "徽章已删除"
+      }
+    },
+    "wishlist_like": {
+      "title": "修改愿望单条目",
+      "state": "状态",
+      "progress": "进度",
+      "add_progress": "添加进度",
+      "remove_progress": "移除进度",
+      "comment": "备注",
+      "time_taken": "总花费时间",
+      "low_death_placeholder": "个人最佳",
+      "save": "保存",
+      "remove_wishlist": "从愿望单移除",
+      "feedback": {
+        "updated": "愿望单条目已更新",
+        "removed": "愿望单条目已移除"
+      }
+    },
+    "tag_category": {
+      "title": "标签类别",
+      "name": "名称",
+      "color": "颜色",
+      "reset_color": "无颜色",
+      "sort": "排序",
+      "sort_note": "数值越小越先显示",
+      "is_archived": "已归档",
+      "is_archived_note": "已归档的类别会在标签编辑器中隐藏，但其中的标签仍会显示在挑战项目上，并出现在Discovery筛选器中。",
+      "feedback": {
+        "created": "标签类别已创建",
+        "updated": "标签类别已更新"
+      },
+      "buttons": {
+        "create": "创建类别",
+        "update": "更新类别"
+      }
+    },
+    "tag": {
+      "title": "标签",
+      "category": "类别",
+      "name": "名称",
+      "short": "短名称",
+      "short_note": "可选。如果设置，会在标签块中显示它而不是名称。",
+      "sort": "排序",
+      "sort_note": "数值越小，在类别中越先显示",
+      "selection_mode": {
+        "label": "选择模式",
+        "options": {
+          "single": "单选",
+          "multi": "多选"
+        },
+        "notes": {
+          "single": "玩家最多可以选择一个值",
+          "multi": "玩家可以选择任意数量的值"
+        }
+      },
+      "is_ordinal": "有序",
+      "is_ordinal_note": "这些值有顺序，可以比较（例如在筛选器中使用“至少为长”）。",
+      "is_common": "通用",
+      "is_common_note": "每个挑战项目都有此标签（例如长度）。会在标签编辑器中高亮显示。",
+      "is_player_assignable": "玩家可分配",
+      "is_player_assignable_note": "如果禁用，只有团队成员可以分配此标签。",
+      "values": {
+        "title": "值",
+        "note": "值的顺序就是它们显示和比较的顺序。对于没有限定值的标签（例如Dashless），请将列表留空。",
+        "none": "无值 - 此标签没有限定值。",
+        "name": "名称",
+        "description": "简介（可选，默认使用标签简介）",
+        "add": "添加值",
+        "removed_warning": "以下值将连同它们的所有分配一起删除：{{values}}"
+      },
+      "feedback": {
+        "created": "标签已创建",
+        "updated": "标签已更新",
+        "value_name_required": "所有值都需要名称"
+      },
+      "buttons": {
+        "create": "创建标签",
+        "update": "更新标签"
       }
     }
+  },
+  "likes": {
+    "wishlist": "添加到愿望单",
+    "completed": "已完成",
+    "not_completed": "未完成",
+    "no_likes": "无",
+    "sign_in_to_like": "你需要注册一个账号才能喜欢挑战",
+    "state": {
+      "none": "无状态",
+      "current": "正在进行中",
+      "on_hold": "搁置",
+      "soon": "不久后",
+      "backlog": "积压"
+    },
+    "wishlist_card": {
+      "comment": "备注"
+    },
+    "low_death": "{{count}}",
+    "quick_like_label": "总喜欢: {{count}}"
   },
   "hooks": {
     "auth": {
@@ -621,7 +854,8 @@
     "campaigns_menu": {
       "name": "地图包",
       "campaign_list": "地图包列表",
-      "rejected_maps": "已拒绝的地图"
+      "rejected_challenges": "已拒绝的挑战项目",
+      "discovery": "Discovery"
     },
     "other_menu": {
       "name": "其他",
@@ -640,7 +874,13 @@
       "logs": "日志",
       "submission_queue": "待验证内容队列",
       "manage_challenges": "管理挑战项目",
-      "manage_accounts": "管理账号"
+      "actions": "操作",
+      "manage_tags": "管理标签",
+      "manage_accounts": "管理账号",
+      "manage_badges": "管理徽章",
+      "file_upload": "文件上传",
+      "test": "测试页面",
+      "posts": "新帖子"
     },
     "widgets": {
       "submission_queue": "待验证内容队列",
@@ -658,7 +898,14 @@
       "claim_a_player": "绑定玩家",
       "my_player_page": "个人页面",
       "my_top_goldens": "个人金草莓排行榜",
-      "logout": "退出登录"
+      "logout": "退出登录",
+      "app_version": "goldberries v{{version}}"
+    },
+    "icon_tooltip": {
+      "text": "图标：{{icon}}{{postfix}}\n此图标及样式的概率：{{odds}}\n你已加载 goldberries.net {{count}} 次。",
+      "default": "默认",
+      "flipped": "翻转",
+      "shiny": "闪亮"
     }
   },
   "manage": {
@@ -736,7 +983,8 @@
         },
         "delete_challenge": {
           "title": "删除挑战项目",
-          "description": "确认删除挑战项目<strong>'{{name}}'</strong>（地图：<strong>'{{map}}'</strong>）及其<strong>所有提交内容</strong>?"
+          "description": "确认删除挑战项目<strong>'{{name}}'</strong>（地图：<strong>'{{map}}'</strong>）及其<strong>所有提交内容</strong>?",
+          "description_fgr": "确认删除地图包<strong>'{{campaign}}'</strong>中的挑战项目<strong>'{{name}}'</strong>及其<strong>所有附加的提交内容</strong>？"
         },
         "mark_personal": {
           "title": "记为个人差",
@@ -769,6 +1017,7 @@
         "new_map": "新地图",
         "new_challenge": "新挑战项目",
         "create_full_challenge": "创建完整的挑战项目",
+        "create_from_gb": "从GB创建地图包",
         "mass_add_maps": "批量添加地图至地图包"
       }
     },
@@ -796,9 +1045,101 @@
       "filter_placeholder": "玩家/地图/地图包",
       "new_challenge": "新挑战项目或地图",
       "or": "或",
+      "notice_message_modal": {
+        "title": "附加消息",
+        "placeholder": "消息"
+      },
       "buttons": {
         "verify": "通过{{count}}个内容",
         "reject": "拒绝{{count}}个内容"
+      }
+    },
+    "server_settings": {
+      "title": "服务器设置",
+      "form": {
+        "feedback": {
+          "updated": "服务器设置已更新"
+        },
+        "registrations_enabled": "启用注册",
+        "submissions_enabled": "启用提交",
+        "maintenance_mode": "维护模式",
+        "global_notices": {
+          "label": "全局通知",
+          "severity": "严重程度",
+          "message": "消息"
+        },
+        "buttons": {
+          "update": "更新服务器设置"
+        }
+      }
+    },
+    "actions": {
+      "title": "操作",
+      "verifier_section": "验证者操作",
+      "admin_section": "管理员操作",
+      "confirm": "确认执行？",
+      "cancel": "取消",
+      "last_result": "上次操作结果"
+    },
+    "badges": {
+      "title": "管理徽章",
+      "table_title": "标题",
+      "actions": "操作",
+      "buttons": {
+        "create": "新徽章",
+        "edit": "编辑",
+        "assign_players": "分配",
+        "delete": "删除"
+      },
+      "modals": {
+        "delete_badge": {
+          "title": "删除徽章",
+          "description": "确认删除徽章<strong>'{{name}}'</strong>？此操作不可撤销。",
+          "button": "删除徽章"
+        },
+        "assign": {
+          "title": "将玩家分配到此徽章",
+          "players": "拥有此徽章的玩家（{{count}}）",
+          "remove": "移除分配",
+          "no_players": "没有玩家被分配到此徽章。"
+        }
+      }
+    },
+    "tags": {
+      "title": "管理标签",
+      "description": "管理玩家可以分配到挑战项目上的标签。类别只负责分组显示，所有规则都在标签本身设置。",
+      "no_categories": "还没有标签类别。请先创建一个类别。",
+      "no_tags": "此类别中还没有标签。",
+      "archived": "已归档",
+      "sort_label": "排序：{{sort}}",
+      "team_only": "仅可由团队成员分配",
+      "no_qualifiers": "无限定值",
+      "delete_category_has_tags": "只有没有标签的类别才能被删除",
+      "table": {
+        "name": "名称",
+        "values": "值",
+        "flags": "标志",
+        "actions": "操作"
+      },
+      "buttons": {
+        "create_category": "创建类别",
+        "create_tag": "创建标签",
+        "edit_category": "编辑类别",
+        "delete_category": "删除类别"
+      },
+      "feedback": {
+        "category_deleted": "标签类别已删除",
+        "tag_deleted": "标签已删除"
+      },
+      "modals": {
+        "delete_category": {
+          "title": "删除类别",
+          "description": "确定要删除类别<strong>{{name}}</strong>吗？"
+        },
+        "delete_tag": {
+          "title": "删除标签",
+          "description": "确定要删除标签<strong>{{name}}</strong>吗？这个标签的所有分配也会一并删除。"
+        }
       }
     }
   },
@@ -861,7 +1202,14 @@
     "no_player_claimed": "你尚未绑定玩家，请跳转到<CustomLink>此页面</CustomLink>来创建或绑定玩家！",
     "tabs": {
       "login_methods": {
-        "label": "登录管理",
+        "label": "通用",
+        "standing": {
+          "header": "账号状态",
+          "no_restrictions": "你的账号没有任何限制",
+          "has_restrictions": "你的账号已被限制使用以下功能：",
+          "contact": "如果你对这些限制有疑问，请联系团队。"
+        },
+        "login_header": "登录",
         "feedback": {
           "updated": "设置已更新"
         },
@@ -902,6 +1250,10 @@
         "suggestion_accepted": {
           "label": "建议通过或拒绝通知",
           "description": "当你建议的状态（已通过/已拒绝）发生变化时获取通知"
+        },
+        "new_hardest": {
+          "label": "新最难金 Discord 消息",
+          "description": "当你达成Tier 4或更高的新最难金时，会有一条消息发送到Molden Discord服务器。"
         }
       },
       "profile": {
@@ -1004,9 +1356,13 @@
           "label": "显示自己被拒绝的提交",
           "note": "在你的个人页面上显示被拒绝的提交"
         },
-        "show_average_time_taken": {
-          "label": "显示平均花费时间",
-          "note": "在挑战页面上显示挑战的平均花费时间"
+        "show_median_time_taken": {
+          "label": "显示中位花费时间",
+          "note": "在挑战页面上显示挑战的中位花费时间。"
+        },
+        "always_show_outvoted_tags": {
+          "label": "总是显示被压过的标签",
+          "note": "总是显示同一标签中票数少于另一个值的标签值（灰色显示）。如果禁用，它们默认会被隐藏，在展开所有标签后可通过“显示被压过的”按钮显示。"
         }
       },
       "visual": {
@@ -1023,8 +1379,6 @@
             "label": "背景模糊度",
             "tooltip": "应用于背景的高斯模糊强度"
           },
-          "light_mode": "浅色背景",
-          "dark_mode": "深色背景",
           "default": "默认背景",
           "custom": {
             "label": "自定义背景",
@@ -1060,39 +1414,46 @@
         "role_override": {
           "label": "其他视角模拟",
           "note": "以其他权限用户的视角查看网站"
+        },
+        "account_override": {
+          "label": "账号覆盖",
+          "note": "在前端和后端都模拟成另一个账号，而无需登录。仅在开发环境中对管理员有效。更改后会重新加载页面。",
+          "placeholder": "无",
+          "not_logged_in": "请使用管理员账号登录后再使用此功能。",
+          "indicator": "正在模拟",
+          "indicator_tooltip": "开发用账号覆盖已启用。点击可重置回你的账号。"
         }
       }
-    }
-  },
-  "difficulty_colors": {
-    "label": "层级颜色",
-    "description": "上位和下位的颜色都是根据中位颜色计算出的，你可以明确填写出上位和下位的颜色来覆盖",
-    "high": "上位",
-    "mid": "中位",
-    "low": "下位",
-    "t4+": "t4及以下层级（不分层）",
-    "presets": {
-      "label": "预设：",
-      "default": "默认",
-      "colorblind": "色盲预设：",
-      "protanopia": "红色盲",
-      "deuteranopia": "绿色盲",
-      "tritanopia": "蓝色盲"
     }
   },
   "challenge": {
     "buttons": {
       "submit": "提交你的内容",
-      "edit": "编辑"
+      "edit": "编辑",
+      "more": "更多",
+      "compare": "比较挑战项目"
     },
     "difficulty_suggestions": "难度建议",
+    "calculated_tier_tooltip": "根据玩家难度建议计算出的Tier",
     "is_full_game": "是否为多地图一命项目",
     "lobby_info": "大厅信息",
+    "median_time_taken": "中位花费时间：",
+    "few_submissions": "（提交内容较少）",
     "description": "挑战描述",
+    "status": "挑战状态",
     "submission_table": {
       "suggestion": "难度建议",
-      "empty": "暂无提交内容"
-    }
+      "empty": "暂无提交内容",
+      "show_all": "显示全部{{count}}个提交内容",
+      "show_less": "显示较少"
+    },
+    "tags": "标签"
+  },
+  "compare_challenges": {
+    "title": "比较挑战项目",
+    "compare_to": "比较对象",
+    "only_show_both": "仅显示完成了两个挑战项目的玩家",
+    "match_order": "匹配第一个挑战项目的顺序"
   },
   "claim_player": {
     "title": "绑定玩家",
@@ -1221,24 +1582,32 @@
       "view_challenge": "查看挑战项目",
       "submit": "提交你的内容",
       "map_data_view": "查看地图预览",
-      "map_data_unavailable": "该地图暂无预览"
+      "map_data_unavailable": "该地图暂无预览",
+      "all_tags": "所有标签"
     },
     "no_challenges": "该地图暂无挑战项目",
     "info_boxes": {
       "collectibles": "收集物",
-      "total_likes": "总喜欢",
+      "no_collectibles": "未知",
+      "meaningful_collectibles": "（有意义的收集物：{{count}}）",
       "golden_changes": {
         "label": "金草莓造成的地图变化",
         "no_changes": "金草莓不造成地图变化",
         "show": "显示"
       },
-      "map_data": "地图预览"
+      "total_likes": "总喜欢",
+      "map_data": "地图预览",
+      "tags": "标签"
     }
   },
   "player": {
     "title": "个人界面",
     "personal_tgl": "个人金草莓排行榜",
     "wishlist": "愿望单",
+    "buttons": {
+      "more": "更多",
+      "summer_stamp_rally": "Summer Stamp Rally 2026"
+    },
     "details": {
       "country": "国家/地区",
       "input_method": "游玩设备",
@@ -1298,7 +1667,10 @@
     "no_maps": "暂无内容",
     "no_players": "暂无内容",
     "authors": "作者",
-    "no_authors": "暂无内容"
+    "no_authors": "暂无内容",
+    "farewell_notice": "Farewell和其他原版地图不在本网站记录。要查看已完成的Farewell金草莓列表，请查看<StyledExternalLink>这个</StyledExternalLink>链接。",
+    "and_more_maps": "以及另外{{count}}张地图...",
+    "and_more_campaigns": "以及另外{{count}}个地图包..."
   },
   "monthly_recap": {
     "title": "'{{month}}'的数据",
@@ -1327,12 +1699,13 @@
     "details": {
       "new_challenge": "新挑战项目",
       "submitted": "提交日期",
+      "achieved": "达成日期",
+      "time_taken_explanation": "玩家提供的完成此挑战所花费的时间，格式为：(hh:)mm:ss",
       "verification": "验证信息",
       "status": "状态",
       "links": "链接",
       "video": "视频",
-      "raw_session": "无剪辑录像",
-      "achieved": "达成日期"
+      "raw_session": "无剪辑录像"
     },
     "delete_modal": {
       "title": "删除提交内容",
@@ -1352,7 +1725,10 @@
         "header": "提交一个视频",
         "select": "选择一个挑战项目",
         "full_game": "选择一张地图或一个多地图一命项目",
+        "rejected_notice": "此挑战已被拒绝，不接受提交内容。",
         "challenge_data": "挑战内容",
+        "map_note": "地图备注",
+        "challenge_note": "挑战备注",
         "your_run": "你的视频",
         "verifier": {
           "player_select": "[仅验证者]为其他玩家提交视频",
@@ -1362,19 +1738,31 @@
             "add_player": "添加玩家"
           }
         },
+        "test_embed": "观看视频",
+        "hide_embed": "隐藏视频",
         "proof_note": "请将视频发布在永久保留的地方，例如bilibili、Youtube或Twitch切片",
         "raw_session_note": "Tier 8及以上的金草莓需要上传完整的全程录像或整个直播回放（如果视频过短或第一局就出了就再传上一份时长更长的录像）",
+        "raw_session_same_url_info": "确定要为无剪辑录像使用相同链接吗？",
         "is_fc": "FC",
         "date_created": "[仅验证者]提交日期",
-        "button": "提交",
         "date_achieved": "达成日期",
         "date_achieved_note": "如果你没有填写日期，当前时间会被视为你达成挑战的日期。如果你填写一个很久以前的日期，验证者可能会要求你提供证据。",
         "like_challenge": "你喜欢这个挑战吗？",
-        "test_embed": "观看视频",
-        "hide_embed": "隐藏视频",
+        "button": "提交",
         "cfc_selector": {
           "regular_clear": "单金",
           "full_clear": "全收集"
+        },
+        "feedback": {
+          "select_is_fc": "请选择你的流程是单金还是全收集"
+        },
+        "tags": {
+          "toggle": "为此挑战添加标签...",
+          "toggle_selected_one": "已选择{{count}}个标签",
+          "toggle_selected_other": "已选择{{count}}个标签",
+          "description": "可选地描述这个挑战的体验。这会帮助其他玩家找到他们喜欢的挑战。你在这里选择的标签会替换你之前在此挑战上同类的标签。",
+          "existing_tags": "其他玩家添加的标签",
+          "no_tags": "还没有人为此挑战添加标签。"
         }
       },
       "multi": {
@@ -1397,8 +1785,8 @@
         "is_fc": "是否为FC",
         "compilation_video": "你的合集视频",
         "remove_map": "删除地图",
-        "button": "提交{{count}}个项目",
-        "liked_challenge": "喜欢本挑战"
+        "liked_challenge": "喜欢本挑战",
+        "button": "提交{{count}}个项目"
       },
       "new": {
         "label": "新地图/挑战项目",
@@ -1409,6 +1797,10 @@
         "challenge_description": {
           "label": "内容描述",
           "placeholder": "如果该挑战与常规一命通关有所不同，请描述一下该挑战内容"
+        },
+        "golden_changes": {
+          "label": "金草莓造成的地图变化",
+          "placeholder": "描述此挑战中所有仅限金草莓流程的变化"
         },
         "button": "提交"
       }
@@ -1424,9 +1816,11 @@
     "header": "意见箱",
     "intro": "在意见箱中，你可以提出难度排名建议，或对挑战项目、网站本身提出修改建议，让你更轻松地收集社区意见。 但意见箱<strong>不能</strong>用来讨论，你仍然需要在Discord服务器内进行讨论。",
     "language_info": "在意见箱里请用英语表达！",
+    "search": "搜索",
+    "filter_by_type": "类型",
+    "filter_by_state": "状态",
     "active": "进行中",
     "undecided": "待定",
-    "search": "搜索",
     "expired": "已过期",
     "showing_one": "显示第{{from}}至第{{to}}条建议（共{{count}}条建议）",
     "showing_other": "显示第{{from}}至{{to}}条建议（共{{count}}条建议）",
@@ -1437,6 +1831,13 @@
       "deleted_player": "（已删除的玩家）",
       "no_votes": "暂无投票",
       "hidden_vote_count": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。"
+    },
+    "countdown": {
+      "label": "剩余{{time}}",
+      "tooltip": "有效至{{date}}",
+      "days_hours": "{{days}}天 {{hours}}小时",
+      "hours_minutes": "{{hours}}小时 {{minutes}}分钟",
+      "minutes": "{{minutes}}分钟"
     },
     "name": {
       "general": "通用建议",
@@ -1468,7 +1869,7 @@
         },
         "claim_player": "你尚未绑定或创建玩家",
         "your_comment": "发表你的意见",
-        "comment_note": "要更改意见，要暂时先将你的投票移除，修改好意见后再次进行投票",
+        "comment_required": "请为你的投票提供一条评论！",
         "stats": "数据",
         "totals": "总计",
         "done_challenge": "达成此挑战的玩家",
@@ -1478,7 +1879,9 @@
           "verify": "通过此建议",
           "accept": "通过变更",
           "reject_verification": "拒绝此建议",
-          "reject_change": "拒绝变更"
+          "reject_change": "拒绝变更",
+          "set_to_pending": "设为待定",
+          "update_comment": "更新评论"
         },
         "hidden_vote_count_desc": "在一个建议被创建后的{{count}}分钟内，投票数量会被隐藏。",
         "hidden_vote_count": "投票数量已隐藏"
@@ -1487,6 +1890,7 @@
         "feedback": {
           "created": "建议已创建"
         },
+        "header": "新建议",
         "header_general": "新总体建议",
         "header_feature": "新功能建议",
         "header_challenge_general": "新挑战建议",
@@ -1516,15 +1920,19 @@
             "description": "提出为一个挑战调整难度"
           }
         },
-        "header": "新建议",
         "select_challenge": "选择挑战项目",
-        "suggestion_type": "建议类型",
-        "error_difficulty_general": "创建通用建议时无法选择难度",
-        "not_placement": {
-          "label": "通用建议",
-          "note": "非难度建议，用于分割挑战项目或其他情况"
+        "checking_challenge": "正在检查挑战",
+        "no_prior_suggestions": "没有之前的建议。",
+        "ongoing_suggestion": "此挑战已有一个进行中的<suggestionLink>建议</suggestionLink>",
+        "last_suggestion_with_votes": "上一次<suggestionLink>建议</suggestionLink> · <difficultyMove/> · {{for}} <upIcon/> | {{against}} <downIcon/> | {{indifferent}} <indifferentIcon/> · {{timeAgo}} · <status>{{status}}</status>",
+        "last_suggestion_status": {
+          "accepted": "已通过",
+          "rejected": "已拒绝",
+          "undecided": "待定"
         },
-        "no_challenge_note": "不选择地图将默认创建通用建议",
+        "last_suggestion_error": "无法检查之前的建议。",
+        "suggested_placement": "建议排名",
+        "current_difficulty": "当前难度",
         "challenge_details": "详情",
         "totals": "总计",
         "comment": {
@@ -1532,6 +1940,16 @@
           "placeholder": "描述一下发表此建议的原因",
           "required": "创建通用建议时此项不可为空"
         },
+        "feature_alert": "功能能否实现取决于很多因素（受欢迎程度、可行性、维护成本），所以如果建议被拒绝也不要失望。",
+        "feature_placeholder": "描述你希望看到的功能",
+        "split_details": "分割详情",
+        "split_type_label": "要分割出的挑战类型",
+        "split_type_help": "选择哪种挑战类型应获得新的难度",
+        "split_difficulty_label": "分割后挑战的难度",
+        "split_preview": "分割预览",
+        "split_comment_placeholder": "可选地解释为什么你认为这个挑战应该被分割",
+        "split_error_not_combined": "此挑战不是合并的C/FC挑战，无法分割。",
+        "split_error_same_difficulty": "你必须选择一个不同于当前难度的难度。",
         "button": "创建建议"
       },
       "delete": {
@@ -1548,16 +1966,41 @@
   },
   "top_golden_list": {
     "title": "金草莓排行榜",
+    "type": {
+      "overall": "金草莓排行榜",
+      "campaign": "地图包内的金草莓排行榜",
+      "player": "个人金草莓排行榜"
+    },
     "notes": {
       "fc": "收集所有可在正常情况下获得的收集物（红草莓、磁带、月莓等）",
       "c_fc": "单金和FC在同一难度中",
       "new_old": "旧版本地图"
+    },
+    "hidden_tiers": {
+      "notice_one": "已隐藏{{count}}个Tier",
+      "notice_other": "已隐藏{{count}}个Tier",
+      "change_filter": "修改筛选设置来显示它们！",
+      "filter_settings": "筛选设置",
+      "filters": {
+        "hidden_objectives_one": "已隐藏{{count}}个项目",
+        "hidden_objectives_other": "已隐藏{{count}}个项目",
+        "clear_state": "挑战类型：{{state}}",
+        "submission_count": "提交内容 {{operator}} {{count}}",
+        "date_range": {
+          "from": "从{{start}}开始",
+          "until": "直到{{end}}",
+          "both": "{{start}} - {{end}}"
+        },
+        "country": "国家/地区：{{country}}",
+        "input_method": "设备：{{method}}"
+      }
     }
   },
   "campaign": {
     "note": "地图包备注",
     "buttons": {
-      "edit": "编辑"
+      "edit": "编辑",
+      "campaign_data": "地图包数据"
     },
     "info_boxes": {
       "author": "作者",
@@ -1569,7 +2012,8 @@
       "maps_rejected_one": "+{{count}}张已拒绝的地图",
       "maps_rejected_other": "+{{count}}张已拒绝的地图",
       "links": "链接",
-      "campaign_tgl": "地图包内的金草莓排行榜"
+      "campaign_tgl": "地图包内的金草莓排行榜",
+      "no_download": "此地图包已不再公开提供下载。"
     },
     "tabs": {
       "players": {
@@ -1577,7 +2021,9 @@
         "no_players": "暂无玩家",
         "more_players_one": "+更多{{count}}位玩家",
         "more_players_other": "+更多{{count}}位玩家",
-        "show_all": "显示全部"
+        "you": "你",
+        "show_all": "显示全部",
+        "map_no_progress": "这张地图不计入地图包进度。"
       }
     }
   },
@@ -1613,21 +2059,6 @@
         ]
       }
     },
-    "website": {
-      "header": "网站规则",
-      "rules": {
-        "entries": [
-          {
-            "heading": "禁止多开账号",
-            "text": "每位玩家在本网站有且仅能有<strong>一个账号</strong>。禁止使用多个账号提交视频录像、参与建议箱内的投票或进行任何其他操作。"
-          },
-          {
-            "heading": "禁止分享账号",
-            "text": "不同的玩家<strong>禁止</strong>共用一个账号。每个账号必须代表且仅代表一个玩家。"
-          }
-        ]
-      }
-    },
     "goldens": {
       "header": "关于提交的视频",
       "rules": {
@@ -1651,7 +2082,7 @@
           },
           {
             "heading": "不改变游戏玩法(Gameplay)",
-            "text": "提交的视频<strong>禁止</strong>使用任何地图允许以外的改变游戏玩法的mod、异变或者帮助模式。这<strong>包括</strong>拓展异变中的禁用冻结帧异变。根据具体情况，改变视觉的mod和异变<strong>可能</strong>会被允许。请查看<CustomLink to=\"#allowed-mods\">允许和推荐的Mod</CustomLink>来了解更多细节。"
+            "text": "提交的视频<strong>禁止</strong>使用任何地图允许范围之外、会改变游戏玩法的 mod、异变或帮助模式。改变视觉效果的 mod 和异变<strong>可能</strong>会根据具体情况被允许。请查看<CustomLink to=\"#allowed-mods\">允许和推荐的 Mod</CustomLink>来了解更多细节。目前存在少数不符合这条规则的历史提交，尤其是使用了 Extended Variants 中 No Freeze Frames 异变的提交；如果放在今天，这类提交会被拒绝。"
           },
           {
             "heading": "原始视频(Raw)要求",
@@ -1671,7 +2102,7 @@
           },
           {
             "heading": "地图内没有金草莓时的情况",
-            "text": "在有着“<code>Deathless</code>”标签的挑战中，没有无伤草莓被放在图里面，但你仍须无伤通关整张地图。对于有这类标签的挑战，你可以用控制台指令<code>give_golden</code>来给自己一个金草莓。这条指令<strong>必须</strong>必须在重新开始章节后、地图<strong>第一个</strong>房间的开头来输入。另外，你可以使用<CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink>或者<CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink>在地图开头添加一个金草莓。然而，利用手动放置金草莓来获取优势是<strong>不被允许的</strong>。这包括在结尾吃心结算时死亡和借助金草莓发光特性的提升地图能见度，如<CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink>。"
+            "text": "带有 <code>Deathless</code> 项目的挑战并没有在地图中放置无伤草莓，但仍必须无死亡完成。对于带有此项目的地图，<strong>允许</strong>使用控制台指令 <code>give_golden</code> 给自己一个金草莓。这条指令<strong>必须</strong>在地图的<strong>第一个</strong>房间内、从章节重开点可轻松到达的位置使用。或者，也可以使用 <CustomExternalLink href=\"https://github.com/CelestialCartographers/Ahorn\">Ahorn</CustomExternalLink> 或 <CustomExternalLink href=\"https://github.com/CelestialCartographers/Loenn\">Lönn</CustomExternalLink> 在地图第一个房间内、从章节重开点可轻松到达的位置添加一个金草莓。不过，<strong>不允许</strong>利用手动放置的金草莓获得优势。这包括在结尾吃心结算时死亡，以及在类似 <CustomExternalLink href=\"https://goldberries.net/map/4814\">view</CustomExternalLink> 这样的地图中借助金草莓发出的光来提高能见度。"
           },
           {
             "heading": "0死不带金(Deathless Berryless/dlbl)",
@@ -1687,15 +2118,15 @@
           },
           {
             "heading": "地图进度相关",
-            "text": "炼金视频<strong>必须</strong>符合挑战所设的进度限制(进度锁)。若挑战涉及global flag(xaphan helper的一个trigger，可以生成一个直接写入存档的flag)或超出当前挑战范围的其他要素，可默认这些要素已解锁。若这些要素影响较大，则可能根据解锁的不同的状态对挑战进行分类。"
+            "text": "有些挑战可能会受到挑战本身之外的进度影响。在这种情况下，提交的视频<strong>只能使用</strong>那些<strong>不</strong>依赖与该挑战互动的先前进度。例如，如果收集金草莓后地图会发生变化，那么金草莓提交必须以尚未获得它的状态进行。如果一张地图没有金草莓，但有无死亡挑战，那么提交必须以之前从未与该地图互动过的状态进行。如果这些变化足够显著，挑战可能会根据先前进度拆分。"
           },
           {
             "heading": "地图版本相关",
-            "text": "玩家可以游玩任何版本的地图，并提交视频。 若某张地图的旧版本在玩法或难度(或者两者都有)上存在显著的差异，可为其单独开一档挑战栏，比如<CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>。在提交的视频中，玩家必须在对应版本的地图内收集金草莓，不论其他版本是否已经修改或者删除了部分玩法(Gameplay)。若游玩过程中因bug而死亡，而该bug在后续版本中被修复，则可当作特例处理。“什么算是bug”具有主观性，需要根据具体的例子来决定。"
+            "text": "提交的视频<strong>禁止</strong>让覆盖层遮挡屏幕的大面积区域或关键部分。关键部分包括计时器、左上角的草莓总数、暂停菜单中的草莓记录器、玩家角色，以及右下角的保存图标。"
           },
           {
             "heading": "游戏界面覆盖相关",
-            "text": "提交的视频<strong>禁止</strong>覆盖屏幕的大部分或者关键部分。关键的部分包括：计时器、左上角的草莓总数、暂停菜单下方的草莓记录器、操控的角色和右下角的自动保存标志。"
+            "text": "提交的视频可以在地图的任意补丁/版本上游玩。若某张地图的旧补丁在玩法或难度（或两者）上有显著差异，可能会创建一个归档地图条目，比如 <CustomExternalLink href=\"https://goldberries.net/map/2538\">Crystal Garden (v1.4)</CustomExternalLink>。提交内容必须在正在游玩的地图版本中收集金草莓，不论其他补丁中玩法是否被修改或移除。若一次跑图死于之后被修复的 bug，可能会作出例外处理。什么算 bug 具有主观性，并会根据具体情况决定。"
           }
         ]
       },
@@ -1709,7 +2140,7 @@
           },
           {
             "heading": "地图进度相关",
-            "text": "作为提醒，如果你还没有看前面的规则的话，前文“单个地图提交规则”中的第14条已明确如何对待地图的进度相关问题，而多地图一命也一样。总的来说，完整全游戏流程<strong>必须</strong>从创建一个存档开始，而部分全游戏提交则可灵活调整通关顺序。以原版游戏为例：若进行全A面一命通关，必须按章节顺序完成(1A解锁2A，2A解锁3A，依此类推)；若进行全B面一命通关，可任意安排顺序，因为解锁B面的顺序与B面本身无关；若进行100%一命通关，则必须从新存档开始。"
+            "text": "关于挑战前进度的规则对全游戏挑战的影响通常比普通挑战更大。重申一次，提交的视频<strong>只能使用</strong>那些<strong>不</strong>依赖与该挑战互动的先前进度。以原版游戏为例：在全 A-Sides 流程中，提交应从假定没有任何 A-Side 被游玩过的状态开始，因此必须按顺序完成各个 A-Sides。在全 B-Sides 流程中，可以假定所有 A-Sides 都已经完全完成。这意味着 B-Sides 可以按任意顺序完成。在全 C-Sides 流程中，可以假定所有 A-Sides 和 B-Sides 都已经完成，但没有任何 C-Side 被游玩过。这意味着 8C 必须最后完成，因为它的心门需要先完成其他 C-Sides。在 100% 流程中，提交应从游戏完全未被游玩过的状态开始，也就是一个新存档。"
           },
           {
             "heading": "不能使用“返回地图”",
@@ -1786,43 +2217,58 @@
           }
         ]
       }
+    },
+    "website": {
+      "header": "网站规则",
+      "rules": {
+        "entries": [
+          {
+            "heading": "禁止多开账号",
+            "text": "每位玩家在本网站有且仅能有<strong>一个账号</strong>。禁止使用多个账号提交视频录像、参与建议箱内的投票或进行任何其他操作。"
+          },
+          {
+            "heading": "禁止分享账号",
+            "text": "不同的玩家<strong>禁止</strong>共用一个账号。每个账号必须代表且仅代表一个玩家。"
+          }
+        ]
+      }
     }
   },
   "faq": {
+    "title": "常见问题解答",
     "entries": [
       {
-        "answer": "可以。如果这样，你必须提供一份地图的链接(比如香蕉网链接)并确保这个地图符合所有的规则。但即使符合，我们也可能由于某些原因而不会添加，细节可以参考\"Rejected Map\"板块。",
-        "question": "我可以上传目前还不在金榜上的地图吗？"
+        "question": "我可以上传目前还不在金榜上的地图吗？",
+        "answer": "可以。如果这样，你必须提供一份地图的链接(比如香蕉网链接)并确保这个地图符合所有的规则。但即使符合，我们也可能由于某些原因而不会添加，细节可以参考\"Rejected Map\"板块。"
       },
       {
-        "answer": "一键demodash和绑多个跳都是被允许的。这同样适用于可以绑定到同一个键上的任何输入组合，但在不同帧中进行多个输入的外部宏是不被允许的。",
-        "question": "允许使用一键demodash或者绑多个跳吗？"
+        "question": "允许使用一键demodash或者绑多个跳吗？",
+        "answer": "一键demodash和绑多个跳都是被允许的。这同样适用于可以绑定到同一个键上的任何输入组合，但在不同帧中进行多个输入的外部宏是不被允许的。"
       },
       {
-        "answer": "由于地图的不同，这可能会有很大的差异。最基本的全收集包括获得所有与当前挑战性质相同的收集品。比如说，考虑一张有红草莓、磁带、水晶之心和一个无冲金草莓的地图，如果一个人想要打这张图的全收集，那么他需要收集红草莓、磁带和水晶之心。无冲金草莓代表了一类不同的挑战——无冲完成整张地图——而因此，全收集中不包含它。如果地图中无冲收集全部收集品是不可能的，那么无冲挑战将不会包含在全收集的旗子中。如果这可能，普通的挑战和无冲的挑战都有全收集的旗子。",
-        "question": "全收集(Full Clear)的标准是什么？"
+        "question": "全收集(Full Clear)的标准是什么？",
+        "answer": "由于地图的不同，这可能会有很大的差异。最基本的全收集包括获得所有与当前挑战性质相同的收集品。比如说，考虑一张有红草莓、磁带、水晶之心和一个无冲金草莓的地图，如果一个人想要打这张图的全收集，那么他需要收集红草莓、磁带和水晶之心。无冲金草莓代表了一类不同的挑战——无冲完成整张地图——而因此，全收集中不包含它。如果地图中无冲收集全部收集品是不可能的，那么无冲挑战将不会包含在全收集的旗子中。如果这可能，普通的挑战和无冲的挑战都有全收集的旗子。"
       },
       {
-        "answer": "有的地图的收集物不是可选的(你一定会收集到)，比如Hell Gym中的草莓。",
-        "question": "为什么有的地图的全收集是不存在的？"
+        "question": "为什么有的地图的全收集是不存在的？",
+        "answer": "有的地图的收集物不是可选的(你一定会收集到)，比如Hell Gym中的草莓。"
       },
       {
-        "answer": "一个挑战将由通关最简单的路线来评定难度。如果这个地图包含比较大的偷鸡，那这条偷鸡路线将会用于评定这张地图的难度。此外，难度的评定也是主观的，基于那些已经完成炼金挑战的玩家。如果你想，你可以为挑战进行难度更改的建议(可以在意见箱中建议)。",
-        "question": "这张地图明明比表格上的难度难！为什么给它这个难度？"
+        "question": "这张地图明明比表格上的难度难！为什么给它这个难度？",
+        "answer": "一个挑战将由通关最简单的路线来评定难度。如果这个地图包含比较大的偷鸡，那这条偷鸡路线将会用于评定这张地图的难度。此外，难度的评定也是主观的，基于那些已经完成炼金挑战的玩家。如果你想，你可以为挑战进行难度更改的建议(可以在意见箱中建议)。"
       },
       {
-        "answer": "Untiered难度是为那些与单纯通关变化不大的地图而准备的。这包含只有一面的地图(它们的通关和金难度相同)和不可能死亡的合集地图(比如逆旅)。",
-        "question": "Untiered难度是什么？"
+        "question": "Untiered难度是什么？",
+        "answer": "Untiered难度是为那些与单纯通关变化不大的地图而准备的。这包含只有一面的地图(它们的通关和金难度相同)和不可能死亡的合集地图(比如逆旅)。"
       },
       {
-        "answer": "如果这个地图符合所有的地图规则，那就允许。对于合作地图，难度将会根据该地图预期的玩家数量来衡量。",
-        "question": "合作地图允许上榜吗？包含XXX的地图允许上榜吗？"
+        "question": "合作地图允许上榜吗？包含XXX的地图允许上榜吗？",
+        "answer": "如果这个地图符合所有的地图规则，那就允许。对于合作地图，难度将会根据该地图预期的玩家数量来衡量。"
       }
     ],
-    "title": "常见问题解答",
     "vanilla_references": {
-      "answer": "原版挑战之所以不被记录，是因为它们超出了Mod列表的范围，并且原版的挑战有太多完成数而难以合理地记录。不过，下方有着被普遍认可的原版挑战难度。以下是原版挑战在金榜中的位置：<br/><br/><i>注意：在过去，第九章[不使用双冲skip]在金榜中被认为是Tier 8的基准线。不过现在不是这样了，9金现在在Tier 8的范围内。另外，地狱三兄弟(6B、7B、8B)现在也不再严格地代表Tier 4的基准线。</i>",
-      "question": "为什么原版挑战不在这个榜单上？"
+      "question": "为什么原版挑战不在这个榜单上？",
+      "answer": "原版挑战之所以不被记录，是因为它们超出了Mod列表的范围，并且原版的挑战有太多完成数而难以合理地记录。不过，下方有着被普遍认可的原版挑战难度。以下是原版挑战在金榜中的位置：<br/><br/><i>注意：在过去，第九章[不使用双冲skip]在金榜中被认为是Tier 8的基准线。不过现在不是这样了，9金现在在Tier 8的范围内。另外，地狱三兄弟(6B、7B、8B)现在也不再严格地代表Tier 4的基准线。</i>"
     }
   },
   "index": {
@@ -1835,6 +2281,7 @@
     },
     "links": {
       "header": "主要链接",
+      "header_sources": "来源",
       "header_other": "其他链接",
       "header_other_lists": "其他表格",
       "rules": "规则",
@@ -1845,6 +2292,9 @@
       "modded_golden_team_discord": "金榜服务器",
       "fwg_sheet": "官图第九章金草莓统计表格",
       "survivors_list": "官图多地图一命表格",
+      "frontend_repository": "前端仓库",
+      "backend_repository": "后端仓库",
+      "issue_tracker": "问题追踪器",
       "legal_notice": "法律声明",
       "api_docs": "API文档",
       "server_costs": "服务器成本概览",
@@ -1859,7 +2309,7 @@
       "totals": {
         "header": "目前已记录：",
         "campaigns": "<strong>{{campaigns}}</strong>个地图包（有{{standalone}}个为独立地图）。",
-        "maps": "<strong>{{maps}}</strong>张独立地图。",
+        "maps": "<strong>{{maps}}</strong> 张地图（共有 <strong>{{challenges}}</strong> 个挑战项目）",
         "submissions": "以及<strong>{{players}}</strong>名玩家提交的<strong>{{submissions}}</strong>个内容！"
       },
       "difficulty_stats": {
@@ -1879,18 +2329,18 @@
       "header": "关于网站发布",
       "text": "网站处在刚发布阶段，鉴于旧表格上有很多很混乱的数据，因此网站同步过来的数据很可能会出现问题。如果你发现此类问题，请在金榜服务器中报告！",
       "migration": "将整个表格的数据同步到网站需要一定的时间，你依然可以暂时在Discord服务器上@Modded Golden Team来提交你的金草莓。（发布在b站的视频可以无视这条）"
+    },
+    "rework": {
+      "header": "层级调整！",
+      "text": "截至2025年2月，层级调整已正式上线！做出这些改动的原因有很多，包括让将来的高难Tier改动更容易、便于添加新的最高Tier、并将Tier标准改为简单的上升数字系统。",
+      "bullet_points": [
+        "Tier名称现在已经改变含义，Tier 1是最简单的难度，而Tier等级随着难度增加而上升。",
+        "旧的\"Standard\"难度现在由最低的三个Tier表示。默认情况下，由于加载时间较长，它们在金草莓排行榜中被隐藏，但你可以通过调整提交内容筛选器中的\"最低Tier\"来显示它们。",
+        "过去的每个子层级现在都由一个独立的Tier表示。",
+        "一个新的Tier被添加在过去的High Tier 1与Low Tier 0之间，使得总Tier数量达到20个。"
+      ],
+      "more_text": "增加了一个选项来纵向堆叠最高层级（默认禁用），让金草莓排行榜更加紧凑，就像层级调整之前一样。"
     }
-  },
-  "rework": {
-    "header": "层级调整！",
-    "text": "截至2025年2月，层级调整已正式上线！做出这些改动的原因有很多，包括让将来的高难Tier改动更容易、便于添加新的最高Tier、并将Tier标准改为上升的难度系统。",
-    "bullet_points": [
-      "Tier名称现在已经改变含义，Tier 1是最简单的难度，而Tier等级随着难度的增加而上升。",
-      "旧的Standard难度现在由最低的三个Tier表示。默认情况下，由于加载时间较长，它们在金榜中被隐藏，但你可以通过调整过滤器中的“最小显示等级(Minimum Tier)”来显示它们。",
-      "过去的子层级(high mid low)现在自己单独代表一个层级。",
-      "一个新的Tier(Tier 0.5)被添加在过去的High Tier 1与Low Tier 0之间，使得现在总共有20个Tier。"
-    ],
-    "more_text": "增加了一个选项来堆叠最高层级(之前的High/Mid/Low，默认禁用)来使得金榜列表更加紧凑，就像调整之前一样。"
   },
   "credits": {
     "title": "主创人员",
@@ -1902,7 +2352,10 @@
     "people": "金榜服务器#goldberries-net子区中许多很棒的人",
     "chinese_translation": "汉语",
     "french_translation": "法语",
-    "korean_translation": "韩语"
+    "russian_translation": "俄语翻译",
+    "korean_translation": "韩语",
+    "domain": "域名",
+    "domain_text": "{{name}}（管理并支付域名与Cloudflare的费用，同时也是原版goldberries.net的制作者！）"
   },
   "stats": {
     "title": "统计数据",
@@ -1914,7 +2367,7 @@
         "label": "层级历史",
         "header": "每月层级金草莓数量",
         "text": "显示了自表格创建以来每个月每个层级的金草莓数量",
-        "total_tiered": "层级总数"
+        "total_submissions": "总提交内容"
       },
       "most_goldened": {
         "label": "最多数量",
@@ -1971,7 +2424,8 @@
         "show_unknown": "显示未知/未设定",
         "unknown": "未知",
         "total_submissions": "总提交内容",
-        "total_clears": "提交内容数量"
+        "total_clears": "提交内容数量",
+        "total_clears_header": "总达成数"
       },
       "biggest_difficulty_gap": {
         "label": "难度差距",
@@ -1990,6 +2444,25 @@
         "collectible": "收集物",
         "count": "数量"
       }
+    }
+  },
+  "file_upload": {
+    "title": "文件上传",
+    "file_input_description": "将文件拖到此处或点击选择",
+    "file_input": "插入文件 / 点击选择",
+    "image_preview": "图片预览",
+    "file_name": "新文件名",
+    "file_path": "文件路径",
+    "destination": {
+      "icon": "图标",
+      "campaign_icon": "地图包图标",
+      "post": "帖子图片",
+      "badge": "徽章图片",
+      "map_image": "地图图片"
+    },
+    "feedback": {
+      "success": "文件上传成功",
+      "copy_success": "路径已复制到剪贴板"
     }
   },
   "report": {
@@ -2182,6 +2655,137 @@
     "bin_files": "地图文件",
     "unknown_map": "未知地图",
     "no_bins": "未在该Mod中找到.bin文件。"
+  },
+  "tags": {
+    "no_tags": "暂无标签",
+    "add": "添加",
+    "edit": "编辑",
+    "show_more": "+更多{{count}}个",
+    "show_less": "显示较少",
+    "show_hidden": "显示被压过的",
+    "hide_hidden": "隐藏被压过的",
+    "more_voters": "+ 另外{{count}}人",
+    "players_modal": {
+      "empty": "还没有人分配这个标签。",
+      "count_one": "{{count}}位玩家",
+      "count_other": "{{count}}位玩家",
+      "delete_tooltip": "从此玩家移除'{{label}}'",
+      "feedback": {
+        "deleted": "标签分配已移除"
+      }
+    },
+    "editor": {
+      "no_tags_available": "还没有可用的标签。",
+      "common_tooltip": "所有挑战都应该有此标签。",
+      "team_only_tooltip": "只有团队成员可以分配此标签",
+      "multi_hint": "可以选择多个值"
+    },
+    "editor_modal": {
+      "current_tags": "所有标签",
+      "no_tags": "还没有人为此挑战添加标签。",
+      "feedback": {
+        "saved": "标签已保存"
+      }
+    },
+    "map_overview": {
+      "title": "{{map}}中所有挑战的标签",
+      "no_tags": "暂无标签"
+    }
+  },
+  "discovery": {
+    "title": "探索",
+    "no_results": "没有挑战符合你的筛选条件。",
+    "no_results_group": "此类别中没有挑战。",
+    "columns_one": "每行{{count}}个",
+    "columns_other": "每行{{count}}个",
+    "buttons": {
+      "show_more": "显示更多",
+      "back": "返回总览",
+      "reroll": "重新随机"
+    },
+    "groups": {
+      "popular": {
+        "title": "最热门"
+      },
+      "liked": {
+        "title": "最受喜欢"
+      },
+      "new": {
+        "title": "最新"
+      },
+      "trending": {
+        "title": "趋势中",
+        "description": "最近添加且获得了很多喜欢或提交内容的挑战"
+      },
+      "random": {
+        "title": "随机"
+      }
+    },
+    "card": {
+      "submissions_one": "{{count}}个已通过的提交内容",
+      "submissions_other": "{{count}}个已通过的提交内容",
+      "likes_one": "{{count}}个喜欢",
+      "likes_other": "{{count}}个喜欢"
+    },
+    "filter": {
+      "title": "筛选",
+      "reset": "重置",
+      "no_conditions": "未设置筛选条件，正在显示全部挑战。在下方添加一个标签来缩小结果范围。",
+      "add_condition": "添加一个标签到筛选器...",
+      "agreement": "% 一致度",
+      "agreement_note": "某个标签值在该标签所有投票中需要达到的最低占比，才会被计入。对于\"至少\"、\"至多\"和\"介于\"，该范围内所有值的投票会相加。只有团队能分配的标签、以及允许多选的标签总会计入。",
+      "confidence": "# 标记人数",
+      "confidence_note": "分配过某个标签的不同玩家数量需要达到的最低值，才会被计入。只有团队能分配的标签总会计入。",
+      "modes": {
+        "include": "包含",
+        "exclude": "排除"
+      },
+      "operators": {
+        "any": "任意值",
+        "one_of": "其中之一",
+        "gte": "至少",
+        "lte": "至多",
+        "between": "介于"
+      },
+      "min": "从",
+      "max": "到",
+      "incomplete": "请选择一个值来应用此条件",
+      "apply": "确认",
+      "collapse": "收起筛选器",
+      "expand": "展开筛选器"
+    }
+  },
+  "restrictions": {
+    "notice": "此功能受限：{{reason}}",
+    "types": {
+      "rename": {
+        "label": "重命名自己",
+        "description": "无法重命名自己的玩家。"
+      },
+      "profile": {
+        "label": "编辑特定个人页面字段",
+        "description": "无法编辑个人页面的关于我和链接。"
+      },
+      "submit": {
+        "label": "创建提交内容",
+        "description": "无法创建新的提交内容。"
+      },
+      "suggest_difficulty": {
+        "label": "给出难度建议",
+        "description": "无法在你自己的提交内容上添加或修改难度建议。新提交内容上的建议会被移除。"
+      },
+      "create_suggestion": {
+        "label": "创建建议",
+        "description": "无法创建新的建议。"
+      },
+      "vote": {
+        "label": "为建议投票",
+        "description": "无法为建议投票。你自己新创建的建议不会自动获得一票。"
+      },
+      "add_tags": {
+        "label": "添加挑战标签",
+        "description": "无法为挑战添加新标签。你仍然可以移除自己的标签。"
+      }
+    }
   }
 }
-

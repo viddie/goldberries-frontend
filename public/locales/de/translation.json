@@ -447,6 +447,13 @@
       "is_admin": "Ist Admin",
       "logout_user": "Benutzer Abmelden",
       "role": "Rolle",
+      "restrictions": {
+        "toggle": "Einschränkungen",
+        "toggle_active_one": "Einschränkungen ({{count}} aktiv)",
+        "toggle_active_other": "Einschränkungen ({{count}} aktiv)",
+        "description": "Eingeschränkte Funktionen können von diesem Account nicht mehr verwendet werden. Änderungen werden beim Aktualisieren des Accounts angewendet.",
+        "no_permission": "Du kannst die Einschränkungen dieses Accounts nicht ändern, da er keine niedrigere Rolle als du hat und nicht dein eigener Account ist."
+      },
       "delete": {
         "title": "Account Löschen",
         "description": "Bist du sicher, dass du diesen Account löschen möchtest? Diese Aktion ist nicht rückgängig zu machen.",
@@ -665,7 +672,8 @@
         "update": "Submission Aktualisieren",
         "verify": "Verifizieren",
         "reject": "Ablehnen"
-      }
+      },
+      "edit_tags": "Tags dieses Players für die Challenge bearbeiten"
     },
     "feedback": {
       "player_name": {
@@ -752,6 +760,68 @@
         "updated": "Wunschlisteneintrag aktualisiert",
         "removed": "Wunschlisteneintrag entfernt"
       }
+    },
+    "tag_category": {
+      "title": "Tag-Kategorie",
+      "name": "Name",
+      "color": "Farbe",
+      "reset_color": "Keine Farbe",
+      "sort": "Sortierung",
+      "sort_note": "Niedrigere Zahlen werden zuerst angezeigt",
+      "is_archived": "Archiviert",
+      "is_archived_note": "Archivierte Kategorien werden im Tag-Editor ausgeblendet, ihre Tags erscheinen aber weiterhin bei Challenges und in den Discovery-Filtern.",
+      "feedback": {
+        "created": "Tag-Kategorie erstellt",
+        "updated": "Tag-Kategorie aktualisiert"
+      },
+      "buttons": {
+        "create": "Kategorie erstellen",
+        "update": "Kategorie aktualisieren"
+      }
+    },
+    "tag": {
+      "title": "Tag",
+      "category": "Kategorie",
+      "name": "Name",
+      "short": "Kurzname",
+      "short_note": "Optional. Wenn gesetzt, wird er statt des Namens in Tag-Chips angezeigt.",
+      "sort": "Sortierung",
+      "sort_note": "Niedrigere Zahlen werden innerhalb der Kategorie zuerst angezeigt",
+      "selection_mode": {
+        "label": "Auswahlmodus",
+        "options": {
+          "single": "Einzeln",
+          "multi": "Mehrfach"
+        },
+        "notes": {
+          "single": "Ein Player kann höchstens einen Wert auswählen",
+          "multi": "Ein Player kann beliebig viele Werte auswählen"
+        }
+      },
+      "is_ordinal": "Geordnet",
+      "is_ordinal_note": "Die Werte sind geordnet und können verglichen werden (z. B. 'mindestens lang' in Filtern).",
+      "is_common": "Allgemein",
+      "is_common_note": "Jede Challenge hat diesen Tag (z. B. Länge). Im Tag-Editor hervorgehoben.",
+      "is_player_assignable": "Von Playern zuweisbar",
+      "is_player_assignable_note": "Wenn deaktiviert, können nur Teammitglieder diesen Tag zuweisen.",
+      "values": {
+        "title": "Werte",
+        "note": "Die Reihenfolge der Werte ist die Reihenfolge, in der sie angezeigt und verglichen werden. Lass die Liste für Tags ohne Zusätze leer (z. B. Dashless).",
+        "none": "Keine Werte – dieser Tag hat keine Zusätze.",
+        "name": "Name",
+        "description": "Beschreibung (optional, fällt auf die Tag-Beschreibung zurück)",
+        "add": "Wert hinzufügen",
+        "removed_warning": "Die folgenden Werte werden mitsamt allen ihren Zuweisungen gelöscht: {{values}}"
+      },
+      "feedback": {
+        "created": "Tag erstellt",
+        "updated": "Tag aktualisiert",
+        "value_name_required": "Alle Werte brauchen einen Namen"
+      },
+      "buttons": {
+        "create": "Tag erstellen",
+        "update": "Tag aktualisieren"
+      }
     }
   },
   "likes": {
@@ -784,7 +854,8 @@
     "campaigns_menu": {
       "name": "Campaigns",
       "campaign_list": "Campaign Liste",
-      "rejected_challenges": "Abgelehnte Challenges"
+      "rejected_challenges": "Abgelehnte Challenges",
+      "discovery": "Discovery"
     },
     "other_menu": {
       "name": "Andere",
@@ -804,6 +875,7 @@
       "submission_queue": "Submission Warteschlange",
       "manage_challenges": "Verwalte Challenges",
       "actions": "Aktionen",
+      "manage_tags": "Tags verwalten",
       "manage_accounts": "Verwalte Accounts",
       "manage_badges": "Abzeichen verwalten",
       "file_upload": "Datei-Upload",
@@ -1032,6 +1104,43 @@
           "no_players": "Diesem Abzeichen sind keine Player zugewiesen."
         }
       }
+    },
+    "tags": {
+      "title": "Tags verwalten",
+      "description": "Verwalte die Tags, die Player Challenges zuweisen können. Kategorien gruppieren Tags nur für die Anzeige; alle Regeln werden an den Tags selbst festgelegt.",
+      "no_categories": "Es gibt noch keine Tag-Kategorien. Erstelle zuerst eine Kategorie.",
+      "no_tags": "Noch keine Tags in dieser Kategorie.",
+      "archived": "Archiviert",
+      "sort_label": "Sortierung: {{sort}}",
+      "team_only": "Nur von Teammitgliedern zuweisbar",
+      "no_qualifiers": "Keine Zusätze",
+      "delete_category_has_tags": "Kategorien können nur gelöscht werden, wenn sie keine Tags enthalten",
+      "table": {
+        "name": "Name",
+        "values": "Werte",
+        "flags": "Flags",
+        "actions": "Aktionen"
+      },
+      "buttons": {
+        "create_category": "Kategorie erstellen",
+        "create_tag": "Tag erstellen",
+        "edit_category": "Kategorie bearbeiten",
+        "delete_category": "Kategorie löschen"
+      },
+      "feedback": {
+        "category_deleted": "Tag-Kategorie gelöscht",
+        "tag_deleted": "Tag gelöscht"
+      },
+      "modals": {
+        "delete_category": {
+          "title": "Kategorie löschen",
+          "description": "Bist du sicher, dass du die Kategorie <strong>{{name}}</strong> löschen möchtest?"
+        },
+        "delete_tag": {
+          "title": "Tag löschen",
+          "description": "Bist du sicher, dass du den Tag <strong>{{name}}</strong> löschen möchtest? Alle Zuweisungen dieses Tags werden ebenfalls gelöscht."
+        }
+      }
     }
   },
   "server_costs": {
@@ -1093,7 +1202,14 @@
     "no_player_claimed": "Du hast noch keinen Player. Gehe zu <CustomLink>dieser Seite</CustomLink> um einen zu erstellen oder zu beanspruchen!",
     "tabs": {
       "login_methods": {
-        "label": "Login",
+        "label": "Allgemein",
+        "standing": {
+          "header": "Account-Status",
+          "no_restrictions": "Dein Account hat keine Einschränkungen",
+          "has_restrictions": "Die folgenden Funktionen sind für deinen Account eingeschränkt:",
+          "contact": "Wenn du Fragen zu diesen Einschränkungen hast, kontaktiere bitte das Team."
+        },
+        "login_header": "Login",
         "feedback": {
           "updated": "Account aktualisiert"
         },
@@ -1134,6 +1250,10 @@
         "suggestion_accepted": {
           "label": "Status eigener Vorschläge",
           "description": "Damit du benachrichtigt wirst, wenn sich der Status (angenommen/abgelehnt) eines deiner Vorschläge ändert"
+        },
+        "new_hardest": {
+          "label": "New-Hardest-Discord-Nachricht",
+          "description": "Wenn du ein neues Hardest erreichst, das Tier 4 oder höher ist, wird eine Nachricht an den Molden-Discord-Server gesendet."
         }
       },
       "profile": {
@@ -1239,6 +1359,10 @@
         "show_median_time_taken": {
           "label": "Median der benötigten Zeit anzeigen",
           "note": "Den Median der benötigten Zeit auf der Challenge-Seite anzeigen."
+        },
+        "always_show_outvoted_tags": {
+          "label": "Überstimmte Tags immer anzeigen",
+          "note": "Tag-Werte, die weniger Stimmen als ein anderer Wert desselben Tags erhalten haben, immer anzeigen (ausgegraut). Wenn deaktiviert, sind sie standardmäßig ausgeblendet und können nach dem Ausklappen aller Tags mit einem \"Überstimmte anzeigen\"-Button eingeblendet werden."
         }
       },
       "visual": {
@@ -1290,6 +1414,14 @@
         "role_override": {
           "label": "Rolle überschreiben",
           "note": "Die Website aus der Perspektive einer anderen Rolle anzeigen."
+        },
+        "account_override": {
+          "label": "Account-Override",
+          "note": "In Frontend und Backend als anderer Account handeln, ohne dich einzuloggen. Funktioniert nur für Admins in der Dev-Umgebung. Eine Änderung lädt die Seite neu.",
+          "placeholder": "Keiner",
+          "not_logged_in": "Logge dich mit einem Admin-Account ein, um dies zu verwenden.",
+          "indicator": "Handelt als",
+          "indicator_tooltip": "Dev-Account-Override ist aktiv. Klicke, um zu deinem Account zurückzusetzen."
         }
       }
     }
@@ -1314,7 +1446,8 @@
       "empty": "Keine Submissions",
       "show_all": "Alle {{count}} Submissions anzeigen",
       "show_less": "Weniger anzeigen"
-    }
+    },
+    "tags": "Tags"
   },
   "compare_challenges": {
     "title": "Challenges vergleichen",
@@ -1449,7 +1582,8 @@
       "view_challenge": "Challenge Ansehen",
       "submit": "Run einreichen",
       "map_data_view": "Daten anzeigen",
-      "map_data_unavailable": "Daten für diese Map sind noch nicht verfügbar."
+      "map_data_unavailable": "Daten für diese Map sind noch nicht verfügbar.",
+      "all_tags": "Alle Tags"
     },
     "no_challenges": "There are currently no challenges for this map.",
     "info_boxes": {
@@ -1462,7 +1596,8 @@
         "show": "Anzeigen"
       },
       "total_likes": "Likes",
-      "map_data": "Map-Daten"
+      "map_data": "Map-Daten",
+      "tags": "Tags"
     }
   },
   "player": {
@@ -1620,6 +1755,14 @@
         },
         "feedback": {
           "select_is_fc": "Bitte gib an, ob dein Run ein regulärer Clear oder ein Full Clear ist."
+        },
+        "tags": {
+          "toggle": "Tags zu dieser Challenge hinzufügen...",
+          "toggle_selected_one": "{{count}} Tag ausgewählt",
+          "toggle_selected_other": "{{count}} Tags ausgewählt",
+          "description": "Beschreibe optional, wie sich die Challenge spielt. Das hilft anderen Playern, Challenges zu finden, die ihnen Spaß machen. Tags, die du hier auswählst, ersetzen deine bisherigen Tags derselben Art für diese Challenge.",
+          "existing_tags": "Tags von anderen Playern",
+          "no_tags": "Niemand hat diese Challenge bisher getaggt."
         }
       },
       "multi": {
@@ -1778,6 +1921,16 @@
           }
         },
         "select_challenge": "Challenge Auswählen",
+        "checking_challenge": "Challenge wird geprüft",
+        "no_prior_suggestions": "Es gibt keine früheren Vorschläge.",
+        "ongoing_suggestion": "Für diese Challenge gibt es einen laufenden <suggestionLink>Vorschlag</suggestionLink>",
+        "last_suggestion_with_votes": "Letzter <suggestionLink>Vorschlag</suggestionLink> · <difficultyMove/> · {{for}} <upIcon/> | {{against}} <downIcon/> | {{indifferent}} <indifferentIcon/> · {{timeAgo}} · <status>{{status}}</status>",
+        "last_suggestion_status": {
+          "accepted": "Akzeptiert",
+          "rejected": "Abgelehnt",
+          "undecided": "Unentschieden"
+        },
+        "last_suggestion_error": "Frühere Vorschläge konnten nicht geprüft werden.",
         "suggested_placement": "Vorgeschlagene Einstufung",
         "current_difficulty": "Aktuelle Schwierigkeit",
         "challenge_details": "Challenge Details",
@@ -2502,5 +2655,137 @@
     "bin_files": "Map-Dateien",
     "unknown_map": "Unbekannte Map",
     "no_bins": "In diesem Mod wurden keine .bin-Dateien gefunden."
+  },
+  "tags": {
+    "no_tags": "Noch keine Tags",
+    "add": "Hinzufügen",
+    "edit": "Bearbeiten",
+    "show_more": "+{{count}} mehr",
+    "show_less": "Weniger anzeigen",
+    "show_hidden": "Überstimmte anzeigen",
+    "hide_hidden": "Überstimmte ausblenden",
+    "more_voters": "+ {{count}} weitere",
+    "players_modal": {
+      "empty": "Niemand hat diesen Tag zugewiesen.",
+      "count_one": "{{count}} Player",
+      "count_other": "{{count}} Player",
+      "delete_tooltip": "'{{label}}' von diesem Player entfernen",
+      "feedback": {
+        "deleted": "Tag-Zuweisung entfernt"
+      }
+    },
+    "editor": {
+      "no_tags_available": "Es sind noch keine Tags verfügbar.",
+      "common_tooltip": "Alle Challenges sollten diesen Tag haben.",
+      "team_only_tooltip": "Nur Teammitglieder können diesen Tag zuweisen",
+      "multi_hint": "Mehrere Werte können ausgewählt werden"
+    },
+    "editor_modal": {
+      "current_tags": "Alle Tags",
+      "no_tags": "Niemand hat diese Challenge bisher getaggt.",
+      "feedback": {
+        "saved": "Tags gespeichert"
+      }
+    },
+    "map_overview": {
+      "title": "Tags aller Challenges in {{map}}",
+      "no_tags": "Noch keine Tags"
+    }
+  },
+  "discovery": {
+    "title": "Discovery",
+    "no_results": "Keine Challenges passen zu deinem Filter.",
+    "no_results_group": "Keine Challenges in dieser Kategorie.",
+    "columns_one": "{{count}} pro Zeile",
+    "columns_other": "{{count}} pro Zeile",
+    "buttons": {
+      "show_more": "Mehr anzeigen",
+      "back": "Zurück zur Übersicht",
+      "reroll": "Neu würfeln"
+    },
+    "groups": {
+      "popular": {
+        "title": "Beliebteste"
+      },
+      "liked": {
+        "title": "Meistgelikt"
+      },
+      "new": {
+        "title": "Neu"
+      },
+      "trending": {
+        "title": "Trending",
+        "description": "Kürzlich hinzugefügte Challenges, die viele Likes oder Submissions bekommen"
+      },
+      "random": {
+        "title": "Zufällig"
+      }
+    },
+    "card": {
+      "submissions_one": "{{count}} verifizierte Submission",
+      "submissions_other": "{{count}} verifizierte Submissions",
+      "likes_one": "{{count}} Like",
+      "likes_other": "{{count}} Likes"
+    },
+    "filter": {
+      "title": "Filter",
+      "reset": "Zurücksetzen",
+      "no_conditions": "Kein Filter gesetzt, alle Challenges werden angezeigt. Füge unten einen Tag hinzu, um die Ergebnisse einzugrenzen.",
+      "add_condition": "Tag zum Filter hinzufügen...",
+      "agreement": "% Zustimmung",
+      "agreement_note": "Der Mindestanteil der Stimmen, den der Wert eines Tags unter allen Stimmen für diesen Tag haben muss, damit er zählt. Bei \"Mindestens\", \"Höchstens\" und \"Zwischen\" werden die Stimmen aller Werte in diesem Bereich addiert. Tags, die nur vom Team zugewiesen werden können, und Tags, die mehrere Werte erlauben, zählen immer.",
+      "confidence": "# Getaggt",
+      "confidence_note": "Die Mindestanzahl unterschiedlicher Player, die einen Tag zugewiesen haben müssen, damit er zählt. Tags, die nur vom Team zugewiesen werden können, zählen immer.",
+      "modes": {
+        "include": "Einschließen",
+        "exclude": "Ausschließen"
+      },
+      "operators": {
+        "any": "Beliebiger Wert",
+        "one_of": "Einer von",
+        "gte": "Mindestens",
+        "lte": "Höchstens",
+        "between": "Zwischen"
+      },
+      "min": "Von",
+      "max": "Bis",
+      "incomplete": "Wähle einen Wert aus, um diese Bedingung anzuwenden",
+      "apply": "Anwenden",
+      "collapse": "Filter einklappen",
+      "expand": "Filter ausklappen"
+    }
+  },
+  "restrictions": {
+    "notice": "Diese Funktion ist eingeschränkt: {{reason}}",
+    "types": {
+      "rename": {
+        "label": "Dich selbst umbenennen",
+        "description": "Kann deinen eigenen Player nicht umbenennen."
+      },
+      "profile": {
+        "label": "Bestimmte Profilfelder bearbeiten",
+        "description": "Kann das Über Mich und die Links deines Profils nicht bearbeiten."
+      },
+      "submit": {
+        "label": "Submissions erstellen",
+        "description": "Kann keine neuen Submissions erstellen."
+      },
+      "suggest_difficulty": {
+        "label": "Schwierigkeitsmeinungen abgeben",
+        "description": "Kann Schwierigkeitsmeinungen zu deinen eigenen Submissions nicht hinzufügen oder ändern. Meinungen zu neuen Submissions werden entfernt."
+      },
+      "create_suggestion": {
+        "label": "Vorschläge erstellen",
+        "description": "Kann keine neuen Vorschläge erstellen."
+      },
+      "vote": {
+        "label": "Über Vorschläge abstimmen",
+        "description": "Kann nicht über Vorschläge abstimmen. Deine eigenen neuen Vorschläge erhalten keine automatische Stimme."
+      },
+      "add_tags": {
+        "label": "Challenge-Tags hinzufügen",
+        "description": "Kann keine neuen Tags zu Challenges hinzufügen. Das Entfernen deiner eigenen Tags ist weiterhin möglich."
+      }
+    }
   }
 }
