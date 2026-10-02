@@ -22,8 +22,8 @@ import { useTranslation } from "react-i18next";
 import { getQueryData, useGetMapData } from "../../hooks/useApi";
 import { ErrorDisplay, LoadingSpinner } from "../basic";
 
-import { MapDataViewer } from "./MapDataViewer";
-import { isRoomHidden } from "./viewer/entity_definitions";
+import { MapDataViewer } from "./MapDataViewerLazy";
+import { isRoomHidden } from "./viewer/entity_data";
 import { useViewerStore } from "./viewer/useViewerStore";
 
 export function MapDataDialog({ mapId, binPath, campaignId, initialRoom, onRoomNavigate }) {

@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Outlet } from "react-router";
 import {
   Link,
@@ -90,6 +91,7 @@ import { createRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { API_URL, CURRENT_VERSION } from "./util/constants";
+import { LoadingSpinner } from "./components/basic/LoadingSpinner";
 import { PageLogs } from "./pages/manage/Logs";
 import { PagePostOAuthLogin } from "./pages/PostOAuthLogin";
 import { PageForgotPassword, PageLogin, PageRegister, PageVerifyEmail } from "./pages/Login";
@@ -105,7 +107,6 @@ import { AppSettingsProvider, useAppSettings } from "./hooks/AppSettingsProvider
 import { getQueryData, useGetStatsVerifierTools } from "./hooks/useApi";
 import { useKeyboardShortcut } from "./hooks/useKeyboardShortcut";
 import { PageAccount } from "./pages/Account";
-import { ApiDocPage } from "./pages/ApiDoc";
 import { PageAppSettings } from "./pages/AppSettings";
 import { PageCampaign } from "./pages/Campaign";
 import { PageChallenge } from "./pages/Challenge";
@@ -126,7 +127,6 @@ import { PageReport } from "./pages/Report";
 import { PageRules } from "./pages/Rules";
 import { PageSearch } from "./pages/Search";
 import { PageServerCosts } from "./pages/ServerCosts";
-import { PageStats } from "./pages/Stats";
 import { PageSubmission } from "./pages/Submission";
 import { PageSubmit } from "./pages/Submit";
 import { PageSuggestions } from "./pages/Suggestions";
@@ -139,13 +139,18 @@ import { PageFileUpload } from "./pages/manage/FileUpload";
 import { PageManagePosts } from "./pages/manage/Posts";
 import { PageManageServerSettings } from "./pages/manage/ServerSettings";
 import { PageManageActions } from "./pages/manage/Actions";
-import { PageSubmissionQueue } from "./pages/manage/SubmissionQueue";
-import { PageTrafficAnalytics } from "./pages/manage/TrafficAnalytics";
 import { getNavigatorLanguage, getPlayerNameColorStyle } from "./util/data_util";
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
-import { PageMapViewer } from "./pages/MapViewer";
 import { getFeaturedCampaignsNavEntries } from "./util/other_data";
+
+const lazyPage = (loader, name) => lazy(() => loader().then((m) => ({ default: m[name] })));
+
+const ApiDocPage = lazyPage(() => import("./pages/ApiDoc"), "ApiDocPage");
+const PageStats = lazyPage(() => import("./pages/Stats"), "PageStats");
+const PageMapViewer = lazyPage(() => import("./pages/MapViewer"), "PageMapViewer");
+const PageSubmissionQueue = lazyPage(() => import("./pages/manage/SubmissionQueue"), "PageSubmissionQueue");
+const PageTrafficAnalytics = lazyPage(() => import("./pages/manage/TrafficAnalytics"), "PageTrafficAnalytics");
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_URL;
@@ -894,7 +899,9 @@ export function Layout() {
           }}
         >
           <ErrorBoundary>
-            <Outlet />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Outlet />
+            </Suspense>
           </ErrorBoundary>
         </Box>
       </Box>

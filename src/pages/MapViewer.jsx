@@ -22,7 +22,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { BasicContainerBox, HeadTitle, LoadingSpinner } from "../components/basic";
 import { MapDataDialog } from "../components/map_data/MapDataDialog";
-import { MapDataViewer } from "../components/map_data/MapDataViewer";
+import { MapDataViewer } from "../components/map_data/MapDataViewerLazy";
 import { useAuth } from "../hooks/AuthProvider";
 import { getQueryData, useGetTempMapData } from "../hooks/useApi";
 import { CustomModal, useModal } from "../hooks/useModal";
