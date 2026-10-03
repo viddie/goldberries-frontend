@@ -7,7 +7,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -19,7 +18,6 @@ import {
   TextField,
   Tooltip,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
@@ -61,9 +59,6 @@ import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 export function PageSubmissionQueue() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.submission_queue" });
   const { submission } = useParams();
-  const theme = useTheme();
-  const isXlScreen = useMediaQuery(theme.breakpoints.up("xl"));
-  const isXxlScreen = useMediaQuery(theme.breakpoints.up("xxl"));
   const defaultSubmission = submission === undefined ? null : parseInt(submission);
   const [submissionId, setSubmissionId] = useState(defaultSubmission ?? null);
   const navigate = useNavigate();
@@ -148,28 +143,36 @@ export function PageSubmissionQueue() {
   };
 
   const title = t("title_with_count", { count: queue.length });
-  const isSmallView = isXlScreen && !isXxlScreen;
-  const isBigView = isXxlScreen;
 
   return (
     <>
       <HeadTitle title={title} />
-      <BasicContainerBox
-        modern
-        maxWidth={isSmallView ? "sm" : isBigView ? "md" : undefined}
-        sx={{ mt: 0, position: "relative", overflow: "visible" }}
-        innerSx={{ p: 2 }}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: "minmax(0, 1fr) minmax(0, 2fr)" },
+          alignItems: "start",
+          gap: 2.5,
+          px: { xs: 0.5, sm: 2.5 },
+        }}
       >
-        <Box
-          sx={{
-            position: { xs: "relative", lg: "absolute" },
-            mt: 0,
-            p: 1,
-            pt: 1,
-            top: 0,
-            left: 0,
-            transform: { xs: "none", lg: "translate(calc(-100% - 20px), 0)" },
+        <BasicContainerBox
+          modern
+          maxWidth={false}
+          ignoreNewMargins
+          containerSx={{
+            minWidth: 0,
+            position: { lg: "sticky" },
+            top: { lg: "65px" },
           }}
+          sx={{
+            mt: 0,
+            border: "none",
+            maxHeight: { lg: "calc(100dvh - 81px)" },
+            overflowY: { lg: "auto" },
+            px: 0,
+          }}
+          innerSx={{ p: 0 }}
         >
           <SubmissionQueueTable
             queue={queue}
@@ -177,14 +180,22 @@ export function PageSubmissionQueue() {
             selectedSubmissionId={parseInt(submissionId)}
             setSubmissionId={updateSubmissionId}
           />
-          <Divider sx={{ my: 2, display: { xs: "block", lg: "none" } }} />
-        </Box>
-        {submissionId !== null ? (
-          <FormSubmissionWrapper id={submissionId} onSave={goToNextSubmission} />
-        ) : (
-          <Typography variant="body1">{t("queue_empty")}</Typography>
-        )}
-      </BasicContainerBox>
+        </BasicContainerBox>
+        <BasicContainerBox
+          modern
+          maxWidth={false}
+          ignoreNewMargins
+          containerSx={{ minWidth: 0 }}
+          sx={{ mt: 0, border: "none", minHeight: { lg: "1900px", xs: undefined } }}
+          innerSx={{ p: 2 }}
+        >
+          {submissionId !== null ? (
+            <FormSubmissionWrapper id={submissionId} onSave={goToNextSubmission} />
+          ) : (
+            <Typography variant="body1">{t("queue_empty")}</Typography>
+          )}
+        </BasicContainerBox>
+      </Box>
     </>
   );
 }
@@ -312,7 +323,7 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
   };
 
   return (
-    <TableContainer component={Paper} sx={{ width: { xs: "100%", xl: "430px" } }}>
+    <TableContainer>
       <TablePagination
         labelRowsPerPage={t_g("table_rows_per_page")}
         rowsPerPageOptions={[5, 10, 25, 50, 100, { label: t_g("all"), value: -1 }]}
@@ -378,7 +389,7 @@ function SubmissionQueueTable({ queue, notices, selectedSubmissionId, setSubmiss
           {(rowsPerPage === -1
             ? queueFiltered
             : queueFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          ).map((submission) => {
+          ).map((submission, index) => {
             const notice = notices.find((notice) => notice.submission_id === submission.id);
             return (
               <SubmissionQueueTableRow
@@ -486,8 +497,6 @@ function SubmissionQueueTableRow({
     challenge === null ? t("new_challenge") + " " + submission.new_challenge.name : campaign.name;
   const diff = challenge === null ? submission.suggested_difficulty : challenge.difficulty;
   const isNewChallenge = challenge === null;
-  const markDateAchieved = shouldMarkSubmissionDateAchieved(submission);
-  const hasPlayerNotes = submission.player_notes?.trim();
 
   let noticeTooltipText = null;
   let noticeButtonColor = "primary";
@@ -539,22 +548,8 @@ function SubmissionQueueTableRow({
           <Stack direction="row">
             <Stack direction="row" sx={{ flex: 1 }} gap={0.5} alignItems="center">
               <Typography variant="body1">{textTop}</Typography>
-              {markDateAchieved && (
-                <Tooltip
-                  title={
-                    "Date Achieved set to more than 4 weeks ago: " +
-                    jsonDateToJsDate(submission.date_achieved).toLocaleString(getNavigatorLanguage())
-                  }
-                  placement="top"
-                  arrow
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="16" height="16">
-                    <circle cx="50" cy="50" r="40" fill="yellow" />
-                  </svg>
-                </Tooltip>
-              )}
-              {hasPlayerNotes && <PlayerNotesIcon notes={submission.player_notes} />}
             </Stack>
+            <SubmissionStatusIcons submission={submission} sx={{ mr: 1 }} />
             <Typography variant="body1">{submission.id}</Typography>
           </Stack>
           <Stack direction="row" alignItems="center">
@@ -592,6 +587,33 @@ function SubmissionQueueTableRow({
         />
       </CustomModal>
     </>
+  );
+}
+
+function SubmissionStatusIcons({ submission, sx }) {
+  const markDateAchieved = shouldMarkSubmissionDateAchieved(submission);
+  const hasPlayerNotes = submission.player_notes?.trim();
+
+  if (!(markDateAchieved || hasPlayerNotes)) return null;
+
+  return (
+    <Stack direction="row" gap={0.5} alignItems="center" sx={sx}>
+      {markDateAchieved && (
+        <Tooltip
+          title={
+            "Date Achieved set to more than 4 weeks ago: " +
+            jsonDateToJsDate(submission.date_achieved).toLocaleString(getNavigatorLanguage())
+          }
+          placement="top"
+          arrow
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="16" height="16">
+            <circle cx="50" cy="50" r="40" fill="yellow" />
+          </svg>
+        </Tooltip>
+      )}
+      {hasPlayerNotes && <PlayerNotesIcon notes={submission.player_notes} />}
+    </Stack>
   );
 }
 
