@@ -32,6 +32,7 @@ import {
   CampaignChallengeSelect,
   DateAchievedTimePicker,
   DifficultySelectControlled,
+  RestrictionNotice,
 } from "../goldberries";
 import { usePostPlayer, usePostSubmission } from "../../hooks/useApi";
 import { useRestriction } from "../../hooks/useRestriction";
@@ -67,7 +68,7 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
     navigate("/submission/" + submission.id);
   });
   const { isRestricted: submitRestricted } = useRestriction(RESTRICTIONS.submit);
-  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+  const { isRestricted: difficultyRestricted } = useRestriction(
     RESTRICTIONS.suggest_difficulty,
   );
 
@@ -347,10 +348,10 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
                   isSuggestion
                   fullWidth
                   disabled={difficultyRestricted}
-                  helperText={difficultyRestrictedMessage}
                 />
               )}
             />
+            <RestrictionNotice restriction={RESTRICTIONS.suggest_difficulty} sx={{ mt: 1 }} />
           </Grid>
           <Grid item xs={12} sm="auto" display="flex" alignItems="center" justifyContent="center">
             <Controller

@@ -38,6 +38,7 @@ import {
   PlayerChip,
   DateAchievedTimePicker,
   DifficultySelectControlled,
+  RestrictionNotice,
 } from "../goldberries";
 import { usePostSubmission } from "../../hooks/useApi";
 import { useRestriction } from "../../hooks/useRestriction";
@@ -442,7 +443,7 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
   const [expanded, setExpanded] = useState(
     mapData.challenge?.difficulty.sort >= DIFF_CONSTS.RAW_SESSION_REQUIRED_SORT ? true : false || multiVideo,
   );
-  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+  const { isRestricted: difficultyRestricted } = useRestriction(
     RESTRICTIONS.suggest_difficulty,
   );
 
@@ -562,8 +563,8 @@ function MultiSubmissionMapRow({ mapData, multiVideo = false, index, updateMapDa
                       isSuggestion
                       fullWidth
                       disabled={difficultyRestricted}
-                      helperText={difficultyRestrictedMessage}
                     />
+                    <RestrictionNotice restriction={RESTRICTIONS.suggest_difficulty} sx={{ mt: 1 }} />
                   </TableCell>
                   <TableCell width={1}>
                     <Tooltip title={t("remove_map")}>

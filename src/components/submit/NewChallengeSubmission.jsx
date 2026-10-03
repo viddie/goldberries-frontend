@@ -20,7 +20,7 @@ import { durationToSeconds } from "../../util/data_util";
 import { DIFF_CONSTS, FormOptions, difficultyIdToSort } from "../../util/constants";
 import { useAuth } from "../../hooks/AuthProvider";
 import { ProofEmbed, StyledLink, TooltipInfoButton } from "../basic";
-import { PlayerSelect, PlayerChip, DateAchievedTimePicker, DifficultySelectControlled } from "../goldberries";
+import { PlayerSelect, PlayerChip, DateAchievedTimePicker, DifficultySelectControlled, RestrictionNotice } from "../goldberries";
 import { usePostSubmission } from "../../hooks/useApi";
 import { useRestriction } from "../../hooks/useRestriction";
 import { RESTRICTIONS } from "../../pages/Account";
@@ -48,7 +48,7 @@ export function NewChallengeSubmission({}) {
     navigate("/submission/" + submission.id);
   });
   const { isRestricted: submitRestricted } = useRestriction(RESTRICTIONS.submit);
-  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+  const { isRestricted: difficultyRestricted } = useRestriction(
     RESTRICTIONS.suggest_difficulty,
   );
 
@@ -291,10 +291,10 @@ export function NewChallengeSubmission({}) {
                   isSuggestion
                   fullWidth
                   disabled={difficultyRestricted}
-                  helperText={difficultyRestrictedMessage}
                 />
               )}
             />
+            <RestrictionNotice restriction={RESTRICTIONS.suggest_difficulty} sx={{ mt: 1 }} />
           </Grid>
           <Grid item xs={12} sm="auto" display="flex" alignItems="center" justifyContent="center">
             <Controller

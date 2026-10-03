@@ -47,6 +47,7 @@ import {
   DateAchievedTimePicker,
   SubmissionInspectButton,
   OpenUrlButton,
+  RestrictionNotice,
 } from "../goldberries";
 import { jsonDateToJsDate } from "../../util/util";
 import { FormOptions } from "../../util/constants";
@@ -108,7 +109,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
     toast.success(t("feedback.updated"));
     if (onSave) onSave(submission);
   });
-  const { isRestricted: difficultyRestricted, message: difficultyRestrictedMessage } = useRestriction(
+  const { isRestricted: difficultyRestricted } = useRestriction(
     RESTRICTIONS.suggest_difficulty,
   );
   // The backend only keeps the suggested difficulty of the restricted player's own submissions
@@ -401,10 +402,12 @@ export function FormSubmission({ submission, onSave, ...props }) {
                   isSuggestion
                   fullWidth
                   disabled={isOwnDifficultyRestricted}
-                  helperText={isOwnDifficultyRestricted ? difficultyRestrictedMessage : undefined}
                 />
               )}
             />
+            {isOwnDifficultyRestricted && (
+              <RestrictionNotice restriction={RESTRICTIONS.suggest_difficulty} sx={{ mt: 1 }} />
+            )}
           </Grid>
           <Grid item xs={12} sm="auto" display="flex" alignItems="center" justifyContent="center">
             <Controller

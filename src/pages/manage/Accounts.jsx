@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Alert,
   Autocomplete,
   Button,
   Checkbox,
@@ -34,7 +33,7 @@ import {
   usePostAccount,
   usePostPlayer,
 } from "../../hooks/useApi";
-import { AccountSelect } from "../../components/goldberries";
+import { AccountSelect, RestrictionNotice } from "../../components/goldberries";
 import { FormAccountWrapper } from "../../components/forms/Account";
 import { useAuth } from "../../hooks/AuthProvider";
 import { useRestriction } from "../../hooks/useRestriction";
@@ -206,7 +205,7 @@ function ManagePlayerNamesTab() {
     }
     setPlayer({ ...player, name: newName });
   });
-  const { isRestricted: renameRestricted, message: renameRestrictedMessage } = useRestriction(
+  const { isRestricted: renameRestricted } = useRestriction(
     RESTRICTIONS.rename,
   );
 
@@ -280,7 +279,7 @@ function ManagePlayerNamesTab() {
             >
               {t("button")}
             </Button>
-            {isRenameBlocked && <Alert severity="warning">{renameRestrictedMessage}</Alert>}
+            {isRenameBlocked && <RestrictionNotice restriction={RESTRICTIONS.rename} />}
           </Stack>
         </>
       )}
