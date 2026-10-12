@@ -24,6 +24,7 @@ export function TagChip({
   highlighted = false,
   dimmed = false,
   showTooltip = true,
+  showFullName = false,
   tooltip = null,
   size = "medium",
   sx,
@@ -40,7 +41,7 @@ export function TagChip({
       onClick={onClick}
       highlighted={highlighted}
       segments={[
-        { key: "tag", label: tag.short ?? tag.name, color, sx: { fontWeight: 500 } },
+        { key: "tag", label: showFullName ? tag.name : (tag.short ?? tag.name), color, sx: { fontWeight: 500 } },
         hasQualifier && { key: "value", label: value.name, color: shade },
         count !== null && {
           key: "count",

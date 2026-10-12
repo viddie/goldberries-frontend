@@ -5,6 +5,7 @@ import {
   faFilter,
   faPlus,
   faRotateLeft,
+  faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,10 +13,10 @@ import {
   Autocomplete,
   Box,
   Button,
+  ButtonGroup,
   Chip,
   Collapse,
   IconButton,
-  MenuItem,
   Stack,
   TextField,
   ToggleButton,
@@ -66,7 +67,7 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
     setConditions(conditions.filter((_, i) => i !== index));
   };
   const addCondition = (tag) => {
-    setConditions([...conditions, createCondition(tag.id)]);
+    setConditions([...conditions, createCondition(tag.id, { op: isImplicitTag(tag) ? "any" : "one_of" })]);
   };
   const onReset = () => {
     setConditions([]);
@@ -210,17 +211,26 @@ function FilterConditionRow({ condition, lookup, onChange, onRemove }) {
   const { t } = useTranslation(undefined, { keyPrefix: "discovery.filter" });
   const { tag, category } = lookup.tagsById[condition.tag_id];
   const implicit = isImplicitTag(tag);
-  const operators = getOperatorsForTag(tag);
   const color = getTagCategoryColor(category);
+  // Keep legacy any/range filters intact until their displayed values are edited.
+  const selectedValues =
+    condition.op === "one_of"
+      ? condition.values
+      : tag.values
+          .slice(
+            condition.min !== null ? lookup.valuesById[condition.min].index : 0,
+            condition.max !== null ? lookup.valuesById[condition.max].index + 1 : undefined,
+          )
+          .map((value) => value.id);
 
-  const onOperatorChange = (op) => {
-    onChange({ op, values: [], min: null, max: null });
+  const setValues = (values) => {
+    onChange({ op: "one_of", values, min: null, max: null });
   };
   const toggleValue = (valueId) => {
-    const values = condition.values.includes(valueId)
-      ? condition.values.filter((id) => id !== valueId)
-      : [...condition.values, valueId];
-    onChange({ values });
+    const values = selectedValues.includes(valueId)
+      ? selectedValues.filter((id) => id !== valueId)
+      : [...selectedValues, valueId];
+    setValues(values);
   };
 
   return (
@@ -236,7 +246,7 @@ function FilterConditionRow({ condition, lookup, onChange, onRemove }) {
       }}
     >
       <Stack direction="row" alignItems="center" gap={1} sx={{ minWidth: { md: 160 } }}>
-        <TagChip tag={tag} value={null} category={category} />
+        <TagChip tag={tag} value={null} category={category} showFullName />
         <Box sx={{ flexGrow: 1 }} />
         <IconButton size="small" onClick={onRemove} sx={{ display: { xs: "inline-flex", md: "none" } }}>
           <FontAwesomeIcon icon={faXmark} />
@@ -256,50 +266,39 @@ function FilterConditionRow({ condition, lookup, onChange, onRemove }) {
         </ToggleButton>
       </ToggleButtonGroup>
       {!implicit && (
-        <TextField
-          select
-          size="small"
-          value={condition.op}
-          onChange={(e) => onOperatorChange(e.target.value)}
-          sx={{ minWidth: 150 }}
-          SelectProps={{ MenuProps: { disableScrollLock: true } }}
-        >
-          {operators.map((op) => (
-            <MenuItem key={op} value={op}>
-              {t("operators." + op)}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {condition.op === "one_of" && (
-        <Stack direction="row" gap={0.5} flexWrap="wrap" alignItems="center">
+        <Stack direction="row" gap={0.5} flexWrap="wrap" alignItems="center" sx={{ flex: 1 }}>
+          <ButtonGroup size="small" sx={{ mr: 0.5 }}>
+            <Button onClick={() => setValues(tag.values.map((value) => value.id))}>
+              {t("all")}
+            </Button>
+            <Button onClick={() => setValues([])}>{t("none")}</Button>
+          </ButtonGroup>
           {tag.values.map((value) => (
             <Chip
               key={value.id}
               size="small"
               label={value.name}
-              color={condition.values.includes(value.id) ? "primary" : "default"}
-              variant={condition.values.includes(value.id) ? "filled" : "outlined"}
+              color={selectedValues.includes(value.id) ? "primary" : "default"}
+              variant={selectedValues.includes(value.id) ? "filled" : "outlined"}
               onClick={() => toggleValue(value.id)}
             />
           ))}
         </Stack>
       )}
-      {(condition.op === "gte" || condition.op === "between") && (
-        <ValueSelect tag={tag} label={t("min")} value={condition.min} onChange={(min) => onChange({ min })} />
-      )}
-      {(condition.op === "lte" || condition.op === "between") && (
-        <ValueSelect tag={tag} label={t("max")} value={condition.max} onChange={(max) => onChange({ max })} />
-      )}
-      {!isConditionComplete(condition) && (
-        <Typography variant="caption" color="warning.main">
-          {t("incomplete")}
-        </Typography>
-      )}
-      <Box sx={{ flexGrow: 1, display: { xs: "none", md: "block" } }} />
-      <IconButton size="small" onClick={onRemove} sx={{ display: { xs: "none", md: "inline-flex" } }}>
-        <FontAwesomeIcon icon={faXmark} />
-      </IconButton>
+      <Stack direction="row" alignItems="center" gap={0.5} sx={{ ml: "auto" }}>
+        {!isConditionComplete(condition) && (
+          <Box component="span" sx={{ color: "warning.main", display: "inline-flex" }}>
+            <TooltipInfoButton
+              title={t("incomplete")}
+              icon={faTriangleExclamation}
+              aria-label={t("incomplete")}
+            />
+          </Box>
+        )}
+        <IconButton size="small" onClick={onRemove} sx={{ display: { xs: "none", md: "inline-flex" } }}>
+          <FontAwesomeIcon icon={faXmark} />
+        </IconButton>
+      </Stack>
     </Stack>
   );
 }
@@ -358,28 +357,6 @@ function FilterThresholdsNote() {
 }
 //#endregion
 
-//#region ValueSelect
-function ValueSelect({ tag, label, value, onChange }) {
-  return (
-    <TextField
-      select
-      size="small"
-      label={label}
-      value={value ?? ""}
-      onChange={(e) => onChange(e.target.value === "" ? null : e.target.value)}
-      sx={{ minWidth: 140 }}
-      SelectProps={{ MenuProps: { disableScrollLock: true } }}
-    >
-      {tag.values.map((v) => (
-        <MenuItem key={v.id} value={v.id}>
-          {v.name}
-        </MenuItem>
-      ))}
-    </TextField>
-  );
-}
-//#endregion
-
 //#region Utility Functions
 function createCondition(tagId, changes = {}) {
   return {
@@ -392,12 +369,6 @@ function createCondition(tagId, changes = {}) {
     max: null,
     ...changes,
   };
-}
-
-function getOperatorsForTag(tag) {
-  if (isImplicitTag(tag)) return ["any"];
-  if (tag.is_ordinal) return ["any", "one_of", "gte", "lte", "between"];
-  return ["any", "one_of"];
 }
 
 function isConditionComplete(condition) {

@@ -2743,8 +2743,10 @@
       "reset": "Reset",
       "no_conditions": "No filter set, showing all challenges. Add a tag below to narrow down the results.",
       "add_condition": "Add a tag to the filter...",
+      "all": "All",
+      "none": "None",
       "agreement": "% Agreement",
-      "agreement_note": "The minimum share of votes a tag's value needs among all votes on that tag for it to count. For \"At least\", \"At most\" and \"Between\", the votes of all values in that range are added up. Tags that only the team can assign, and tags that allow multiple values, always count.",
+      "agreement_note": "The minimum share of votes a tag's value needs among all votes on that tag for it to count. Tags that only the team can assign, and tags that allow multiple values, always count.",
       "confidence": "# Tagged",
       "confidence_note": "The minimum number of different players that need to have assigned a tag for it to count. Tags that only the team can assign always count.",
       "modes": {
