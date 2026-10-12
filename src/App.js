@@ -522,14 +522,14 @@ export function Layout() {
         />
       ),
     },
+    discovery: {
+      name: t("campaigns_menu.discovery"),
+      path: "/discovery",
+      icon: <FontAwesomeIcon icon={faCompass} />,
+    },
     campaigns: {
       name: t("campaigns_menu.name"),
       items: [
-        {
-          name: t("campaigns_menu.discovery"),
-          path: "/discovery",
-          icon: <FontAwesomeIcon icon={faCompass} />,
-        },
         {
           name: t("campaigns_menu.rejected_challenges"),
           path: "/rejected-challenges",
@@ -746,7 +746,7 @@ export function Layout() {
     menus.user.items = menus.user.items.filter((item) => item.path !== "/my-top-goldens");
   }
 
-  const leftMenu = [menus.lists, menus.campaigns, menus.other];
+  const leftMenu = [menus.lists, menus.discovery, menus.campaigns, menus.other];
   const rightMenu = [];
   if (auth.hasNewsWriterPriv) {
     const newsWriterMenu = menus.newsWriter;
