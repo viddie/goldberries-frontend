@@ -1125,11 +1125,14 @@
         "create_category": "Create Category",
         "create_tag": "Create Tag",
         "edit_category": "Edit Category",
-        "delete_category": "Delete Category"
+        "delete_category": "Delete Category",
+        "clear_assignments": "Clear Assignments"
       },
       "feedback": {
         "category_deleted": "Tag category deleted",
-        "tag_deleted": "Tag deleted"
+        "tag_deleted": "Tag deleted",
+        "assignments_cleared_one": "Removed {{count}} tag assignment",
+        "assignments_cleared_other": "Removed {{count}} tag assignments"
       },
       "modals": {
         "delete_category": {
@@ -1139,6 +1142,13 @@
         "delete_tag": {
           "title": "Delete Tag",
           "description": "Are you sure you want to delete the tag <strong>{{name}}</strong>? All assignments of this tag will be deleted as well."
+        },
+        "clear_assignments": {
+          "title": "Clear Tag Assignments",
+          "description": "Remove assignments of <strong>{{name}}</strong> from all challenges and players? The tag and its values will be kept.",
+          "all": "Clear all assignments",
+          "selected": "Clear assignments for selected values only",
+          "warning": "This action cannot be undone."
         }
       }
     }

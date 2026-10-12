@@ -904,6 +904,9 @@ export function postTag(data) {
 export function deleteTag(id) {
   return axios.delete("/tag", { params: { id: id } });
 }
+export function clearTagAssignments(data) {
+  return axios.post("/tag/clear-assignments", data);
+}
 //#endregion
 
 //#region /tag/category

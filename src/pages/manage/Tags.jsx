@@ -1,6 +1,7 @@
 import {
   faArchive,
   faEdit,
+  faEraser,
   faListOl,
   faPlus,
   faStar,
@@ -13,6 +14,11 @@ import {
   Button,
   ButtonGroup,
   Chip,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Radio,
+  RadioGroup,
   Stack,
   Table,
   TableBody,
@@ -23,6 +29,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -36,7 +43,7 @@ import {
 import { FormTag } from "../../components/forms/Tag";
 import { FormTagCategory } from "../../components/forms/TagCategory";
 import { TagChip, getTagCategoryColor, isImplicitTag, useTagLookup } from "../../components/tags";
-import { useDeleteTag, useDeleteTagCategory } from "../../hooks/useApi";
+import { useClearTagAssignments, useDeleteTag, useDeleteTagCategory } from "../../hooks/useApi";
 import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
 
 const CATEGORY_BACKGROUND = "#323232";
@@ -63,6 +70,7 @@ function ManageTags() {
 
   const editCategoryModal = useModal();
   const editTagModal = useModal();
+  const clearAssignmentsModal = useModal();
   const { mutate: deleteCategory } = useDeleteTagCategory(() =>
     toast.success(t("feedback.category_deleted")),
   );
@@ -108,6 +116,7 @@ function ManageTags() {
           onCreateTag={() => openNewTag(category.id)}
           onEditTag={(tag) => editTagModal.open(tag)}
           onDeleteTag={(tag) => deleteTagModal.open(tag)}
+          onClearAssignments={(tag) => clearAssignmentsModal.open(tag)}
         />
       ))}
 
@@ -133,6 +142,9 @@ function ManageTags() {
           />
         </Typography>
       </CustomModal>
+      {clearAssignmentsModal.isVisible && (
+        <ClearTagAssignmentsDialog modal={clearAssignmentsModal} />
+      )}
       <CustomModal
         modalHook={deleteTagModal}
         options={{ title: t("modals.delete_tag.title") }}
@@ -158,6 +170,7 @@ function CategorySection({
   onCreateTag,
   onEditTag,
   onDeleteTag,
+  onClearAssignments,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.tags" });
   const color = getTagCategoryColor(category);
@@ -240,6 +253,7 @@ function CategorySection({
                   category={category}
                   onEdit={() => onEditTag(tag)}
                   onDelete={() => onDeleteTag(tag)}
+                  onClearAssignments={() => onClearAssignments(tag)}
                 />
               ))}
             </TableBody>
@@ -252,7 +266,7 @@ function CategorySection({
 //#endregion
 
 //#region TagRow
-function TagRow({ tag, category, onEdit, onDelete }) {
+function TagRow({ tag, category, onEdit, onDelete, onClearAssignments }) {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.tags" });
   const { t: t_ft } = useTranslation(undefined, { keyPrefix: "forms.tag" });
 
@@ -304,6 +318,16 @@ function TagRow({ tag, category, onEdit, onDelete }) {
           <CustomIconButton variant="contained" onClick={onEdit}>
             <FontAwesomeIcon icon={faEdit} />
           </CustomIconButton>
+          <Tooltip title={t("buttons.clear_assignments")} arrow>
+            <CustomIconButton
+              variant="outlined"
+              color="error"
+              onClick={onClearAssignments}
+              aria-label={t("buttons.clear_assignments")}
+            >
+              <FontAwesomeIcon icon={faEraser} />
+            </CustomIconButton>
+          </Tooltip>
           <CustomIconButton variant="outlined" color="error" onClick={onDelete}>
             <FontAwesomeIcon icon={faTrash} />
           </CustomIconButton>
@@ -313,3 +337,98 @@ function TagRow({ tag, category, onEdit, onDelete }) {
   );
 }
 //#endregion
+
+function ClearTagAssignmentsDialog({ modal }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "manage.tags" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general.modals.buttons" });
+  const tag = modal.data;
+  const [clearAll, setClearAll] = useState(true);
+  const [selectedValueIds, setSelectedValueIds] = useState(tag.values.map((value) => value.id));
+  const { mutate: clearAssignments, isLoading } = useClearTagAssignments((data) => {
+    toast.success(t("feedback.assignments_cleared", { count: data.removed }));
+    modal.close();
+  });
+
+  return (
+    <CustomModal
+      modalHook={modal}
+      options={{ title: t("modals.clear_assignments.title"), hideFooter: true }}
+      onClose={() => {
+        if (!isLoading) modal.cancel();
+      }}
+    >
+      <Stack gap={2}>
+        <Typography>
+          <Trans
+            i18nKey="manage.tags.modals.clear_assignments.description"
+            values={{ name: tag.name }}
+          />
+        </Typography>
+        {!isImplicitTag(tag) && tag.values.length > 0 && (
+          <>
+            <RadioGroup
+              value={clearAll ? "all" : "selected"}
+              onChange={(event) => setClearAll(event.target.value === "all")}
+            >
+              <FormControlLabel
+                value="all"
+                control={<Radio />}
+                label={t("modals.clear_assignments.all")}
+                disabled={isLoading}
+              />
+              <FormControlLabel
+                value="selected"
+                control={<Radio />}
+                label={t("modals.clear_assignments.selected")}
+                disabled={isLoading}
+              />
+            </RadioGroup>
+            {!clearAll && (
+              <FormGroup>
+                {tag.values.map((value) => (
+                  <FormControlLabel
+                    key={value.id}
+                    label={value.name}
+                    disabled={isLoading}
+                    control={
+                      <Checkbox
+                        checked={selectedValueIds.includes(value.id)}
+                        onChange={(event) => {
+                          setSelectedValueIds((ids) =>
+                            event.target.checked
+                              ? [...ids, value.id]
+                              : ids.filter((id) => id !== value.id),
+                          );
+                        }}
+                      />
+                    }
+                  />
+                ))}
+              </FormGroup>
+            )}
+          </>
+        )}
+        <Typography color="error">{t("modals.clear_assignments.warning")}</Typography>
+        <Stack direction="row" justifyContent="flex-end" gap={1}>
+          <Button variant="outlined" onClick={modal.cancel} disabled={isLoading}>
+            {t_g("cancel")}
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<FontAwesomeIcon icon={faEraser} />}
+            disabled={isLoading || (!clearAll && selectedValueIds.length === 0)}
+            onClick={() =>
+              clearAssignments({
+                tag_id: tag.id,
+                ...(clearAll ? {} : { tag_value_ids: selectedValueIds }),
+              })
+            }
+          >
+            {t("buttons.clear_assignments")}
+          </Button>
+        </Stack>
+      </Stack>
+    </CustomModal>
+  );
+}

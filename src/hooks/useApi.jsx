@@ -127,6 +127,7 @@ import {
   fetchTag,
   postTag,
   deleteTag,
+  clearTagAssignments,
   fetchTagCategories,
   postTagCategory,
   deleteTagCategory,
@@ -1512,6 +1513,17 @@ export function useDeleteTag(onSuccess) {
     mutationFn: (id) => deleteTag(id),
     onSuccess: (response) => {
       invalidateTagDefinitionQueries(queryClient);
+      invalidateTagAssignmentQueries(queryClient);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+export function useClearTagAssignments(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => clearTagAssignments(data),
+    onSuccess: (response) => {
       invalidateTagAssignmentQueries(queryClient);
       if (onSuccess) onSuccess(response.data);
     },
