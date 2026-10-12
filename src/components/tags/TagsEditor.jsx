@@ -62,6 +62,9 @@ export function TagsEditor({
 
   return (
     <Stack direction="column" gap={1.5}>
+      <Typography variant="caption" color="text.secondary">
+        {t("description_hint")}
+      </Typography>
       {groups.map(({ category, tags }) => (
         <Box key={category.id}>
           <Divider
@@ -79,6 +82,11 @@ export function TagsEditor({
           </Divider>
           <Collapse in={!collapsed[category.id]}>
             <Stack direction="column" gap={1} sx={{ pt: 1 }}>
+              {category.description && (
+                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "pre-line" }}>
+                  {category.description}
+                </Typography>
+              )}
               {tags.map((tag) => (
                 <TagEditorRow
                   key={tag.id}
