@@ -140,11 +140,14 @@ import {
 } from "../util/api";
 import { errorToast } from "../util/util";
 
+import { useAuth } from "./AuthProvider";
+
 export function invalidateJointQueries(queryClient) {
   queryClient.invalidateQueries(["submission_queue"]);
   queryClient.invalidateQueries(["manage_challenges"]);
   queryClient.invalidateQueries(["overall_stats"]);
   queryClient.invalidateQueries(["recent_submissions"]);
+  queryClient.invalidateQueries(["discovery"]);
 }
 
 export function getQueryData(query) {
@@ -1627,11 +1630,12 @@ export function useGetChallengeTagPlayers(challengeId, tagValueId) {
 
 //#region /challenge/discovery
 export function useGetDiscovery(filter, group = "all", page = 1, perPage = null, seed = null) {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["discovery", filter, group, page, perPage, seed],
+    queryKey: ["discovery", filter, group, page, perPage, seed, filter?.exclude_cleared ? user?.player_id : null],
     queryFn: () => fetchDiscovery(filter, group, page, perPage, seed),
     onError: errorToast,
-    keepPreviousData: true,
+    keepPreviousData: !filter?.exclude_cleared,
   });
 }
 //#endregion
