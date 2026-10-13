@@ -27,7 +27,9 @@ import {
   getChallengeSuffix,
   getMapNameClean,
   getNavigatorLanguage,
+  isSuggestionVoteLocked,
 } from "../util/data_util";
+import { SUGGESTION_VOTE_HIDE_HOURS } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
 import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_page/SuggestionsList";
 import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
@@ -268,11 +270,28 @@ const SUGGESTION_ACTIVE_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 export function isSuggestionExpired(suggestion) {
   return (
     suggestion.is_accepted !== null ||
+    suggestion.is_verified === false ||
     (suggestion.date_verified !== null &&
       suggestion.date_verified !== undefined &&
-      jsonDateToJsDate(suggestion.date_verified).getTime() <
+      jsonDateToJsDate(suggestion.date_verified).getTime() <=
         Date.now() - SUGGESTION_ACTIVE_DURATION_MS)
   );
+}
+
+export function useSuggestionVoteLock(suggestion) {
+  const [now, setNow] = useState(Date.now);
+
+  useEffect(() => {
+    setNow(Date.now());
+    if (!suggestion?.date_verified || !isSuggestionVoteLocked(suggestion)) return;
+
+    const unlockAt =
+      jsonDateToJsDate(suggestion.date_verified).getTime() + SUGGESTION_VOTE_HIDE_HOURS * 60 * 60 * 1000;
+    const timeout = setTimeout(() => setNow(Date.now()), unlockAt - Date.now());
+    return () => clearTimeout(timeout);
+  }, [suggestion?.date_verified]);
+
+  return suggestion ? isSuggestionVoteLocked(suggestion, now) : false;
 }
 
 export function SuggestionCountdown({ suggestion, ...props }) {

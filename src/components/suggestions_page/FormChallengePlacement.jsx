@@ -6,11 +6,17 @@ import { faArrowDown, faArrowUp, faCheck, faMinus, faSpinner } from "@fortawesom
 import { toast } from "react-toastify";
 
 import { getQueryData, useGetChallenge, useGetLastPlacementSuggestion, usePostSuggestion } from "../../hooks/useApi";
+import { useAuth } from "../../hooks/AuthProvider";
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { DifficultyChip, DifficultySelectControlled, FullChallengeSelect } from "../goldberries";
 import { DIFFICULTIES } from "../../util/constants";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { CharsCountLabel, DifficultyMoveDisplay, isSuggestionExpired } from "../../pages/Suggestions";
+import {
+  CharsCountLabel,
+  DifficultyMoveDisplay,
+  isSuggestionExpired,
+  useSuggestionVoteLock,
+} from "../../pages/Suggestions";
 
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
 
@@ -18,6 +24,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.create" });
   const { t: t_a } = useTranslation();
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+  const auth = useAuth();
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
     toast.success(t("feedback.created"));
     if (onSuccess) onSuccess();
@@ -40,6 +47,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
   const fetchedChallenge = getQueryData(query);
   const lastPlacementSuggestionQuery = useGetLastPlacementSuggestion(selectedChallenge?.id);
   const lastPlacementSuggestion = getQueryData(lastPlacementSuggestionQuery);
+  const votesLocked = useSuggestionVoteLock(lastPlacementSuggestion);
   const lastSuggestionStatus =
     lastPlacementSuggestion?.is_accepted === true
       ? "accepted"
@@ -52,6 +60,9 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
     undecided: "text.secondary",
   }[lastSuggestionStatus];
   const lastSuggestionVotes = lastPlacementSuggestion?.votes ?? [];
+  const hideVoteCounts =
+    votesLocked &&
+    !(auth.hasPlayerClaimed && lastSuggestionVotes.some((vote) => vote.player_id === auth.user.player_id));
   const lastSuggestionVoteCounts = {
     for: lastSuggestionVotes.filter((vote) => vote.vote === "+").length,
     against: lastSuggestionVotes.filter((vote) => vote.vote === "-").length,
@@ -104,7 +115,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
             >
               <Trans
                 t={t}
-                i18nKey="last_suggestion_with_votes"
+                i18nKey={hideVoteCounts ? "last_suggestion_hidden_votes" : "last_suggestion_with_votes"}
                 values={{
                   ...lastSuggestionVoteCounts,
                   timeAgo: dateToTimeAgoString(jsonDateToJsDate(lastPlacementSuggestion.date_created), t_g),

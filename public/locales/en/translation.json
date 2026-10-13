@@ -1840,7 +1840,7 @@
     "display": {
       "deleted_player": "(deleted player)",
       "no_votes": "No votes yet",
-      "hidden_vote_count": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion"
+      "hidden_votes": "Votes are hidden for the first {{count}} hours after verification, unless you submit a vote yourself."
     },
     "countdown": {
       "label": "{{time}} left",
@@ -1893,7 +1893,8 @@
           "set_to_pending": "Set to Pending",
           "update_comment": "Update Comment"
         },
-        "hidden_vote_count_desc": "The vote count of a suggestion is hidden for the first {{count}} minutes of a suggestion",
+        "vote_locked": "Your vote cannot be changed or deleted in the first {{count}} hours of a suggestion. You can still edit your comment.",
+        "hidden_votes_desc": "Votes are hidden for the first {{count}} hours after verification, unless you submit a vote yourself.",
         "hidden_vote_count": "Vote Count Hidden"
       },
       "create": {
@@ -1935,6 +1936,7 @@
         "no_prior_suggestions": "There are no prior suggestions.",
         "ongoing_suggestion": "There is an ongoing <suggestionLink>suggestion</suggestionLink> for this challenge",
         "last_suggestion_with_votes": "Last <suggestionLink>suggestion</suggestionLink> · <difficultyMove/> · {{for}} <upIcon/> | {{against}} <downIcon/> | {{indifferent}} <indifferentIcon/> · {{timeAgo}} · <status>{{status}}</status>",
+        "last_suggestion_hidden_votes": "Last <suggestionLink>suggestion</suggestionLink> · <difficultyMove/> · Vote Count Hidden · {{timeAgo}} · <status>{{status}}</status>",
         "last_suggestion_status": {
           "accepted": "Accepted",
           "rejected": "Rejected",

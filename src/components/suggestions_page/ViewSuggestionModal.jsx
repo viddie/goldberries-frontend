@@ -31,7 +31,7 @@ import { PlayerChip, RestrictionNotice } from "../goldberries";
 import { RESTRICTIONS } from "../../pages/Account";
 import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
-import { getChallengeNameShort, shouldHideVoteCount } from "../../util/data_util";
+import { getChallengeNameShort } from "../../util/data_util";
 import {
   CharsCountLabel,
   DifficultyMoveDisplay,
@@ -39,9 +39,10 @@ import {
   SuggestionCountdown,
   SuggestionName,
   isSuggestionExpired,
+  useSuggestionVoteLock,
 } from "../../pages/Suggestions";
 import { CustomMenu } from "../Menu";
-import { SUGGESTION_VOTE_HIDE_MINUTES } from "../../util/constants";
+import { SUGGESTION_VOTE_HIDE_HOURS } from "../../util/constants";
 
 export function ViewSuggestionModal({ id }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.view" });
@@ -53,31 +54,21 @@ export function ViewSuggestionModal({ id }) {
   const query = useGetSuggestion(id);
   const suggestion = getQueryData(query);
 
-  const { mutateAsync: deleteVote, isLoading: deleteVoteLoading } = useDeleteSuggestionVote(() => {
-    // query.refetch();
-  });
-  const { mutateAsync: postVote, isLoading: postVoteLoading } = usePostSuggestionVote(() => {
-    query.refetch();
-  });
+  const { mutate: deleteVote, isLoading: deleteVoteLoading } = useDeleteSuggestionVote(() => {});
+  const { mutate: postVote, isLoading: postVoteLoading } = usePostSuggestionVote();
   const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
     query.refetch();
     toast.success(t("feedback.updated"));
   });
   const { isRestricted: voteRestricted } = useRestriction(RESTRICTIONS.vote);
+  const votesLocked = useSuggestionVoteLock(suggestion);
+  const userVoteObj = auth.hasPlayerClaimed
+    ? suggestion?.votes.find((vote) => vote.player_id === auth.user.player_id) ?? null
+    : null;
 
   useEffect(() => {
-    if (query.isSuccess) {
-      //Find the users vote
-      const userVote = !auth.hasPlayerClaimed
-        ? null
-        : suggestion.votes.find((vote) => vote.player_id === auth.user.player.id);
-      if (userVote) {
-        setUserText(userVote.comment ?? "");
-      } else {
-        setUserText("");
-      }
-    }
-  }, [query.isSuccess]);
+    setUserText(userVoteObj?.comment ?? "");
+  }, [id, auth.user?.player_id, userVoteObj?.id, userVoteObj?.comment]);
 
   if (query.isLoading) {
     return <LoadingSpinner />;
@@ -90,11 +81,7 @@ export function ViewSuggestionModal({ id }) {
   const challenge = suggestion.challenge;
   const hasMap = challenge?.map_id;
 
-  const hasVoted =
-    auth.hasPlayerClaimed && suggestion.votes.some((vote) => vote.player_id === auth.user.player.id);
-  const userVoteObj = hasVoted
-    ? suggestion.votes.find((vote) => vote.player_id === auth.user.player.id)
-    : null;
+  const hasVoted = userVoteObj !== null;
   const userVote = userVoteObj?.vote ?? null;
   const commentChanged = userVoteObj !== null && userText !== (userVoteObj.comment ?? "");
   const voteMutationLoading = deleteVoteLoading || postVoteLoading;
@@ -104,32 +91,29 @@ export function ViewSuggestionModal({ id }) {
     challenge.submissions.some((s) => s.player_id === auth.user.player_id);
   const isPlacementSuggestion = suggestion.suggested_difficulty_id !== null;
   const requiresComment = !selfHasDoneChallenge && isPlacementSuggestion;
-  // Changing a vote or its comment deletes and re-posts the vote, so restricted players can't interact at all
   const voteButtonsDisabled =
     voteRestricted ||
-    ((!auth.hasPlayerClaimed ||
-      (isExpired && !auth.hasHelperPriv) ||
-      (requiresComment && userText.trim().length < 10)) &&
-      !hasVoted);
+    voteMutationLoading ||
+    !auth.hasPlayerClaimed ||
+    (isExpired && (hasVoted || !auth.hasVerifierPriv)) ||
+    (hasVoted && votesLocked);
+  const invalidComment =
+    (requiresComment && userText.trim().length < 10) || userText.trim().length > 1500;
   const commentFieldDisabled =
-    voteRestricted || voteMutationLoading || (isExpired && !auth.hasHelperPriv && !hasVoted);
+    voteRestricted || voteMutationLoading || (isExpired && (hasVoted || !auth.hasVerifierPriv));
 
   const vote = (vote) => {
+    if (voteButtonsDisabled || (vote !== userVote && invalidComment)) return;
     if (hasVoted) {
-      const voteObj = userVoteObj;
-      deleteVote(voteObj.id).then(() => {
-        if (vote !== userVote) {
-          postVote({
-            suggestion_id: suggestion.id,
-            vote: vote,
-            comment: userText === "" ? null : userText,
-          });
-        } else {
-          //Refetch manually
-          query.refetch();
-        }
-      });
-      return;
+      if (vote === userVote) {
+        deleteVote(userVoteObj.id);
+      } else {
+        postVote({
+          id: userVoteObj.id,
+          vote: vote,
+          comment: userText === "" ? null : userText,
+        });
+      }
     } else {
       postVote({
         suggestion_id: suggestion.id,
@@ -140,14 +124,16 @@ export function ViewSuggestionModal({ id }) {
   };
 
   const updateComment = () => {
-    if (!userVoteObj || !commentChanged || (requiresComment && userText.trim().length < 10)) return;
+    if (
+      !userVoteObj ||
+      !commentChanged ||
+      commentFieldDisabled ||
+      invalidComment
+    ) return;
 
-    deleteVote(userVoteObj.id).then(() => {
-      postVote({
-        suggestion_id: suggestion.id,
-        vote: userVoteObj.vote,
-        comment: userText === "" ? null : userText,
-      });
+    postVote({
+      id: userVoteObj.id,
+      comment: userText === "" ? null : userText,
     });
   };
 
@@ -269,7 +255,7 @@ export function ViewSuggestionModal({ id }) {
                 color="success"
                 fullWidth
                 onClick={() => vote("+")}
-                disabled={voteButtonsDisabled}
+                disabled={voteButtonsDisabled || (userVote !== "+" && invalidComment)}
               >
                 <FontAwesomeIcon icon={faThumbsUp} style={{ height: "1.4em" }} />
                 <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
@@ -281,7 +267,7 @@ export function ViewSuggestionModal({ id }) {
                 color="error"
                 fullWidth
                 onClick={() => vote("-")}
-                disabled={voteButtonsDisabled}
+                disabled={voteButtonsDisabled || (userVote !== "-" && invalidComment)}
               >
                 <FontAwesomeIcon icon={faThumbsDown} style={{ height: "1.4em" }} />
                 <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
@@ -292,7 +278,7 @@ export function ViewSuggestionModal({ id }) {
                 variant={!auth.hasPlayerClaimed || !hasVoted || userVote !== "i" ? "outlined" : "contained"}
                 fullWidth
                 onClick={() => vote("i")}
-                disabled={voteButtonsDisabled}
+                disabled={voteButtonsDisabled || (userVote !== "i" && invalidComment)}
               >
                 <FontAwesomeIcon icon={faHorse} style={{ height: "1.4em" }} />
                 <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
@@ -303,6 +289,11 @@ export function ViewSuggestionModal({ id }) {
             {!auth.hasPlayerClaimed && (
               <Typography variant="body2" gutterBottom>
                 {t("claim_player")}
+              </Typography>
+            )}
+            {hasVoted && votesLocked && !isExpired && (
+              <Typography variant="body2" color="text.secondary">
+                {t("vote_locked", { count: SUGGESTION_VOTE_HIDE_HOURS })}
               </Typography>
             )}
             <RestrictionNotice restriction={RESTRICTIONS.vote} sx={{ mt: 0.5 }} />
@@ -334,7 +325,7 @@ export function ViewSuggestionModal({ id }) {
               <Button
                 variant="outlined"
                 onClick={updateComment}
-                disabled={voteMutationLoading || (requiresComment && userText.trim().length < 10)}
+                disabled={commentFieldDisabled || invalidComment}
                 startIcon={voteMutationLoading && <FontAwesomeIcon icon={faSpinner} spin />}
                 sx={{ my: 1 }}
               >
@@ -350,9 +341,9 @@ export function ViewSuggestionModal({ id }) {
           </Divider>
         </Grid>
 
-        {shouldHideVoteCount(suggestion) ? (
+        {votesLocked && !hasVoted ? (
           <Grid item xs={12}>
-            <Tooltip title={t("hidden_vote_count_desc", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
+            <Tooltip title={t("hidden_votes_desc", { count: SUGGESTION_VOTE_HIDE_HOURS })} arrow>
               <Typography variant="body2" color={(t) => t.palette.text.secondary} textAlign="center">
                 {t("hidden_vote_count")}
                 <FontAwesomeIcon

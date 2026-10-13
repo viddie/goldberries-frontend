@@ -853,9 +853,11 @@ export function usePostSuggestionVote(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data) => postSuggestionVote(data),
-    onSuccess: (response, data) => {
-      // queryClient.invalidateQueries(["suggestion"]);
-      queryClient.invalidateQueries(["suggestions"]);
+    onSuccess: async (response, data) => {
+      await Promise.all([
+        queryClient.invalidateQueries(["suggestion"]),
+        queryClient.invalidateQueries(["suggestions"]),
+      ]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
@@ -1184,9 +1186,11 @@ export function useDeleteSuggestionVote(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id) => deleteSuggestionVote(id),
-    onSuccess: (response) => {
-      // queryClient.invalidateQueries(["suggestion"]);
-      queryClient.invalidateQueries(["suggestions"]);
+    onSuccess: async (response) => {
+      await Promise.all([
+        queryClient.invalidateQueries(["suggestion"]),
+        queryClient.invalidateQueries(["suggestions"]),
+      ]);
       if (onSuccess) onSuccess(response);
       else toast.success("Vote deleted");
     },

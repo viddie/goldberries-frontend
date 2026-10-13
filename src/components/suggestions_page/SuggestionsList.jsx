@@ -12,15 +12,16 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
 import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { getSortedSuggestedDifficulties, shouldHideVoteCount, getNavigatorLanguage } from "../../util/data_util";
+import { getSortedSuggestedDifficulties, getNavigatorLanguage } from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
 import {
   DifficultyMoveDisplay,
   SuggestionCommentDisplay,
   SuggestionCountdown,
   SuggestionName,
+  useSuggestionVoteLock,
 } from "../../pages/Suggestions";
-import { SUGGESTION_VOTE_HIDE_MINUTES } from "../../util/constants";
+import { SUGGESTION_VOTE_HIDE_HOURS } from "../../util/constants";
 
 export function SuggestionsList({
   expired,
@@ -107,6 +108,9 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const auth = useAuth();
+  const votesLocked = useSuggestionVoteLock(suggestion);
+  const hasVoted =
+    auth.hasPlayerClaimed && suggestion.votes.some((vote) => vote.player_id === auth.user.player_id);
 
   const viewSuggestion = () => {
     modalRefs.view.current(suggestion.id);
@@ -240,7 +244,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         </Grid>
       </Grid>
 
-      {shouldHideVoteCount(suggestion) ? (
+      {votesLocked && !hasVoted ? (
         <HiddenVoteBar />
       ) : suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
@@ -343,7 +347,7 @@ export function HiddenVoteBar() {
             fontSize: "small",
           }}
         >
-          <Tooltip title={t("hidden_vote_count", { count: SUGGESTION_VOTE_HIDE_MINUTES })} arrow>
+          <Tooltip title={t("hidden_votes", { count: SUGGESTION_VOTE_HIDE_HOURS })} arrow>
             <FontAwesomeIcon icon={faEyeSlash} />
           </Tooltip>
         </span>
