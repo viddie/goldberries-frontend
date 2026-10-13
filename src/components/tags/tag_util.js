@@ -57,7 +57,7 @@ export function getTagCategoryShadeColor(category) {
 //#endregion
 
 //#region Sorting
-// Joins [{ tag_value_id, count, ... }] with the lookup, drops unknown values and sorts by category, then count desc.
+// Joins [{ tag_value_id, count, ... }] with the lookup, drops unknown values and sorts by category, tag and value order.
 // Values of 'single' tags are mutually exclusive: all values below the tag's highest count are flagged with `isOutvoted`.
 // Values of 'multi' tags can all apply at once, so they are never out-voted.
 export function resolveTagCounts(counts, lookup) {
@@ -76,8 +76,8 @@ export function resolveTagCounts(counts, lookup) {
   resolved.sort((a, b) => {
     if (a.category.sort !== b.category.sort) return a.category.sort - b.category.sort;
     if (a.category.id !== b.category.id) return a.category.id - b.category.id;
-    if (a.count !== b.count) return b.count - a.count;
     if (a.tag.sort !== b.tag.sort) return a.tag.sort - b.tag.sort;
+    if (a.tag.id !== b.tag.id) return a.tag.id - b.tag.id;
     return a.index - b.index;
   });
   return resolved;
