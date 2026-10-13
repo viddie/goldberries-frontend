@@ -2400,7 +2400,7 @@
         },
         "difficulties": {
           "header": "Difficulty Stats",
-          "text": "For each tier, the percentage of players who have done at least one golden in that tier.",
+          "text": "For each tier, the percentage of players who have completed at least one challenge in that tier or higher.",
           "axis_label": "% of players"
         }
       },

@@ -37,7 +37,6 @@ export function TabMisc({}) {
     suggestions: { accepted, rejected },
     submissions: { since_release },
     difficulties: { distinct_players },
-    players: { total },
   } = getQueryData(query);
 
   //Chart 1: Suggestions accepted vs. rejected
@@ -49,12 +48,18 @@ export function TabMisc({}) {
   const distinctPlayerFilteredKeys = Object.keys(distinct_players).filter(
     (key) => parseInt(key) !== DIFF_CONSTS.UNTIERED_ID,
   );
+  const contributingPlayers = distinctPlayerFilteredKeys.reduce(
+    (count, key) => Math.max(count, distinct_players[key]),
+    0,
+  );
 
-  //Chart 2: % of players that have cleared each difficulty
+  //Chart 2: % of contributing players that have cleared each difficulty or higher
   const dataDifficulties = distinctPlayerFilteredKeys.map((diff_id) => ({
     difficulty: difficulties.find((d) => d.id === parseInt(diff_id)),
     name: getDifficultyName(difficulties.find((d) => d.id === parseInt(diff_id))),
-    value: parseFloat(((distinct_players[diff_id] / total) * 100).toFixed(2)),
+    value: contributingPlayers === 0
+      ? 0
+      : parseFloat(((distinct_players[diff_id] / contributingPlayers) * 100).toFixed(2)),
   }));
 
   //Sort dataDifficulties by entry.difficulty.sort DESC
