@@ -2427,15 +2427,6 @@
         "total_clears": "Clears insgesamt",
         "total_clears_header": "Clears insgesamt"
       },
-      "biggest_difficulty_gap": {
-        "label": "Schwierigkeitsabstand",
-        "header": "Größter Schwierigkeitsabstand",
-        "text": "Player mit dem größten Tier-Abstand zwischen ihrem schwierigsten und zweitschwierigsten verifizierten Golden.",
-        "player": "Player",
-        "hardest": "Schwierigste",
-        "second_hardest": "Zweitschwierigste",
-        "gap": "Abstand"
-      },
       "collectible_counts": {
         "label": "Collectibles",
         "header": "Collectibles insgesamt auf allen Maps",

@@ -2427,15 +2427,6 @@
         "total_clears": "提交内容数量",
         "total_clears_header": "总达成数"
       },
-      "biggest_difficulty_gap": {
-        "label": "难度差距",
-        "header": "最大难度差距",
-        "text": "个人最难金草莓与第二难金草莓的难度差距最大的玩家。",
-        "player": "玩家",
-        "hardest": "最难金草莓",
-        "second_hardest": "第二难金草莓",
-        "gap": "差距"
-      },
       "collectible_counts": {
         "label": "收集物",
         "header": "所有地图中的总收集物数量",

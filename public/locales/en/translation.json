@@ -2437,15 +2437,6 @@
         "total_clears": "Total clears",
         "total_clears_header": "Total Clears"
       },
-      "biggest_difficulty_gap": {
-        "label": "Difficulty Gap",
-        "header": "Biggest Difficulty Gap",
-        "text": "Players with the largest tier difference between their hardest and second hardest verified golden.",
-        "player": "Player",
-        "hardest": "Hardest",
-        "second_hardest": "2nd Hardest",
-        "gap": "Gap"
-      },
       "collectible_counts": {
         "label": "Collectibles",
         "header": "Total Collectibles Across All Maps",

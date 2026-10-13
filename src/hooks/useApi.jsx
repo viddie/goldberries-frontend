@@ -73,7 +73,6 @@ import {
   fetchStatsMostGoldened,
   fetchStatsMisc,
   fetchStatsCollectibleCounts,
-  fetchStatsBiggestDifficultyGap,
   fetchTopGoldenList,
   fetchServerSettings,
   postServerSettings,
@@ -537,13 +536,6 @@ export function useGetStatsCollectibleCounts() {
   return useQuery({
     queryKey: ["stats_collectible_counts"],
     queryFn: () => fetchStatsCollectibleCounts(),
-    onError: errorToast,
-  });
-}
-export function useGetStatsBiggestDifficultyGap(playerId = null) {
-  return useQuery({
-    queryKey: ["stats_biggest_difficulty_gap", playerId],
-    queryFn: () => fetchStatsBiggestDifficultyGap(playerId),
     onError: errorToast,
   });
 }

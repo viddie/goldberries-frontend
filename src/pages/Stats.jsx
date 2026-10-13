@@ -1,6 +1,6 @@
 import { Chip, Stack, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,7 +10,6 @@ import {
   faUserCheck,
   faEllipsis,
   faBasketShopping,
-  faArrowsUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { BasicContainerBox, HeadTitle } from "../components/basic";
@@ -20,7 +19,6 @@ import { TabMisc } from "../components/stats_page/TabMisc";
 import { TabVerifierStats } from "../components/stats_page/TabVerifierStats";
 import { TabTierClears } from "../components/stats_page/TabTierClears";
 import { TabCollectibleCounts } from "../components/stats_page/TabCollectibleCounts";
-import { TabBiggestDifficultyGap } from "../components/stats_page/TabBiggestDifficultyGap";
 
 const STATS_TABS = [
   {
@@ -42,13 +40,6 @@ const STATS_TABS = [
     value: "most-goldened",
     component: <TabMostGoldened />,
     icon: faTrophy,
-    subtabs: [],
-  },
-  {
-    i18key: "biggest_difficulty_gap.label",
-    value: "biggest-difficulty-gap",
-    component: <TabBiggestDifficultyGap />,
-    icon: faArrowsUpDown,
     subtabs: [],
   },
   {
@@ -79,7 +70,8 @@ export function PageStats() {
   const { t: t_tabs } = useTranslation(undefined, { keyPrefix: "stats.tabs" });
   const navigate = useNavigate();
   const { tab, subtab } = useParams();
-  const [selectedTab, setSelectedTab] = useState(tab || "tier-clears");
+  const isValidTab = !tab || STATS_TABS.some((t) => t.value === tab);
+  const [selectedTab, setSelectedTab] = useState(isValidTab && tab ? tab : "tier-clears");
   const [selectedSubtab, setSelectedSubtab] = useState(
     subtab || STATS_TABS.find((t) => t.value === selectedTab).subtabs[0],
   );
@@ -93,6 +85,10 @@ export function PageStats() {
     setSelectedSubtab(subtab);
     navigate(`/stats/${selectedTab}/${subtab}`, { replace: true });
   };
+
+  if (!isValidTab) {
+    return <Navigate to="/stats/tier-clears" replace />;
+  }
 
   const hasSubtabs = selectedTab ? STATS_TABS.find((t) => t.value === selectedTab).subtabs.length > 0 : false;
   const getSubtabs = () => {

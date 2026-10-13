@@ -2427,15 +2427,6 @@
         "total_clears": "Total des clears",
         "total_clears_header": "Total des clears"
       },
-      "biggest_difficulty_gap": {
-        "label": "Écart de difficulté",
-        "header": "Plus grand écart de difficulté",
-        "text": "Joueur·euses avec la plus grande différence de tiers entre leur golden vérifiée la plus difficile et la deuxième plus difficile.",
-        "player": "Joueur·euse",
-        "hardest": "Plus difficile",
-        "second_hardest": "2e plus difficile",
-        "gap": "Écart"
-      },
       "collectible_counts": {
         "label": "Collectibles",
         "header": "Total des collectibles sur toutes les maps",

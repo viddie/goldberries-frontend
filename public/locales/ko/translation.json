@@ -2427,15 +2427,6 @@
         "total_clears": "총 클리어 수",
         "total_clears_header": "총 클리어 수"
       },
-      "biggest_difficulty_gap": {
-        "label": "난이도 격차",
-        "header": "가장 큰 난이도 격차",
-        "text": "승인된 황금 딸기 기록 중 최고 기록과 두 번째 최고 기록의 티어 차이가 가장 큰 플레이어입니다.",
-        "player": "플레이어",
-        "hardest": "최고 기록",
-        "second_hardest": "두 번째 기록",
-        "gap": "격차"
-      },
       "collectible_counts": {
         "label": "수집물",
         "header": "모든 맵의 수집물 합계",
