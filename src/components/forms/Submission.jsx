@@ -565,7 +565,7 @@ export function FormSubmission({ submission, onSave, ...props }) {
       {submission.challenge && (
         <ChallengeTagsEditorModal
           modalHook={tagsModal}
-          challengeId={submission.challenge.id}
+          challenge={submission.challenge}
           player={submission.player}
         />
       )}

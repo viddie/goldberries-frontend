@@ -2735,8 +2735,8 @@
       "title": "Filter",
       "reset": "Reset",
       "no_conditions": "No tag conditions set. Add a tag below to narrow down the results.",
-      "exclude_cleared": "Exclude cleared challenges",
-      "exclude_cleared_requires_player": "Sign in and claim a player to exclude challenges you have cleared.",
+      "exclude_cleared_maps": "Exclude maps with cleared challenges",
+      "exclude_cleared_maps_requires_player": "Sign in and claim a player to exclude maps where you have submitted any challenge.",
       "filter_by_objective": "Filter by objective",
       "tier_slider": "Min/Max Tier",
       "showing_objectives_one": "Showing {{count}} objective",
@@ -2767,6 +2767,15 @@
       "collapse": "Collapse filter",
       "expand": "Expand filter"
     }
+  },
+  "my_untagged_challenges": {
+    "title": "My Untagged Challenges",
+    "description": "Challenges the selected player has submitted and you have not tagged.",
+    "count_one": "{{count}} challenge",
+    "count_other": "{{count}} challenges",
+    "empty": "No challenges submitted by this player that you have not tagged.",
+    "invalid_player": "Enter a valid player ID or select a player.",
+    "tags": "Tags"
   },
   "restrictions": {
     "notice": "This feature is restricted: {{reason}}",

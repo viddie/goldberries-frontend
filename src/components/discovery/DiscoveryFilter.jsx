@@ -211,14 +211,14 @@ export function DiscoveryFilter({ filter, onApply, lookup }) {
                 </TextField>
               </Box>
             </Stack>
-            <Tooltip title={!hasPlayerClaimed ? t("exclude_cleared_requires_player") : ""} arrow>
+            <Tooltip title={!hasPlayerClaimed ? t("exclude_cleared_maps_requires_player") : ""} arrow>
               <Box component="span" sx={FILTER_CONTROL_SX}>
                 <FormControlLabel
                   control={<Checkbox />}
                   checked={advanced.exclude_cleared}
                   disabled={!hasPlayerClaimed && !advanced.exclude_cleared}
                   onChange={(e, checked) => changeAdvanced("exclude_cleared", checked)}
-                  label={t("exclude_cleared")}
+                  label={t("exclude_cleared_maps")}
                   sx={{ mr: 0 }}
                 />
               </Box>

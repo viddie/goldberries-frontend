@@ -136,6 +136,7 @@ import {
   fetchChallengeTagCounts,
   fetchChallengeTagPlayers,
   fetchDiscovery,
+  fetchUntaggedChallengeIds,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -1632,6 +1633,32 @@ export function useGetDiscovery(filter, group = "all", page = 1, perPage = null,
     queryFn: () => fetchDiscovery(filter, group, page, perPage, seed),
     onError: errorToast,
     keepPreviousData: !filter?.exclude_cleared,
+  });
+}
+//#endregion
+
+//#region Untagged challenges
+export function useGetUntaggedChallengeIds(playerId) {
+  const { user, hasPlayerClaimed } = useAuth();
+  return useQuery({
+    queryKey: ["untagged_challenge_ids", playerId, user?.player_id],
+    queryFn: () => fetchUntaggedChallengeIds(playerId),
+    onError: errorToast,
+    enabled: !!playerId && hasPlayerClaimed,
+    // Keep list membership fixed until the page is left or the player changes.
+    staleTime: Infinity,
+    cacheTime: 0,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+export function useGetChallengesForTagging(challengeIds) {
+  return useQuery({
+    queryKey: ["tagging_challenges", challengeIds],
+    queryFn: () => fetchChallenge(challengeIds, false),
+    onError: errorToast,
+    enabled: challengeIds.length > 0,
   });
 }
 //#endregion

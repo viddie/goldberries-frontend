@@ -118,6 +118,7 @@ import { PageDiscovery } from "./pages/Discovery";
 import { LegalNoticePage } from "./pages/LegalNotice";
 import { PageMap } from "./pages/Map";
 import { PageMonthlyRecap } from "./pages/MonthlyRecap";
+import { PageMyUntaggedChallenges } from "./pages/MyUntaggedChallenges";
 import { PagePlayer } from "./pages/Player";
 import { PagePostList } from "./pages/Post";
 import { PageRejectedChallenges } from "./pages/RejectedChallenges";
@@ -286,6 +287,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute redirect="claim-player">
             <PageClaimPlayer />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-untagged-challenges",
+        element: (
+          <ProtectedRoute needsPlayerClaimed redirect="my-untagged-challenges">
+            <PageMyUntaggedChallenges />
           </ProtectedRoute>
         ),
       },

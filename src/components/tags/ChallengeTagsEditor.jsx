@@ -13,14 +13,23 @@ import { RESTRICTIONS } from "../../pages/Account";
 import { getQueryData, useGetTagAssignment, usePostTagAssignment } from "../../hooks/useApi";
 import { CustomModal, useModal } from "../../hooks/useModal";
 import { ErrorDisplay, LoadingSpinner, SegmentedChip, safeLighten } from "../basic";
-import { RestrictionNotice } from "../goldberries";
+import { ChallengeInline, RestrictionNotice } from "../goldberries";
 
 import { ChallengeTagChips } from "./ChallengeTagChips";
 import { TagsEditor } from "./TagsEditor";
 
 //#region ChallengeTagsSection
 // Tag chips of a challenge plus a button for the current player to add/edit their own tags
-export function ChallengeTagsSection({ challenge, maxVisible = 8, showIcon = true, sx }) {
+export function ChallengeTagsSection({
+  challenge,
+  counts = null,
+  maxVisible = 8,
+  showIcon = true,
+  highlightedValueIds = null,
+  hideOutvoted,
+  emptyText,
+  sx,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
   const auth = useAuth();
   const { settings } = useAppSettings();
@@ -34,9 +43,11 @@ export function ChallengeTagsSection({ challenge, maxVisible = 8, showIcon = tru
       {/* display: contents lets the chips wrap within this row, instead of their own wrapping box taking up a full line */}
       <ChallengeTagChips
         challengeId={challenge.id}
+        counts={counts}
         maxVisible={maxVisible}
-        hideOutvoted={!settings.general.alwaysShowOutvotedTags}
-        emptyText={t("no_tags")}
+        highlightedValueIds={highlightedValueIds}
+        hideOutvoted={hideOutvoted ?? !settings.general.alwaysShowOutvotedTags}
+        emptyText={emptyText === undefined ? t("no_tags") : emptyText}
         sx={{ display: "contents" }}
       />
       {canEdit && (
@@ -44,7 +55,7 @@ export function ChallengeTagsSection({ challenge, maxVisible = 8, showIcon = tru
           <EditTagsChip challengeId={challenge.id} playerId={auth.user.player.id} onClick={editModal.open} />
           <ChallengeTagsEditorModal
             modalHook={editModal}
-            challengeId={challenge.id}
+            challenge={challenge}
             player={auth.user.player}
           />
         </>
@@ -89,11 +100,11 @@ function EditTagsChip({ challengeId, playerId, onClick }) {
 //#endregion
 
 //#region ChallengeTagsEditorModal
-export function ChallengeTagsEditorModal({ modalHook, challengeId, player }) {
+export function ChallengeTagsEditorModal({ modalHook, challenge, player }) {
   return (
     <CustomModal modalHook={modalHook} maxWidth="md" options={{ hideFooter: true }}>
       {modalHook.isVisible && (
-        <ChallengeTagsEditor challengeId={challengeId} player={player} onClose={modalHook.close} />
+        <ChallengeTagsEditor challenge={challenge} player={player} onClose={modalHook.close} />
       )}
     </CustomModal>
   );
@@ -101,11 +112,12 @@ export function ChallengeTagsEditorModal({ modalHook, challengeId, player }) {
 //#endregion
 
 //#region ChallengeTagsEditor
-function ChallengeTagsEditor({ challengeId, player, onClose }) {
+function ChallengeTagsEditor({ challenge, player, onClose }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.editor_modal" });
   const { t: t_m } = useTranslation(undefined, { keyPrefix: "general.modals.buttons" });
   const auth = useAuth();
   const [value, setValue] = useState(null);
+  const challengeId = challenge.id;
   const query = useGetTagAssignment(challengeId, player.id);
   const { mutate: saveTags, isLoading: isSaving } = usePostTagAssignment((data) => {
     setValue(data.tag_value_ids);
@@ -127,6 +139,8 @@ function ChallengeTagsEditor({ challengeId, player, onClose }) {
 
   return (
     <Stack direction="column" gap={2}>
+      <ChallengeInline challenge={challenge} showChallenge />
+      <Divider />
       <RestrictionNotice restriction={RESTRICTIONS.add_tags} />
       <Box>
         <Typography variant="subtitle2" gutterBottom>

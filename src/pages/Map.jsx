@@ -315,7 +315,7 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
           </Stack>
           <ChallengeTagsSection
             key={"tags-" + selectedChallenge.id}
-            challenge={selectedChallenge}
+            challenge={{ ...selectedChallenge, map }}
             maxVisible={isSmScreen ? 6 : 4}
             sx={{ mb: 1 }}
           />

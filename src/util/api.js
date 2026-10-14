@@ -884,6 +884,12 @@ export function fetchPlayerLikes(playerId, wishlistOnly) {
 }
 //#endregion
 
+//#region /player/untagged-challenges
+export function fetchUntaggedChallengeIds(playerId) {
+  return axios.get("/player/untagged-challenges", { params: { player_id: playerId } });
+}
+//#endregion
+
 //#region /tag
 export function fetchTagTree() {
   return axios.get("/tag");

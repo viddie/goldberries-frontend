@@ -4,13 +4,15 @@ import { Box, Stack, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { useAppSettings } from "../../hooks/AppSettingsProvider";
+import { useAuth } from "../../hooks/AuthProvider";
+import { CustomModal, useModal } from "../../hooks/useModal";
+import { ChallengeDisplay } from "../../pages/Challenge";
 import { API_BASE_URL } from "../../util/constants";
 import { getCampaignName, getChallengeCampaign, getGamebananaEmbedUrl } from "../../util/data_util";
 import { PlaceholderImage } from "../PlaceholderImage";
 import { SegmentedChip, StyledLink } from "../basic";
 import { ChallengeInline, DifficultyChip } from "../goldberries";
-import { ChallengeTagChips } from "../tags";
+import { ChallengeTagsSection } from "../tags";
 
 const CARD_BACKGROUND = "#303030";
 const OVERLAY_ICON_COLOR = "rgba(0,0,0,0.8)";
@@ -19,10 +21,12 @@ const OVERLAY_TEXT_COLOR = "rgba(255,255,255,0.9)";
 
 //#region DiscoveryCard
 export function DiscoveryCard({ challenge, highlightedValueIds = null }) {
-  const { settings } = useAppSettings();
+  const auth = useAuth();
+  const challengeModal = useModal();
   const campaign = getChallengeCampaign(challenge);
   const map = challenge.map ?? null;
   const hasTags = (challenge.data?.tags?.length ?? 0) > 0;
+  const showTags = hasTags || (auth.hasPlayerClaimed && !challenge.is_rejected);
 
   // Full-game challenges have no map, so use the gamebanana image of the campaign
   const bannerSrc = map
@@ -46,28 +50,39 @@ export function DiscoveryCard({ challenge, highlightedValueIds = null }) {
         campaign={campaign}
         bannerSrc={bannerSrc}
         alt={map?.name ?? campaign?.name ?? ""}
+        onOpenChallenge={challengeModal.open}
       />
-      <Box sx={{ px: 1.5, py: 1, borderBottom: hasTags ? "1px solid rgba(255,255,255,0.06)" : undefined }}>
+      <Box sx={{ px: 1.5, py: 1, borderBottom: showTags ? "1px solid rgba(255,255,255,0.06)" : undefined }}>
         <ChallengeInline challenge={challenge} showChallenge hideCampaign />
       </Box>
-      {hasTags && (
+      {showTags && (
         <Box sx={{ px: 1.5, py: 1 }}>
-          <ChallengeTagChips
-            challengeId={challenge.id}
-            counts={challenge.data.tags}
+          <ChallengeTagsSection
+            challenge={challenge}
+            counts={challenge.data?.tags ?? []}
             maxVisible={4}
+            showIcon={false}
             highlightedValueIds={highlightedValueIds}
-            hideOutvoted={!settings.general.alwaysShowOutvotedTags}
+            emptyText={null}
           />
         </Box>
       )}
+      <CustomModal
+        modalHook={challengeModal}
+        maxWidth={false}
+        sx={{ maxWidth: "720px", margin: "auto" }}
+        options={{ hideFooter: true }}
+        contentSx={{ p: 0, px: 0, py: 0, backgroundColor: "#282828" }}
+      >
+        {challengeModal.isVisible && <ChallengeDisplay id={challenge.id} isCompact />}
+      </CustomModal>
     </Box>
   );
 }
 //#endregion
 
 //#region DiscoveryCardBanner
-function DiscoveryCardBanner({ challenge, campaign, bannerSrc, alt }) {
+function DiscoveryCardBanner({ challenge, campaign, bannerSrc, alt, onOpenChallenge }) {
   const { t } = useTranslation(undefined, { keyPrefix: "discovery.card" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const submissionCount = challenge.data?.count_submissions ?? 0;
@@ -75,7 +90,16 @@ function DiscoveryCardBanner({ challenge, campaign, bannerSrc, alt }) {
 
   return (
     <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
-      <Link to={"/challenge/" + challenge.id} style={{ display: "block" }}>
+      <Link
+        to={"/challenge/" + challenge.id}
+        style={{ display: "block" }}
+        aria-haspopup="dialog"
+        onClick={(event) => {
+          if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          onOpenChallenge();
+        }}
+      >
         <Box sx={{ width: "100%", aspectRatio: "3 / 1", overflow: "hidden" }}>
           <PlaceholderImage
             src={bannerSrc}
