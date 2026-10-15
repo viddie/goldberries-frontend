@@ -22,7 +22,8 @@ import { extractRooms } from "../MapDataDialog";
 import { CollectibleChip } from "../../goldberries";
 
 import { useViewerStore } from "./useViewerStore";
-import { extractCollectibles, extractUnhandledEntities, isRoomHidden } from "./entity_definitions";
+import { extractCollectibles, extractUnhandledEntities } from "./entity_definitions";
+import { isRoomHidden } from "./room_utils";
 
 const UNHANDLED_PAGE_SIZE = 50;
 

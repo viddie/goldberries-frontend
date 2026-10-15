@@ -9,7 +9,8 @@ import { Controls, EntityListRenderer, ViewerSidebar, MouseWorldPos } from "./vi
 import { ViewerSettings } from "./viewer/ViewerSettings";
 import { TileGrid } from "./viewer/TileGrid";
 import { useViewerStore } from "./viewer/useViewerStore";
-import { LAYERS, isRoomHidden } from "./viewer/entity_definitions";
+import { LAYERS } from "./viewer/entity_definitions";
+import { isRoomHidden } from "./viewer/room_utils";
 
 const ROOM_COLORS = [
   "#ffffff", // 0 - white
