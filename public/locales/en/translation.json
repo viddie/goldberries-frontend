@@ -1366,6 +1366,10 @@
           "label": "Show Own Rejected Submissions",
           "note": "Show rejected submissions on your player profile."
         },
+        "show_pending_submissions": {
+          "label": "Show pending submissions on map/challenge page",
+          "note": "Show pending submissions above the verified submission list for the selected challenge."
+        },
         "show_median_time_taken": {
           "label": "Show Median Time Taken",
           "note": "Show median time taken on the challenge page."

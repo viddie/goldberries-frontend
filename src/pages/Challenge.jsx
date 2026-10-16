@@ -13,7 +13,9 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
   Tooltip,
   Typography,
@@ -91,6 +93,7 @@ import {
   useGetChallenge,
   useGetMap,
   useGetModDirectDownloadLink,
+  useGetRecentSubmissions,
   usePostMap,
 } from "../hooks/useApi";
 import { Changelog } from "../components/Changelog";
@@ -232,6 +235,9 @@ export function ChallengeDisplay({ id, isCompact = false }) {
 
       {/* Submission table */}
       <Box sx={{ ...contentPadding, mt: 2 }}>
+        {(settings.general.showPendingSubmissions ?? true) && (
+          <ChallengePendingSubmissions key={challenge.id} challengeId={challenge.id} />
+        )}
         <ChallengeSubmissionTable challenge={challenge} />
         {settings.general.showMedianTimeTaken && <MedianTimeTaken challenge={challenge} />}
       </Box>
@@ -1064,7 +1070,56 @@ function MapGoldenChangesBox({ map }) {
   );
 }
 
-export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowFirst = 100, ...props }) {
+export function ChallengePendingSubmissions({ challengeId }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "components.recent_submissions" });
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const query = useGetRecentSubmissions(null, page, perPage, null, null, challengeId);
+
+  if (query.isLoading) return <LoadingSpinner />;
+  if (query.isError) return <ErrorDisplay error={query.error} />;
+
+  const data = getQueryData(query);
+  if (data.max_count === 0) return null;
+
+  return (
+    <ChallengeSubmissionTable
+      challenge={{ submissions: data.submissions }}
+      isPending
+      sx={{ mb: 2 }}
+      footer={
+        (data.max_count > perPage || page > 1) && (
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={99}
+                count={data.max_count}
+                page={page - 1}
+                rowsPerPage={perPage}
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                labelRowsPerPage={t("submissions_per_page")}
+                onPageChange={(event, newPage) => setPage(newPage + 1)}
+                onRowsPerPageChange={(event) => {
+                  setPerPage(Number(event.target.value));
+                  setPage(1);
+                }}
+              />
+            </TableRow>
+          </TableFooter>
+        )
+      }
+    />
+  );
+}
+
+export function ChallengeSubmissionTable({
+  challenge,
+  compact = false,
+  onlyShowFirst = 100,
+  isPending = false,
+  footer,
+  ...props
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "challenge.submission_table" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const { t: t_fs } = useTranslation(undefined, { keyPrefix: "forms.submission" });
@@ -1084,9 +1139,18 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
       <Table size="small" stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell width={1} sx={displayNoneOnMobile}></TableCell>
+            {!isPending && <TableCell width={1} sx={displayNoneOnMobile}></TableCell>}
             <TableCell width={compact ? 1 : undefined} sx={{ pl: 1.5, pr: 0.5 }}>
-              {t_g("player", { count: 1 })}
+              <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
+                {t_g("player", { count: 1 })}
+                {isPending && (
+                  <VerificationStatusChip
+                    isVerified={null}
+                    i18keySuffix="submissions_suffix"
+                    size="small"
+                  />
+                )}
+              </Stack>
             </TableCell>
             {!compact && (
               <TableCell width={1} align="center" sx={{ pl: 1.5, pr: 0.5 }}>
@@ -1135,6 +1199,7 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
               submission={submission}
               index={index}
               compact={compact}
+              showRank={!isPending}
             />
           ))}
           {showsTooMany && onlyShowFirst && (
@@ -1152,12 +1217,13 @@ export function ChallengeSubmissionTable({ challenge, compact = false, onlyShowF
             </TableRow>
           )}
         </TableBody>
+        {footer}
       </Table>
     </TableContainer>
   );
 }
 
-export function ChallengeSubmissionRow({ submission, index, compact }) {
+export function ChallengeSubmissionRow({ submission, index, compact, showRank = true }) {
   const { settings } = useAppSettings();
   const theme = useTheme();
   const nameStyle = getPlayerNameColorStyle(submission.player, settings);
@@ -1175,11 +1241,13 @@ export function ChallengeSubmissionRow({ submission, index, compact }) {
         transition: "0.1s background",
       }}
     >
-      <TableCell width={1} sx={{ pr: 0, ...displayNoneOnMobile, p: 0 }}>
-        <Link to={"/submission/" + submission.id} style={linkStyle}>
-          #{index + 1}
-        </Link>
-      </TableCell>
+      {showRank && (
+        <TableCell width={1} sx={{ pr: 0, ...displayNoneOnMobile, p: 0 }}>
+          <Link to={"/submission/" + submission.id} style={linkStyle}>
+            #{index + 1}
+          </Link>
+        </TableCell>
+      )}
       <TableCell width={compact ? 1 : undefined} sx={{ p: 0 }}>
         <Link to={"/submission/" + submission.id} style={linkStyle}>
           <Stack direction="row" gap={1} alignItems="center">

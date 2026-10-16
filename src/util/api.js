@@ -263,7 +263,7 @@ export function fetchChangelog(type, id) {
   });
 }
 
-export function fetchRecentSubmissions(verified, page, perPage, search = null, playerId = null) {
+export function fetchRecentSubmissions(verified, page, perPage, search = null, playerId = null, challengeId = null) {
   const data = {
     page: page,
     per_page: perPage,
@@ -272,6 +272,7 @@ export function fetchRecentSubmissions(verified, page, perPage, search = null, p
   if (verified !== null) data.verified = verified;
   if (search) data.search = search;
   if (playerId) data.player = playerId;
+  if (challengeId) data.challenge_id = challengeId;
 
   return axios.get("/submission/recent", {
     params: data,

@@ -97,6 +97,7 @@ export function AppSettingsGeneralForm() {
   const form = useForm({
     defaultValues: {
       ...generalSettings,
+      showPendingSubmissions: settings.general.showPendingSubmissions ?? true,
       showMedianTimeTaken: settings.general.showMedianTimeTaken ?? showAverageTimeTaken ?? true,
     },
   });
@@ -201,6 +202,21 @@ export function AppSettingsGeneralForm() {
               onChange={(e) => field.onChange(e.target.checked)}
               control={<Checkbox />}
               label={t("show_rejected_submissions.label")}
+            />
+          )}
+        />
+      </SettingsEntry>
+
+      <SettingsEntry note={t("show_pending_submissions.note")}>
+        <Controller
+          name="showPendingSubmissions"
+          control={form.control}
+          render={({ field }) => (
+            <FormControlLabel
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              control={<Checkbox />}
+              label={t("show_pending_submissions.label")}
             />
           )}
         />

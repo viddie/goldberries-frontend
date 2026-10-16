@@ -11,6 +11,7 @@ export const getDefaultSettings = () => {
       showOldTierNames: false,
       showFractionalTiers: true,
       showRejectedSubmissions: true,
+      showPendingSubmissions: true,
       showMedianTimeTaken: true,
       alwaysShowOutvotedTags: false,
       settingsVersion: 2,

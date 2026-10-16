@@ -66,6 +66,7 @@ import {
   MedianTimeTaken,
   CalculatedFractionalTierChip,
   CampaignDetailsRow,
+  ChallengePendingSubmissions,
   ChallengeSubmissionTable,
   DetailsRow,
   FadingMapBanner,
@@ -319,6 +320,12 @@ export function MapDisplay({ id, challengeId, isModal = false, openViewer = fals
             maxVisible={isSmScreen ? 6 : 4}
             sx={{ mb: 1 }}
           />
+          {(settings.general.showPendingSubmissions ?? true) && (
+            <ChallengePendingSubmissions
+              key={"pending-" + selectedChallenge.id}
+              challengeId={selectedChallenge.id}
+            />
+          )}
           <ChallengeSubmissionTable key={selectedChallenge.id} challenge={selectedChallenge} />
           {settings.general.showMedianTimeTaken && <MedianTimeTaken challenge={selectedChallenge} />}
           <Divider sx={{ my: 2 }}>
