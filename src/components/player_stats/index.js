@@ -1,0 +1,1 @@
+export { PlayerStatsTabs } from "./PlayerStatsTabs";

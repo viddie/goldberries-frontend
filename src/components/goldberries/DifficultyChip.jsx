@@ -4,7 +4,7 @@ import { Chip, Grid, Stack, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
-import { getDifficultyName } from "../../util/data_util";
+import { getDifficultyName, getDifficultyNameShort } from "../../util/data_util";
 import { DIFF_CONSTS, getDifficultyChipName, getNewDifficultyColors } from "../../util/constants";
 
 export function DifficultyChip({
@@ -14,6 +14,7 @@ export function DifficultyChip({
   isPersonal = false,
   highlightPersonal = false,
   noTier = false,
+  short = false,
   sx = {},
   ...props
 }) {
@@ -31,7 +32,7 @@ export function DifficultyChip({
     }
     hasFraction = true;
   }
-  let name = getDifficultyChipName(settings, difficulty.id, hasFraction);
+  let name = short ? getDifficultyNameShort(difficulty) : getDifficultyChipName(settings, difficulty.id, hasFraction);
   if (noTier) {
     name = name.replace(/^Tier\s*/, "");
   }

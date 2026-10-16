@@ -87,6 +87,7 @@ import { PlaceholderImage } from "../components/PlaceholderImage";
 import { COUNTRY_CODES_SHORT } from "../util/country_codes";
 import { WishlistCard, WishlistTable, FormWishlistLike } from "../components/likes";
 import { useModal, CustomModal } from "../hooks/useModal";
+import { PlayerStatsTabs } from "../components/player_stats";
 
 import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
@@ -552,7 +553,9 @@ function PlayerInfo({ id, stats }) {
       <PlayerRecentSubmissions id={id} />
       <Divider sx={{ my: 2 }} />
       <Typography variant="h5">{t("stats")}</Typography>
-      <DifficultyCountChart difficulty_counts={stats.count_by_difficulty} />
+      <PlayerStatsTabs id={id}>
+        <DifficultyCountChart difficulty_counts={stats.count_by_difficulty} />
+      </PlayerStatsTabs>
       <Divider sx={{ my: 2 }} />
       <Changelog type="player" id={id} />
     </>

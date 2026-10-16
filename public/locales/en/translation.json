@@ -1646,6 +1646,42 @@
         "chart": {
           "show_standard": "Show Untiered & Undetermined",
           "x_axis": "Count of Goldens per Tier"
+        },
+        "tag_stats": {
+          "tabs": {
+            "tiers": "Tiers",
+            "heatmap": "Heatmap"
+          },
+          "coverage": "Based on {{tagged}} of {{total}} cleared challenges ({{percent}}) that have been tagged by the community.",
+          "no_data": "None of this player's cleared challenges have been tagged yet.",
+          "tag_your_clears": "Help out by tagging your clears!",
+          "legend_player": "This player",
+          "legend_community": "Average clear",
+          "legend_community_tooltip": "How often a value appears across all verified clears of tagged challenges, so popular challenges count more.",
+          "clears_one": "{{count}} clear",
+          "clears_other": "{{count}} clears",
+          "no_tag_data": "None of this player's clears have this tag yet.",
+          "favorite": "Favorite: {{value}} ({{percent}})",
+          "average": "Average: {{value}} (average clear: {{community}})",
+          "standout": "Way more than usual: {{value}} ({{factor}}× the average clear)",
+          "flags_title": "Flags",
+          "flags_description": "Share of all tagged clears with these tags.",
+          "row_player": "This player: {{percent}} ({{count}} clears)",
+          "row_community": "Average clear: {{percent}}",
+          "row_factor": "{{factor}}× the average clear",
+          "heatmap": {
+            "x_axis": "X Axis",
+            "y_axis": "Y Axis",
+            "tier": "Tier",
+            "total": "Total",
+            "empty": "None of this player's clears have both of these tags yet.",
+            "cell_tooltip": "{{xAxis}}: {{x}}, {{yAxis}}: {{y}} — {{count}} clears ({{percent}})",
+            "based_on_one": "Based on {{count}} clear with both a {{x}} and a {{y}} value.",
+            "based_on_other": "Based on {{count}} clears with both a {{x}} and a {{y}} value.",
+            "most_common": "Most common combination: {{x}} / {{y}} ({{count}} clears, {{percent}})",
+            "average": "Average {{axis}}: {{value}}",
+            "ties_note": "Challenges where votes are tied between multiple values are split evenly between them."
+          }
         }
       },
       "timeline": {

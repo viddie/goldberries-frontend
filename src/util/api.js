@@ -312,6 +312,14 @@ export function fetchPlayerStats(id) {
   });
 }
 
+export function fetchPlayerTagStats(id) {
+  return axios.get("/player/tag-stats", {
+    params: {
+      id: id,
+    },
+  });
+}
+
 export function fetchSearch(search, searchIn) {
   return axios.get("/search", {
     params: {

@@ -24,6 +24,7 @@ import {
   fetchMap,
   fetchPlayer,
   fetchPlayerStats,
+  fetchPlayerTagStats,
   fetchAllDifficulties,
   fetchCampaignView,
   deleteAccount,
@@ -148,6 +149,7 @@ export function invalidateJointQueries(queryClient) {
   queryClient.invalidateQueries(["overall_stats"]);
   queryClient.invalidateQueries(["recent_submissions"]);
   queryClient.invalidateQueries(["discovery"]);
+  queryClient.invalidateQueries(["player_tag_stats"]);
 }
 
 export function getQueryData(query) {
@@ -264,6 +266,13 @@ export function useGetPlayerStats(id) {
   return useQuery({
     queryKey: ["player_stats", id],
     queryFn: () => fetchPlayerStats(id),
+    onError: errorToast,
+  });
+}
+export function useGetPlayerTagStats(id) {
+  return useQuery({
+    queryKey: ["player_tag_stats", id],
+    queryFn: () => fetchPlayerTagStats(id),
     onError: errorToast,
   });
 }
@@ -1476,6 +1485,7 @@ export function invalidateTagAssignmentQueries(queryClient) {
   queryClient.invalidateQueries(["challenge_tags"]);
   queryClient.invalidateQueries(["challenge_tag_players"]);
   queryClient.invalidateQueries(["discovery"]);
+  queryClient.invalidateQueries(["player_tag_stats"]);
 }
 
 export function useGetTagTree() {
