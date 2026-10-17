@@ -37,6 +37,12 @@ export function isImplicitTag(tag) {
   return tag.values.length === 1 && tag.values[0].name === null;
 }
 
+// Values of non-competing tags ('multi' tags or tags with a single value) don't out-vote each other,
+// so players can vote against them instead
+export function allowsNegativeVotes(tag) {
+  return tag.selection_mode === "multi" || tag.values.length === 1;
+}
+
 export function getTagValueLabel(tag, value) {
   if (value === null || value === undefined || value.name === null) return tag.name;
   return tag.name + " (" + value.name + ")";
@@ -58,8 +64,9 @@ export function getTagCategoryShadeColor(category) {
 
 //#region Sorting
 // Joins [{ tag_value_id, count, ... }] with the lookup, drops unknown values and sorts by category, tag and value order.
-// Values of 'single' tags are mutually exclusive: all values below the tag's highest count are flagged with `isOutvoted`.
-// Values of 'multi' tags can all apply at once, so they are never out-voted.
+// `count` is the net total (negative votes count as -1), values at 0 or less are flagged with `isOutvoted`.
+// Values of 'single' tags are mutually exclusive: all values below the tag's highest count are out-voted as well.
+// Values of 'multi' tags can all apply at once, so they only get out-voted by negative votes.
 export function resolveTagCounts(counts, lookup) {
   if (!lookup || !counts) return [];
   const resolved = [];
@@ -71,7 +78,8 @@ export function resolveTagCounts(counts, lookup) {
     maxCountByTag[info.tag.id] = Math.max(maxCountByTag[info.tag.id] ?? 0, entry.count);
   }
   for (const entry of resolved) {
-    entry.isOutvoted = entry.tag.selection_mode !== "multi" && entry.count < maxCountByTag[entry.tag.id];
+    entry.isOutvoted =
+      entry.count <= 0 || (entry.tag.selection_mode !== "multi" && entry.count < maxCountByTag[entry.tag.id]);
   }
   resolved.sort((a, b) => {
     if (a.category.sort !== b.category.sort) return a.category.sort - b.category.sort;

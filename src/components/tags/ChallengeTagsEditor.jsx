@@ -1,6 +1,6 @@
-import { faPen, faPlus, faTags } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPen, faPlus, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, ButtonBase, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,13 +10,19 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useRestriction } from "../../hooks/useRestriction";
 import { RESTRICTIONS } from "../../pages/Account";
-import { getQueryData, useGetTagAssignment, usePostTagAssignment } from "../../hooks/useApi";
+import {
+  getQueryData,
+  useGetChallengeTagCounts,
+  useGetTagAssignment,
+  usePostTagAssignment,
+} from "../../hooks/useApi";
 import { CustomModal, useModal } from "../../hooks/useModal";
-import { ErrorDisplay, LoadingSpinner, SegmentedChip, safeLighten } from "../basic";
+import { ErrorDisplay, LoadingSpinner, SegmentedChip, safeAlpha, safeLighten } from "../basic";
 import { ChallengeInline, RestrictionNotice } from "../goldberries";
 
 import { ChallengeTagChips } from "./ChallengeTagChips";
 import { TagsEditor } from "./TagsEditor";
+import { allowsNegativeVotes } from "./tag_util";
 
 //#region ChallengeTagsSection
 // Tag chips of a challenge plus a button for the current player to add/edit their own tags
@@ -71,7 +77,9 @@ function EditTagsChip({ challengeId, playerId, onClick }) {
   const theme = useTheme();
   const query = useGetTagAssignment(challengeId, playerId);
   const { isRestricted, message } = useRestriction(RESTRICTIONS.add_tags);
-  const hasTags = (getQueryData(query)?.tag_value_ids?.length ?? 0) > 0;
+  const assignment = getQueryData(query);
+  const hasTags =
+    (assignment?.tag_value_ids?.length ?? 0) + (assignment?.negative_tag_value_ids?.length ?? 0) > 0;
   const color = theme.palette.primary.main;
   // Restricted players can still remove their own tags, so only block the chip if there is nothing to remove
   const isDisabled = isRestricted && !hasTags;
@@ -117,10 +125,13 @@ function ChallengeTagsEditor({ challenge, player, onClose }) {
   const { t: t_m } = useTranslation(undefined, { keyPrefix: "general.modals.buttons" });
   const auth = useAuth();
   const [value, setValue] = useState(null);
+  const [negativeValue, setNegativeValue] = useState(null);
   const challengeId = challenge.id;
   const query = useGetTagAssignment(challengeId, player.id);
+  const countsQuery = useGetChallengeTagCounts(challengeId);
   const { mutate: saveTags, isLoading: isSaving } = usePostTagAssignment((data) => {
     setValue(data.tag_value_ids);
+    setNegativeValue(data.negative_tag_value_ids);
     toast.success(t("feedback.saved"));
     onClose();
   });
@@ -130,11 +141,60 @@ function ChallengeTagsEditor({ challenge, player, onClose }) {
   useEffect(() => {
     if (assignment && value === null) {
       setValue(assignment.tag_value_ids);
+      setNegativeValue(assignment.negative_tag_value_ids ?? []);
     }
   }, [assignment]);
 
+  const isReady = value !== null && negativeValue !== null;
+  const serverCounts = getQueryData(countsQuery);
+  const previewCounts =
+    isReady && serverCounts ? getPreviewCounts(serverCounts, assignment, value, negativeValue) : null;
+
+  // Voting for a value removes the vote against it and vice versa
+  const onChangeValue = (ids) => {
+    setValue(ids);
+    setNegativeValue(negativeValue.filter((id) => !ids.includes(id)));
+  };
+  const toggleNegative = (valueId) => {
+    if (negativeValue.includes(valueId)) {
+      setNegativeValue(negativeValue.filter((id) => id !== valueId));
+    } else {
+      setNegativeValue([...negativeValue, valueId]);
+      setValue(value.filter((id) => id !== valueId));
+    }
+  };
+
+  const getNegativeSegment = (entry) => {
+    const { tag, category, tag_value_id: valueId } = entry;
+    if (!allowsNegativeVotes(tag) || category.is_archived) return null;
+    if (!tag.is_player_assignable && !auth.hasHelperPriv) return null;
+    const isNegative = negativeValue.includes(valueId);
+    // Only values someone else voted for can be voted against
+    const serverEntry = serverCounts?.find((c) => c.tag_value_id === valueId);
+    const ownPositive = assignment?.tag_value_ids.includes(valueId) ? 1 : 0;
+    const otherPositive = serverEntry ? serverEntry.count + (serverEntry.negative ?? 0) - ownPositive : 0;
+    if (!isNegative && otherPositive <= 0) return null;
+    return {
+      key: "negative",
+      color: "transparent",
+      label: (
+        <NegativeVoteButton
+          isNegative={isNegative}
+          disabled={isSaving || (isRestricted && !isNegative)}
+          onClick={() => toggleNegative(valueId)}
+        />
+      ),
+      sx: { p: 0 },
+    };
+  };
+
   const onSave = () => {
-    saveTags({ challenge_id: challengeId, player_id: player.id, tag_value_ids: value });
+    saveTags({
+      challenge_id: challengeId,
+      player_id: player.id,
+      tag_value_ids: value,
+      negative_tag_value_ids: negativeValue,
+    });
   };
 
   return (
@@ -146,15 +206,23 @@ function ChallengeTagsEditor({ challenge, player, onClose }) {
         <Typography variant="subtitle2" gutterBottom>
           {t("current_tags")}
         </Typography>
-        <ChallengeTagChips
-          challengeId={challengeId}
-          maxVisible={null}
-          clickable={false}
-          emptyText={t("no_tags")}
-        />
+        {countsQuery.isError ? (
+          <ErrorDisplay error={countsQuery.error} />
+        ) : previewCounts === null ? (
+          <LoadingSpinner size="small" />
+        ) : (
+          <ChallengeTagChips
+            challengeId={challengeId}
+            counts={previewCounts}
+            maxVisible={null}
+            clickable={false}
+            emptyText={t("no_tags")}
+            getChipTrailingSegment={getNegativeSegment}
+          />
+        )}
       </Box>
       <Divider />
-      {query.isLoading || value === null ? (
+      {query.isLoading || !isReady ? (
         query.isError ? (
           <ErrorDisplay error={query.error} />
         ) : (
@@ -163,10 +231,11 @@ function ChallengeTagsEditor({ challenge, player, onClose }) {
       ) : (
         <TagsEditor
           value={value}
-          onChange={setValue}
+          onChange={onChangeValue}
           canEditTeamTags={auth.hasHelperPriv}
           disabled={isSaving}
           allowedValueIds={isRestricted ? (assignment?.tag_value_ids ?? []) : null}
+          negativeValueIds={negativeValue}
         />
       )}
       <Divider />
@@ -174,11 +243,68 @@ function ChallengeTagsEditor({ challenge, player, onClose }) {
         <Button variant="outlined" onClick={() => onClose(true)}>
           {t_m("cancel")}
         </Button>
-        <Button variant="contained" onClick={onSave} disabled={value === null || isSaving}>
+        <Button variant="contained" onClick={onSave} disabled={!isReady || isSaving}>
           {t_m("save")}
         </Button>
       </Stack>
     </Stack>
   );
+}
+//#endregion
+
+//#region NegativeVoteButton
+function NegativeVoteButton({ isNegative, disabled, onClick }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "tags.editor_modal" });
+  const theme = useTheme();
+  const color = theme.palette.error.main;
+  return (
+    <Tooltip title={isNegative ? t("remove_negative") : t("add_negative")} arrow placement="top">
+      <Box component="span" sx={{ display: "flex", alignSelf: "stretch" }}>
+        <ButtonBase
+          onClick={onClick}
+          disabled={disabled}
+          aria-label={isNegative ? t("remove_negative") : t("add_negative")}
+          aria-pressed={isNegative}
+          sx={{
+            px: 1,
+            backgroundColor: isNegative ? color : safeAlpha(color, 0.15),
+            color: isNegative ? theme.palette.error.contrastText : color,
+            borderLeft: `1px solid ${safeAlpha(color, 0.6)}`,
+            "&:hover": { filter: "brightness(1.2)" },
+            "&.Mui-disabled": { opacity: 0.5 },
+          }}
+        >
+          <FontAwesomeIcon icon={faMinus} size="sm" fixedWidth />
+        </ButtonBase>
+      </Box>
+    </Tooltip>
+  );
+}
+//#endregion
+
+//#region Utility Functions
+// Applies the player's unsaved changes to the challenge's tag counts, so the chips show the result of saving
+function getPreviewCounts(serverCounts, assignment, value, negativeValue) {
+  const savedPositive = new Set(assignment?.tag_value_ids ?? []);
+  const savedNegative = new Set(assignment?.negative_tag_value_ids ?? []);
+  const positive = new Set(value);
+  const negative = new Set(negativeValue);
+  const byValueId = {};
+  for (const entry of serverCounts) {
+    const negativeCount = entry.negative ?? 0;
+    byValueId[entry.tag_value_id] = { positive: entry.count + negativeCount, negative: negativeCount };
+  }
+  for (const id of new Set([...savedPositive, ...savedNegative, ...positive, ...negative])) {
+    const entry = byValueId[id] ?? (byValueId[id] = { positive: 0, negative: 0 });
+    entry.positive += (positive.has(id) ? 1 : 0) - (savedPositive.has(id) ? 1 : 0);
+    entry.negative += (negative.has(id) ? 1 : 0) - (savedNegative.has(id) ? 1 : 0);
+  }
+  return Object.entries(byValueId)
+    .filter(([, entry]) => entry.positive > 0 || entry.negative > 0)
+    .map(([id, entry]) => ({
+      tag_value_id: Number(id),
+      count: entry.positive - entry.negative,
+      negative: entry.negative,
+    }));
 }
 //#endregion

@@ -1,4 +1,4 @@
-import { faEye, faEyeSlash, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
@@ -29,6 +29,7 @@ const MAX_TOOLTIP_VOTERS = 10;
 // Values that were out-voted by another value of the same tag are greyed out. With `hideOutvoted` they are hidden
 // (unless highlighted) by default, and once all tags are shown a toggle button allows showing/hiding them. Without it
 // they are always shown and there is no toggle.
+// `getChipTrailingSegment(entry)` can return an additional final segment for the entry's chip.
 export function ChallengeTagChips({
   challengeId,
   counts = null,
@@ -38,6 +39,7 @@ export function ChallengeTagChips({
   clickable = true,
   emptyText = null,
   size = "medium",
+  getChipTrailingSegment = null,
   sx,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags" });
@@ -94,6 +96,7 @@ export function ChallengeTagChips({
             dimmed={entry.isOutvoted}
             tooltip={<TagVotersTooltip challengeId={entry.challenge_id ?? challengeId} entry={entry} />}
             size={size}
+            trailingSegment={getChipTrailingSegment?.(entry)}
             onClick={
               clickable
                 ? () => playersModal.open({ challengeId: entry.challenge_id ?? challengeId, entry })
@@ -155,6 +158,7 @@ function TagVotersTooltip({ challengeId, entry }) {
       </Typography>
       {listed.map((assignment) => (
         <Typography key={assignment.id} variant="body2">
+          {assignment.is_negative && <NegativeVoteIcon />}
           <PlayerLink player={assignment.player} />
         </Typography>
       ))}
@@ -217,14 +221,42 @@ function TagPlayersList({ challengeId, entry }) {
 //#region TagPlayersRows
 function TagPlayersRows({ assignments, canDelete, isDeleting, onDelete, label }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.players_modal" });
-  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   if (assignments.length === 0) {
     return <Typography variant="body2">{t("empty")}</Typography>;
   }
+  const positive = assignments.filter((assignment) => !assignment.is_negative);
+  const negative = assignments.filter((assignment) => assignment.is_negative);
+  const rowProps = { canDelete, isDeleting, onDelete, label };
+  return (
+    <Stack direction="column" gap={1.5}>
+      {positive.length > 0 && (
+        <TagPlayersGroup title={t("count", { count: positive.length })} assignments={positive} {...rowProps} />
+      )}
+      {negative.length > 0 && (
+        <TagPlayersGroup
+          title={
+            <>
+              <NegativeVoteIcon />
+              {t("negative_count", { count: negative.length })}
+            </>
+          }
+          assignments={negative}
+          {...rowProps}
+        />
+      )}
+    </Stack>
+  );
+}
+//#endregion
+
+//#region TagPlayersGroup
+function TagPlayersGroup({ title, assignments, canDelete, isDeleting, onDelete, label }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "tags.players_modal" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   return (
     <Stack direction="column" gap={0.75}>
       <Typography variant="subtitle2" fontWeight="bold">
-        {t("count", { count: assignments.length })}
+        {title}
       </Typography>
       {assignments.map((assignment) => (
         <Stack key={assignment.id} direction="row" alignItems="center" gap={1}>
@@ -233,7 +265,14 @@ function TagPlayersRows({ assignments, canDelete, isDeleting, onDelete, label })
             {displayDate(assignment.date_created, t_g)}
           </Typography>
           {canDelete && (
-            <Tooltip title={t("delete_tooltip", { label })} arrow>
+            <Tooltip
+              title={
+                assignment.is_negative
+                  ? t("delete_negative_tooltip", { label })
+                  : t("delete_tooltip", { label })
+              }
+              arrow
+            >
               <span>
                 <CustomIconButton
                   size="small"
@@ -250,6 +289,14 @@ function TagPlayersRows({ assignments, canDelete, isDeleting, onDelete, label })
         </Stack>
       ))}
     </Stack>
+  );
+}
+//#endregion
+
+//#region NegativeVoteIcon
+function NegativeVoteIcon() {
+  return (
+    <FontAwesomeIcon icon={faMinus} size="sm" color="#f44336" fixedWidth style={{ marginRight: "0.25em" }} />
   );
 }
 //#endregion

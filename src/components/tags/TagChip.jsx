@@ -27,6 +27,7 @@ export function TagChip({
   showFullName = false,
   tooltip = null,
   size = "medium",
+  trailingSegment = null,
   sx,
   ...props
 }) {
@@ -52,6 +53,7 @@ export function TagChip({
             borderLeft: hasQualifier ? "1px solid rgba(0,0,0,0.3)" : undefined,
           },
         },
+        trailingSegment,
       ]}
       sx={dimmed ? { ...getDimmedSx(!!onClick), ...sx } : sx}
       {...props}

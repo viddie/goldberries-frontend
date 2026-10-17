@@ -2,6 +2,7 @@ import {
   faCheckDouble,
   faChevronDown,
   faChevronRight,
+  faMinus,
   faStar,
   faUserShield,
 } from "@fortawesome/free-solid-svg-icons";
@@ -21,12 +22,14 @@ const ROW_BACKGROUND = "rgba(255,255,255,0.04)";
 // The values of 'single' tags are mutually exclusive, so at most one value per tag can be selected. 'multi' tags allow any number.
 // Values of tags that aren't shown (archived categories, team-only tags) are kept untouched in `value`.
 // `allowedValueIds`: if set, only these values can be newly selected (others can still be deselected)
+// `negativeValueIds`: values the player voted against, they are marked as such (selecting them is up to the parent)
 export function TagsEditor({
   value,
   onChange,
   canEditTeamTags = false,
   disabled = false,
   allowedValueIds = null,
+  negativeValueIds = null,
 }) {
   const { t } = useTranslation(undefined, { keyPrefix: "tags.editor" });
   const [collapsed, setCollapsed] = useState({});
@@ -40,6 +43,7 @@ export function TagsEditor({
 
   const selected = new Set(value);
   const allowed = allowedValueIds === null ? null : new Set(allowedValueIds);
+  const negative = new Set(negativeValueIds ?? []);
   const groups = lookup.categories
     .filter((category) => !category.is_archived)
     .map((category) => ({
@@ -92,6 +96,7 @@ export function TagsEditor({
                   key={tag.id}
                   tag={tag}
                   selected={selected}
+                  negative={negative}
                   onChangeTag={(ids) => setTagValues(tag, ids)}
                   disabled={disabled}
                   allowed={allowed}
@@ -137,7 +142,7 @@ function CategoryHeaderChip({ category, isCollapsed, onClick }) {
 //#endregion
 
 //#region TagEditorRow
-function TagEditorRow({ tag, selected, onChangeTag, disabled, allowed }) {
+function TagEditorRow({ tag, selected, negative, onChangeTag, disabled, allowed }) {
   // Tags without qualifiers have no title, their name is shown in the (single) toggle chip instead
   const implicit = isImplicitTag(tag);
   const isMulti = tag.selection_mode === "multi" && !implicit;
@@ -168,6 +173,7 @@ function TagEditorRow({ tag, selected, onChangeTag, disabled, allowed }) {
                 label={implicit ? <TagNameLabel tag={tag} /> : value.name}
                 description={value.description}
                 isSelected={selected.has(value.id)}
+                isNegative={negative.has(value.id)}
                 disabled={disabled || (allowed !== null && !selected.has(value.id) && !allowed.has(value.id))}
                 onClick={() => onValueClick(value.id)}
               />
@@ -222,12 +228,13 @@ function TagNameLabel({ tag }) {
 //#endregion
 
 //#region TagValueToggle
-function TagValueToggle({ label, description, isSelected, disabled, onClick }) {
+function TagValueToggle({ label, description, isSelected, isNegative, disabled, onClick }) {
   const chip = (
     <Chip
       size="small"
       label={label}
-      color={isSelected ? "primary" : "default"}
+      icon={isNegative ? <FontAwesomeIcon icon={faMinus} size="sm" /> : undefined}
+      color={isSelected ? "primary" : isNegative ? "error" : "default"}
       variant={isSelected ? "filled" : "outlined"}
       onClick={onClick}
       disabled={disabled}

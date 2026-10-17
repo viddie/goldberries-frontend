@@ -2661,6 +2661,9 @@
       "count_one": "{{count}}位玩家",
       "count_other": "{{count}}位玩家",
       "delete_tooltip": "从此玩家移除'{{label}}'",
+      "delete_negative_tooltip": "从此玩家移除对'{{label}}'的反对票",
+      "negative_count_one": "{{count}}位玩家投了反对票",
+      "negative_count_other": "{{count}}位玩家投了反对票",
       "feedback": {
         "deleted": "标签分配已移除"
       }
@@ -2672,6 +2675,9 @@
       "multi_hint": "可以选择多个值"
     },
     "editor_modal": {
+      "negative_hint": "如果你认为某个标签不适用于此挑战，可以使用标签旁的 − 按钮投反对票。总票数为0或更少的标签将被视为已被否决。",
+      "add_negative": "对此标签投反对票",
+      "remove_negative": "撤回你对此标签的反对票",
       "current_tags": "所有标签",
       "no_tags": "还没有人为此挑战添加标签。",
       "feedback": {

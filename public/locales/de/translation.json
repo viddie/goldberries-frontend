@@ -2661,6 +2661,9 @@
       "count_one": "{{count}} Player",
       "count_other": "{{count}} Player",
       "delete_tooltip": "'{{label}}' von diesem Player entfernen",
+      "delete_negative_tooltip": "Gegenstimme für '{{label}}' von diesem Player entfernen",
+      "negative_count_one": "{{count}} Player hat dagegen gestimmt",
+      "negative_count_other": "{{count}} Player haben dagegen gestimmt",
       "feedback": {
         "deleted": "Tag-Zuweisung entfernt"
       }
@@ -2672,6 +2675,9 @@
       "multi_hint": "Mehrere Werte können ausgewählt werden"
     },
     "editor_modal": {
+      "negative_hint": "Nutze den −-Button neben einem Tag, um dagegen zu stimmen, wenn er deiner Meinung nach nicht auf diese Challenge zutrifft. Tags mit insgesamt 0 oder weniger Stimmen gelten als überstimmt.",
+      "add_negative": "Gegen diesen Tag stimmen",
+      "remove_negative": "Deine Gegenstimme entfernen",
       "current_tags": "Alle Tags",
       "no_tags": "Niemand hat diese Challenge bisher getaggt.",
       "feedback": {

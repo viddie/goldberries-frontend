@@ -1656,19 +1656,19 @@
           "no_data": "None of this player's cleared challenges have been tagged yet.",
           "tag_your_clears": "Help out by tagging your clears!",
           "legend_player": "This player",
-          "legend_community": "Average clear",
+          "legend_community": "Community average",
           "legend_community_tooltip": "How often a value appears across all verified clears of tagged challenges, so popular challenges count more.",
           "clears_one": "{{count}} clear",
           "clears_other": "{{count}} clears",
           "no_tag_data": "None of this player's clears have this tag yet.",
           "favorite": "Favorite: {{value}} ({{percent}})",
-          "average": "Average: {{value}} (average clear: {{community}})",
-          "standout": "Way more than usual: {{value}} ({{factor}}× the average clear)",
+          "average": "Average: {{value}} (community average: {{community}})",
+          "standout": "Way more than usual: {{value}} ({{factor}}× the community average)",
           "flags_title": "Flags",
           "flags_description": "Share of all tagged clears with these tags.",
           "row_player": "This player: {{percent}} ({{count}} clears)",
-          "row_community": "Average clear: {{percent}}",
-          "row_factor": "{{factor}}× the average clear",
+          "row_community": "Community average: {{percent}}",
+          "row_factor": "{{factor}}× the community average",
           "heatmap": {
             "x_axis": "X Axis",
             "y_axis": "Y Axis",
@@ -2713,6 +2713,9 @@
       "count_one": "{{count}} player",
       "count_other": "{{count}} players",
       "delete_tooltip": "Remove '{{label}}' from this player",
+      "delete_negative_tooltip": "Remove the vote against '{{label}}' from this player",
+      "negative_count_one": "{{count}} player voted against it",
+      "negative_count_other": "{{count}} players voted against it",
       "feedback": {
         "deleted": "Tag assignment removed"
       }
@@ -2725,6 +2728,9 @@
       "multi_hint": "Multiple values can be selected"
     },
     "editor_modal": {
+      "negative_hint": "Use the − button next to a tag to vote against it, if you think it doesn't apply to this challenge. Tags with a total of 0 or less are considered out-voted.",
+      "add_negative": "Vote against this tag",
+      "remove_negative": "Remove your vote against this tag",
       "current_tags": "All Tags",
       "no_tags": "No one has tagged this challenge yet.",
       "feedback": {
