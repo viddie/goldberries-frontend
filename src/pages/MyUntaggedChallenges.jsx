@@ -35,7 +35,7 @@ import {
 import { getCampaignName, getChallengeCampaign } from "../util/data_util";
 
 const PER_PAGE = 25;
-const PARAMETERS_BACKGROUND = "#303030";
+export const PARAMETERS_BACKGROUND = "#303030";
 
 export function PageMyUntaggedChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "my_untagged_challenges" });

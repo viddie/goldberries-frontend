@@ -849,14 +849,14 @@ export function deletePost(id) {
 //#endregion
 
 //#region /auth/api-key
-export function fetchApiKey() {
-  return axios.get("/auth/api-key");
+export function fetchApiKeys(accountId = null) {
+  return axios.get("/auth/api-key", { params: accountId ? { account_id: accountId } : {} });
 }
-export function rerollApiKey() {
-  return axios.post("/auth/api-key");
+export function postApiKey(data) {
+  return axios.post("/auth/api-key", formatDataForApi(data));
 }
-export function revokeApiKey() {
-  return axios.delete("/auth/api-key");
+export function deleteApiKey(id) {
+  return axios.delete("/auth/api-key", { params: { id: id } });
 }
 //#endregion
 

@@ -1322,14 +1322,45 @@
       "danger_zone": {
         "label": "Danger Zone",
         "api_key": {
-          "label": "API Key",
-          "description": "Your API Key can be used to access the goldberries.net API in your name. Keep it secret!",
-          "description_not_set": "You don't have an API key set yet.",
+          "label": "API Keys",
+          "description": "API keys can be used to access the goldberries.net API in your name, e.g. by mods like the Consistency Tracker. Each key only has access to the scopes you select. Keep them secret!",
+          "description_not_set": "You don't have any API keys yet.",
+          "create_label": "Create a new API key",
+          "name": "Name",
+          "key": "Key",
+          "created": "Created on {{date}}",
+          "scopes_label": "Scopes",
+          "scopes": {
+            "submission_create": "Create submissions",
+            "submission_manage": "Manage own submissions",
+            "account_manage": "Manage account & profile",
+            "like": "Likes & wishlist",
+            "ingame_status": "Ingame status",
+            "suggestion": "Suggestions & votes",
+            "tag": "Tag votes",
+            "content_create": "Create campaigns/maps/challenges/players",
+            "content_manage": "Manage campaigns/maps/challenges",
+            "submission_verify": "Verify & manage all submissions"
+          },
           "buttons": {
             "copy": "Copy",
+            "save": "Save",
             "reroll": "Change Key",
             "create": "Create",
-            "revoke": "Revoke"
+            "delete": "Delete"
+          },
+          "feedback": {
+            "created": "API key created",
+            "updated": "API key updated",
+            "deleted": "API key deleted"
+          },
+          "delete_modal": {
+            "title": "Delete API key",
+            "description": "Are you sure you want to delete the API key '{{name}}'? Anything using this key will stop working."
+          },
+          "reroll_modal": {
+            "title": "Change API key",
+            "description": "Are you sure you want to change the key of '{{name}}'? The old key will stop working immediately."
           }
         },
         "delete_account": {

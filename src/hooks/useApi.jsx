@@ -100,9 +100,9 @@ import {
   postBadgePlayer,
   deleteBadgePlayer,
   fetchModDirectDownloadLink,
-  fetchApiKey,
-  rerollApiKey,
-  revokeApiKey,
+  fetchApiKeys,
+  postApiKey,
+  deleteApiKey,
   postReport,
   fetchChallengeLikes,
   postChallengeLike,
@@ -1345,32 +1345,32 @@ export function useDeletePost(onSuccess) {
 //#endregion
 
 //#region /auth/api-key
-export function useGetApiKey() {
+export function useGetApiKeys(accountId = null) {
   return useQuery({
-    queryKey: ["api_key"],
-    queryFn: () => fetchApiKey(),
+    queryKey: ["api_keys", accountId],
+    queryFn: () => fetchApiKeys(accountId),
     onError: errorToast,
   });
 }
-export function useRerollApiKey(onSuccess) {
+export function usePostApiKey(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => rerollApiKey(),
+    mutationFn: (data) => postApiKey(data),
     onSuccess: (response) => {
-      queryClient.invalidateQueries(["api_key"]);
+      queryClient.invalidateQueries(["api_keys"]);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,
   });
 }
-export function useRevokeApiKey(onSuccess) {
+export function useDeleteApiKey(onSuccess) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => revokeApiKey(),
+    mutationFn: (id) => deleteApiKey(id),
     onSuccess: (response) => {
-      queryClient.invalidateQueries(["api_key"]);
+      queryClient.invalidateQueries(["api_keys"]);
       if (onSuccess) onSuccess(response);
-      else toast.success("API Key revoked");
+      else toast.success("API Key deleted");
     },
     onError: errorToast,
   });

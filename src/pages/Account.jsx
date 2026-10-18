@@ -2,7 +2,9 @@ import {
   alpha,
   Box,
   Button,
+  ButtonBase,
   Checkbox,
+  Collapse,
   Divider,
   FormControlLabel,
   FormHelperText,
@@ -17,7 +19,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDown,
@@ -25,6 +27,8 @@ import {
   faArrowUp,
   faBan,
   faCheckSquare,
+  faChevronDown,
+  faChevronRight,
   faCircleCheck,
   faEdit,
   faEnvelope,
@@ -54,14 +58,14 @@ import {
 import { useAuth } from "../hooks/AuthProvider";
 import {
   getQueryData,
+  useDeleteApiKey,
   useDeleteOwnAccount,
-  useGetApiKey,
+  useGetApiKeys,
   useGetShowcaseSubmissions,
   usePostAccount,
+  usePostApiKey,
   usePostPlayerSelf,
   usePostShowcase,
-  useRerollApiKey,
-  useRevokeApiKey,
 } from "../hooks/useApi";
 import {
   EmoteImage,
@@ -78,9 +82,11 @@ import { isValidHttpUrl, jsonDateToJsDate } from "../util/util";
 import { getPlayerNameColorStyle } from "../util/data_util";
 import { useAppSettings } from "../hooks/AppSettingsProvider";
 import { useRestriction } from "../hooks/useRestriction";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 
 import { SettingsEntry } from "./AppSettings";
 import { CharsCountLabel } from "./Suggestions";
+import { PARAMETERS_BACKGROUND } from "./MyUntaggedChallenges";
 
 export const NOTIFICATIONS = {
   sub_verified: { key: "sub_verified", flag: 1 },
@@ -99,6 +105,20 @@ export const RESTRICTIONS = {
   vote: { key: "vote", flag: 32 },
   add_tags: { key: "add_tags", flag: 64 },
 };
+export const API_KEY_SCOPES = {
+  submission_create: { key: "submission_create", flag: 1, helper: false },
+  submission_manage: { key: "submission_manage", flag: 2, helper: false },
+  account_manage: { key: "account_manage", flag: 4, helper: false },
+  like: { key: "like", flag: 8, helper: false },
+  ingame_status: { key: "ingame_status", flag: 16, helper: false },
+  suggestion: { key: "suggestion", flag: 32, helper: false },
+  tag: { key: "tag", flag: 64, helper: false },
+  content_create: { key: "content_create", flag: 256, helper: true },
+  content_manage: { key: "content_manage", flag: 512, helper: true },
+  submission_verify: { key: "submission_verify", flag: 1024, helper: true },
+};
+const API_KEY_MAX_PER_ACCOUNT = 20;
+const API_KEY_MAX_NAME_LENGTH = 64;
 export function hasFlag(flags, flag) {
   return (flags & flag) === flag;
 }
@@ -1056,14 +1076,14 @@ export function UserAccountDangerZoneForm() {
   );
 }
 
-export function UserAccountApiKeyForm() {
+export function UserAccountApiKeyForm({ accountId = null }) {
   const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.api_key" });
-  const query = useGetApiKey();
-  const { mutate: rerollApiKey, isLoading: isRerolling } = useRerollApiKey();
-  const { mutate: revokeApiKey, isLoading: isRevoking } = useRevokeApiKey(() => {});
+  const [expandedId, setExpandedId] = useState(null);
+  const query = useGetApiKeys(accountId);
+  const createModal = useModal();
 
-  const data = getQueryData(query);
-  const api_key = data?.api_key;
+  const apiKeys = getQueryData(query) ?? [];
+  const canCreate = apiKeys.length < API_KEY_MAX_PER_ACCOUNT;
 
   return (
     <>
@@ -1071,42 +1091,235 @@ export function UserAccountApiKeyForm() {
       <Typography variant="body2" gutterBottom>
         {t("description")}
       </Typography>
+      <Box sx={{ mb: 1.5 }}>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<FontAwesomeIcon icon={faPlus} />}
+          onClick={() => createModal.open()}
+          disabled={query.isLoading || !canCreate}
+        >
+          {t("buttons.create")}
+        </Button>
+      </Box>
 
       {query.isLoading ? (
         <LoadingSpinner size="small" />
-      ) : !api_key ? (
-        <Stack direction="column" gap={1}>
-          <Typography variant="body2">{t("description_not_set")}</Typography>
-          <Button variant="contained" onClick={() => rerollApiKey()} disabled={isRerolling}>
-            {t("buttons.create")}
-          </Button>
-        </Stack>
+      ) : query.isError ? (
+        <ErrorDisplay error={query.error} />
+      ) : apiKeys.length === 0 ? (
+        <Typography variant="body2" color="text.secondary">
+          {t("description_not_set")}
+        </Typography>
       ) : (
-        <>
-          <Grid container spacing={1} sx={{ mb: 1 }}>
+        <Box
+          sx={{
+            borderRadius: 2,
+            backgroundColor: PARAMETERS_BACKGROUND,
+            border: "1px solid rgba(255,255,255,0.08)",
+            overflow: "hidden",
+          }}
+        >
+          {apiKeys.map((apiKey, index) => (
+            <Fragment key={apiKey.id}>
+              {index > 0 && <Divider />}
+              <ApiKeyEntry
+                apiKey={apiKey}
+                expanded={expandedId === apiKey.id}
+                toggleExpanded={() => setExpandedId(expandedId === apiKey.id ? null : apiKey.id)}
+              />
+            </Fragment>
+          ))}
+        </Box>
+      )}
+
+      <CustomModal modalHook={createModal} options={{ title: t("create_label"), hideFooter: true }}>
+        <ApiKeyCreateForm accountId={accountId} onCreated={() => createModal.close()} onCancel={createModal.cancel} />
+      </CustomModal>
+    </>
+  );
+}
+
+function ApiKeyEntry({ apiKey, expanded, toggleExpanded }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.api_key" });
+  const [name, setName] = useState(apiKey.name);
+  const [scopes, setScopes] = useState(apiKey.scopes);
+  useEffect(() => {
+    setName(apiKey.name);
+    setScopes(apiKey.scopes);
+  }, [apiKey.name, apiKey.scopes]);
+  const { mutate: postApiKey, isLoading: isPosting } = usePostApiKey(() => toast.success(t("feedback.updated")));
+  const { mutate: deleteApiKey, isLoading: isDeleting } = useDeleteApiKey(() =>
+    toast.success(t("feedback.deleted")),
+  );
+  const deleteModal = useModal(null, (cancelled) => {
+    if (cancelled) return;
+    deleteApiKey(apiKey.id);
+  });
+  const rerollModal = useModal(null, (cancelled) => {
+    if (cancelled) return;
+    postApiKey({ id: apiKey.id, reroll: true });
+  });
+
+  const isBusy = isPosting || isDeleting;
+  const hasChanges = name.trim() !== apiKey.name || scopes !== apiKey.scopes;
+
+  return (
+    <>
+      <ButtonBase
+        onClick={toggleExpanded}
+        sx={{ width: "100%", justifyContent: "flex-start", px: 2, py: 1.25, gap: 1.5, textAlign: "left" }}
+      >
+        <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronRight} fixedWidth />
+        <Typography variant="body1" sx={{ flexGrow: 1, wordBreak: "break-word" }}>
+          {apiKey.name}
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+          {t("created", { date: jsonDateToJsDate(apiKey.date_created).toLocaleDateString() })}
+        </Typography>
+      </ButtonBase>
+      <Collapse in={expanded} unmountOnExit>
+        <Stack direction="column" gap={1.5} sx={{ px: 2, pb: 2, pt: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label={t("name")}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                inputProps={{ maxLength: API_KEY_MAX_NAME_LENGTH }}
+              />
+            </Grid>
             <Grid item xs>
-              <TextField type="password" value={api_key} fullWidth InputProps={{ readOnly: true }} />
+              <TextField
+                label={t("key")}
+                type="password"
+                value={apiKey.key}
+                fullWidth
+                InputProps={{ readOnly: true }}
+              />
             </Grid>
             <Grid item xs="auto" display="flex" alignItems="stretch">
-              <CopyToClipboardButton text={api_key} />
+              <CopyToClipboardButton text={apiKey.key} />
             </Grid>
           </Grid>
-          <Stack direction="row" gap={2}>
-            <Button variant="contained" onClick={() => rerollApiKey()} disabled={isRerolling || isRevoking}>
+          <ApiKeyScopesSelect scopes={scopes} setScopes={setScopes} />
+          <Stack direction="row" gap={1} flexWrap="wrap">
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={faSave} />}
+              onClick={() => postApiKey({ id: apiKey.id, name: name, scopes: scopes })}
+              disabled={isBusy || !hasChanges || name.trim() === ""}
+            >
+              {t("buttons.save")}
+            </Button>
+            <Button variant="outlined" onClick={() => rerollModal.open()} disabled={isBusy}>
               {t("buttons.reroll")}
             </Button>
             <Button
               variant="outlined"
               color="error"
-              onClick={() => revokeApiKey()}
-              disabled={isRevoking || isRerolling}
+              startIcon={<FontAwesomeIcon icon={faTrash} />}
+              onClick={() => deleteModal.open()}
+              disabled={isBusy}
             >
-              {t("buttons.revoke")}
+              {t("buttons.delete")}
             </Button>
           </Stack>
-        </>
-      )}
+        </Stack>
+      </Collapse>
+      <CustomModal
+        modalHook={deleteModal}
+        options={{ title: t("delete_modal.title") }}
+        actions={[ModalButtons.cancel, ModalButtons.delete]}
+      >
+        <Typography variant="body1">{t("delete_modal.description", { name: apiKey.name })}</Typography>
+      </CustomModal>
+      <CustomModal
+        modalHook={rerollModal}
+        options={{ title: t("reroll_modal.title") }}
+        actions={[ModalButtons.cancel, ModalButtons.update]}
+      >
+        <Typography variant="body1">{t("reroll_modal.description", { name: apiKey.name })}</Typography>
+      </CustomModal>
     </>
+  );
+}
+
+function ApiKeyCreateForm({ accountId, onCreated, onCancel }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.api_key" });
+  const { t: t_mb } = useTranslation(undefined, { keyPrefix: "general.modals.buttons" });
+  const [name, setName] = useState("");
+  const [scopes, setScopes] = useState(0);
+  const { mutate: postApiKey, isLoading } = usePostApiKey(() => {
+    toast.success(t("feedback.created"));
+    onCreated();
+  });
+
+  const onCreate = () => {
+    const data = { name: name, scopes: scopes };
+    if (accountId !== null) data.account_id = accountId;
+    postApiKey(data);
+  };
+
+  return (
+    <Stack direction="column" gap={1.5}>
+      <TextField
+        label={t("name")}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        fullWidth
+        autoFocus
+        inputProps={{ maxLength: API_KEY_MAX_NAME_LENGTH }}
+      />
+      <ApiKeyScopesSelect scopes={scopes} setScopes={setScopes} />
+      <Stack direction="row" gap={1} justifyContent="flex-end">
+        <Button variant="outlined" onClick={onCancel} disabled={isLoading}>
+          {t_mb("cancel")}
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<FontAwesomeIcon icon={faPlus} />}
+          onClick={onCreate}
+          disabled={isLoading || name.trim() === ""}
+        >
+          {t("buttons.create")}
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+
+function ApiKeyScopesSelect({ scopes, setScopes }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "account.tabs.danger_zone.api_key" });
+  const auth = useAuth();
+
+  const availableScopes = Object.values(API_KEY_SCOPES).filter(
+    (scope) => !scope.helper || auth.hasHelperPriv || hasFlag(scopes, scope.flag),
+  );
+
+  return (
+    <Box>
+      <Typography variant="body2" color="text.secondary">
+        {t("scopes_label")}
+      </Typography>
+      <Grid container>
+        {availableScopes.map((scope) => (
+          <Grid item xs={12} sm={6} key={scope.key}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={hasFlag(scopes, scope.flag)}
+                  onChange={(e) => setScopes(setFlag(scopes, scope.flag, e.target.checked))}
+                />
+              }
+              label={<Typography variant="body2">{t("scopes." + scope.key)}</Typography>}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 }
 
