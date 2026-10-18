@@ -32,6 +32,7 @@ export function ChallengeTagsSection({
   maxVisible = 8,
   showIcon = true,
   highlightedValueIds = null,
+  sortHighlightedFirst = true,
   hideOutvoted,
   emptyText,
   sx,
@@ -52,6 +53,7 @@ export function ChallengeTagsSection({
         counts={counts}
         maxVisible={maxVisible}
         highlightedValueIds={highlightedValueIds}
+        sortHighlightedFirst={sortHighlightedFirst}
         hideOutvoted={hideOutvoted ?? !settings.general.alwaysShowOutvotedTags}
         emptyText={emptyText === undefined ? t("no_tags") : emptyText}
         sx={{ display: "contents" }}

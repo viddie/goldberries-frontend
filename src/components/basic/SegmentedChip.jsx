@@ -2,8 +2,12 @@ import { Box, ButtonBase, alpha, darken, decomposeColor, lighten } from "@mui/ma
 import { useTheme } from "@emotion/react";
 import { forwardRef } from "react";
 
-// Drawn with box-shadow, so it doesn't affect the layout
-const HIGHLIGHT_SHADOW = "0 0 0 1.5px rgba(255,255,255,0.9), 0 0 6px 1px rgba(255,255,255,0.45)";
+// The ring is a border on an absolutely positioned pseudo-element, so it doesn't affect the layout. A box-shadow
+// spread isn't snapped to device pixels like borders and backgrounds are, which makes its sides look uneven when the
+// chip sits at a fractional position. Only the soft glow uses a box-shadow, where the blur hides that.
+const HIGHLIGHT_RING_WIDTH = 2;
+const HIGHLIGHT_RING_COLOR = "rgba(255,255,255,0.9)";
+const HIGHLIGHT_GLOW = "0 0 6px 1px rgba(255,255,255,0.45)";
 
 const SIZES = {
   small: { height: 20, outerPx: 0.75, innerPx: 0.5, fontSize: "0.7125rem" },
@@ -23,22 +27,33 @@ export const SegmentedChip = forwardRef(function SegmentedChip(
   const visibleSegments = segments.filter(Boolean);
   const isClickable = !!onClick && !disabled;
 
+  const radius = dims.height / 2;
   const rootSx = {
+    position: "relative",
     display: "inline-flex",
     alignItems: "stretch",
     verticalAlign: "middle",
     height: dims.height,
     maxWidth: "100%",
     flexShrink: 0,
-    borderRadius: dims.height / 2 + "px",
-    overflow: "hidden",
+    borderRadius: radius + "px",
     fontFamily: theme.typography.fontFamily,
     fontSize: dims.fontSize,
     lineHeight: 1,
     userSelect: "none",
     opacity: disabled ? 0.5 : 1,
     transition: "filter 150ms, box-shadow 150ms",
-    boxShadow: highlighted ? HIGHLIGHT_SHADOW : undefined,
+    boxShadow: highlighted ? HIGHLIGHT_GLOW : undefined,
+    ...(highlighted && {
+      "&::after": {
+        content: '""',
+        position: "absolute",
+        inset: -HIGHLIGHT_RING_WIDTH + "px",
+        border: `${HIGHLIGHT_RING_WIDTH}px solid ${HIGHLIGHT_RING_COLOR}`,
+        borderRadius: radius + HIGHLIGHT_RING_WIDTH + "px",
+        pointerEvents: "none",
+      },
+    }),
     ...(isClickable && {
       cursor: "pointer",
       "&:hover": { filter: "brightness(1.2)" },
@@ -46,25 +61,32 @@ export const SegmentedChip = forwardRef(function SegmentedChip(
     ...sx,
   };
 
-  const content = visibleSegments.map((segment, index) => (
-    <Box
-      key={segment.key ?? index}
-      component="span"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        minWidth: 0,
-        pl: index === 0 ? dims.outerPx : dims.innerPx,
-        pr: index === visibleSegments.length - 1 ? dims.outerPx : dims.innerPx,
-        whiteSpace: "nowrap",
-        backgroundColor: segment.color,
-        color: segment.textColor ?? getSegmentTextColor(theme, segment.color),
-        ...segment.sx,
-      }}
-    >
-      {segment.label}
-    </Box>
-  ));
+  const content = visibleSegments.map((segment, index) => {
+    const isFirst = index === 0;
+    const isLast = index === visibleSegments.length - 1;
+    return (
+      <Box
+        key={segment.key ?? index}
+        component="span"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          minWidth: 0,
+          overflow: "hidden",
+          // The root can't clip the segments (that would also clip the highlight ring), so the outer ones are rounded
+          borderRadius: `${isFirst ? radius : 0}px ${isLast ? radius : 0}px ${isLast ? radius : 0}px ${isFirst ? radius : 0}px`,
+          pl: isFirst ? dims.outerPx : dims.innerPx,
+          pr: isLast ? dims.outerPx : dims.innerPx,
+          whiteSpace: "nowrap",
+          backgroundColor: segment.color,
+          color: segment.textColor ?? getSegmentTextColor(theme, segment.color),
+          ...segment.sx,
+        }}
+      >
+        {segment.label}
+      </Box>
+    );
+  });
 
   if (isClickable) {
     return (

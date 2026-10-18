@@ -1648,11 +1648,11 @@ export function useGetDiscovery(filter, group = "all", page = 1, perPage = null,
 //#endregion
 
 //#region Untagged challenges
-export function useGetUntaggedChallengeIds(playerId) {
+export function useGetUntaggedChallengeIds(playerId, tagIds = []) {
   const { user, hasPlayerClaimed } = useAuth();
   return useQuery({
-    queryKey: ["untagged_challenge_ids", playerId, user?.player_id],
-    queryFn: () => fetchUntaggedChallengeIds(playerId),
+    queryKey: ["untagged_challenge_ids", playerId, user?.player_id, tagIds],
+    queryFn: () => fetchUntaggedChallengeIds(playerId, tagIds),
     onError: errorToast,
     enabled: !!playerId && hasPlayerClaimed,
     // Keep list membership fixed until the page is left or the player changes.

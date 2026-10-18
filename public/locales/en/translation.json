@@ -2820,8 +2820,14 @@
     "count_one": "{{count}} challenge",
     "count_other": "{{count}} challenges",
     "empty": "No challenges submitted by this player that you have not tagged.",
+    "empty_tags": "No challenges submitted by this player that are missing any of the selected tags.",
     "invalid_player": "Enter a valid player ID or select a player.",
-    "tags": "Tags"
+    "tags": "Tags",
+    "apply": "Apply",
+    "tag_filter": {
+      "label": "Missing tags",
+      "help": "Only show challenges you have not applied at least one of these tags to. Leave empty to show challenges you have not tagged at all."
+    }
   },
   "restrictions": {
     "notice": "This feature is restricted: {{reason}}",

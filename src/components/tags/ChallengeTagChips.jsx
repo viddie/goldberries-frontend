@@ -25,7 +25,8 @@ const MAX_TOOLTIP_VOTERS = 10;
 //#region ChallengeTagChips
 // Renders the aggregated tag chips of a challenge. Either pass `counts` ([{ tag_value_id, count }]) or let the
 // component fetch them for `challengeId`. Hovering a chip lists the players who assigned that tag, clicking it opens
-// that list in a dialog. Chips of `highlightedValueIds` (Set of tag value ids) are highlighted and shown first.
+// that list in a dialog. Chips of `highlightedValueIds` (Set of tag value ids) are highlighted and, unless
+// `sortHighlightedFirst` is false, shown first.
 // Values that were out-voted by another value of the same tag are greyed out. With `hideOutvoted` they are hidden
 // (unless highlighted) by default, and once all tags are shown a toggle button allows showing/hiding them. Without it
 // they are always shown and there is no toggle.
@@ -35,6 +36,7 @@ export function ChallengeTagChips({
   counts = null,
   maxVisible = 8,
   highlightedValueIds = null,
+  sortHighlightedFirst = true,
   hideOutvoted = false,
   clickable = true,
   emptyText = null,
@@ -57,7 +59,7 @@ export function ChallengeTagChips({
 
   const resolved = resolveTagCounts(counts ?? getQueryData(countsQuery), lookup);
   const isHighlighted = (entry) => !!highlightedValueIds?.has(entry.tag_value_id);
-  if (highlightedValueIds?.size > 0) {
+  if (sortHighlightedFirst && highlightedValueIds?.size > 0) {
     resolved.sort((a, b) => isHighlighted(b) - isHighlighted(a));
   }
   if (resolved.length === 0) {
