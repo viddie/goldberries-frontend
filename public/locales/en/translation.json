@@ -2502,7 +2502,9 @@
       "custom_room_name": "Custom Room Name",
       "debug_room_name": "Debug Room Name",
       "open_map_viewer": "Open room in map viewer",
-      "run_duration": "Current Run Duration"
+      "run_duration": "Current Run Duration",
+      "session_pb": "Session PB",
+      "overall_pb": "Overall PB"
     },
     "session_history": "Session History",
     "room": "Room",

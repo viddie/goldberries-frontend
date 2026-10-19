@@ -7,6 +7,7 @@ import {
   faBug,
   faCircle,
   faDoorOpen,
+  faFlag,
   faLink,
   faMapLocationDot,
   faReply,
@@ -14,6 +15,7 @@ import {
   faSkull,
   faStopwatch,
   faTag,
+  faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   CartesianGrid,
@@ -60,6 +62,8 @@ const BANNER_WIDTH = "45%";
 const BANNER_MOBILE_HEIGHT = 120;
 const BANNER_BRIGHTNESS = 0.725;
 const BANNER_CHIP_BACKGROUND = "rgba(20,20,20,0.75)";
+// Slightly smaller than the theme defaults (1rem / 0.875rem) to keep the rows compact
+const ROW_FONT_SIZES = { body1: "0.94rem", body2: "0.82rem" };
 const PROGRESS_BAR_RADIUS = 5;
 // Markers closer than this (in % of the bar) get their labels pushed apart to avoid overlapping
 const MARKER_LABEL_MIN_DISTANCE = 15;
@@ -175,10 +179,13 @@ function OnlinePlayerRow({ entry, isMdUp }) {
             position: "relative",
             display: "grid",
             gridTemplateColumns: isMdUp ? GRID_COLUMNS : "1fr",
-            gap: isMdUp ? 2 : 1,
+            gap: isMdUp ? 2 : 0.75,
             alignItems: "center",
             px: 2,
-            py: 1.5,
+            py: 1,
+            fontSize: ROW_FONT_SIZES.body1,
+            "& .MuiTypography-body1": { fontSize: ROW_FONT_SIZES.body1 },
+            "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
           }}
         >
           <PlayerCell entry={entry} status={status} mode={mode} />
@@ -396,7 +403,7 @@ function StatusCell({ status, mode }) {
         {status.room_number ?? "-"} / {status.max_room_number}
       </Typography>
       <RoomProgressBar status={status} />
-      <Typography variant="body2" textAlign="center" sx={{ mt: 0.5 }}>
+      <Typography variant="body2" textAlign="center">
         <RoomLabel status={status} />
       </Typography>
     </Stack>
@@ -514,7 +521,53 @@ function CurrentRunInfo({ statuses, status }) {
   const { room_name: roomName, custom_room_name: customName, debug_room_name: debugName } = status;
   const map = status.challenge?.map ?? null;
   const runDuration = getRunDuration(statuses, status);
+  const formatPb = (room) => {
+    if (room === null) return "-";
+    return status.max_room_number === null ? room : room + " / " + status.max_room_number;
+  };
 
+  return (
+    <Stack direction="column" gap={1}>
+      <InfoTileRow>
+        <InfoTile icon={faDoorOpen} label={t("info.room")}>
+          {roomName ?? <span style={{ color: NOT_ON_PATH_COLOR }}>{t("not_on_path")}</span>}
+        </InfoTile>
+        {customName !== null && (
+          <InfoTile icon={faTag} label={t("info.custom_room_name")}>
+            {customName}
+          </InfoTile>
+        )}
+        <InfoTile icon={faBug} label={t("info.debug_room_name")}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <span style={{ fontFamily: "monospace", wordBreak: "break-all" }}>{debugName ?? "-"}</span>
+            {map !== null && debugName !== null && (
+              <Tooltip title={t("info.open_map_viewer")} arrow placement="top">
+                <span>
+                  <StyledLink to={"/map/" + map.id + "/view/" + encodeURIComponent(debugName)}>
+                    <FontAwesomeIcon icon={faMapLocationDot} />
+                  </StyledLink>
+                </span>
+              </Tooltip>
+            )}
+          </Stack>
+        </InfoTile>
+      </InfoTileRow>
+      <InfoTileRow>
+        <InfoTile icon={faStopwatch} label={t("info.run_duration")}>
+          {runDuration === null ? "-" : secondsToDuration(runDuration, true)}
+        </InfoTile>
+        <InfoTile icon={faFlag} label={t("info.session_pb")}>
+          {formatPb(status.session_pb_room_number)}
+        </InfoTile>
+        <InfoTile icon={faTrophy} label={t("info.overall_pb")}>
+          {formatPb(status.overall_pb_room_number)}
+        </InfoTile>
+      </InfoTileRow>
+    </Stack>
+  );
+}
+
+function InfoTileRow({ children }) {
   return (
     <Box
       sx={{
@@ -523,31 +576,7 @@ function CurrentRunInfo({ statuses, status }) {
         gap: 1,
       }}
     >
-      <InfoTile icon={faDoorOpen} label={t("info.room")}>
-        {roomName ?? <span style={{ color: NOT_ON_PATH_COLOR }}>{t("not_on_path")}</span>}
-      </InfoTile>
-      {customName !== null && (
-        <InfoTile icon={faTag} label={t("info.custom_room_name")}>
-          {customName}
-        </InfoTile>
-      )}
-      <InfoTile icon={faBug} label={t("info.debug_room_name")}>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <span style={{ fontFamily: "monospace", wordBreak: "break-all" }}>{debugName ?? "-"}</span>
-          {map !== null && debugName !== null && (
-            <Tooltip title={t("info.open_map_viewer")} arrow placement="top">
-              <span>
-                <StyledLink to={"/map/" + map.id + "/view/" + encodeURIComponent(debugName)}>
-                  <FontAwesomeIcon icon={faMapLocationDot} />
-                </StyledLink>
-              </span>
-            </Tooltip>
-          )}
-        </Stack>
-      </InfoTile>
-      <InfoTile icon={faStopwatch} label={t("info.run_duration")}>
-        {runDuration === null ? "-" : secondsToDuration(runDuration, true)}
-      </InfoTile>
+      {children}
     </Box>
   );
 }
@@ -852,10 +881,10 @@ function getBannerChipSx(status, mode) {
     background: BANNER_CHIP_BACKGROUND,
     borderRadius: 1,
     px: 1,
-    py: 0.5,
+    py: 0.25,
     // Keep the text aligned with rows without a banner
     mx: -1,
-    my: -0.5,
+    my: -0.25,
   };
 }
 
