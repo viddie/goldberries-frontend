@@ -3,7 +3,18 @@ import { useTranslation } from "react-i18next";
 import { Box, Collapse, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faLink, faReply, faRightFromBracket, faSkull } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBug,
+  faCircle,
+  faDoorOpen,
+  faLink,
+  faMapLocationDot,
+  faReply,
+  faRightFromBracket,
+  faSkull,
+  faStopwatch,
+  faTag,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   CartesianGrid,
   Line,
@@ -32,6 +43,7 @@ import {
   getGamebananaEmbedUrl,
   getMapName,
   isMapSameNameAsCampaign,
+  secondsToDuration,
 } from "../util/data_util";
 import { API_BASE_URL } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
@@ -46,9 +58,11 @@ const WIN_BACKGROUND = "#3d3420";
 const WIN_HOVER_BACKGROUND = "#4a3f25";
 const BANNER_WIDTH = "45%";
 const BANNER_MOBILE_HEIGHT = 120;
-const BANNER_BRIGHTNESS = 0.45;
+const BANNER_BRIGHTNESS = 0.725;
 const BANNER_CHIP_BACKGROUND = "rgba(20,20,20,0.75)";
 const PROGRESS_BAR_RADIUS = 5;
+// Markers closer than this (in % of the bar) get their labels pushed apart to avoid overlapping
+const MARKER_LABEL_MIN_DISTANCE = 15;
 const DEATH_COLOR = "#e53935";
 const RESET_COLOR = "#90caf9";
 const EXIT_COLOR = "#bdbdbd";
@@ -182,7 +196,10 @@ function OnlinePlayerRow({ entry, isMdUp }) {
             borderTop: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          <SessionHistoryGraph statuses={entry.statuses} />
+          <Stack direction="column" gap={2}>
+            {mode !== "overworld" && <CurrentRunInfo statuses={entry.statuses} status={status} />}
+            <SessionHistoryGraph statuses={entry.statuses} />
+          </Stack>
         </Box>
       </Collapse>
     </Box>
@@ -398,9 +415,16 @@ function RoomProgressBar({ status }) {
   const markers = [];
   const sessionPb = status.session_pb_room_number;
   const overallPb = status.overall_pb_room_number;
-  if (overallPb !== null) markers.push({ room: overallPb, label: t("pb") });
-  if (sessionPb !== null && sessionPb !== overallPb)
-    markers.push({ room: sessionPb, label: t("session_pb") });
+  if (overallPb !== null) markers.push({ room: overallPb, label: t("pb"), align: "center" });
+  if (sessionPb !== null && sessionPb !== overallPb) {
+    markers.push({ room: sessionPb, label: t("session_pb"), align: "center" });
+    // When both markers are close together, the labels grow away from each other instead of being centered
+    if (overallPb !== null && (Math.abs(sessionPb - overallPb) / max) * 100 < MARKER_LABEL_MIN_DISTANCE) {
+      const sessionIsLeft = sessionPb < overallPb;
+      markers[0].align = sessionIsLeft ? "right" : "left";
+      markers[1].align = sessionIsLeft ? "left" : "right";
+    }
+  }
 
   return (
     <Box
@@ -458,6 +482,10 @@ function RoomProgressBar({ status }) {
             <Typography
               variant="caption"
               sx={{
+                position: "absolute",
+                top: 14,
+                left: "50%",
+                transform: MARKER_LABEL_TRANSFORMS[marker.align],
                 color: PB_COLOR,
                 fontSize: "0.6rem",
                 lineHeight: 1,
@@ -469,6 +497,90 @@ function RoomProgressBar({ status }) {
           </Box>
         </Tooltip>
       ))}
+    </Box>
+  );
+}
+
+// "right" means the label sits right of the marker (growing to the right), "left" the opposite
+const MARKER_LABEL_TRANSFORMS = {
+  center: "translateX(-50%)",
+  right: "translateX(-1px)",
+  left: "translateX(calc(-100% + 1px))",
+};
+
+// Info about the current room and run, shown above the session history graph
+function CurrentRunInfo({ statuses, status }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "online" });
+  const { room_name: roomName, custom_room_name: customName, debug_room_name: debugName } = status;
+  const map = status.challenge?.map ?? null;
+  const runDuration = getRunDuration(statuses, status);
+
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        gap: 1,
+      }}
+    >
+      <InfoTile icon={faDoorOpen} label={t("info.room")}>
+        {roomName ?? <span style={{ color: NOT_ON_PATH_COLOR }}>{t("not_on_path")}</span>}
+      </InfoTile>
+      {customName !== null && (
+        <InfoTile icon={faTag} label={t("info.custom_room_name")}>
+          {customName}
+        </InfoTile>
+      )}
+      <InfoTile icon={faBug} label={t("info.debug_room_name")}>
+        <Stack direction="row" alignItems="center" gap={1}>
+          <span style={{ fontFamily: "monospace", wordBreak: "break-all" }}>{debugName ?? "-"}</span>
+          {map !== null && debugName !== null && (
+            <Tooltip title={t("info.open_map_viewer")} arrow placement="top">
+              <span>
+                <StyledLink to={"/map/" + map.id + "/view/" + encodeURIComponent(debugName)}>
+                  <FontAwesomeIcon icon={faMapLocationDot} />
+                </StyledLink>
+              </span>
+            </Tooltip>
+          )}
+        </Stack>
+      </InfoTile>
+      <InfoTile icon={faStopwatch} label={t("info.run_duration")}>
+        {runDuration === null ? "-" : secondsToDuration(runDuration, true)}
+      </InfoTile>
+    </Box>
+  );
+}
+
+function InfoTile({ icon, label, children }) {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        minWidth: 0,
+        background: theme.palette.stats.chartBackdrop,
+        borderRadius: 2,
+        px: 1.5,
+        py: 1,
+      }}
+    >
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 0.75,
+          textTransform: "uppercase",
+          letterSpacing: 0.5,
+        }}
+      >
+        <FontAwesomeIcon icon={icon} />
+        {label}
+      </Typography>
+      <Typography variant="body1" component="div" sx={{ wordBreak: "break-word" }}>
+        {children}
+      </Typography>
     </Box>
   );
 }
@@ -745,6 +857,21 @@ function getBannerChipSx(status, mode) {
     mx: -1,
     my: -0.5,
   };
+}
+
+// Seconds between the first status of the current run and the latest status. A run starts after a run-ending event
+// (or a win) or after changing the location. Returns null if the latest status ended the run
+function getRunDuration(statuses, status) {
+  const index = statuses.indexOf(status);
+  if (index !== 0 || EVENT_MARKERS[status.event] !== undefined) return null;
+  let start = status;
+  for (let i = index + 1; i < statuses.length; i++) {
+    const previous = statuses[i];
+    if (EVENT_MARKERS[previous.event] !== undefined || !isSameLocation(previous, status)) break;
+    start = previous;
+  }
+  const diff = jsonDateToJsDate(status.date).getTime() - jsonDateToJsDate(start.date).getTime();
+  return Math.max(0, Math.round(diff / 1000));
 }
 
 function isSameLocation(a, b) {

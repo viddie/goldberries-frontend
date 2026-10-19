@@ -2495,8 +2495,15 @@
     "unknown_map": "Unknown map",
     "stream": "Stream",
     "not_on_path": "<not on path>",
-    "session_pb": "Session PB",
+    "session_pb": "Session",
     "pb": "PB",
+    "info": {
+      "room": "Current Room",
+      "custom_room_name": "Custom Room Name",
+      "debug_room_name": "Debug Room Name",
+      "open_map_viewer": "Open room in map viewer",
+      "run_duration": "Current Run Duration"
+    },
     "session_history": "Session History",
     "room": "Room",
     "events": {
