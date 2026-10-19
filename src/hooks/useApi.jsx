@@ -138,6 +138,7 @@ import {
   fetchChallengeTagPlayers,
   fetchDiscovery,
   fetchUntaggedChallengeIds,
+  fetchOnlinePlayers,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -414,7 +415,14 @@ export function useGetChangelog(type, id, disabled) {
   });
 }
 
-export function useGetRecentSubmissions(verified, page, perPage, search = null, playerId = null, challengeId = null) {
+export function useGetRecentSubmissions(
+  verified,
+  page,
+  perPage,
+  search = null,
+  playerId = null,
+  challengeId = null,
+) {
   return useQuery({
     queryKey: ["recent_submissions", verified, page, perPage, search, playerId, challengeId],
     queryFn: () => fetchRecentSubmissions(verified, page, perPage, search, playerId, challengeId),
@@ -1639,7 +1647,15 @@ export function useGetChallengeTagPlayers(challengeId, tagValueId) {
 export function useGetDiscovery(filter, group = "all", page = 1, perPage = null, seed = null) {
   const { user } = useAuth();
   return useQuery({
-    queryKey: ["discovery", filter, group, page, perPage, seed, filter?.exclude_cleared ? user?.player_id : null],
+    queryKey: [
+      "discovery",
+      filter,
+      group,
+      page,
+      perPage,
+      seed,
+      filter?.exclude_cleared ? user?.player_id : null,
+    ],
     queryFn: () => fetchDiscovery(filter, group, page, perPage, seed),
     onError: errorToast,
     keepPreviousData: !filter?.exclude_cleared,
@@ -1672,3 +1688,12 @@ export function useGetChallengesForTagging(challengeIds) {
   });
 }
 //#endregion
+
+export function useGetOnlinePlayers(recency = null, count = null) {
+  return useQuery({
+    queryKey: ["online_players", recency, count],
+    queryFn: () => fetchOnlinePlayers(recency, count),
+    onError: errorToast,
+    refetchInterval: 10 * 1000,
+  });
+}

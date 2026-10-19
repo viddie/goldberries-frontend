@@ -20,7 +20,7 @@ export { AccountRoleIcon, NewsWriterIcon, HelperIcon, VerifierIcon, AdminIcon } 
 export { SuspendedIcon } from "./SuspendedIcon";
 export { CampaignIcon } from "./CampaignIcon";
 export { INPUT_METHOD_ICONS, InputMethodIcon } from "./InputMethodIcon";
-export { LinkIcon, getPlatformIcon } from "./LinkIcon";
+export { LinkIcon, getPlatformIcon, getLinkPlatform } from "./LinkIcon";
 export { ChallengeFcIcon, SubmissionFcIcon } from "./ChallengeFcIcon";
 export { OtherIcon } from "./OtherIcon";
 export { ArbitraryIcon } from "./ArbitraryIcon";

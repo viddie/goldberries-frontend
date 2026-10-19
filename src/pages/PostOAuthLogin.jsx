@@ -1,10 +1,11 @@
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 
 import { useAuth } from "../hooks/AuthProvider";
 
 export function PagePostOAuthLogin() {
   const auth = useAuth();
   const { redirect } = useParams();
+  const location = useLocation();
 
   /*useEffect(() => {
     auth.checkSession();
@@ -18,5 +19,5 @@ export function PagePostOAuthLogin() {
     );
   }
 
-  return <Navigate to={redirect ? "/" + redirect : "/"} />;
+  return <Navigate to={redirect ? "/" + redirect + location.search : "/"} />;
 }

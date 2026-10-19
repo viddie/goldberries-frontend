@@ -1,5 +1,4 @@
 import {
-  alpha,
   Box,
   Button,
   ButtonBase,
@@ -29,7 +28,6 @@ import {
   faCheckSquare,
   faChevronDown,
   faChevronRight,
-  faCircleCheck,
   faEdit,
   faEnvelope,
   faLink,
@@ -52,6 +50,7 @@ import {
   ErrorDisplay,
   HeadTitle,
   LoadingSpinner,
+  NoticeBox,
   StyledExternalLink,
   StyledLink,
 } from "../components/basic";
@@ -118,7 +117,7 @@ export const API_KEY_SCOPES = {
   submission_verify: { key: "submission_verify", flag: 1024, helper: true },
 };
 const API_KEY_MAX_PER_ACCOUNT = 20;
-const API_KEY_MAX_NAME_LENGTH = 64;
+export const API_KEY_MAX_NAME_LENGTH = 64;
 export function hasFlag(flags, flag) {
   return (flags & flag) === flag;
 }
@@ -399,45 +398,35 @@ function AccountStandingSection() {
     .sort((a, b) => a.flag - b.flag)
     .filter((restriction) => hasFlag(auth.user.restrictions ?? 0, restriction.flag));
   const isGoodStanding = activeRestrictions.length === 0;
-  const paletteKey = isGoodStanding ? "success" : "error";
 
   return (
     <>
       <Typography variant="h5" gutterBottom>
         {t("header")}
       </Typography>
-      <Box
-        sx={{
-          p: 2,
-          borderRadius: 1,
-          border: "1px solid",
-          borderColor: (theme) => alpha(theme.palette[paletteKey].main, 0.6),
-          backgroundColor: (theme) => alpha(theme.palette[paletteKey].main, 0.12),
-        }}
-      >
-        {isGoodStanding ? (
+      {isGoodStanding ? (
+        <NoticeBox severity="success">
           <Stack direction="row" alignItems="center" gap={1}>
-            <FontAwesomeIcon icon={faCircleCheck} color="green" />
-            <Typography variant="body1">{t("no_restrictions")}</Typography>
+            {t("no_restrictions")}
             <EmoteImage emote="gladeline.png" height="1.5em" />
           </Stack>
-        ) : (
-          <>
-            <Typography variant="body1">{t("has_restrictions")}</Typography>
-            <Stack direction="column" gap={0.5} sx={{ mt: 1, mb: 1 }}>
-              {activeRestrictions.map((restriction) => (
-                <Stack key={restriction.key} direction="row" alignItems="center" gap={1}>
-                  <FontAwesomeIcon icon={faBan} color="#f44336" fixedWidth />
-                  <Typography variant="body1">{t_r(restriction.key + ".label")}</Typography>
-                </Stack>
-              ))}
-            </Stack>
-            <Typography variant="body2" color="text.secondary">
-              {t("contact")}
-            </Typography>
-          </>
-        )}
-      </Box>
+        </NoticeBox>
+      ) : (
+        <NoticeBox severity="error" icon={null}>
+          {t("has_restrictions")}
+          <Stack direction="column" gap={0.5} sx={{ mt: 1, mb: 1 }}>
+            {activeRestrictions.map((restriction) => (
+              <Stack key={restriction.key} direction="row" alignItems="center" gap={1}>
+                <FontAwesomeIcon icon={faBan} color="#f44336" fixedWidth />
+                <Typography variant="body1">{t_r(restriction.key + ".label")}</Typography>
+              </Stack>
+            ))}
+          </Stack>
+          <Typography variant="body2" color="text.secondary">
+            {t("contact")}
+          </Typography>
+        </NoticeBox>
+      )}
     </>
   );
 }

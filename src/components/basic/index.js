@@ -12,6 +12,7 @@ export { ShareButton } from "./ShareButton";
 export { CopyToClipboardButton } from "./CopyToClipboardButton";
 export { TooltipInfoButton } from "./TooltipInfoButton";
 export { InfoBox, InfoBoxIconTextLine } from "./InfoBox";
+export { NoticeBox } from "./NoticeBox";
 export { LanguageFlag } from "./LanguageFlag";
 export { CustomIconButton } from "./CustomIconButton";
 export { TooltipLineBreaks } from "./TooltipLineBreaks";

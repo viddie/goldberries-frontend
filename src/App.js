@@ -110,6 +110,7 @@ import { PageAppSettings } from "./pages/AppSettings";
 import { PageCampaign } from "./pages/Campaign";
 import { PageChallenge } from "./pages/Challenge";
 import { PageClaimPlayer } from "./pages/ClaimPlayer";
+import { PageAuthApplication } from "./pages/AuthApplication";
 import { PageCompareChallenges } from "./pages/CompareChallenges";
 import { PageCredits } from "./pages/Credits";
 import { PageFAQ } from "./pages/FAQ";
@@ -146,6 +147,7 @@ import { getNavigatorLanguage, getPlayerNameColorStyle } from "./util/data_util"
 import { PageAuthor } from "./pages/Author";
 import { PageTopGoldenList } from "./pages/TopGoldenList";
 import { PageMapViewer } from "./pages/MapViewer";
+import { PageOnline } from "./pages/Online";
 import { getFeaturedCampaignsNavEntries } from "./util/other_data";
 
 axios.defaults.withCredentials = true;
@@ -291,6 +293,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "auth-application",
+        element: (
+          <ProtectedRoute needsPlayerClaimed redirect="auth-application">
+            <PageAuthApplication />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "my-untagged-challenges",
         element: (
           <ProtectedRoute needsPlayerClaimed redirect="my-untagged-challenges">
@@ -322,6 +332,8 @@ const router = createBrowserRouter([
       { path: "map/:id/*", element: <PageMap /> },
       { path: "campaign/:id/:tab?", element: <PageCampaign /> },
       { path: "author/:name", element: <PageAuthor /> },
+
+      { path: "online", element: <PageOnline /> },
 
       { path: "search/:q?", element: <PageSearch /> },
       { path: "suggestions/:id?", element: <PageSuggestions /> },
@@ -481,8 +493,9 @@ function ProtectedRoute({
   children,
 }) {
   const auth = useAuth();
+  const location = useLocation();
   if (auth.user === null) {
-    return <Navigate to={"/login/" + encodeURIComponent(redirect)} replace />;
+    return <Navigate to={"/login/" + encodeURIComponent(redirect + location.search)} replace />;
   }
   if (needsPlayerClaimed && !auth.hasPlayerClaimed) {
     return <PageNoPlayerClaimed />;

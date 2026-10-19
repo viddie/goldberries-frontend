@@ -263,7 +263,14 @@ export function fetchChangelog(type, id) {
   });
 }
 
-export function fetchRecentSubmissions(verified, page, perPage, search = null, playerId = null, challengeId = null) {
+export function fetchRecentSubmissions(
+  verified,
+  page,
+  perPage,
+  search = null,
+  playerId = null,
+  challengeId = null,
+) {
   const data = {
     page: page,
     per_page: perPage,
@@ -500,6 +507,12 @@ export function fetchStampSubmission(id) {
 }
 export function fetchStampSubmissionsForPlayer(playerId) {
   return axios.get("/stamp/get-for-player", { params: { id: playerId } });
+}
+export function fetchOnlinePlayers(recency = null, count = null) {
+  const params = {};
+  if (recency !== null) params.recency = recency;
+  if (count !== null) params.count = count;
+  return axios.get("/ingame-status/online", { params });
 }
 //#endregion
 

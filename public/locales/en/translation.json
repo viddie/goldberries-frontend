@@ -1546,6 +1546,47 @@
       }
     }
   },
+  "auth_application": {
+    "title": "Authorize Application",
+    "external_application": "An external application",
+    "wants_access": "wants to access your goldberries.net account <b>{{player}}</b>",
+    "scopes_label": "This will allow the application to:",
+    "return_url_label": "After authorizing, the API key will be sent to:",
+    "revoke_note": "An API key will be created for this application. You can revoke it at any time in your <CustomLink>account settings</CustomLink>.",
+    "name_taken": "You already have an API key named '{{name}}'. If you want to re-authorize this application, delete the existing key in your <CustomLink>account settings</CustomLink> first.",
+    "delivering": "Sending API key to {{name}}...",
+    "buttons": {
+      "cancel": "Cancel",
+      "authorize": "Authorize"
+    },
+    "success": {
+      "title": "Authorized!",
+      "text": "{{name}} received its API key. You can close this tab now."
+    },
+    "cancelled": {
+      "title": "Cancelled",
+      "text": "No API key was created. You can close this tab now."
+    },
+    "delivery_failed": {
+      "title": "Couldn't reach the application",
+      "text": "The API key was created, but it couldn't be sent to {{name}}. Make sure the application is still running and try again.",
+      "retry": "Try again",
+      "manual": "Alternatively, you can copy the API key and paste it into the application manually:"
+    },
+    "invalid": {
+      "title": "Invalid authorization request",
+      "note": "The application that sent you here made an invalid request. Please contact its developer.",
+      "errors": {
+        "missing_name": "The 'name' parameter is missing.",
+        "name_too_long": "The 'name' parameter can't be longer than {{max}} characters.",
+        "missing_scopes": "The 'scopes' parameter is missing.",
+        "unknown_scope": "Unknown scope: '{{scope}}'.",
+        "forbidden_scope": "Applications are not allowed to request the scope '{{scope}}'.",
+        "missing_return_url": "The 'return_url' parameter is missing.",
+        "invalid_return_url": "The 'return_url' parameter has to be a valid http(s) URL."
+      }
+    }
+  },
   "error_pages": {
     "403": {
       "forbidden": "Forbidden",
@@ -2439,6 +2480,31 @@
     "korean_translation": "Korean Translation",
     "domain": "Domain",
     "domain_text": "{{name}} (managing and paying for the domain & Cloudflare, as well as making the original goldberries.net!)"
+  },
+  "online": {
+    "title": "Online Players",
+    "no_players": "No players are online right now.",
+    "columns": {
+      "player": "Player",
+      "map": "Campaign / Map",
+      "challenge": "Challenge",
+      "status": "Status"
+    },
+    "in_golden_run": "In golden run",
+    "in_overworld": "In overworld",
+    "unknown_map": "Unknown map",
+    "stream": "Stream",
+    "not_on_path": "<not on path>",
+    "session_pb": "Session PB",
+    "pb": "PB",
+    "session_history": "Session History",
+    "room": "Room",
+    "events": {
+      "death": "Death",
+      "reset": "Reset",
+      "win": "Winner!",
+      "exit": "Exited the map"
+    }
   },
   "stats": {
     "title": "Stats",
