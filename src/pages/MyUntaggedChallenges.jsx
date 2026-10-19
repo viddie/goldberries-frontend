@@ -4,6 +4,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Divider,
   FormHelperText,
   Grid,
   Pagination,
@@ -16,6 +17,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -226,7 +228,7 @@ function UntaggedChallengeList({ playerId, tagIds, page, setPage }) {
       {ids.length === 0 ? (
         <Typography>{tagIds.length > 0 ? t("empty_tags") : t("empty")}</Typography>
       ) : (
-        <UntaggedChallengesTable challenges={orderedChallenges} />
+        <UntaggedChallenges challenges={orderedChallenges} />
       )}
       {maxPage > 1 && (
         <Pagination
@@ -236,6 +238,40 @@ function UntaggedChallengeList({ playerId, tagIds, page, setPage }) {
           sx={{ alignSelf: "center" }}
         />
       )}
+    </Stack>
+  );
+}
+
+function UntaggedChallenges({ challenges }) {
+  const isMdScreen = useMediaQuery((theme) => theme.breakpoints.up("md"));
+  return isMdScreen ? (
+    <UntaggedChallengesTable challenges={challenges} />
+  ) : (
+    <UntaggedChallengesList challenges={challenges} />
+  );
+}
+
+// Stacked layout for small screens, so the tags get the full width instead of scrolling horizontally
+function UntaggedChallengesList({ challenges }) {
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+
+  return (
+    <Stack divider={<Divider flexItem />} gap={1.5}>
+      {challenges.map((challenge) => {
+        const campaign = getChallengeCampaign(challenge);
+        return (
+          <Stack key={challenge.id} gap={0.75}>
+            <StyledLink to={"/campaign/" + campaign.id} style={{ fontWeight: "bold", alignSelf: "flex-start" }}>
+              {getCampaignName(campaign, t_g)}
+            </StyledLink>
+            <Stack direction="row" gap={0.75} alignItems="center" flexWrap="wrap">
+              <DifficultyChip difficulty={challenge.difficulty} size="small" />
+              <ChallengeInline challenge={challenge} showChallenge hideCampaign />
+            </Stack>
+            <OwnHighlightedTagsSection challenge={challenge} />
+          </Stack>
+        );
+      })}
     </Stack>
   );
 }
