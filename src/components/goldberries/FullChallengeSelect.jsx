@@ -73,6 +73,9 @@ export function FullChallengeSelect({ challenge, setChallenge, disabled, showOpe
     }
   }, [challenge]);
 
+  // A challenge fetched on its own has a campaign object without the challenges list attached
+  const isFullGameChallenge = !!challenge?.campaign && !challenge.map;
+
   return (
     <Stack direction="column" gap={2}>
       <Stack direction="row" gap={1} alignItems="center">
@@ -97,7 +100,7 @@ export function FullChallengeSelect({ challenge, setChallenge, disabled, showOpe
           )}
         </Stack>
       )}
-      {campaign && map === null && campaign.challenges?.length > 0 && (
+      {campaign && map === null && (campaign.challenges?.length > 0 || isFullGameChallenge) && (
         <>
           <Divider>
             <Chip label={t("full_game_label")} size="small" />
