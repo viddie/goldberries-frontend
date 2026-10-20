@@ -63,7 +63,7 @@ export function LikeButton({ challengeId, sx }) {
   useEffect(() => {
     if (ownLike && !wishlistInitialized.current) {
       setLocalWishlist(ownLike.is_wishlist ?? false);
-      setLocalState(ownLike.state ?? null);
+      setLocalState(ownLike.state ?? "backlog");
       wishlistInitialized.current = true;
     }
     if (!ownLike) {
@@ -87,7 +87,7 @@ export function LikeButton({ challengeId, sx }) {
     const checked = event.target.checked;
     setLocalWishlist(checked);
     if (!checked) {
-      setLocalState(null);
+      setLocalState("backlog");
     }
   };
 
@@ -104,7 +104,7 @@ export function LikeButton({ challengeId, sx }) {
         id: ownLike.id,
         challenge_id: challengeId,
         is_wishlist: localWishlist,
-        state: localState,
+        state: localWishlist ? localState : null,
       });
     }
   };
