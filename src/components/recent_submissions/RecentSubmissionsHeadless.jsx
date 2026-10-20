@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import {
+  Box,
   Paper,
   Skeleton,
   Stack,
@@ -306,18 +307,23 @@ function RecentSubmissionsTableRow({ submission, hasPlayer }) {
         </Link>
       </TableCell>
       {!hasPlayer && (
-        <TableCell align="center" sx={{ pl: 1, pr: 0.5, py: 0 }}>
-          <PlayerChip player={submission.player} size="small" trimLongNames />
+        <TableCell align="center" sx={{ pl: 1, pr: 0.5, py: 0, position: "relative" }}>
+          <CellLinkOverlay to={"/submission/" + submission.id} />
+          {/* Player chip has its own link, so it is placed above the overlay */}
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <PlayerChip player={submission.player} size="small" trimLongNames />
+          </Box>
         </TableCell>
       )}
-      <TableCell align="center" sx={{ p: 0 }}>
-        <Link
-          to={"/submission/" + submission.id}
-          style={{ display: "block", textDecoration: "none", color: "inherit", padding: "4px 8px 4px 8px" }}
-        >
-          <DifficultyChip difficulty={challenge ? challenge.difficulty : submission.suggested_difficulty} />
-        </Link>
+      <TableCell align="center" sx={{ px: 1, py: 0.5, position: "relative" }}>
+        <DifficultyChip difficulty={challenge ? challenge.difficulty : submission.suggested_difficulty} />
+        <CellLinkOverlay to={"/submission/" + submission.id} />
       </TableCell>
     </TableRow>
   );
+}
+
+// Link covering the entire table cell, regardless of how tall the row is
+function CellLinkOverlay({ to }) {
+  return <Link to={to} style={{ position: "absolute", inset: 0 }} />;
 }
