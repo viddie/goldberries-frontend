@@ -19,7 +19,7 @@ import {
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Color from "color";
 import { useEffect, useState } from "react";
 
@@ -122,12 +122,23 @@ function TierClearCounts({ groupBy, groupBySelector }) {
   const { user } = useAuth();
   const [highlightPlayerId, setHighlightPlayerId] = useState();
   const [highlightCountry, setHighlightCountry] = useState(user?.country ?? "");
-  const [filterCountry, setFilterCountry] = useState("");
-  const [filterInputMethod, setFilterInputMethod] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterCountry = getValidParam(searchParams.get("country"), COUNTRY_CODES);
+  const filterInputMethod = getValidParam(searchParams.get("input_method"), INPUT_METHOD_ICONS);
   const [showUnknown, setShowUnknown] = useLocalStorage("tier_clears_show_unknown", false);
 
   const diffQuery = useGetAllDifficulties();
   const query = useGetStatsPlayerTierClearCounts(groupBy === "player" ? null : groupBy);
+
+  // Filters are stored in the URL to make them shareable, the highlighted player is not
+  const setFilterParam = (key, value) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    setSearchParams(next, { replace: true });
+  };
+  const setFilterCountry = (value) => setFilterParam("country", value);
+  const setFilterInputMethod = (value) => setFilterParam("input_method", value);
 
   return (
     <>
@@ -630,4 +641,9 @@ function TotalClears({ groupBy }) {
       />
     </>
   );
+}
+
+// Returns the URL parameter value if it is a key of the given object, otherwise an empty string
+function getValidParam(value, validValues) {
+  return value && Object.hasOwn(validValues, value) ? value : "";
 }
