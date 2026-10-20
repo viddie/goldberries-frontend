@@ -31,7 +31,8 @@
         "save": "Save",
         "close": "Close",
         "update": "Update",
-        "submit": "Submit"
+        "submit": "Submit",
+        "suspend": "Suspend"
       }
     },
     "name": "Name",
@@ -443,6 +444,24 @@
       "last_player_rename": "Last Player Rename",
       "suspended": "Suspended",
       "suspension_reason": "Suspension Reason",
+      "date_suspended": "Suspended On",
+      "date_appeal": "Appeal Possible From",
+      "indefinite_suspension": "Indefinite suspension (no appeal date)",
+      "suspend": {
+        "button": "Suspend Account",
+        "title": "Suspend Account",
+        "description": "Suspended accounts can't log in anymore, and their presence is hidden in most places on the website.",
+        "duration": "Duration until appeal",
+        "unit": "Unit",
+        "units": {
+          "day": "Days",
+          "week": "Weeks",
+          "month": "Months",
+          "year": "Years"
+        },
+        "appeal_on": "Appeal possible from: {{date}}",
+        "reason_required": "A suspension reason is required"
+      },
       "is_verifier": "Is Verifier",
       "is_admin": "Is Admin",
       "logout_user": "Logout User",
@@ -1614,6 +1633,26 @@
   },
   "login": {
     "already_logged_in": "You're already logged in, silly",
+    "suspended": {
+      "title": "Your account is suspended",
+      "reason": "Reason: {{reason}}",
+      "appeal_indefinite": "This suspension is indefinite.",
+      "appeal_now": "You can now appeal this suspension.",
+      "appeal_from": "You can appeal this suspension from {{date}}.",
+      "appeal": {
+        "link": "How to appeal",
+        "title": "Appealing a suspension",
+        "intro": "Suspension appeals are handled by the Account Team. To appeal:",
+        "steps": {
+          "1": "Wait until your appeal date has been reached. Appeals are not possible before then.",
+          "2": "Send a direct message on Discord to one of the Account Team members listed below.",
+          "3": "Mention your player name and the reason for your suspension, and explain why you think the suspension should be lifted."
+        },
+        "team_header": "Account Team",
+        "copy_handle": "Copy Discord username",
+        "copied": "Copied!"
+      }
+    },
     "login": {
       "title": "Login",
       "feedback": {

@@ -31,7 +31,8 @@
         "save": "Sauvegarder",
         "close": "Fermer",
         "update": "Mettre à jour",
-        "submit": "Soumettre"
+        "submit": "Soumettre",
+        "suspend": "Suspendre"
       }
     },
     "name": "Nom",
@@ -443,6 +444,24 @@
       "last_player_rename": "Dernier changement de nom",
       "suspended": "Suspendu·e",
       "suspension_reason": "Raison de la suspension",
+      "date_suspended": "Suspendu le",
+      "date_appeal": "Appel possible à partir du",
+      "indefinite_suspension": "Suspension indéfinie (pas de date d'appel)",
+      "suspend": {
+        "button": "Suspendre le compte",
+        "title": "Suspendre le compte",
+        "description": "Les comptes suspendus ne peuvent plus se connecter, et leur présence est masquée dans la plupart des endroits du site.",
+        "duration": "Durée avant appel",
+        "unit": "Unité",
+        "units": {
+          "day": "Jours",
+          "week": "Semaines",
+          "month": "Mois",
+          "year": "Années"
+        },
+        "appeal_on": "Appel possible à partir du : {{date}}",
+        "reason_required": "Une raison de suspension est requise"
+      },
       "is_verifier": "Peut vérifier des entrées",
       "is_admin": "Est admin",
       "logout_user": "Déconnecter ce compte",
@@ -1528,6 +1547,26 @@
   },
   "login": {
     "already_logged_in": "Tu ne peux pas te connecter deux fois, patate",
+    "suspended": {
+      "title": "Ton compte est suspendu",
+      "reason": "Raison : {{reason}}",
+      "appeal_indefinite": "Cette suspension est indéfinie.",
+      "appeal_now": "Tu peux maintenant faire appel de cette suspension.",
+      "appeal_from": "Tu peux faire appel de cette suspension à partir du {{date}}.",
+      "appeal": {
+        "link": "Comment faire appel",
+        "title": "Faire appel d'une suspension",
+        "intro": "Les appels de suspension sont traités par l'équipe des comptes. Pour faire appel :",
+        "steps": {
+          "1": "Attends que ta date d'appel soit atteinte. Aucun appel n'est possible avant.",
+          "2": "Envoie un message privé sur Discord à l'un des membres de l'équipe des comptes listés ci-dessous.",
+          "3": "Indique ton nom de joueur et la raison de ta suspension, et explique pourquoi tu penses que la suspension devrait être levée."
+        },
+        "team_header": "Équipe des comptes",
+        "copy_handle": "Copier le nom d'utilisateur Discord",
+        "copied": "Copié !"
+      }
+    },
     "login": {
       "title": "Connexion",
       "feedback": {

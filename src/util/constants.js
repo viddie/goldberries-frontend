@@ -17,6 +17,13 @@ export const CURRENT_VERSION = process.env.REACT_APP_VERSION;
 
 export const SUGGESTION_VOTE_HIDE_HOURS = 24;
 
+// Members handling suspension appeals, shown in the "How to appeal" dialog on the login page
+export const ACCOUNT_TEAM = [
+  { player_id: 275, discord: "._undefined_" },
+  { player_id: 601, discord: "mystral_fox" },
+  { player_id: 293, discord: "kriog16" },
+];
+
 export const FormOptions = {
   PlayerName: (t) => ({
     required: {

@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import "@mui/material";
-import { Alert, Box, Button, Divider, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "../hooks/AuthProvider";
@@ -15,8 +16,19 @@ import {
   useRegister,
   useVerifyEmail,
 } from "../hooks/useApi";
-import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
-import { FormOptions } from "../util/constants";
+import {
+  BasicContainerBox,
+  CustomIconButton,
+  HeadTitle,
+  ModalLink,
+  NoticeBox,
+  StyledLink,
+} from "../components/basic";
+import { ACCOUNT_TEAM, FormOptions } from "../util/constants";
+import { displayDate } from "../util/data_util";
+import { jsonDateToJsDate } from "../util/util";
+
+import { PlayerChipAsync } from "./Post";
 
 export function PageLogin() {
   const { t } = useTranslation(undefined, { keyPrefix: "login.login" });
@@ -24,8 +36,9 @@ export function PageLogin() {
   const auth = useAuth();
   const { redirect } = useParams();
   const form = useForm();
-  const onSubmit = form.handleSubmit((data) => {
-    auth.loginWithEmail(data.email, data.password, redirect);
+  const [suspension, setSuspension] = useState(null);
+  const onSubmit = form.handleSubmit(async (data) => {
+    setSuspension(await auth.loginWithEmail(data.email, data.password, redirect));
   });
   const errors = form.formState.errors;
 
@@ -35,6 +48,7 @@ export function PageLogin() {
 
   return (
     <LoginBox title={t("title")}>
+      {suspension && <SuspensionNotice suspension={suspension} />}
       <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
           margin="normal"
@@ -93,6 +107,7 @@ export function PageRegister() {
   const { t: t_ff } = useTranslation(undefined, { keyPrefix: "forms.feedback" });
   const auth = useAuth();
   const { error } = useParams();
+  const [searchParams] = useSearchParams();
   const [postRegister, setPostRegister] = useState(false);
   const { mutate: register } = useRegister(() => {
     setPostRegister(true);
@@ -131,10 +146,16 @@ export function PageRegister() {
 
   return (
     <LoginBox title={t("title")}>
-      {error && (
-        <Alert severity="error" sx={{ mt: 2, alignSelf: "stretch" }}>
-          {decodeURIComponent(error)}
-        </Alert>
+      {error === "suspended" ? (
+        <SuspensionNotice
+          suspension={{ reason: searchParams.get("reason"), date_appeal: searchParams.get("date_appeal") }}
+        />
+      ) : (
+        error && (
+          <NoticeBox severity="error" sx={{ mb: 2, alignSelf: "stretch" }}>
+            {decodeURIComponent(error)}
+          </NoticeBox>
+        )
       )}
       <Typography variant="body2" textAlign="center">
         {t("info")}
@@ -372,10 +393,10 @@ export function PageForgotPasswordVerify({ token }) {
 
 function LoginBox({ children, title, titleColor }) {
   return (
-    <BasicContainerBox maxWidth="xs" sx={{ mt: 8 }}>
+    <BasicContainerBox modern maxWidth="xs" sx={{ mt: { xs: 1, sm: 6 }, border: "none" }} innerSx={{ p: 0 }}>
       <HeadTitle title={title} />
-      <Stack direction="column" justifyContent="center" alignItems="center">
-        <LoginHeader title={title} titleColor={titleColor} />
+      <LoginHeader title={title} titleColor={titleColor} />
+      <Stack direction="column" justifyContent="center" alignItems="center" sx={{ p: { xs: 2, sm: 3 } }}>
         {children}
       </Stack>
     </BasicContainerBox>
@@ -383,27 +404,115 @@ function LoginBox({ children, title, titleColor }) {
 }
 function LoginHeader({ title, titleColor }) {
   return (
-    <>
-      <MemoWebsiteIcon preventFunny height="3em" style={{ marginBottom: "4px" }} />
-      <Typography component="h1" variant="h5" color={titleColor}>
+    <Stack
+      direction="column"
+      alignItems="center"
+      gap={0.5}
+      sx={{ px: { xs: 2, sm: 3 }, pt: { xs: 2, sm: 3 }, pb: 2, backgroundColor: "#333333" }}
+    >
+      <MemoWebsiteIcon preventFunny height="3em" />
+      <Typography component="h1" variant="h5" fontWeight="bold" color={titleColor}>
         {title}
       </Typography>
-    </>
+    </Stack>
   );
 }
 
 function AlreadyLoggedInBox({ title }) {
   const { t } = useTranslation(undefined, { keyPrefix: "login" });
   return (
-    <BasicContainerBox maxWidth="xs" sx={{ mt: 8 }}>
-      <HeadTitle title={title} />
-      <Stack direction="column" justifyContent="center" alignItems="center">
-        <MemoWebsiteIcon preventFunny height="3em" style={{ marginBottom: "4px" }} />
-        <Typography component="h1" variant="h5">
-          {title}
-        </Typography>
-        <Typography variant="body1">{t("already_logged_in")}</Typography>
+    <LoginBox title={title}>
+      <Typography variant="body1">{t("already_logged_in")}</Typography>
+    </LoginBox>
+  );
+}
+
+function SuspensionNotice({ suspension }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "login.suspended" });
+  const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
+
+  let appealText = t("appeal_indefinite");
+  if (suspension.date_appeal) {
+    appealText =
+      jsonDateToJsDate(suspension.date_appeal) <= new Date()
+        ? t("appeal_now")
+        : t("appeal_from", { date: displayDate(suspension.date_appeal, t_g) });
+  }
+
+  return (
+    <NoticeBox severity="error" alignItems="flex-start" sx={{ mb: 1, alignSelf: "stretch" }}>
+      <Typography fontWeight="bold">{t("title")}</Typography>
+      {suspension.reason && (
+        <Typography variant="body2">{t("reason", { reason: suspension.reason })}</Typography>
+      )}
+      <Typography variant="body2" sx={{ mt: 0.5 }}>
+        {appealText}
+      </Typography>
+      {suspension.date_appeal && (
+        <ModalLink label={t("appeal.link")} title={t("appeal.title")} sx={{ mt: 0.5 }}>
+          <AppealInstructions />
+        </ModalLink>
+      )}
+    </NoticeBox>
+  );
+}
+
+const APPEAL_STEP_COUNT = 3;
+function AppealInstructions() {
+  const { t } = useTranslation(undefined, { keyPrefix: "login.suspended.appeal" });
+  const steps = Array.from({ length: APPEAL_STEP_COUNT }, (_, i) => i + 1);
+
+  return (
+    <Stack direction="column" gap={2}>
+      <Typography variant="body1">{t("intro")}</Typography>
+      <Box component="ol" sx={{ m: 0, pl: 3, "& li": { py: 0.25 } }}>
+        {steps.map((step) => (
+          <Typography key={step} component="li" variant="body1">
+            {t("steps." + step)}
+          </Typography>
+        ))}
+      </Box>
+
+      <Stack direction="column" gap={1}>
+        <Typography variant="h6">{t("team_header")}</Typography>
+        {ACCOUNT_TEAM.map((member) => (
+          <AccountTeamMember key={member.player_id} member={member} />
+        ))}
       </Stack>
-    </BasicContainerBox>
+    </Stack>
+  );
+}
+
+function AccountTeamMember({ member }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "login.suspended.appeal" });
+  const [copied, setCopied] = useState(false);
+  const copyHandle = () => {
+    navigator.clipboard.writeText(member.discord);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      gap={1}
+      flexWrap="wrap"
+      sx={{ p: 1, borderRadius: 1, bgcolor: "rgba(255, 255, 255, 0.05)" }}
+    >
+      <PlayerChipAsync id={member.player_id} size="small" />
+      <Stack direction="row" alignItems="center" gap={1}>
+        <FontAwesomeIcon icon={faDiscord} color="#5865F2" />
+        <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
+          {member.discord}
+        </Typography>
+        <Tooltip title={copied ? t("copied") : t("copy_handle")}>
+          <CustomIconButton size="small" color={copied ? "success" : "primary"} onClick={copyHandle}>
+            <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+          </CustomIconButton>
+        </Tooltip>
+      </Stack>
+    </Stack>
   );
 }

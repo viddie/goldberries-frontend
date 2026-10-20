@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
+  // Returns the suspension data ({ reason, date_appeal }) if the account is suspended, so the page can display it
   const loginWithEmail = async (email, password, redirect) => {
     const data = new FormData();
     data.append("email", email);
@@ -61,8 +62,11 @@ export function AuthProvider({ children }) {
         navigate("/");
       }
     } catch (error) {
+      const suspension = error.response?.data?.suspension;
+      if (suspension) return suspension;
       toast.error(getErrorMessage(error));
     }
+    return null;
   };
 
   const loginWithDiscord = (url) => {

@@ -31,7 +31,8 @@
         "save": "Speichern",
         "close": "Schließen",
         "update": "Aktualisieren",
-        "submit": "Einreichen"
+        "submit": "Einreichen",
+        "suspend": "Suspendieren"
       }
     },
     "name": "Name",
@@ -443,6 +444,24 @@
       "last_player_rename": "Letzte Player Umbenennung",
       "suspended": "Suspendiert",
       "suspension_reason": "Suspendierungsgrund",
+      "date_suspended": "Suspendiert am",
+      "date_appeal": "Einspruch möglich ab",
+      "indefinite_suspension": "Unbefristete Suspendierung (kein Einspruchsdatum)",
+      "suspend": {
+        "button": "Account suspendieren",
+        "title": "Account suspendieren",
+        "description": "Suspendierte Accounts können sich nicht mehr einloggen, und ihre Präsenz wird an den meisten Stellen der Website ausgeblendet.",
+        "duration": "Dauer bis zum Einspruch",
+        "unit": "Einheit",
+        "units": {
+          "day": "Tage",
+          "week": "Wochen",
+          "month": "Monate",
+          "year": "Jahre"
+        },
+        "appeal_on": "Einspruch möglich ab: {{date}}",
+        "reason_required": "Ein Suspendierungsgrund ist erforderlich"
+      },
       "is_verifier": "Ist Verifier",
       "is_admin": "Ist Admin",
       "logout_user": "Benutzer Abmelden",
@@ -1528,6 +1547,26 @@
   },
   "login": {
     "already_logged_in": "Du bist schon angemeldet, silly",
+    "suspended": {
+      "title": "Dein Account ist suspendiert",
+      "reason": "Grund: {{reason}}",
+      "appeal_indefinite": "Diese Suspendierung ist unbefristet.",
+      "appeal_now": "Du kannst jetzt Einspruch gegen diese Suspendierung einlegen.",
+      "appeal_from": "Du kannst ab dem {{date}} Einspruch gegen diese Suspendierung einlegen.",
+      "appeal": {
+        "link": "Wie lege ich Einspruch ein?",
+        "title": "Einspruch gegen eine Sperre",
+        "intro": "Einsprüche gegen Sperren werden vom Account-Team bearbeitet. So legst du Einspruch ein:",
+        "steps": {
+          "1": "Warte, bis dein Einspruchsdatum erreicht ist. Vorher ist kein Einspruch möglich.",
+          "2": "Schreibe einem der unten aufgeführten Mitglieder des Account-Teams eine Direktnachricht auf Discord.",
+          "3": "Nenne deinen Spielernamen und den Grund für deine Suspendierung, und erkläre, warum du denkst, dass die Suspendierung aufgehoben werden sollte."
+        },
+        "team_header": "Account-Team",
+        "copy_handle": "Discord-Benutzernamen kopieren",
+        "copied": "Kopiert!"
+      }
+    },
     "login": {
       "title": "Login",
       "feedback": {

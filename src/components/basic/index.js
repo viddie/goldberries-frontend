@@ -19,3 +19,4 @@ export { TooltipLineBreaks } from "./TooltipLineBreaks";
 export { CountrySelect } from "./CountrySelect";
 export { CollapsibleText } from "./CollapsibleText";
 export { SegmentedChip, isValidColor, safeAlpha, safeDarken, safeLighten } from "./SegmentedChip";
+export { ModalLink } from "./ModalLink";

@@ -31,7 +31,8 @@
         "save": "保存",
         "close": "关闭",
         "update": "更新",
-        "submit": "提交"
+        "submit": "提交",
+        "suspend": "封禁"
       }
     },
     "name": "名称",
@@ -443,6 +444,24 @@
       "last_player_rename": "重命名限制",
       "suspended": "封禁",
       "suspension_reason": "封禁理由",
+      "date_suspended": "封禁日期",
+      "date_appeal": "可申诉日期",
+      "indefinite_suspension": "永久封禁（无申诉日期）",
+      "suspend": {
+        "button": "封禁账号",
+        "title": "封禁账号",
+        "description": "被封禁的账号将无法登录，且其在网站大部分地方的存在都会被隐藏。",
+        "duration": "距可申诉的时长",
+        "unit": "单位",
+        "units": {
+          "day": "天",
+          "week": "周",
+          "month": "月",
+          "year": "年"
+        },
+        "appeal_on": "可申诉日期：{{date}}",
+        "reason_required": "必须填写封禁理由"
+      },
       "is_verifier": "设为验证者",
       "is_admin": "设为管理员",
       "logout_user": "强制登出",
@@ -1528,6 +1547,26 @@
   },
   "login": {
     "already_logged_in": "你已经登录了一个账号",
+    "suspended": {
+      "title": "你的账号已被封禁",
+      "reason": "理由：{{reason}}",
+      "appeal_indefinite": "此封禁为永久封禁。",
+      "appeal_now": "你现在可以对此封禁提出申诉。",
+      "appeal_from": "你可以从 {{date}} 起对此封禁提出申诉。",
+      "appeal": {
+        "link": "如何申诉",
+        "title": "申诉封禁",
+        "intro": "封禁申诉由账号团队处理。申诉步骤：",
+        "steps": {
+          "1": "等待到达你的可申诉日期。在此之前无法申诉。",
+          "2": "在 Discord 上私信下方列出的任意一位账号团队成员。",
+          "3": "说明你的玩家名称和你被封禁的原因，并解释你认为应解除封禁的理由。"
+        },
+        "team_header": "账号团队",
+        "copy_handle": "复制 Discord 用户名",
+        "copied": "已复制！"
+      }
+    },
     "login": {
       "title": "登录",
       "feedback": {

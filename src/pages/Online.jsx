@@ -34,13 +34,13 @@ import {
 } from "recharts";
 
 import { getQueryData, ONLINE_PLAYERS_REFRESH_SECONDS, useGetOnlinePlayers } from "../hooks/useApi";
-import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   BasicContainerBox,
   CustomIconButton,
   ErrorDisplay,
   HeadTitle,
   LoadingSpinner,
+  ModalLink,
   NoticeBox,
   StyledExternalLink,
   StyledLink,
@@ -109,7 +109,6 @@ export function PageOnline() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const compact = layout === "compact";
-  const setupModal = useModal(null, undefined, { actions: [ModalButtons.close] });
 
   const entries = sortEntries(
     (getQueryData(query) ?? []).map((entry) => ({ ...entry, view: getRowView(entry) })),
@@ -121,22 +120,9 @@ export function PageOnline() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} sx={{ mb: 1 }}>
         <Stack direction="column" alignItems="flex-start">
           <Typography variant="h4">{t("title")}</Typography>
-          <Typography
-            variant="body2"
-            component="button"
-            onClick={() => setupModal.open()}
-            sx={{
-              p: 0,
-              border: "none",
-              background: "none",
-              cursor: "pointer",
-              color: "text.secondary",
-              textDecoration: "underline",
-              "&:hover": { color: "text.primary" },
-            }}
-          >
-            {t("setup.link")}
-          </Typography>
+          <ModalLink label={t("setup.link")} title={t("setup.title")}>
+            <SetupInstructions />
+          </ModalLink>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1}>
           <ButtonGroup>
@@ -199,10 +185,6 @@ export function PageOnline() {
           ))}
         </Stack>
       )}
-
-      <CustomModal modalHook={setupModal} options={{ title: t("setup.title") }}>
-        <SetupInstructions />
-      </CustomModal>
     </BasicContainerBox>
   );
 }

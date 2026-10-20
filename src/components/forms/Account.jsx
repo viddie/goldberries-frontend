@@ -44,6 +44,9 @@ import { PlayerSelect, RestrictionNotice } from "../goldberries";
 import { BorderedBox, ErrorDisplay, LoadingSpinner } from "../basic";
 import { ROLES, useAuth } from "../../hooks/AuthProvider";
 import { useRestriction } from "../../hooks/useRestriction";
+import { CustomModal, ModalButtons, useModal } from "../../hooks/useModal";
+
+const SUSPENSION_DURATION_UNITS = ["day", "week", "month", "year"];
 
 export function FormAccountWrapper({ account, id, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -132,6 +135,12 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
   const canModifyRestrictions =
     auth.hasVerifierPriv && (account.role < auth.user.role || account.id === auth.user.id);
   const isSelfProfileRestricted = account.id === auth.user.id && profileRestricted;
+
+  const suspendModal = useModal();
+  const onSuspend = (suspension) => {
+    postAccount({ ...account, ...suspension, is_suspended: true });
+    suspendModal.close();
+  };
 
   return (
     <form {...props}>
@@ -287,27 +296,75 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
           </Select>
         </FormControl>
 
-        <Controller
-          control={form.control}
-          name="is_suspended"
-          render={({ field }) => (
-            <FormControlLabel
-              onChange={field.onChange}
-              label={t("suspended")}
-              checked={field.value}
-              control={<Checkbox />}
+        {account.is_suspended ? (
+          <>
+            <Controller
+              control={form.control}
+              name="is_suspended"
+              render={({ field }) => (
+                <FormControlLabel
+                  onChange={field.onChange}
+                  label={t("suspended")}
+                  checked={field.value}
+                  control={<Checkbox />}
+                />
+              )}
             />
-          )}
-        />
-
-        {formAccount.is_suspended && (
-          <TextField
-            label={t("suspension_reason")}
-            {...form.register("suspension_reason", { required: true })}
-            fullWidth
-            error={!!errors.suspended_reason}
-            helperText={errors.suspended_reason?.message}
-          />
+            {formAccount.is_suspended && (
+              <Stack direction="column" gap={2} sx={{ width: "100%", mb: 1 }}>
+                <TextField
+                  label={t("suspension_reason")}
+                  {...form.register("suspension_reason", { required: t("suspend.reason_required") })}
+                  fullWidth
+                  error={!!errors.suspension_reason}
+                  helperText={errors.suspension_reason?.message}
+                />
+                <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
+                  <Controller
+                    control={form.control}
+                    name="date_suspended"
+                    render={({ field }) => (
+                      <DateTimePicker
+                        label={t("date_suspended")}
+                        value={field.value ? dayjs(field.value) : null}
+                        onChange={(value) => field.onChange(value?.isValid() ? value.toISOString() : null)}
+                        viewRenderers={{ hours: renderTimeViewClock, minutes: renderTimeViewClock }}
+                        slotProps={{ field: { clearable: true } }}
+                        sx={{ flex: 1 }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    control={form.control}
+                    name="date_appeal"
+                    render={({ field }) => (
+                      <DateTimePicker
+                        label={t("date_appeal")}
+                        value={field.value ? dayjs(field.value) : null}
+                        onChange={(value) => field.onChange(value?.isValid() ? value.toISOString() : null)}
+                        viewRenderers={{ hours: renderTimeViewClock, minutes: renderTimeViewClock }}
+                        slotProps={{
+                          field: { clearable: true },
+                          textField: { helperText: field.value ? null : t("indefinite_suspension") },
+                        }}
+                        sx={{ flex: 1 }}
+                      />
+                    )}
+                  />
+                </Stack>
+              </Stack>
+            )}
+          </>
+        ) : (
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<FontAwesomeIcon icon={faBan} />}
+            onClick={() => suspendModal.open()}
+            sx={{ mb: 1 }}
+          >
+            {t("suspend.button")}
+          </Button>
         )}
 
         <Controller
@@ -359,7 +416,99 @@ export function FormAccount({ account, allPlayers, onSave, ...props }) {
           {t("delete.button")}
         </Button>
       </Stack>
+
+      <SuspendAccountModal modalHook={suspendModal} onSuspend={onSuspend} />
     </form>
+  );
+}
+
+function SuspendAccountModal({ modalHook, onSuspend }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "forms.account.suspend" });
+  const { t: t_a } = useTranslation(undefined, { keyPrefix: "forms.account" });
+  const [reason, setReason] = useState("");
+  const [duration, setDuration] = useState("");
+  const [unit, setUnit] = useState("month");
+  const [showErrors, setShowErrors] = useState(false);
+
+  useEffect(() => {
+    if (modalHook.isVisible) {
+      setReason("");
+      setDuration("");
+      setUnit("month");
+      setShowErrors(false);
+    }
+  }, [modalHook.isVisible]);
+
+  const durationNumber = duration === "" ? null : Number(duration);
+  const reasonError = reason.trim() === "";
+  const durationError = durationNumber !== null && (!Number.isInteger(durationNumber) || durationNumber <= 0);
+  const dateAppeal = durationNumber !== null && !durationError ? dayjs().add(durationNumber, unit) : null;
+
+  const submit = () => {
+    if (reasonError || durationError) {
+      setShowErrors(true);
+      return;
+    }
+    onSuspend({
+      suspension_reason: reason.trim(),
+      date_appeal: dateAppeal ? dateAppeal.toISOString() : null,
+    });
+  };
+
+  return (
+    <CustomModal
+      modalHook={modalHook}
+      options={{ title: t("title") }}
+      actions={[
+        ModalButtons.cancel,
+        { key: "suspend", variant: "contained", color: "error", onClick: submit },
+      ]}
+    >
+      <Stack direction="column" gap={2}>
+        <Typography variant="body2">{t("description")}</Typography>
+        <TextField
+          label={t_a("suspension_reason")}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          fullWidth
+          required
+          autoFocus
+          error={showErrors && reasonError}
+          helperText={showErrors && reasonError ? t("reason_required") : null}
+        />
+        <Stack direction="row" gap={2}>
+          <TextField
+            label={t("duration")}
+            type="number"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            inputProps={{ min: 1, step: 1 }}
+            error={durationError}
+            sx={{ flex: 1 }}
+          />
+          <FormControl sx={{ minWidth: "140px" }}>
+            <InputLabel>{t("unit")}</InputLabel>
+            <Select
+              label={t("unit")}
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              MenuProps={{ disableScrollLock: true }}
+            >
+              {SUSPENSION_DURATION_UNITS.map((u) => (
+                <MenuItem key={u} value={u}>
+                  {t("units." + u)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+        <Typography variant="body2" color="text.secondary">
+          {dateAppeal
+            ? t("appeal_on", { date: dateAppeal.format("YYYY-MM-DD HH:mm") })
+            : t_a("indefinite_suspension")}
+        </Typography>
+      </Stack>
+    </CustomModal>
   );
 }
 
