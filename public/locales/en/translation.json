@@ -2649,6 +2649,11 @@
           "input_method": "Input Method"
         },
         "highlight_country": "Highlight Country",
+        "highlight_filter": "Highlight / Filter",
+        "highlight_player": "Highlight Player",
+        "filter_all": "All",
+        "filter_country": "Country",
+        "filter_input_method": "Input Method",
         "show_unknown": "Show Unknown/Unset",
         "unknown": "Unknown",
         "total_submissions": "Total Submissions",

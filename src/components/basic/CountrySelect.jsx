@@ -5,7 +5,7 @@ import { COUNTRY_CODES } from "../../util/country_codes";
 
 import { LanguageFlag } from "./LanguageFlag";
 
-export function CountrySelect({ value, setValue, ...props }) {
+export function CountrySelect({ value, setValue, emptyLabel, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "components.country_select" });
   return (
     <TextField
@@ -21,7 +21,7 @@ export function CountrySelect({ value, setValue, ...props }) {
       {...props}
     >
       <MenuItem value="">
-        <em>{t("not_specified")}</em>
+        <em>{emptyLabel ?? t("not_specified")}</em>
       </MenuItem>
       {Object.keys(COUNTRY_CODES).map((code) => (
         <MenuItem key={code} value={code}>

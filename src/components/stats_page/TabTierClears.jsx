@@ -1,8 +1,10 @@
 import {
+  Box,
   Button,
   Checkbox,
   FormControlLabel,
   Grid,
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -11,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
@@ -21,13 +24,14 @@ import Color from "color";
 import { useEffect, useState } from "react";
 
 import { CountrySelect, ErrorDisplay, getErrorFromMultiple, LanguageFlag, LoadingSpinner } from "../basic";
-import { InputMethodIcon, PlayerIdSelect, PlayerLink } from "../goldberries";
+import { INPUT_METHOD_ICONS, InputMethodIcon, PlayerIdSelect, PlayerLink } from "../goldberries";
 import { getQueryData, useGetAllDifficulties, useGetStatsPlayerTierClearCounts } from "../../hooks/useApi";
 import { DIFF_CONSTS, getNewDifficultyColors } from "../../util/constants";
 import { getDifficultyName } from "../../util/data_util";
 import { useAppSettings } from "../../hooks/AppSettingsProvider";
 import { useAuth } from "../../hooks/AuthProvider";
 import { COUNTRY_CODES, COUNTRY_CODES_SHORT } from "../../util/country_codes";
+import { PARAMETERS_BACKGROUND } from "../../pages/MyUntaggedChallenges";
 
 const reducedPadding = { px: 0.5 };
 const reducedPaddingLeft = { pl: 1.0 };
@@ -68,9 +72,10 @@ export function TabTierClears() {
         {t("header")}
       </Typography>
 
-      <GroupBySelector options={groupOptions} value={groupBy} onChange={onChangeGroupBy} />
-
-      <TierClearCounts groupBy={groupBy} />
+      <TierClearCounts
+        groupBy={groupBy}
+        groupBySelector={<GroupBySelector options={groupOptions} value={groupBy} onChange={onChangeGroupBy} />}
+      />
       {/* <Divider sx={{ my: 2 }} />
       <TotalClears groupBy={groupBy} /> */}
     </Stack>
@@ -84,9 +89,9 @@ function GroupBySelector({ options, value, onChange }) {
   const variantSelected = "contained";
 
   return (
-    <Stack direction="column" gap={0} sx={{ mb: 1 }}>
-      <Typography variant="h6">{t("group_by.label")}</Typography>
-      <Stack direction="row" gap={2} alignItems="center" sx={{ mb: 1 }} flexWrap="wrap">
+    <Stack direction="column" gap={1}>
+      <ParametersHeader>{t("group_by.label")}</ParametersHeader>
+      <Stack direction="row" gap={2} alignItems="center" flexWrap="wrap">
         {options.map((option) => (
           <Button
             key={option.value}
@@ -101,27 +106,128 @@ function GroupBySelector({ options, value, onChange }) {
     </Stack>
   );
 }
+
+function ParametersHeader({ children }) {
+  return (
+    <Typography variant="subtitle2" color="text.secondary">
+      {children}
+    </Typography>
+  );
+}
 //#endregion
 
 //#region Tier Clear Counts Grid
-function TierClearCounts({ groupBy }) {
+function TierClearCounts({ groupBy, groupBySelector }) {
   const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
   const { user } = useAuth();
   const [highlightPlayerId, setHighlightPlayerId] = useState();
   const [highlightCountry, setHighlightCountry] = useState(user?.country ?? "");
+  const [filterCountry, setFilterCountry] = useState("");
+  const [filterInputMethod, setFilterInputMethod] = useState("");
   const [showUnknown, setShowUnknown] = useLocalStorage("tier_clears_show_unknown", false);
 
   const diffQuery = useGetAllDifficulties();
   const query = useGetStatsPlayerTierClearCounts(groupBy === "player" ? null : groupBy);
 
-  if (query.isLoading || diffQuery.isLoading) {
-    return <LoadingSpinner />;
-  } else if (query.isError || diffQuery.isError) {
-    return <ErrorDisplay error={getErrorFromMultiple(query, diffQuery)} />;
-  }
+  return (
+    <>
+      <Box
+        sx={{
+          p: { xs: 1.5, sm: 2 },
+          mb: 2,
+          borderRadius: 2,
+          backgroundColor: PARAMETERS_BACKGROUND,
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <Stack direction="column" gap={2}>
+          {groupBySelector}
+          <Stack direction="column" gap={1}>
+            <ParametersHeader>{t("highlight_filter")}</ParametersHeader>
+            <Grid container spacing={2} alignItems="center">
+              {groupBy === "player" && (
+                <>
+                  <Grid item xs={12} md={4}>
+                    <PlayerIdSelect
+                      type="all"
+                      label={t("highlight_player")}
+                      value={highlightPlayerId}
+                      onChange={(e, id) => setHighlightPlayerId(id)}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <CountrySelect
+                      value={filterCountry}
+                      setValue={setFilterCountry}
+                      label={t("filter_country")}
+                      emptyLabel={t("filter_all")}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <InputMethodFilterSelect value={filterInputMethod} setValue={setFilterInputMethod} />
+                  </Grid>
+                </>
+              )}
+              {groupBy === "country" && (
+                <Grid item xs={12} md={4}>
+                  <CountrySelect
+                    value={highlightCountry}
+                    setValue={setHighlightCountry}
+                    label={t("highlight_country")}
+                    size="small"
+                  />
+                </Grid>
+              )}
 
-  let data = getQueryData(query);
-  const difficulties = getQueryData(diffQuery).filter(
+              {/* Show unknown checkbox for country/input_method */}
+              {groupBy !== "player" && (
+                <Grid item xs={12} md={4}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={showUnknown} onChange={(e) => setShowUnknown(e.target.checked)} />
+                    }
+                    label={t("show_unknown")}
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </Stack>
+        </Stack>
+      </Box>
+
+      {query.isLoading || diffQuery.isLoading ? (
+        <LoadingSpinner />
+      ) : query.isError || diffQuery.isError ? (
+        <ErrorDisplay error={getErrorFromMultiple(query, diffQuery)} />
+      ) : (
+        <TierClearCountsGrid
+          data={getQueryData(query)}
+          allDifficulties={getQueryData(diffQuery)}
+          groupBy={groupBy}
+          highlightPlayerId={highlightPlayerId || user?.player?.id}
+          highlightCountry={highlightCountry}
+          filterCountry={filterCountry}
+          filterInputMethod={filterInputMethod}
+          showUnknown={showUnknown}
+        />
+      )}
+    </>
+  );
+}
+
+function TierClearCountsGrid({
+  data,
+  allDifficulties,
+  groupBy,
+  highlightPlayerId,
+  highlightCountry,
+  filterCountry,
+  filterInputMethod,
+  showUnknown,
+}) {
+  const difficulties = allDifficulties.filter(
     (diff) => diff.id !== DIFF_CONSTS.UNTIERED_ID && diff.id !== DIFF_CONSTS.TRIVIAL_ID,
   );
 
@@ -132,6 +238,13 @@ function TierClearCounts({ groupBy }) {
       if (groupBy === "input_method") return entry.input_method !== null;
       return true;
     });
+  }
+
+  // Filter players by country/input method, so ranks are only calculated among the remaining players
+  if (groupBy === "player") {
+    if (filterCountry) data = data.filter((entry) => entry.player.account.country === filterCountry);
+    if (filterInputMethod)
+      data = data.filter((entry) => entry.player.account.input_method === filterInputMethod);
   }
 
   // Determine the key field based on groupBy
@@ -151,8 +264,7 @@ function TierClearCounts({ groupBy }) {
   let highlightEntryKey = null;
 
   if (groupBy === "player") {
-    const doHighlightPlayerId = highlightPlayerId || user?.player?.id;
-    highlightEntry = data.find((entry) => doHighlightPlayerId === entry.player.id);
+    highlightEntry = data.find((entry) => highlightPlayerId === entry.player.id);
     highlightEntryKey = highlightEntry?.player.id;
   } else if (groupBy === "country") {
     highlightEntry = highlightCountry ? data.find((entry) => entry.country === highlightCountry) : null;
@@ -192,40 +304,6 @@ function TierClearCounts({ groupBy }) {
 
   return (
     <>
-      <Grid container spacing={2} sx={{ mb: 2 }}>
-        {/* Selector for highlighting */}
-        {groupBy === "player" && (
-          <Grid item xs={12} md={4}>
-            <PlayerIdSelect
-              type="all"
-              value={highlightPlayerId}
-              onChange={(e, id) => setHighlightPlayerId(id)}
-              sx={{ mt: 1 }}
-            />
-          </Grid>
-        )}
-        {groupBy === "country" && (
-          <Grid item xs={12} md={4}>
-            <CountrySelect
-              value={highlightCountry}
-              setValue={setHighlightCountry}
-              label={t("highlight_country")}
-              sx={{ mt: 1 }}
-            />
-          </Grid>
-        )}
-
-        {/* Show unknown checkbox for country/input_method */}
-        {groupBy !== "player" && (
-          <Grid item xs={12} md={4} display="flex" alignItems="center">
-            <FormControlLabel
-              control={<Checkbox checked={showUnknown} onChange={(e) => setShowUnknown(e.target.checked)} />}
-              label={t("show_unknown")}
-            />
-          </Grid>
-        )}
-      </Grid>
-
       <Grid container spacing={2}>
         {difficulties.map((diff) => (
           <Grid key={diff.id} item xs={12} md={4}>
@@ -256,6 +334,35 @@ function TierClearCounts({ groupBy }) {
         </Grid>
       </Grid>
     </>
+  );
+}
+
+function InputMethodFilterSelect({ value, setValue }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "stats.tabs.tier_clears" });
+  const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
+
+  return (
+    <TextField
+      select
+      fullWidth
+      size="small"
+      label={t("filter_input_method")}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      SelectProps={{ MenuProps: { disableScrollLock: true } }}
+    >
+      <MenuItem value="">
+        <em>{t("filter_all")}</em>
+      </MenuItem>
+      {Object.keys(INPUT_METHOD_ICONS).map((method) => (
+        <MenuItem key={method} value={method}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <InputMethodIcon method={method} />
+            {t_im(method)}
+          </Stack>
+        </MenuItem>
+      ))}
+    </TextField>
   );
 }
 
