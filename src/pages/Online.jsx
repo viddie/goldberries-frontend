@@ -167,9 +167,7 @@ export function PageOnline() {
       ) : query.isError ? (
         <ErrorDisplay error={query.error} />
       ) : entries.length === 0 ? (
-        <Typography variant="body1" color="text.secondary">
-          {t("no_players")}
-        </Typography>
+        <OnlineSummary count={0} />
       ) : (
         <Stack direction="column" gap={compact ? 0.5 : 1}>
           <OnlineSummary count={entries.length} />

@@ -2502,7 +2502,6 @@
       "when_sent": "CCT sends a status update to the goldberries server on every room transition and on certain other events (golden death, return to map).",
       "disable": "You can disable syncing in the Mod Options, either entirely or on a per-path basis."
     },
-    "no_players": "No players are online right now.",
     "players_online_one": "{{count}} player online",
     "players_online_other": "{{count}} players online",
     "auto_update_one": "Automatically updates every second",
