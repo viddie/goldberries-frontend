@@ -248,6 +248,13 @@ export function TglMoreButton({
               </>
             )}
           </Grid>
+          {!isMdScreen && (
+            <Grid item xs={12}>
+              <Button variant="contained" onClick={handleClose} fullWidth>
+                {t("apply")}
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Popover>
     </Stack>

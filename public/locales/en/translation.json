@@ -367,6 +367,7 @@
     },
     "tgl_more_button": {
       "label": "Display Options",
+      "apply": "Apply",
       "type": {
         "overall": "Options: Overall View",
         "player": "Options: Player View",
