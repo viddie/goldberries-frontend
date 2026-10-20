@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Chip, Divider, Grid, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Grid,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -29,7 +39,10 @@ import { useRestriction } from "../../hooks/useRestriction";
 import { ErrorDisplay, LoadingSpinner, TooltipLineBreaks } from "../basic";
 import { PlayerChip, RestrictionNotice } from "../goldberries";
 import { RESTRICTIONS } from "../../pages/Account";
-import { SuggestedDifficultyChart, SuggestedDifficultyTierCounts } from "../stats_page/Stats";
+import {
+  SuggestedDifficultyChart,
+  SuggestedDifficultyTierCounts,
+} from "../stats_page/Stats";
 import { ChallengeSubmissionTable } from "../../pages/Challenge";
 import { getChallengeNameShort } from "../../util/data_util";
 import {
@@ -46,7 +59,9 @@ import { CustomMenu } from "../Menu";
 import { SUGGESTION_VOTE_HIDE_HOURS } from "../../util/constants";
 
 export function ViewSuggestionModal({ id }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.view" });
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "suggestions.modals.view",
+  });
   const { t: t_s } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const auth = useAuth();
@@ -55,17 +70,22 @@ export function ViewSuggestionModal({ id }) {
   const query = useGetSuggestion(id);
   const suggestion = getQueryData(query);
 
-  const { mutate: deleteVote, isLoading: deleteVoteLoading } = useDeleteSuggestionVote(() => {});
-  const { mutate: postVote, isLoading: postVoteLoading } = usePostSuggestionVote();
-  const { mutate: postSuggestion, isLoading: postSuggestionLoading } = usePostSuggestion(() => {
-    query.refetch();
-    toast.success(t("feedback.updated"));
-  });
+  const { mutate: deleteVote, isLoading: deleteVoteLoading } =
+    useDeleteSuggestionVote(() => {});
+  const { mutate: postVote, isLoading: postVoteLoading } =
+    usePostSuggestionVote();
+  const { mutate: postSuggestion, isLoading: postSuggestionLoading } =
+    usePostSuggestion(() => {
+      query.refetch();
+      toast.success(t("feedback.updated"));
+    });
   const { isRestricted: voteRestricted } = useRestriction(RESTRICTIONS.vote);
   const votesLocked = useSuggestionVoteLock(suggestion);
   const votesRevealed = useRevealVotes();
   const userVoteObj = auth.hasPlayerClaimed
-    ? suggestion?.votes.find((vote) => vote.player_id === auth.user.player_id) ?? null
+    ? (suggestion?.votes.find(
+        (vote) => vote.player_id === auth.user.player_id,
+      ) ?? null)
     : null;
 
   useEffect(() => {
@@ -85,7 +105,8 @@ export function ViewSuggestionModal({ id }) {
 
   const hasVoted = userVoteObj !== null;
   const userVote = userVoteObj?.vote ?? null;
-  const commentChanged = userVoteObj !== null && userText !== (userVoteObj.comment ?? "");
+  const commentChanged =
+    userVoteObj !== null && userText !== (userVoteObj.comment ?? "");
   const voteMutationLoading = deleteVoteLoading || postVoteLoading;
   const selfHasDoneChallenge =
     auth.hasPlayerClaimed &&
@@ -100,9 +121,12 @@ export function ViewSuggestionModal({ id }) {
     (isExpired && (hasVoted || !auth.hasVerifierPriv)) ||
     (hasVoted && votesLocked);
   const invalidComment =
-    (requiresComment && userText.trim().length < 10) || userText.trim().length > 1500;
+    (requiresComment && userText.trim().length < 10) ||
+    userText.trim().length > 1500;
   const commentFieldDisabled =
-    voteRestricted || voteMutationLoading || (isExpired && (hasVoted || !auth.hasVerifierPriv));
+    voteRestricted ||
+    voteMutationLoading ||
+    (isExpired && (hasVoted || !auth.hasVerifierPriv));
 
   const vote = (vote) => {
     if (voteButtonsDisabled || (vote !== userVote && invalidComment)) return;
@@ -131,7 +155,8 @@ export function ViewSuggestionModal({ id }) {
       !commentChanged ||
       commentFieldDisabled ||
       invalidComment
-    ) return;
+    )
+      return;
 
     postVote({
       id: userVoteObj.id,
@@ -167,7 +192,9 @@ export function ViewSuggestionModal({ id }) {
     });
     modifyItems.push({
       icon: postSuggestionLoading ? loadingSpinner : faXmark,
-      text: t(isUnverified ? "buttons.reject_verification" : "buttons.reject_change"),
+      text: t(
+        isUnverified ? "buttons.reject_verification" : "buttons.reject_change",
+      ),
       onClick: () => updateSuggestion(false),
       color: "error",
       disabled: postSuggestionLoading,
@@ -223,14 +250,15 @@ export function ViewSuggestionModal({ id }) {
         <Grid item xs={12} sm="auto" sx={{ mt: 1 }}>
           <SuggestionCountdown suggestion={suggestion} />
         </Grid>
-        {suggestion.challenge !== null && suggestion.suggested_difficulty !== null && (
-          <Grid item xs={12}>
-            <DifficultyMoveDisplay
-              from={suggestion.current_difficulty}
-              to={suggestion.suggested_difficulty}
-            />
-          </Grid>
-        )}
+        {suggestion.challenge !== null &&
+          suggestion.suggested_difficulty !== null && (
+            <Grid item xs={12}>
+              <DifficultyMoveDisplay
+                from={suggestion.current_difficulty}
+                to={suggestion.suggested_difficulty}
+              />
+            </Grid>
+          )}
         <Grid item xs={12}>
           <Grid container columnSpacing={0.5}>
             <Grid item xs={12} sm="auto">
@@ -243,8 +271,17 @@ export function ViewSuggestionModal({ id }) {
               </Typography>
             </Grid>
             <Grid item xs={12} sm>
-              <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
-                <FontAwesomeIcon icon={faComment} /> <SuggestionCommentDisplay comment={suggestion.comment} />
+              <Typography
+                variant="body2"
+                sx={{ mt: 0.25, overflowWrap: "anywhere" }}
+              >
+                <FontAwesomeIcon icon={faComment} />{" "}
+                <SuggestionCommentDisplay
+                  key={suggestion.id}
+                  comment={suggestion.comment}
+                  maxChars={2000}
+                  expandable
+                />
               </Typography>
             </Grid>
           </Grid>
@@ -253,37 +290,70 @@ export function ViewSuggestionModal({ id }) {
           <Stack direction="column" gap={0.25}>
             <Stack direction="row" gap={0.5}>
               <Button
-                variant={!auth.hasPlayerClaimed || !hasVoted || userVote !== "+" ? "outlined" : "contained"}
+                variant={
+                  !auth.hasPlayerClaimed || !hasVoted || userVote !== "+"
+                    ? "outlined"
+                    : "contained"
+                }
                 color="success"
                 fullWidth
                 onClick={() => vote("+")}
-                disabled={voteButtonsDisabled || (userVote !== "+" && invalidComment)}
+                disabled={
+                  voteButtonsDisabled || (userVote !== "+" && invalidComment)
+                }
               >
-                <FontAwesomeIcon icon={faThumbsUp} style={{ height: "1.4em" }} />
-                <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
+                <FontAwesomeIcon
+                  icon={faThumbsUp}
+                  style={{ height: "1.4em" }}
+                />
+                <Box
+                  component="span"
+                  sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+                >
                   {t_s("votes.for")}
                 </Box>
               </Button>
               <Button
-                variant={!auth.hasPlayerClaimed || !hasVoted || userVote !== "-" ? "outlined" : "contained"}
+                variant={
+                  !auth.hasPlayerClaimed || !hasVoted || userVote !== "-"
+                    ? "outlined"
+                    : "contained"
+                }
                 color="error"
                 fullWidth
                 onClick={() => vote("-")}
-                disabled={voteButtonsDisabled || (userVote !== "-" && invalidComment)}
+                disabled={
+                  voteButtonsDisabled || (userVote !== "-" && invalidComment)
+                }
               >
-                <FontAwesomeIcon icon={faThumbsDown} style={{ height: "1.4em" }} />
-                <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
+                <FontAwesomeIcon
+                  icon={faThumbsDown}
+                  style={{ height: "1.4em" }}
+                />
+                <Box
+                  component="span"
+                  sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+                >
                   {t_s("votes.against")}
                 </Box>
               </Button>
               <Button
-                variant={!auth.hasPlayerClaimed || !hasVoted || userVote !== "i" ? "outlined" : "contained"}
+                variant={
+                  !auth.hasPlayerClaimed || !hasVoted || userVote !== "i"
+                    ? "outlined"
+                    : "contained"
+                }
                 fullWidth
                 onClick={() => vote("i")}
-                disabled={voteButtonsDisabled || (userVote !== "i" && invalidComment)}
+                disabled={
+                  voteButtonsDisabled || (userVote !== "i" && invalidComment)
+                }
               >
                 <FontAwesomeIcon icon={faHorse} style={{ height: "1.4em" }} />
-                <Box component="span" sx={{ ml: 1, display: { xs: "none", sm: "block" } }}>
+                <Box
+                  component="span"
+                  sx={{ ml: 1, display: { xs: "none", sm: "block" } }}
+                >
                   {t_s("votes.indifferent")}
                 </Box>
               </Button>
@@ -298,7 +368,10 @@ export function ViewSuggestionModal({ id }) {
                 {t("vote_locked", { count: SUGGESTION_VOTE_HIDE_HOURS })}
               </Typography>
             )}
-            <RestrictionNotice restriction={RESTRICTIONS.vote} sx={{ mt: 0.5 }} />
+            <RestrictionNotice
+              restriction={RESTRICTIONS.vote}
+              sx={{ mt: 0.5 }}
+            />
           </Stack>
         </Grid>
         {auth.hasPlayerClaimed && (
@@ -318,8 +391,13 @@ export function ViewSuggestionModal({ id }) {
             <Stack direction="row" gap={1} alignItems="center">
               <CharsCountLabel text={userText} maxChars={1500} minChars={10} />
               {requiresComment && userText.trim().length < 10 && (
-                <Typography variant="body2" color={(t) => t.palette.error.main} sx={{}}>
-                  <FontAwesomeIcon icon={faInfoCircle} /> {t("comment_required")}
+                <Typography
+                  variant="body2"
+                  color={(t) => t.palette.error.main}
+                  sx={{}}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />{" "}
+                  {t("comment_required")}
                 </Typography>
               )}
             </Stack>
@@ -328,7 +406,11 @@ export function ViewSuggestionModal({ id }) {
                 variant="outlined"
                 onClick={updateComment}
                 disabled={commentFieldDisabled || invalidComment}
-                startIcon={voteMutationLoading && <FontAwesomeIcon icon={faSpinner} spin />}
+                startIcon={
+                  voteMutationLoading && (
+                    <FontAwesomeIcon icon={faSpinner} spin />
+                  )
+                }
                 sx={{ my: 1 }}
               >
                 {t("buttons.update_comment")}
@@ -345,8 +427,17 @@ export function ViewSuggestionModal({ id }) {
 
         {votesLocked && !hasVoted && !votesRevealed ? (
           <Grid item xs={12}>
-            <Tooltip title={t("hidden_votes_desc", { count: SUGGESTION_VOTE_HIDE_HOURS })} arrow>
-              <Typography variant="body2" color={(t) => t.palette.text.secondary} textAlign="center">
+            <Tooltip
+              title={t("hidden_votes_desc", {
+                count: SUGGESTION_VOTE_HIDE_HOURS,
+              })}
+              arrow
+            >
+              <Typography
+                variant="body2"
+                color={(t) => t.palette.text.secondary}
+                textAlign="center"
+              >
                 {t("hidden_vote_count")}
                 <FontAwesomeIcon
                   icon={faEyeSlash}
@@ -365,13 +456,25 @@ export function ViewSuggestionModal({ id }) {
                   <Typography variant="body1">{t("done_challenge")}</Typography>
                   <Grid container columnSpacing={1}>
                     <Grid item xs={12} sm={4}>
-                      <VotesDetailsDisplay votes={suggestion.votes} voteType="+" hasSubmission={true} />
+                      <VotesDetailsDisplay
+                        votes={suggestion.votes}
+                        voteType="+"
+                        hasSubmission={true}
+                      />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <VotesDetailsDisplay votes={suggestion.votes} voteType="-" hasSubmission={true} />
+                      <VotesDetailsDisplay
+                        votes={suggestion.votes}
+                        voteType="-"
+                        hasSubmission={true}
+                      />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <VotesDetailsDisplay votes={suggestion.votes} voteType="i" hasSubmission={true} />
+                      <VotesDetailsDisplay
+                        votes={suggestion.votes}
+                        voteType="i"
+                        hasSubmission={true}
+                      />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -382,7 +485,11 @@ export function ViewSuggestionModal({ id }) {
             )}
 
             <Grid item xs={12} sm={12}>
-              {!isGeneral && <Typography variant="body1">{t("not_done_challenge")}</Typography>}
+              {!isGeneral && (
+                <Typography variant="body1">
+                  {t("not_done_challenge")}
+                </Typography>
+              )}
               <Grid container columnSpacing={1}>
                 <Grid item xs={12} sm={4}>
                   <VotesDetailsDisplay
@@ -422,7 +529,10 @@ export function ViewSuggestionModal({ id }) {
             </Grid>
             <Grid item xs={12} sm={9}>
               <Stack direction="row" justifyContent="space-around">
-                <SuggestedDifficultyChart challenge={suggestion.challenge} scale={0.75} />
+                <SuggestedDifficultyChart
+                  challenge={suggestion.challenge}
+                  scale={0.75}
+                />
               </Stack>
             </Grid>
             <Grid item xs={12} sm>
@@ -432,7 +542,11 @@ export function ViewSuggestionModal({ id }) {
               <Typography variant="body1" gutterBottom>
                 {t("totals")}
               </Typography>
-              <SuggestedDifficultyTierCounts challenge={suggestion.challenge} direction="column" stackGrid />
+              <SuggestedDifficultyTierCounts
+                challenge={suggestion.challenge}
+                direction="column"
+                stackGrid
+              />
             </Grid>
             <Grid item xs={12}>
               <Divider>
@@ -440,20 +554,31 @@ export function ViewSuggestionModal({ id }) {
               </Divider>
             </Grid>
             <Grid item xs={12}>
-              <ChallengeSubmissionTable challenge={suggestion.challenge} onlyShowFirst={20} />
+              <ChallengeSubmissionTable
+                challenge={suggestion.challenge}
+                onlyShowFirst={20}
+              />
             </Grid>
             {relatedChallenges.length > 0 && (
               <>
                 <Grid item xs={12}>
                   <Divider>
-                    <Chip label={t("related_challenges", { count: 30 })} size="small" />
+                    <Chip
+                      label={t("related_challenges", { count: 30 })}
+                      size="small"
+                    />
                   </Divider>
                 </Grid>
                 {relatedChallenges.map((challenge) => (
                   <>
                     <Grid item xs={12}>
-                      <Typography variant="body1">{getChallengeNameShort(challenge, true)}</Typography>
-                      <ChallengeSubmissionTable challenge={challenge} onlyShowFirst={20} />
+                      <Typography variant="body1">
+                        {getChallengeNameShort(challenge, true)}
+                      </Typography>
+                      <ChallengeSubmissionTable
+                        challenge={challenge}
+                        onlyShowFirst={20}
+                      />
                     </Grid>
                   </>
                 ))}
@@ -466,14 +591,23 @@ export function ViewSuggestionModal({ id }) {
   );
 }
 
-function VotesDetailsDisplay({ votes, voteType, hasSubmission, highlightedPlayers = {} }) {
+function VotesDetailsDisplay({
+  votes,
+  voteType,
+  hasSubmission,
+  highlightedPlayers = {},
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
   const votesFiltered = votes.filter(
-    (vote) => vote.vote === voteType && (hasSubmission ? vote.submission !== null : vote.submission === null),
+    (vote) =>
+      vote.vote === voteType &&
+      (hasSubmission ? vote.submission !== null : vote.submission === null),
   );
   const count = votesFiltered.length;
-  const voteIcon = voteType === "+" ? faThumbsUp : voteType === "-" ? faThumbsDown : faEquals;
-  const voteColor = voteType === "+" ? "green" : voteType === "-" ? "red" : "gray";
+  const voteIcon =
+    voteType === "+" ? faThumbsUp : voteType === "-" ? faThumbsDown : faEquals;
+  const voteColor =
+    voteType === "+" ? "green" : voteType === "-" ? "red" : "gray";
 
   return (
     <Stack direction="column" gap={1} alignItems="center">
@@ -495,7 +629,9 @@ function VotesDetailsDisplay({ votes, voteType, hasSubmission, highlightedPlayer
               />
               {isHighlighted && (
                 <Tooltip
-                  title={t("related_challenge", { challenge: getChallengeNameShort(relatedChallenge, true) })}
+                  title={t("related_challenge", {
+                    challenge: getChallengeNameShort(relatedChallenge, true),
+                  })}
                   arrow
                   placement="top"
                 >

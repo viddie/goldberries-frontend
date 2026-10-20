@@ -227,7 +227,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
           variant="outlined"
           {...form.register("comment")}
         />
-        <CharsCountLabel text={comment} maxChars={1000} />
+        <CharsCountLabel text={comment} maxChars={5000} />
       </Grid>
       <Grid item xs={12}>
         <Stack direction="row" gap={1} justifyContent="space-between">

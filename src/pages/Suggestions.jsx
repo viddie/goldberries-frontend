@@ -4,7 +4,16 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useDebounce } from "@uidotdev/usehooks";
-import { Box, Button, Dialog, DialogContent, Grid, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  Grid,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -21,7 +30,12 @@ import { useDeleteSuggestion } from "../hooks/useApi";
 import { useAuth } from "../hooks/AuthProvider";
 import { useRestriction } from "../hooks/useRestriction";
 import { BasicContainerBox, HeadTitle, StyledLink } from "../components/basic";
-import { ChallengeFcIcon, DifficultyChip, ObjectiveIcon, RestrictionNotice } from "../components/goldberries";
+import {
+  ChallengeFcIcon,
+  DifficultyChip,
+  ObjectiveIcon,
+  RestrictionNotice,
+} from "../components/goldberries";
 import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   getChallengeCampaign,
@@ -32,7 +46,10 @@ import {
 } from "../util/data_util";
 import { SUGGESTION_VOTE_HIDE_HOURS } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
-import { SuggestionsList, SuggestionsSearch } from "../components/suggestions_page/SuggestionsList";
+import {
+  SuggestionsList,
+  SuggestionsSearch,
+} from "../components/suggestions_page/SuggestionsList";
 import { ViewSuggestionModal } from "../components/suggestions_page/ViewSuggestionModal";
 import { CreateSuggestionModal } from "../components/suggestions_page/CreateSuggestionModal";
 
@@ -49,7 +66,9 @@ export function PageSuggestions({}) {
   const [tab, setTab] = useLocalStorage("search_filter_tab", "active");
   const [search, setSearch] = useLocalStorage("suggestions_search", "");
   const searchDebounced = useDebounce(search, 500);
-  const { isRestricted: createRestricted } = useRestriction(RESTRICTIONS.create_suggestion);
+  const { isRestricted: createRestricted } = useRestriction(
+    RESTRICTIONS.create_suggestion,
+  );
 
   const newSuggestion = () => {
     modalRefs.create.current.open();
@@ -80,7 +99,8 @@ export function PageSuggestions({}) {
     { value: "undecided", label: t("undecided") },
     { value: "expired", label: t("expired") },
   ];
-  const tabExpiredValue = tab === "expired" ? true : tab === "undecided" ? null : false;
+  const tabExpiredValue =
+    tab === "expired" ? true : tab === "undecided" ? null : false;
 
   return (
     <BasicContainerBox modern maxWidth="md">
@@ -104,7 +124,10 @@ export function PageSuggestions({}) {
         </Grid>
       </Grid>
       {auth.hasPlayerClaimed && (
-        <RestrictionNotice restriction={RESTRICTIONS.create_suggestion} sx={{ my: 1 }} />
+        <RestrictionNotice
+          restriction={RESTRICTIONS.create_suggestion}
+          sx={{ my: 1 }}
+        />
       )}
       <Typography variant="body2" sx={{ mb: 1 }}>
         {t("language_info")}
@@ -132,7 +155,11 @@ export function PageSuggestions({}) {
         search={searchDebounced}
       />
 
-      <SuggestionsModalContainer modalRefs={modalRefs} suggestionId={id} closeModal={onCloseSuggestion} />
+      <SuggestionsModalContainer
+        modalRefs={modalRefs}
+        suggestionId={id}
+        closeModal={onCloseSuggestion}
+      />
     </BasicContainerBox>
   );
 }
@@ -142,7 +169,9 @@ export function PageSuggestions({}) {
 //#region Modal Container
 
 function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.modals.delete" });
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "suggestions.modals.delete",
+  });
   const { mutate: deleteSuggestion } = useDeleteSuggestion();
 
   const createSuggestionModal = useModal();
@@ -157,8 +186,15 @@ function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
 
   return (
     <>
-      <CustomModal modalHook={createSuggestionModal} maxWidth="sm" options={{ hideFooter: true }}>
-        <CreateSuggestionModal id={createSuggestionModal.data} onSuccess={createSuggestionModal.close} />
+      <CustomModal
+        modalHook={createSuggestionModal}
+        maxWidth="sm"
+        options={{ hideFooter: true }}
+      >
+        <CreateSuggestionModal
+          id={createSuggestionModal.data}
+          onSuccess={createSuggestionModal.close}
+        />
       </CustomModal>
 
       <Dialog
@@ -170,7 +206,9 @@ function SuggestionsModalContainer({ modalRefs, suggestionId, closeModal }) {
         disableRestoreFocus
       >
         <DialogContent dividers>
-          {suggestionId !== undefined && <ViewSuggestionModal id={suggestionId} />}
+          {suggestionId !== undefined && (
+            <ViewSuggestionModal id={suggestionId} />
+          )}
         </DialogContent>
       </Dialog>
 
@@ -207,7 +245,9 @@ export function SuggestionName({ suggestion, expired }) {
   const map = challenge?.map;
   const campaign = getChallengeCampaign(challenge);
   const sameMapName =
-    suggestion.challenge_id !== null && challenge.map_id !== null && map.name === campaign.name;
+    suggestion.challenge_id !== null &&
+    challenge.map_id !== null &&
+    map.name === campaign.name;
 
   return (
     <Stack direction="column" gap={0}>
@@ -219,20 +259,29 @@ export function SuggestionName({ suggestion, expired }) {
         ) : (
           <>
             <Stack direction="column" gap={1}>
-              <StyledLink to={"/challenge/" + challenge.id} onClick={(e) => e.stopPropagation()}>
+              <StyledLink
+                to={"/challenge/" + challenge.id}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Typography variant="h6">
                   {getMapNameClean(map, campaign, t_g, true)}
-                  {getChallengeSuffix(challenge) && " [" + getChallengeSuffix(challenge) + "]"}
+                  {getChallengeSuffix(challenge) &&
+                    " [" + getChallengeSuffix(challenge) + "]"}
                 </Typography>
               </StyledLink>
             </Stack>
-            <ObjectiveIcon objective={challenge.objective} challenge={challenge} height="1.2em" />
+            <ObjectiveIcon
+              objective={challenge.objective}
+              challenge={challenge}
+              height="1.2em"
+            />
             <ChallengeFcIcon challenge={challenge} height="1.4em" />
           </>
         )}
-        {suggestion.is_verified !== false && (expired === true || expired === null) && (
-          <SuggestionAcceptedIcon isAccepted={suggestion.is_accepted} />
-        )}
+        {suggestion.is_verified !== false &&
+          (expired === true || expired === null) && (
+            <SuggestionAcceptedIcon isAccepted={suggestion.is_accepted} />
+          )}
         {suggestion.is_verified === null && (
           <Tooltip title={t("pending")} arrow placement="top">
             <FontAwesomeIcon icon={faEyeSlash} />
@@ -240,7 +289,10 @@ export function SuggestionName({ suggestion, expired }) {
         )}
         {suggestion.is_verified === false && (
           <Tooltip title={t("rejected")} arrow placement="top">
-            <FontAwesomeIcon icon={faCircleXmark} color={theme.palette.error.main} />
+            <FontAwesomeIcon
+              icon={faCircleXmark}
+              color={theme.palette.error.main}
+            />
           </Tooltip>
         )}
       </Stack>
@@ -260,7 +312,10 @@ export function SuggestionName({ suggestion, expired }) {
         >
           {sameMapName
             ? t("same_map", { author: campaign.author_gb_name })
-            : t("different_map", { campaign: campaign.name, author: campaign.author_gb_name })}
+            : t("different_map", {
+                campaign: campaign.name,
+                author: campaign.author_gb_name,
+              })}
         </Stack>
       )}
     </Stack>
@@ -285,10 +340,12 @@ export function useSuggestionVoteLock(suggestion) {
 
   useEffect(() => {
     setNow(Date.now());
-    if (!suggestion?.date_verified || !isSuggestionVoteLocked(suggestion)) return;
+    if (!suggestion?.date_verified || !isSuggestionVoteLocked(suggestion))
+      return;
 
     const unlockAt =
-      jsonDateToJsDate(suggestion.date_verified).getTime() + SUGGESTION_VOTE_HIDE_HOURS * 60 * 60 * 1000;
+      jsonDateToJsDate(suggestion.date_verified).getTime() +
+      SUGGESTION_VOTE_HIDE_HOURS * 60 * 60 * 1000;
     const timeout = setTimeout(() => setNow(Date.now()), unlockAt - Date.now());
     return () => clearTimeout(timeout);
   }, [suggestion?.date_verified]);
@@ -314,7 +371,10 @@ function subscribeRevealVotes(listener) {
 
 export function useRevealVotes() {
   const auth = useAuth();
-  const until = useSyncExternalStore(subscribeRevealVotes, () => revealVotesUntil);
+  const until = useSyncExternalStore(
+    subscribeRevealVotes,
+    () => revealVotesUntil,
+  );
   const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
@@ -339,26 +399,37 @@ function RevealVotesButton() {
   }, [revealed]);
 
   const toggle = () => {
-    setRevealVotesUntil(revealed ? 0 : Date.now() + REVEAL_VOTES_DURATION_MINUTES * 60 * 1000);
+    setRevealVotesUntil(
+      revealed ? 0 : Date.now() + REVEAL_VOTES_DURATION_MINUTES * 60 * 1000,
+    );
   };
   const minutesLeft = Math.max(1, Math.ceil((revealVotesUntil - now) / 60000));
 
   return (
-    <Tooltip title={t("reveal_votes_tooltip", { count: REVEAL_VOTES_DURATION_MINUTES })} arrow>
+    <Tooltip
+      title={t("reveal_votes_tooltip", {
+        count: REVEAL_VOTES_DURATION_MINUTES,
+      })}
+      arrow
+    >
       <Button
         variant={revealed ? "contained" : "outlined"}
         color="warning"
         startIcon={<FontAwesomeIcon icon={revealed ? faEyeSlash : faEye} />}
         onClick={toggle}
       >
-        {revealed ? t("hide_votes", { minutes: minutesLeft }) : t("reveal_votes")}
+        {revealed
+          ? t("hide_votes", { minutes: minutesLeft })
+          : t("reveal_votes")}
       </Button>
     </Tooltip>
   );
 }
 
 export function SuggestionCountdown({ suggestion, ...props }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.countdown" });
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "suggestions.countdown",
+  });
   const theme = useTheme();
   const [now, setNow] = useState(Date.now());
 
@@ -369,13 +440,17 @@ export function SuggestionCountdown({ suggestion, ...props }) {
 
   if (!suggestion.date_verified) return null;
 
-  const endTime = jsonDateToJsDate(suggestion.date_verified).getTime() + SUGGESTION_ACTIVE_DURATION_MS;
+  const endTime =
+    jsonDateToJsDate(suggestion.date_verified).getTime() +
+    SUGGESTION_ACTIVE_DURATION_MS;
   const diff = endTime - now;
   if (diff <= 0) return null;
 
   return (
     <Tooltip
-      title={t("tooltip", { date: new Date(endTime).toLocaleString(getNavigatorLanguage()) })}
+      title={t("tooltip", {
+        date: new Date(endTime).toLocaleString(getNavigatorLanguage()),
+      })}
       arrow
       placement="top"
     >
@@ -387,7 +462,9 @@ export function SuggestionCountdown({ suggestion, ...props }) {
         {...props}
       >
         <FontAwesomeIcon icon={faClock} />
-        <Typography variant="body2">{t("label", { time: getShorthandTimeLeft(diff, t) })}</Typography>
+        <Typography variant="body2">
+          {t("label", { time: getShorthandTimeLeft(diff, t) })}
+        </Typography>
       </Stack>
     </Tooltip>
   );
@@ -416,7 +493,9 @@ export function SuggestionAcceptedIcon({ isAccepted, height = "1.5em" }) {
 
   const acceptedText = t(isAccepted ? "accepted" : "rejected");
   const icon = isAccepted === true ? faCircleCheck : faCircleXmark;
-  const color = isAccepted ? theme.palette.success.main : theme.palette.error.main;
+  const color = isAccepted
+    ? theme.palette.success.main
+    : theme.palette.error.main;
   return (
     <Tooltip title={acceptedText} arrow placement="top">
       <FontAwesomeIcon icon={icon} color={color} height={height} />
@@ -425,10 +504,13 @@ export function SuggestionAcceptedIcon({ isAccepted, height = "1.5em" }) {
 }
 
 export function CharsCountLabel({ text, minChars = -1, maxChars }) {
-  const { t } = useTranslation(undefined, { keyPrefix: "components.chars_count_label" });
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "components.chars_count_label",
+  });
   text = text ?? "";
   const length = text.length;
-  const color = length < minChars || length > maxChars ? "error" : "text.secondary";
+  const color =
+    length < minChars || length > maxChars ? "error" : "text.secondary";
   return (
     <Typography variant="caption" color={color}>
       {t("label", { count: length, max: maxChars })}
@@ -436,12 +518,42 @@ export function CharsCountLabel({ text, minChars = -1, maxChars }) {
   );
 }
 
-export function SuggestionCommentDisplay({ comment, ...props }) {
+export function SuggestionCommentDisplay({
+  comment,
+  maxChars,
+  expandable = false,
+  ...props
+}) {
+  const { t } = useTranslation(undefined, { keyPrefix: "general" });
+  const [expanded, setExpanded] = useState(false);
   if (!comment) return "-";
+
+  const truncated =
+    maxChars !== undefined ? truncateAtWord(comment, maxChars) : comment;
+  const isTruncated = truncated !== comment;
+  const showFull = expanded || !isTruncated;
 
   return (
     <Box component="span" sx={{ whiteSpace: "pre-wrap" }} {...props}>
-      {comment}
+      {showFull ? comment : truncated + "..."}
+      {isTruncated && expandable && (
+        <>
+          {" "}
+          <Box
+            component="span"
+            onClick={() => setExpanded((prev) => !prev)}
+            sx={{
+              color: "primary.main",
+              cursor: "pointer",
+              fontWeight: "bold",
+              whiteSpace: "nowrap",
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            {expanded ? t("show_less") : t("show_more")}
+          </Box>
+        </>
+      )}
     </Box>
   );
 }
@@ -450,17 +562,33 @@ export function SuggestionCommentDisplay({ comment, ...props }) {
 
 //#region Helper Components
 
-function RadioButtonsGroup({ title, options, value, onChange, color = "primary", sx = {}, ...props }) {
+function RadioButtonsGroup({
+  title,
+  options,
+  value,
+  onChange,
+  color = "primary",
+  sx = {},
+  ...props
+}) {
   const variantUnselected = "outlined";
   const variantSelected = "contained";
   return (
     <Stack direction="column" gap={0} sx={{ mb: 0, ...sx }} {...props}>
       <Typography variant="h6">{title}</Typography>
-      <Stack direction="row" gap={2} alignItems="center" sx={{ mb: 1 }} flexWrap="wrap">
+      <Stack
+        direction="row"
+        gap={2}
+        alignItems="center"
+        sx={{ mb: 1 }}
+        flexWrap="wrap"
+      >
         {options.map((option) => (
           <Button
             key={option.value}
-            variant={value === option.value ? variantSelected : variantUnselected}
+            variant={
+              value === option.value ? variantSelected : variantUnselected
+            }
             color={color}
             onClick={() => onChange(option.value)}
           >
@@ -471,4 +599,19 @@ function RadioButtonsGroup({ title, options, value, onChange, color = "primary",
     </Stack>
   );
 }
+//#endregion
+
+//#region Utils
+
+// Cuts the text at the last word before maxChars characters. Returns the text unchanged if it is short enough.
+function truncateAtWord(text, maxChars) {
+  if (text.length <= maxChars) return text;
+  const cut = text.slice(0, maxChars);
+  // Cut lands exactly on a word boundary
+  if (/\s/.test(text[maxChars])) return cut.trimEnd();
+  // Drop the partial last word, unless the whole text is a single word
+  const trimmed = cut.replace(/\s+\S*$/, "");
+  return (trimmed === "" ? cut : trimmed).trimEnd();
+}
+
 //#endregion

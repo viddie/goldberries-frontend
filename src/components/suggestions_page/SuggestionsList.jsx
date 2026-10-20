@@ -1,7 +1,15 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
-import { Grid, IconButton, Pagination, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import {
+  Grid,
+  IconButton,
+  Pagination,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -12,7 +20,10 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { BasicBox, ErrorDisplay, HeadTitle, LoadingSpinner } from "../basic";
 import { DifficultyChip, OtherIcon, PlayerChip } from "../goldberries";
 import { dateToTimeAgoString, jsonDateToJsDate } from "../../util/util";
-import { getSortedSuggestedDifficulties, getNavigatorLanguage } from "../../util/data_util";
+import {
+  getSortedSuggestedDifficulties,
+  getNavigatorLanguage,
+} from "../../util/data_util";
 import { VotesBar } from "../VotesBar";
 import {
   DifficultyMoveDisplay,
@@ -36,7 +47,14 @@ export function SuggestionsList({
   const [page, setPage] = useState(1);
   const [perPage] = useState(defaultPerPage);
 
-  const query = useGetSuggestions(page, perPage, expired, null, filterType, search);
+  const query = useGetSuggestions(
+    page,
+    perPage,
+    expired,
+    null,
+    filterType,
+    search,
+  );
 
   useEffect(() => {
     setPage(1);
@@ -65,7 +83,11 @@ export function SuggestionsList({
           </Typography>
         </Grid>
         <Grid item xs={12} sm>
-          <Pagination count={max_page} page={page} onChange={(e, value) => setPage(value)} />
+          <Pagination
+            count={max_page}
+            page={page}
+            onChange={(e, value) => setPage(value)}
+          />
         </Grid>
       </Grid>
       {suggestions.map((suggestion) => (
@@ -80,7 +102,10 @@ export function SuggestionsList({
   );
 }
 
-export const SuggestionsSearch = memo(function SuggestionsSearch({ search, setSearch }) {
+export const SuggestionsSearch = memo(function SuggestionsSearch({
+  search,
+  setSearch,
+}) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions" });
   const [localSearch, setLocalSearch] = useState(search);
   const localSearchDebounced = useDebounce(localSearch, 500);
@@ -105,14 +130,17 @@ export const SuggestionsSearch = memo(function SuggestionsSearch({ search, setSe
 
 function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t } = useTranslation(undefined, { keyPrefix: "suggestions.display" });
-  const { t: t_sv } = useTranslation(undefined, { keyPrefix: "suggestions.votes" });
+  const { t: t_sv } = useTranslation(undefined, {
+    keyPrefix: "suggestions.votes",
+  });
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const auth = useAuth();
   const votesLocked = useSuggestionVoteLock(suggestion);
   const votesRevealed = useRevealVotes();
   const hasVoted =
-    auth.hasPlayerClaimed && suggestion.votes.some((vote) => vote.player_id === auth.user.player_id);
+    auth.hasPlayerClaimed &&
+    suggestion.votes.some((vote) => vote.player_id === auth.user.player_id);
 
   const viewSuggestion = () => {
     modalRefs.view.current(suggestion.id);
@@ -129,8 +157,12 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
       suggestion.is_verified !== true);
 
   const isGeneral = suggestion.challenge_id === null;
-  const votesSubmission = suggestion.votes.filter((vote) => vote.submission !== null);
-  const votesNoSubmission = suggestion.votes.filter((vote) => vote.submission === null);
+  const votesSubmission = suggestion.votes.filter(
+    (vote) => vote.submission !== null,
+  );
+  const votesNoSubmission = suggestion.votes.filter(
+    (vote) => vote.submission === null,
+  );
 
   let acceptedColor =
     suggestion.is_accepted === null
@@ -142,8 +174,12 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const unverified = suggestion.is_verified !== true;
 
   const difficultiesSorted =
-    suggestion.challenge_id !== null ? getSortedSuggestedDifficulties(suggestion.challenge) : [];
-  const difficultiesCountTotal = difficultiesSorted ? difficultiesSorted.reduce((a, b) => a + b.value, 0) : 0;
+    suggestion.challenge_id !== null
+      ? getSortedSuggestedDifficulties(suggestion.challenge)
+      : [];
+  const difficultiesCountTotal = difficultiesSorted
+    ? difficultiesSorted.reduce((a, b) => a + b.value, 0)
+    : 0;
 
   const didChallengeTooltip = t_sv("did_challenge");
   const othersTooltip = t_sv("others");
@@ -161,7 +197,9 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         "&:hover": {
           background: theme.palette.box.hover,
         },
-        background: unverified ? theme.palette.errorBackground : theme.palette.background.other,
+        background: unverified
+          ? theme.palette.errorBackground
+          : theme.palette.background.other,
       }}
       onClick={viewSuggestion}
     >
@@ -172,7 +210,11 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         <Grid item xs={12} sm="auto">
           <Stack direction="row" gap={1} alignItems="center">
             {canDelete && (
-              <IconButton color="error" onClick={askDeleteSuggestion} size="small">
+              <IconButton
+                color="error"
+                onClick={askDeleteSuggestion}
+                size="small"
+              >
                 <FontAwesomeIcon icon={faTrash} />
               </IconButton>
             )}
@@ -181,39 +223,59 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         </Grid>
       </Grid>
 
-      {suggestion.challenge !== null && suggestion.suggested_difficulty !== null && (
-        <Stack
-          direction="row"
-          gap={1}
-          alignItems="center"
-          flexWrap={{ xs: "wrap", sm: "unset" }}
-          sx={{ mb: 0.5 }}
-        >
-          <DifficultyMoveDisplay from={suggestion.current_difficulty} to={suggestion.suggested_difficulty} />
-          {difficultiesSorted.length > 0 && (
-            <Stack direction="row" gap={1}>
-              ( {((difficultiesSorted[0].value / difficultiesCountTotal) * 100).toFixed(0)}%{" "}
-              {difficultiesSorted.map((d, index) => {
-                if (d.value !== difficultiesSorted[0].value) return null;
-                return (
-                  <>
-                    {index > 0 && <span key={"k2" + d.difficulty.id}> / </span>}
-                    <DifficultyChip key={"k1" + d.difficulty.id} difficulty={d.difficulty} />
-                  </>
-                );
-              })}
-              )
-            </Stack>
-          )}
-        </Stack>
-      )}
+      {suggestion.challenge !== null &&
+        suggestion.suggested_difficulty !== null && (
+          <Stack
+            direction="row"
+            gap={1}
+            alignItems="center"
+            flexWrap={{ xs: "wrap", sm: "unset" }}
+            sx={{ mb: 0.5 }}
+          >
+            <DifficultyMoveDisplay
+              from={suggestion.current_difficulty}
+              to={suggestion.suggested_difficulty}
+            />
+            {difficultiesSorted.length > 0 && (
+              <Stack direction="row" gap={1}>
+                ({" "}
+                {(
+                  (difficultiesSorted[0].value / difficultiesCountTotal) *
+                  100
+                ).toFixed(0)}
+                %{" "}
+                {difficultiesSorted.map((d, index) => {
+                  if (d.value !== difficultiesSorted[0].value) return null;
+                  return (
+                    <>
+                      {index > 0 && (
+                        <span key={"k2" + d.difficulty.id}> / </span>
+                      )}
+                      <DifficultyChip
+                        key={"k1" + d.difficulty.id}
+                        difficulty={d.difficulty}
+                      />
+                    </>
+                  );
+                })}
+                )
+              </Stack>
+            )}
+          </Stack>
+        )}
 
       <Grid container sx={{ mb: 1 }}>
         <Grid item xs={12} sm={12}>
           <Grid container columnSpacing={0.5}>
             <Grid item xs={12} sm>
-              <Typography variant="body2" sx={{ mt: 0.25, overflowWrap: "anywhere" }}>
-                <SuggestionCommentDisplay comment={suggestion.comment} />
+              <Typography
+                variant="body2"
+                sx={{ mt: 0.25, overflowWrap: "anywhere" }}
+              >
+                <SuggestionCommentDisplay
+                  comment={suggestion.comment}
+                  maxChars={1000}
+                />
               </Typography>
             </Grid>
           </Grid>
@@ -235,7 +297,9 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
             <Typography variant="body2">&middot;</Typography>
             <Typography variant="body2">
               <Tooltip
-                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(getNavigatorLanguage())}
+                title={jsonDateToJsDate(suggestion.date_created).toLocaleString(
+                  getNavigatorLanguage(),
+                )}
                 arrow
                 placement="top"
               >
@@ -292,17 +356,29 @@ function VotesDisplay({ votes, hasSubmission, style = {} }) {
   const countFor = votes.filter((vote) => vote.vote === "+").length;
   const votedFor =
     auth.hasPlayerClaimed &&
-    votes.some((vote) => vote.vote === "+" && vote.player_id === auth.user.player_id);
+    votes.some(
+      (vote) => vote.vote === "+" && vote.player_id === auth.user.player_id,
+    );
   const countAgainst = votes.filter((vote) => vote.vote === "-").length;
   const votedAgainst =
     auth.hasPlayerClaimed &&
-    votes.some((vote) => vote.vote === "-" && vote.player_id === auth.user.player_id);
+    votes.some(
+      (vote) => vote.vote === "-" && vote.player_id === auth.user.player_id,
+    );
   const countIndifferent = votes.filter((vote) => vote.vote === "i").length;
   const votedIndifferent =
     auth.hasPlayerClaimed &&
-    votes.some((vote) => vote.vote === "i" && vote.player_id === auth.user.player_id);
+    votes.some(
+      (vote) => vote.vote === "i" && vote.player_id === auth.user.player_id,
+    );
 
-  const ownVoteType = votedFor ? "for" : votedAgainst ? "against" : votedIndifferent ? "indifferent" : null;
+  const ownVoteType = votedFor
+    ? "for"
+    : votedAgainst
+      ? "against"
+      : votedIndifferent
+        ? "indifferent"
+        : null;
 
   return (
     <VotesBar
@@ -329,7 +405,7 @@ export function HiddenVoteBar() {
         height: "20px",
         width: "100%",
         border: `1px solid ${theme.palette.grey[800]}`,
-        borderRadius: "8px"
+        borderRadius: "8px",
       }}
     >
       <div
@@ -340,16 +416,19 @@ export function HiddenVoteBar() {
           borderRadius: "8px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center"
+          justifyContent: "center",
         }}
       >
-        <span 
-          style={{ 
+        <span
+          style={{
             color: theme.palette.text.secondary,
             fontSize: "small",
           }}
         >
-          <Tooltip title={t("hidden_votes", { count: SUGGESTION_VOTE_HIDE_HOURS })} arrow>
+          <Tooltip
+            title={t("hidden_votes", { count: SUGGESTION_VOTE_HIDE_HOURS })}
+            arrow
+          >
             <FontAwesomeIcon icon={faEyeSlash} />
           </Tooltip>
         </span>

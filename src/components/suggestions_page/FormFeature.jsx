@@ -56,7 +56,7 @@ export function FeatureSuggestionForm({ onSuccess, onBack }) {
           variant="outlined"
           {...form.register("comment")}
         />
-        <CharsCountLabel text={comment} maxChars={1000} minChars={10} />
+        <CharsCountLabel text={comment} maxChars={5000} minChars={10} />
         {comment.length < 10 && (
           <FormHelperText sx={{ color: theme.palette.error.main }}>{t("comment.required")}</FormHelperText>
         )}
