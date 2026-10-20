@@ -179,18 +179,20 @@ export function SingleSubmission({ defaultCampaign, defaultMap, defaultChallenge
           </>
         )}
         {map && <ChallengeSelect map={map} selected={challenge} setSelected={onChallengeSelect} />}
-        {campaign && map === null && campaign.challenges?.length > 0 && (
-          <>
-            <Divider>
-              <Chip label={t("full_game")} size="small" />
-            </Divider>
-            <CampaignChallengeSelect
-              campaign={campaign}
-              selected={challenge}
-              setSelected={onChallengeSelect}
-            />
-          </>
-        )}
+        {campaign &&
+          map === null &&
+          (campaign.challenges?.length > 0 || challenge?.campaign_id === campaign.id) && (
+            <>
+              <Divider>
+                <Chip label={t("full_game")} size="small" />
+              </Divider>
+              <CampaignChallengeSelect
+                campaign={campaign}
+                selected={challenge}
+                setSelected={onChallengeSelect}
+              />
+            </>
+          )}
       </Stack>
       {challenge && (
         <>

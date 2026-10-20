@@ -75,7 +75,7 @@ export function PageSubmit() {
       <RestrictionNotice restriction={RESTRICTIONS.submit} sx={{ mt: 2 }} />
       {selectedTab === "single-challenge" && (
         <SingleSubmission
-          defaultCampaign={challenge?.map?.campaign}
+          defaultCampaign={challenge?.map?.campaign ?? challenge?.campaign}
           defaultMap={challenge?.map}
           defaultChallenge={challenge}
         />
