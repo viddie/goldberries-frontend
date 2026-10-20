@@ -1689,11 +1689,12 @@ export function useGetChallengesForTagging(challengeIds) {
 }
 //#endregion
 
+export const ONLINE_PLAYERS_REFRESH_SECONDS = 10;
 export function useGetOnlinePlayers(recency = null, count = null) {
   return useQuery({
     queryKey: ["online_players", recency, count],
     queryFn: () => fetchOnlinePlayers(recency, count),
     onError: errorToast,
-    refetchInterval: 10 * 1000,
+    refetchInterval: ONLINE_PLAYERS_REFRESH_SECONDS * 1000,
   });
 }

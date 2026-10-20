@@ -1,11 +1,15 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Box, Collapse, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { useLayoutEffect, useRef, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { Box, ButtonGroup, Collapse, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBars,
   faBug,
+  faArrowRight,
   faCircle,
+  faClockRotateLeft,
   faDoorOpen,
   faFlag,
   faLink,
@@ -14,6 +18,7 @@ import {
   faRightFromBracket,
   faSkull,
   faStopwatch,
+  faTableList,
   faTag,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
@@ -28,12 +33,15 @@ import {
   YAxis,
 } from "recharts";
 
-import { getQueryData, useGetOnlinePlayers } from "../hooks/useApi";
+import { getQueryData, ONLINE_PLAYERS_REFRESH_SECONDS, useGetOnlinePlayers } from "../hooks/useApi";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   BasicContainerBox,
+  CustomIconButton,
   ErrorDisplay,
   HeadTitle,
   LoadingSpinner,
+  NoticeBox,
   StyledExternalLink,
   StyledLink,
 } from "../components/basic";
@@ -50,7 +58,11 @@ import {
 import { API_BASE_URL } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
 
+const CCT_URL = "https://gamebanana.com/mods/358978";
+const SETUP_STEP_COUNT = 5;
 const GRID_COLUMNS = "minmax(140px, 1.2fr) 2fr 2fr minmax(180px, 1.3fr)";
+// The status column is wider in the compact layout, since the progress bar and its labels are in a single line
+const GRID_COLUMNS_COMPACT = "minmax(140px, 1.2fr) 2fr 2fr minmax(260px, 1.8fr)";
 const GOLDEN_COLOR = "#ffb300";
 const PROGRESS_COLOR = "#2f6fa7";
 const PB_COLOR = "#4caf50";
@@ -65,6 +77,8 @@ const BANNER_CHIP_BACKGROUND = "rgba(20,20,20,0.75)";
 // Slightly smaller than the theme defaults (1rem / 0.875rem) to keep the rows compact
 const ROW_FONT_SIZES = { body1: "0.94rem", body2: "0.82rem" };
 const PROGRESS_BAR_RADIUS = 5;
+// Gap (in px) between the player name and the label next to it
+const PLAYER_LABEL_GAP = 8;
 // Markers closer than this (in % of the bar) get their labels pushed apart to avoid overlapping
 const MARKER_LABEL_MIN_DISTANCE = 15;
 const DEATH_COLOR = "#e53935";
@@ -72,6 +86,10 @@ const RESET_COLOR = "#90caf9";
 const EXIT_COLOR = "#bdbdbd";
 const NOT_ON_PATH_COLOR = "rgba(255,255,255,0.45)";
 const EVENT_ICON_SIZE = 14;
+// Amount of status updates fetched per player. The history graph always reserves space for this many updates
+const HISTORY_SIZE = 100;
+const HISTORY_SIZE_LONG = 300;
+const HISTORY_TICK_COUNT = 4;
 const GOLDEN_GIF_SIZE = 20;
 // Events that end the current run. They are rendered as markers on the last point instead of creating a new point
 const RUN_ENDING_EVENTS = ["death", "reset", "exit"];
@@ -84,9 +102,14 @@ const EVENT_MARKERS = {
 
 export function PageOnline() {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
-  const query = useGetOnlinePlayers();
+  const [layout, setLayout] = useLocalStorage("online_layout", "normal");
+  const [longHistory, setLongHistory] = useLocalStorage("online_long_history", false);
+  const historySize = longHistory ? HISTORY_SIZE_LONG : HISTORY_SIZE;
+  const query = useGetOnlinePlayers(null, historySize);
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const compact = layout === "compact";
+  const setupModal = useModal(null, undefined, { actions: [ModalButtons.close] });
 
   const entries = sortEntries(
     (getQueryData(query) ?? []).map((entry) => ({ ...entry, view: getRowView(entry) })),
@@ -95,9 +118,49 @@ export function PageOnline() {
   return (
     <BasicContainerBox maxWidth="lg" modern>
       <HeadTitle title={t("title")} />
-      <Typography variant="h4" gutterBottom>
-        {t("title")}
-      </Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} sx={{ mb: 1 }}>
+        <Stack direction="column" alignItems="flex-start">
+          <Typography variant="h4">{t("title")}</Typography>
+          <Typography
+            variant="body2"
+            component="button"
+            onClick={() => setupModal.open()}
+            sx={{
+              p: 0,
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+              color: "text.secondary",
+              textDecoration: "underline",
+              "&:hover": { color: "text.primary" },
+            }}
+          >
+            {t("setup.link")}
+          </Typography>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={1}>
+          <ButtonGroup>
+            <LayoutButton
+              icon={faTableList}
+              label={t("layout.normal")}
+              active={!compact}
+              onClick={() => setLayout("normal")}
+            />
+            <LayoutButton
+              icon={faBars}
+              label={t("layout.compact")}
+              active={compact}
+              onClick={() => setLayout("compact")}
+            />
+          </ButtonGroup>
+          <LayoutButton
+            icon={faClockRotateLeft}
+            label={t("long_history", { count: HISTORY_SIZE_LONG })}
+            active={longHistory}
+            onClick={() => setLongHistory((prev) => !prev)}
+          />
+        </Stack>
+      </Stack>
 
       {query.isLoading ? (
         <LoadingSpinner />
@@ -108,12 +171,13 @@ export function PageOnline() {
           {t("no_players")}
         </Typography>
       ) : (
-        <Stack direction="column" gap={1}>
+        <Stack direction="column" gap={compact ? 0.5 : 1}>
+          <OnlineSummary count={entries.length} />
           {isMdUp && (
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: GRID_COLUMNS,
+                gridTemplateColumns: compact ? GRID_COLUMNS_COMPACT : GRID_COLUMNS,
                 gap: 2,
                 px: 2,
               }}
@@ -127,11 +191,100 @@ export function PageOnline() {
             </Box>
           )}
           {entries.map((entry) => (
-            <OnlinePlayerRow key={entry.player.id} entry={entry} isMdUp={isMdUp} />
+            <OnlinePlayerRow
+              key={entry.player.id}
+              entry={entry}
+              isMdUp={isMdUp}
+              compact={compact}
+              historySize={historySize}
+            />
           ))}
         </Stack>
       )}
+
+      <CustomModal modalHook={setupModal} options={{ title: t("setup.title") }}>
+        <SetupInstructions />
+      </CustomModal>
     </BasicContainerBox>
+  );
+}
+
+function SetupInstructions() {
+  const { t } = useTranslation(undefined, { keyPrefix: "online.setup" });
+  const steps = Array.from({ length: SETUP_STEP_COUNT }, (_, i) => i + 1);
+
+  return (
+    <Stack direction="column" gap={2}>
+      <Typography variant="body1">{t("intro")}</Typography>
+
+      <Box component="ol" sx={{ m: 0, pl: 3, "& li": { py: 0.25 } }}>
+        {steps.map((step) => (
+          <Typography key={step} component="li" variant="body1">
+            <Trans
+              t={t}
+              i18nKey={"steps." + step}
+              components={{
+                CctLink: <StyledExternalLink href={CCT_URL} isSafe />,
+                b: <b />,
+                Arrow: <FontAwesomeIcon icon={faArrowRight} fontSize="0.8em" style={{ margin: "0 4px" }} />,
+              }}
+            />
+          </Typography>
+        ))}
+      </Box>
+
+      <NoticeBox severity="success">{t("done")}</NoticeBox>
+
+      <Stack direction="column" gap={0.5}>
+        <Typography variant="h6">{t("details_header")}</Typography>
+        <Typography variant="body2" color="text.secondary">
+          {t("when_sent")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {t("disable")}
+        </Typography>
+      </Stack>
+    </Stack>
+  );
+}
+
+// Amount of players online and a hint about the automatic refresh
+function OnlineSummary({ count }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "online" });
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} flexWrap="wrap">
+      <Typography variant="body2" color="text.secondary">
+        {t("players_online", { count })}
+      </Typography>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+      >
+        <Box
+          component="span"
+          sx={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: PB_COLOR,
+            boxShadow: "0 0 6px " + PB_COLOR,
+          }}
+        />
+        {t("auto_update", { count: ONLINE_PLAYERS_REFRESH_SECONDS })}
+      </Typography>
+    </Stack>
+  );
+}
+
+// Icon-only toggle button. A regular Button (instead of an IconButton), so it can be used in a ButtonGroup
+function LayoutButton({ icon, label, active, onClick, ...props }) {
+  return (
+    <Tooltip title={label} arrow>
+      <CustomIconButton variant={active ? "contained" : "outlined"} onClick={onClick} {...props}>
+        <FontAwesomeIcon icon={icon} />
+      </CustomIconButton>
+    </Tooltip>
   );
 }
 
@@ -150,7 +303,7 @@ function sortEntries(entries) {
   });
 }
 
-function OnlinePlayerRow({ entry, isMdUp }) {
+function OnlinePlayerRow({ entry, isMdUp, compact, historySize }) {
   const [expanded, setExpanded] = useState(false);
   const { status, mode } = entry.view;
   const isWin = mode === "win";
@@ -178,11 +331,11 @@ function OnlinePlayerRow({ entry, isMdUp }) {
           sx={{
             position: "relative",
             display: "grid",
-            gridTemplateColumns: isMdUp ? GRID_COLUMNS : "1fr",
+            gridTemplateColumns: isMdUp ? (compact ? GRID_COLUMNS_COMPACT : GRID_COLUMNS) : "1fr",
             gap: isMdUp ? 2 : 0.75,
             alignItems: "center",
             px: 2,
-            py: 1,
+            py: compact ? 0.75 : 1,
             fontSize: ROW_FONT_SIZES.body1,
             "& .MuiTypography-body1": { fontSize: ROW_FONT_SIZES.body1 },
             "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
@@ -191,7 +344,7 @@ function OnlinePlayerRow({ entry, isMdUp }) {
           <PlayerCell entry={entry} status={status} mode={mode} />
           <MapCell status={status} mode={mode} />
           <ChallengeCell status={status} mode={mode} />
-          <StatusCell status={status} mode={mode} />
+          <StatusCell status={status} mode={mode} compact={compact} />
         </Box>
       </Box>
       <Collapse in={expanded} unmountOnExit>
@@ -199,13 +352,13 @@ function OnlinePlayerRow({ entry, isMdUp }) {
           sx={{
             px: 2,
             pb: 2,
-            pt: 1,
+            pt: mode !== "overworld" ? 2 : 1,
             borderTop: "1px solid rgba(255,255,255,0.08)",
           }}
         >
           <Stack direction="column" gap={2}>
             {mode !== "overworld" && <CurrentRunInfo statuses={entry.statuses} status={status} />}
-            <SessionHistoryGraph statuses={entry.statuses} />
+            <SessionHistoryGraph statuses={entry.statuses} historySize={historySize} />
           </Stack>
         </Box>
       </Collapse>
@@ -248,45 +401,86 @@ function stopPropagation(e) {
 
 function PlayerCell({ entry, status, mode }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
+  const containerRef = useRef(null);
+  const chipRef = useRef(null);
+  const nameRef = useRef(null);
+  const labelRef = useRef(null);
+  const hasLabel = mode === "win" || (mode === "normal" && status.in_golden_run);
+  const stacked = useIsLabelStacked(containerRef, chipRef, nameRef, labelRef, [hasLabel, entry.player.name]);
+
   return (
-    <Stack direction="column" alignItems="flex-start" sx={getBannerChipSx(status, mode)}>
-      <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
-        <span onClick={stopPropagation}>
-          <PlayerLink player={entry.player} />
-        </span>
-        {mode === "win" && (
-          <Typography
-            variant="body2"
-            sx={{
-              color: GOLDEN_COLOR,
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              gap: 0.5,
-            }}
-          >
-            <img src={EVENT_MARKERS.win.image} alt="" style={{ height: "1.2em" }} />
-            {t("events.win")}
-          </Typography>
-        )}
-        {mode === "normal" && status.in_golden_run && (
-          <Typography
-            variant="body2"
-            sx={{
-              color: GOLDEN_COLOR,
-              display: "flex",
-              alignItems: "center",
-              gap: 0.5,
-            }}
-          >
-            <FontAwesomeIcon icon={faCircle} fontSize="0.6em" />
-            {t("in_golden_run")}
-          </Typography>
-        )}
+    <Box ref={containerRef} sx={{ minWidth: 0 }}>
+      <Stack ref={chipRef} direction="column" alignItems="flex-start" sx={getBannerChipSx(status, mode)}>
+        <Stack
+          direction={stacked ? "column" : "row"}
+          alignItems={stacked ? "flex-start" : "center"}
+          columnGap={PLAYER_LABEL_GAP / 8}
+        >
+          <span ref={nameRef} onClick={stopPropagation}>
+            <PlayerLink player={entry.player} />
+          </span>
+          {mode === "win" && (
+            <Typography
+              ref={labelRef}
+              variant="body2"
+              sx={{
+                color: GOLDEN_COLOR,
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+              }}
+            >
+              <img src={EVENT_MARKERS.win.image} alt="" style={{ height: "1.2em" }} />
+              {t("events.win")}
+            </Typography>
+          )}
+          {mode === "normal" && status.in_golden_run && (
+            <Typography
+              ref={labelRef}
+              variant="body2"
+              sx={{
+                color: GOLDEN_COLOR,
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+              }}
+            >
+              <FontAwesomeIcon icon={faCircle} fontSize="0.6em" />
+              {t("in_golden_run")}
+            </Typography>
+          )}
+        </Stack>
+        {entry.stream_url && <StreamLink url={entry.stream_url} />}
       </Stack>
-      {entry.stream_url && <StreamLink url={entry.stream_url} />}
-    </Stack>
+    </Box>
   );
+}
+
+// Whether the label next to the player name has to go into its own line. Done manually instead of with flex-wrap,
+// since a wrapped flex container keeps its full width, making the banner chip behind it way too wide
+function useIsLabelStacked(containerRef, chipRef, nameRef, labelRef, deps) {
+  const [stacked, setStacked] = useState(false);
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const update = () => {
+      const [chip, name, label] = [chipRef.current, nameRef.current, labelRef.current];
+      if (!chip || !name || !label) {
+        setStacked(false);
+        return;
+      }
+      const style = getComputedStyle(chip);
+      const available =
+        container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      setStacked(name.offsetWidth + PLAYER_LABEL_GAP + label.offsetWidth > available);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(container);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+  return stacked;
 }
 
 function StreamLink({ url }) {
@@ -336,7 +530,9 @@ function MapCell({ status, mode }) {
         </StyledLink>
       )}
       <StyledLink to={"/campaign/" + campaign.id} onClick={stopPropagation}>
-        <Typography variant={showMap ? "body2" : "body1"}>{getCampaignName(campaign, t_g, true)}</Typography>
+        <Typography variant={showMap ? "body2" : "body1"} sx={{ fontSize: showMap ? "0.75rem" : "0.88rem" }}>
+          {getCampaignName(campaign, t_g, true)}
+        </Typography>
       </StyledLink>
     </Stack>
   );
@@ -358,14 +554,16 @@ function ChallengeCell({ status, mode }) {
   );
 }
 
-// Rooms are on the path if they have a room name. Rooms off the path show their debug name (if known)
-function RoomLabel({ status }) {
+// Rooms are on the path if they have a room name. Rooms off the path show their debug name (if known).
+// The compact label omits the custom room name and only shows the muted debug name for rooms off the path
+function RoomLabel({ status, compact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const { custom_room_name: customName, room_name: roomName, debug_room_name: debugName } = status;
   if (roomName !== null) {
-    if (customName !== null && customName !== roomName) return customName + " (" + roomName + ")";
+    if (!compact && customName !== null && customName !== roomName) return customName + " (" + roomName + ")";
     return roomName;
   }
+  if (compact) return <span style={{ color: NOT_ON_PATH_COLOR }}>{debugName ?? "-"}</span>;
   return (
     <>
       <span style={{ color: NOT_ON_PATH_COLOR }}>{t("not_on_path")}</span>
@@ -374,7 +572,7 @@ function RoomLabel({ status }) {
   );
 }
 
-function StatusCell({ status, mode }) {
+function StatusCell({ status, mode, compact }) {
   if (mode === "overworld") {
     return (
       <Typography variant="body1" textAlign="center">
@@ -385,6 +583,13 @@ function StatusCell({ status, mode }) {
   // Map without a path: only the debug room name (if known) can be shown
   if (status.max_room_number === null) {
     const roomName = status.debug_room_name ?? status.room_name;
+    if (compact) {
+      return (
+        <Typography variant="body2" textAlign="center" color="text.secondary" noWrap>
+          {roomName ?? "-"}
+        </Typography>
+      );
+    }
     return (
       <Stack direction="column" alignItems="center">
         <Typography variant="body1">-</Typography>
@@ -393,6 +598,23 @@ function StatusCell({ status, mode }) {
             {roomName}
           </Typography>
         )}
+      </Stack>
+    );
+  }
+
+  // Compact: room numbers, progress bar and room name in a single line
+  if (compact) {
+    return (
+      <Stack direction="row" alignItems="center" gap={1}>
+        <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+          {status.room_number ?? "-"} / {status.max_room_number}
+        </Typography>
+        <Box sx={{ flex: "1 1 60px", minWidth: 40 }}>
+          <RoomProgressBar status={status} compact />
+        </Box>
+        <Typography variant="body2" noWrap sx={{ flex: "0 1 auto", minWidth: 0 }}>
+          <RoomLabel status={status} compact />
+        </Typography>
       </Stack>
     );
   }
@@ -410,7 +632,8 @@ function StatusCell({ status, mode }) {
   );
 }
 
-function RoomProgressBar({ status }) {
+// The compact bar doesn't label its PB markers
+function RoomProgressBar({ status, compact = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const theme = useTheme();
   const max = status.max_room_number;
@@ -438,8 +661,8 @@ function RoomProgressBar({ status }) {
       sx={{
         position: "relative",
         width: "100%",
-        maxWidth: 200,
-        pb: markers.length > 0 ? 1.5 : 0,
+        maxWidth: compact ? "none" : 200,
+        pb: markers.length > 0 && !compact ? 1.5 : 0,
       }}
     >
       <Box
@@ -486,21 +709,23 @@ function RoomProgressBar({ status }) {
                 borderRadius: 1,
               }}
             />
-            <Typography
-              variant="caption"
-              sx={{
-                position: "absolute",
-                top: 14,
-                left: "50%",
-                transform: MARKER_LABEL_TRANSFORMS[marker.align],
-                color: PB_COLOR,
-                fontSize: "0.6rem",
-                lineHeight: 1,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {marker.label}
-            </Typography>
+            {!compact && (
+              <Typography
+                variant="caption"
+                sx={{
+                  position: "absolute",
+                  top: 14,
+                  left: "50%",
+                  transform: MARKER_LABEL_TRANSFORMS[marker.align],
+                  color: PB_COLOR,
+                  fontSize: "0.6rem",
+                  lineHeight: 1,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {marker.label}
+              </Typography>
+            )}
           </Box>
         </Tooltip>
       ))}
@@ -633,11 +858,13 @@ function getCurrentChallengeStatuses(statuses) {
 
 // Builds the chart data oldest first. Run-ending events (death, reset, win, exit) don't create a new point, but are
 // attached as markers to the previous point. The line is split after such a point by inserting a gap point.
-// Segments between two points that are both in a golden run are drawn golden (via goldenRoom)
+// Segments between two points that are both in a golden run are drawn golden (via goldenRoom).
+// The x position of a point is the number of its status update (oldest = 1)
 function buildHistoryData(statuses) {
   const data = [];
   let previous = null;
-  for (const status of [...statuses].reverse()) {
+  for (const [i, status] of [...statuses].reverse().entries()) {
+    const index = i + 1;
     const time = jsonDateToJsDate(status.date).getTime();
     const isMarkerEvent = EVENT_MARKERS[status.event] !== undefined;
 
@@ -651,6 +878,7 @@ function buildHistoryData(statuses) {
 
     if (previous !== null && previous.events.length > 0) {
       data.push({
+        index: (previous.index + index) / 2,
         time: (previous.time + time) / 2,
         room: null,
         status: null,
@@ -658,6 +886,7 @@ function buildHistoryData(statuses) {
       });
     }
     const point = {
+      index,
       time,
       room: status.room_number,
       status,
@@ -675,7 +904,7 @@ function buildHistoryData(statuses) {
   return data;
 }
 
-function SessionHistoryGraph({ statuses }) {
+function SessionHistoryGraph({ statuses, historySize }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const theme = useTheme();
   const latest = statuses[0];
@@ -683,6 +912,13 @@ function SessionHistoryGraph({ statuses }) {
   const challengeStatuses = getCurrentChallengeStatuses(statuses);
   const data = buildHistoryData(challengeStatuses);
   const maxRoom = Math.max(...challengeStatuses.map((s) => s.max_room_number ?? s.room_number ?? 0), 1);
+  // Always reserve the space of a full history, so a handful of updates isn't stretched over the full width
+  const maxIndex = Math.max(data.at(-1)?.index ?? 0, historySize);
+  const tickStep = historySize / HISTORY_TICK_COUNT;
+  const xTicks = [1];
+  for (let tick = tickStep; tick <= maxIndex; tick += tickStep) xTicks.push(tick);
+  // Quarters of the max room, rounded to the nearest room
+  const yTicks = [...new Set([0, 0.25, 0.5, 0.75, 1].map((fraction) => Math.round(maxRoom * fraction)))];
   const sessionPb = latest.session_pb_room_number;
   const overallPb = latest.overall_pb_room_number;
 
@@ -703,21 +939,35 @@ function SessionHistoryGraph({ statuses }) {
         }}
       >
         <ResponsiveContainer width="100%" height={260}>
-          <LineChart data={data} margin={{ top: 20, right: 80, left: 0, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 20, right: 80, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="2 8" vertical={false} />
             <XAxis
-              dataKey="time"
+              dataKey="index"
               type="number"
-              scale="time"
-              domain={["dataMin", "dataMax"]}
-              tickFormatter={formatTime}
+              domain={[1, maxIndex]}
+              ticks={xTicks}
               tick={{ fill: theme.palette.text.secondary }}
+              height={45}
+              label={{
+                value: t("graph.x_axis"),
+                position: "insideBottom",
+                fill: theme.palette.text.secondary,
+                fontSize: 12,
+              }}
             />
             <YAxis
               type="number"
               domain={[0, maxRoom]}
-              allowDecimals={false}
+              ticks={yTicks}
               tick={{ fill: theme.palette.text.secondary }}
+              label={{
+                value: t("graph.y_axis"),
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
+                fill: theme.palette.text.secondary,
+                fontSize: 12,
+              }}
             />
             <ChartTooltip content={<HistoryTooltip formatTime={formatTime} />} />
             {sessionPb !== null && sessionPb !== overallPb && (
@@ -889,7 +1139,8 @@ function getBannerChipSx(status, mode) {
 }
 
 // Seconds between the first status of the current run and the latest status. A run starts after a run-ending event
-// (or a win) or after changing the location. Returns null if the latest status ended the run
+// (or a win) or after changing the location. During a golden run, the run starts with its first golden status, so
+// practice before the golden run isn't counted. Returns null if the latest status ended the run
 function getRunDuration(statuses, status) {
   const index = statuses.indexOf(status);
   if (index !== 0 || EVENT_MARKERS[status.event] !== undefined) return null;
@@ -897,6 +1148,7 @@ function getRunDuration(statuses, status) {
   for (let i = index + 1; i < statuses.length; i++) {
     const previous = statuses[i];
     if (EVENT_MARKERS[previous.event] !== undefined || !isSameLocation(previous, status)) break;
+    if (status.in_golden_run && !previous.in_golden_run) break;
     start = previous;
   }
   const diff = jsonDateToJsDate(status.date).getTime() - jsonDateToJsDate(start.date).getTime();

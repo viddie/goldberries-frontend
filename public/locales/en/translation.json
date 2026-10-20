@@ -1947,7 +1947,10 @@
     "showing_one": "Showing {{from}}-{{to}} of {{count}} total suggestion",
     "showing_other": "Showing {{from}}-{{to}} of {{count}} total suggestions",
     "buttons": {
-      "create": "New"
+      "create": "New",
+      "reveal_votes": "Reveal Votes",
+      "hide_votes": "Hide Votes ({{minutes}}m)",
+      "reveal_votes_tooltip": "Temporarily shows vote counts on all suggestions for {{count}} minutes, even if you haven't voted yet. Resets on page reload."
     },
     "display": {
       "deleted_player": "(deleted player)",
@@ -2482,8 +2485,28 @@
     "domain_text": "{{name}} (managing and paying for the domain & Cloudflare, as well as making the original goldberries.net!)"
   },
   "online": {
-    "title": "Online Players",
+    "title": "Goldberries Sync - Online Players",
+    "setup": {
+      "link": "How to set this up",
+      "title": "Setting up Goldberries Sync",
+      "intro": "This page lists all players who sent a status update to goldberries within the last 5 minutes. To show up here yourself, set up Goldberries Sync in CCT:",
+      "steps": {
+        "1": "Download <CctLink>CCT</CctLink> from GameBanana",
+        "2": "In-game, go to CCT's <b>Mod Options</b><Arrow /><b>Goldberries Sync</b>",
+        "3": "Click <b>Authorize</b>",
+        "4": "A browser window should open",
+        "5": "Click <b>Authorize</b> to generate an API key and have it sent over to CCT"
+      },
+      "done": "And done! CCT will receive the API key automatically and start syncing right away.",
+      "details_header": "How it works",
+      "when_sent": "CCT sends a status update to the goldberries server on every room transition and on certain other events (golden death, return to map).",
+      "disable": "You can disable syncing in the Mod Options, either entirely or on a per-path basis."
+    },
     "no_players": "No players are online right now.",
+    "players_online_one": "{{count}} player online",
+    "players_online_other": "{{count}} players online",
+    "auto_update_one": "Automatically updates every second",
+    "auto_update_other": "Automatically updates every {{count}} seconds",
     "columns": {
       "player": "Player",
       "map": "Campaign / Map",
@@ -2507,6 +2530,15 @@
       "overall_pb": "Overall PB"
     },
     "session_history": "Session History",
+    "layout": {
+      "normal": "Normal layout",
+      "compact": "Compact layout"
+    },
+    "long_history": "Long session history (last {{count}} updates)",
+    "graph": {
+      "x_axis": "Status Update #",
+      "y_axis": "Room Number"
+    },
     "room": "Room",
     "events": {
       "death": "Death",

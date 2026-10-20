@@ -39,6 +39,7 @@ import {
   SuggestionCountdown,
   SuggestionName,
   isSuggestionExpired,
+  useRevealVotes,
   useSuggestionVoteLock,
 } from "../../pages/Suggestions";
 import { CustomMenu } from "../Menu";
@@ -62,6 +63,7 @@ export function ViewSuggestionModal({ id }) {
   });
   const { isRestricted: voteRestricted } = useRestriction(RESTRICTIONS.vote);
   const votesLocked = useSuggestionVoteLock(suggestion);
+  const votesRevealed = useRevealVotes();
   const userVoteObj = auth.hasPlayerClaimed
     ? suggestion?.votes.find((vote) => vote.player_id === auth.user.player_id) ?? null
     : null;
@@ -341,7 +343,7 @@ export function ViewSuggestionModal({ id }) {
           </Divider>
         </Grid>
 
-        {votesLocked && !hasVoted ? (
+        {votesLocked && !hasVoted && !votesRevealed ? (
           <Grid item xs={12}>
             <Tooltip title={t("hidden_votes_desc", { count: SUGGESTION_VOTE_HIDE_HOURS })} arrow>
               <Typography variant="body2" color={(t) => t.palette.text.secondary} textAlign="center">

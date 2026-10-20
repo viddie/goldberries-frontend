@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
@@ -11,6 +11,7 @@ import {
   faCircleCheck,
   faCircleXmark,
   faClock,
+  faEye,
   faEyeSlash,
   faPlus,
   faQuestionCircle,
@@ -88,7 +89,8 @@ export function PageSuggestions({}) {
         <Grid item xs>
           <Typography variant="h4">{t("header")}</Typography>
         </Grid>
-        <Grid item xs="auto">
+        <Grid item xs="auto" sx={{ display: "flex", gap: 1 }}>
+          {auth.hasHelperPriv && <RevealVotesButton />}
           {auth.hasPlayerClaimed && (
             <Button
               variant="contained"
@@ -292,6 +294,67 @@ export function useSuggestionVoteLock(suggestion) {
   }, [suggestion?.date_verified]);
 
   return suggestion ? isSuggestionVoteLocked(suggestion, now) : false;
+}
+
+// Helper+ override to see vote counts on locked suggestions. Intentionally kept in memory only,
+// so it resets on page reload.
+const REVEAL_VOTES_DURATION_MINUTES = 10;
+let revealVotesUntil = 0;
+const revealVotesListeners = new Set();
+
+function setRevealVotesUntil(value) {
+  revealVotesUntil = value;
+  revealVotesListeners.forEach((listener) => listener());
+}
+
+function subscribeRevealVotes(listener) {
+  revealVotesListeners.add(listener);
+  return () => revealVotesListeners.delete(listener);
+}
+
+export function useRevealVotes() {
+  const auth = useAuth();
+  const until = useSyncExternalStore(subscribeRevealVotes, () => revealVotesUntil);
+  const [now, setNow] = useState(Date.now);
+
+  useEffect(() => {
+    setNow(Date.now());
+    if (until <= Date.now()) return;
+    const timeout = setTimeout(() => setNow(Date.now()), until - Date.now());
+    return () => clearTimeout(timeout);
+  }, [until]);
+
+  return auth.hasHelperPriv && now < until;
+}
+
+function RevealVotesButton() {
+  const { t } = useTranslation(undefined, { keyPrefix: "suggestions.buttons" });
+  const revealed = useRevealVotes();
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (!revealed) return;
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [revealed]);
+
+  const toggle = () => {
+    setRevealVotesUntil(revealed ? 0 : Date.now() + REVEAL_VOTES_DURATION_MINUTES * 60 * 1000);
+  };
+  const minutesLeft = Math.max(1, Math.ceil((revealVotesUntil - now) / 60000));
+
+  return (
+    <Tooltip title={t("reveal_votes_tooltip", { count: REVEAL_VOTES_DURATION_MINUTES })} arrow>
+      <Button
+        variant={revealed ? "contained" : "outlined"}
+        color="warning"
+        startIcon={<FontAwesomeIcon icon={revealed ? faEyeSlash : faEye} />}
+        onClick={toggle}
+      >
+        {revealed ? t("hide_votes", { minutes: minutesLeft }) : t("reveal_votes")}
+      </Button>
+    </Tooltip>
+  );
 }
 
 export function SuggestionCountdown({ suggestion, ...props }) {
