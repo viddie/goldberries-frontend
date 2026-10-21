@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
+  Collapse,
   Divider,
   Grid,
   LinearProgress,
@@ -22,6 +23,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
   faCheckCircle,
+  faChevronDown,
   faDatabase,
   faEdit,
   faImages,
@@ -637,21 +639,15 @@ function CampaignPlayerTableRowExpanded({ player, campaign }) {
             );
           }, 0);
           return (
-            <>
-              <Stack direction="row" gap={1} alignItems="center">
-                <Typography variant="h6">{major}</Typography>
-                <Typography variant="body1" color="text.secondary">
-                  ({countCompleted} / {mapsForCount.length})
-                </Typography>
-              </Stack>
-              <CampaignPlayerTableRowExpandedMapGroup
-                key={index}
-                majorSort={index}
-                maps={maps}
-                mapData={mapData}
-                campaign={campaign}
-              />
-            </>
+            <CampaignPlayerTableRowExpandedMajorGroup
+              key={index}
+              label={major}
+              countCompleted={countCompleted}
+              countTotal={mapsForCount.length}
+              maps={maps}
+              mapData={mapData}
+              campaign={campaign}
+            />
           );
         })
       ) : (
@@ -664,9 +660,32 @@ function CampaignPlayerTableRowExpanded({ player, campaign }) {
     </Stack>
   );
 }
-function CampaignPlayerTableRowExpandedMapGroup({ maps, mapData, campaign }) {
+function CampaignPlayerTableRowExpandedMajorGroup({
+  label,
+  countCompleted,
+  countTotal,
+  maps,
+  mapData,
+  campaign,
+}) {
+  const [expanded, setExpanded] = useState(true);
   return (
-    <TableContainer component={Paper}>
+    <Stack direction="column">
+      <CollapsibleSortHeader expanded={expanded} setExpanded={setExpanded}>
+        <Typography variant="h6">{label}</Typography>
+        <Typography variant="body1" color="text.secondary">
+          ({countCompleted} / {countTotal})
+        </Typography>
+      </CollapsibleSortHeader>
+      <SortGroupCollapse expanded={expanded}>
+        <CampaignPlayerTableRowExpandedMapGroup maps={maps} mapData={mapData} campaign={campaign} sx={{ mt: 1 }} />
+      </SortGroupCollapse>
+    </Stack>
+  );
+}
+function CampaignPlayerTableRowExpandedMapGroup({ maps, mapData, campaign, sx = {} }) {
+  return (
+    <TableContainer component={Paper} sx={sx}>
       <Table size="small">
         <TableBody>
           {maps.map((map) => {
@@ -781,6 +800,7 @@ export function CampaignMapList({ campaign, ...props }) {
 
 function CampaignMapListMajorGroup({ maps, campaign, majorSort, sx = {}, ...props }) {
   const { t } = useTranslation(undefined, { keyPrefix: "campaign.info_boxes" });
+  const [expanded, setExpanded] = useState(true);
   const mapCount = maps.length;
   return (
     <Grid container sx={sx} columnSpacing={1} {...props}>
@@ -788,17 +808,62 @@ function CampaignMapListMajorGroup({ maps, campaign, majorSort, sx = {}, ...prop
         <Box sx={{ background: campaign.sort_major_colors[majorSort], height: "100%", width: "10px" }}></Box>
       </Grid>
       <Grid item xs>
-        <Stack direction="column" gap={1}>
-          <Stack direction="row" gap={1} alignItems="center">
+        <Stack direction="column">
+          <CollapsibleSortHeader expanded={expanded} setExpanded={setExpanded}>
             <Typography variant="h4">{campaign.sort_major_labels[majorSort]}</Typography>
             <Typography variant="body1" color="text.secondary">
               ({t("maps", { count: mapCount })})
             </Typography>
-          </Stack>
-          <CampaignMapListBasic maps={maps} campaign={campaign} />
+          </CollapsibleSortHeader>
+          <SortGroupCollapse expanded={expanded}>
+            <CampaignMapListBasic maps={maps} campaign={campaign} sx={{ mt: 1 }} />
+          </SortGroupCollapse>
         </Stack>
       </Grid>
     </Grid>
+  );
+}
+function CollapsibleSortHeader({ expanded, setExpanded, children }) {
+  return (
+    <Stack
+      direction="row"
+      gap={1}
+      alignItems="center"
+      onClick={() => setExpanded(!expanded)}
+      sx={{
+        cursor: "pointer",
+        userSelect: "none",
+        borderRadius: 1,
+        pr: 1,
+        "&:hover": { backgroundColor: "action.hover" },
+      }}
+    >
+      {children}
+      <FontAwesomeIcon
+        icon={faChevronDown}
+        style={{
+          marginLeft: "auto",
+          transition: "transform 0.2s",
+          transform: expanded ? "none" : "rotate(90deg)",
+          opacity: 0.7,
+        }}
+      />
+    </Stack>
+  );
+}
+function SortGroupCollapse({ expanded, children }) {
+  const theme = useTheme();
+  // Collapsing uses a short fixed duration instead of "auto", as the auto duration scales with the height of the group,
+  // which makes collapsing big groups feel laggy (the visible part only starts moving once the bottom reaches it).
+  // Enter easing has to be set explicitly, otherwise the exit easing would stick around for the next expand.
+  return (
+    <Collapse
+      in={expanded}
+      timeout={expanded ? "auto" : 200}
+      easing={{ enter: theme.transitions.easing.easeInOut, exit: theme.transitions.easing.easeOut }}
+    >
+      {children}
+    </Collapse>
   );
 }
 function CampaignMapListBasic({ maps, campaign, sx = {}, ...props }) {
