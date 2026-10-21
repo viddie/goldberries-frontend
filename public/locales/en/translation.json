@@ -875,7 +875,8 @@
   "hooks": {
     "auth": {
       "logout_success": "Logged out successfully",
-      "not_logged_in": "You weren't logged in"
+      "not_logged_in": "You weren't logged in",
+      "invalid_response": "Login failed: The server sent an invalid response"
     }
   },
   "navigation": {

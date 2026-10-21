@@ -38,8 +38,10 @@ export function isAdmin(account) {
 
 export function AuthProvider({ children }) {
   const { t } = useTranslation(undefined, { keyPrefix: "hooks.auth" });
-  const [user, setUser] = useLocalStorage("user", null);
+  const [storedUser, setUser] = useLocalStorage("user", null);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  // Guard against a corrupted stored user (e.g. a non-JSON session check response that got saved as a string)
+  const user = isValidUser(storedUser) ? storedUser : null;
 
   //For role override during dev settings
   const [settings] = useLocalStorage("app_settings", getDefaultSettings());
@@ -55,6 +57,11 @@ export function AuthProvider({ children }) {
     try {
       const response = await axios.post("/auth/login", data);
       const user = await response.data;
+      if (!isValidUser(user)) {
+        console.log("Invalid login response", user);
+        toast.error(t("invalid_response"));
+        return null;
+      }
       setUser(user);
       if (redirect) {
         navigate(redirect);
@@ -100,7 +107,13 @@ export function AuthProvider({ children }) {
     try {
       const response = await axios.get("/auth/check_session");
       const user = await response.data;
-      setUser(user);
+      if (isValidUser(user)) {
+        setUser(user);
+      } else {
+        // A successful response that isn't an account (empty body, HTML page, ...) must not be stored as the user
+        console.log("Invalid session check response", user);
+        setUser(null);
+      }
     } catch (err) {
       if (err.response?.status === 401) {
         // Unauthorized, but check succeeded
@@ -173,6 +186,10 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+function isValidUser(user) {
+  return user !== null && typeof user === "object" && typeof user.id === "number";
 }
 
 //#region Dev Account Override
