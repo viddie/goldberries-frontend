@@ -1317,6 +1317,11 @@
           "label": "About Me",
           "placeholder": "Tell us about yourself!"
         },
+        "stream_url": {
+          "label": "Stream URL",
+          "note": "Link to your stream (e.g. Twitch or YouTube). It will be shown next to your name on the Online page while you are playing.",
+          "placeholder": "https://twitch.tv/..."
+        },
         "custom_links": {
           "label": "Custom Links",
           "note": "You can add custom links to your profile. This can be a link to your speedrun.com profile, a link to your YouTube channel, or any other link you want to share with the community."
@@ -1355,7 +1360,7 @@
         "label": "Danger Zone",
         "api_key": {
           "label": "API Keys",
-          "description": "API keys can be used to access the goldberries.net API in your name, e.g. by mods like the Consistency Tracker. Each key only has access to the scopes you select. Keep them secret!",
+          "description": "API keys can be used to access the goldberries.net API in your name, e.g. by mods like the CCT. Keep them secret!",
           "description_not_set": "You don't have any API keys yet.",
           "create_label": "Create a new API key",
           "name": "Name",

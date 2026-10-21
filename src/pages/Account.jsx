@@ -523,6 +523,7 @@ export function UserAccountProfileForm() {
     defaultValues: {
       ...auth.user,
       about_me: auth.user.about_me ?? "",
+      stream_url: auth.user.stream_url ?? "",
       name_color_start: auth.user.name_color_start ?? "rgb(0, 0, 0)",
       name_color_end: auth.user.name_color_end ?? "rgb(0, 0, 0)",
     },
@@ -544,6 +545,7 @@ export function UserAccountProfileForm() {
     form.reset({
       ...auth.user,
       about_me: auth.user.about_me ?? "",
+      stream_url: auth.user.stream_url ?? "",
       name_color_start: auth.user.name_color_start ?? "rgb(0, 0, 0)",
       name_color_end: auth.user.name_color_end ?? "rgb(0, 0, 0)",
     });
@@ -717,6 +719,25 @@ export function UserAccountProfileForm() {
           />
         </Grid>
       </Grid>
+
+      <Divider sx={{ my: 2 }} />
+
+      <Typography variant="h6">{t("stream_url.label")}</Typography>
+      <Typography variant="body2">{t("stream_url.note")}</Typography>
+      <RestrictionNotice restriction={RESTRICTIONS.profile} sx={{ mt: 1 }} />
+      <Controller
+        name="stream_url"
+        control={form.control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            fullWidth
+            sx={{ mt: 1 }}
+            placeholder={t("stream_url.placeholder")}
+            disabled={profileRestricted}
+          />
+        )}
+      />
 
       <Divider sx={{ my: 2 }} />
 
