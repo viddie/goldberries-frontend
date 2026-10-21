@@ -239,7 +239,13 @@ export function FormChallenge({ challenge, onSave, ...props }) {
 
       <Divider sx={{ my: 2 }} />
 
-      <TextField label={t("sort_order")} type="number" fullWidth {...form.register("sort")} />
+      <TextField
+        label={t("sort_order")}
+        type="number"
+        fullWidth
+        {...form.register("sort")}
+        onWheel={(e) => e.target.blur()}
+      />
 
       <Divider sx={{ my: 2 }} />
 

@@ -540,6 +540,7 @@ function FormCampaignEditMaps({ campaign, onSave, ...props }) {
               type="number"
               fullWidth
               {...form.register(`maps[${i}].sort_order`)}
+              onWheel={(e) => e.target.blur()}
               disabled={isMapDeleted}
             />
             <Tooltip title={t(isMapDeleted ? "undo_delete" : "delete_map")}>
