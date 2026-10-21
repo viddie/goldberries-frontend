@@ -881,6 +881,7 @@
   },
   "navigation": {
     "top_golden_list": "Top Golden List",
+    "online": "Online",
     "campaigns_menu": {
       "name": "Campaigns",
       "campaign_list": "Campaign List",
@@ -2607,7 +2608,8 @@
       "death": "Death",
       "reset": "Reset",
       "win": "Winner!",
-      "exit": "Exited the map"
+      "exit": "Exited the map",
+      "close": "Closed the game"
     }
   },
   "stats": {

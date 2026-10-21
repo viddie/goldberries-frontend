@@ -45,6 +45,7 @@ import {
   faRibbon,
   faTags,
   faCompass,
+  faWifi,
   faSearch,
   faServer,
   faSignIn,
@@ -66,7 +67,6 @@ import {
   Dialog,
   Divider,
   Drawer,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -86,7 +86,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/en-gb";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import HoverMenu from "material-ui-popup-state/HoverMenu";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { API_URL, CURRENT_VERSION } from "./util/constants";
@@ -549,6 +549,11 @@ export function Layout() {
       path: "/discovery",
       icon: <FontAwesomeIcon icon={faCompass} />,
     },
+    online: {
+      name: t("online"),
+      path: "/online",
+      icon: <FontAwesomeIcon icon={faWifi} />,
+    },
     campaigns: {
       name: t("campaigns_menu.name"),
       items: [
@@ -768,7 +773,7 @@ export function Layout() {
     menus.user.items = menus.user.items.filter((item) => item.path !== "/my-top-goldens");
   }
 
-  const leftMenu = [menus.lists, menus.discovery, menus.campaigns, menus.other];
+  const leftMenu = [menus.lists, menus.discovery, menus.online, menus.campaigns, menus.other];
   const rightMenu = [];
   if (auth.hasNewsWriterPriv) {
     const newsWriterMenu = menus.newsWriter;
@@ -792,6 +797,9 @@ export function Layout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  //Set by DesktopNav when its contents don't fit on one line. In that case the mobile layout is used, even on md+ screens
+  const [desktopNavOverflows, setDesktopNavOverflows] = useState(false);
+  const mobileDisplay = { xs: "block", md: desktopNavOverflows ? "block" : "none" };
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -841,9 +849,7 @@ export function Layout() {
         <AppBar
           position="fixed"
           sx={{
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            ml: { md: `${drawerWidth}px` },
-            display: { xs: "block", md: "none" },
+            display: mobileDisplay,
           }}
         >
           <Toolbar sx={{ bgcolor: "#181818" }}>
@@ -852,7 +858,7 @@ export function Layout() {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: "none" } }}
+              sx={{ mr: 2 }}
             >
               <FontAwesomeIcon icon={faBars} />
             </IconButton>
@@ -868,7 +874,7 @@ export function Layout() {
         </AppBar>
         <Box
           component="nav"
-          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 }, display: { xs: "block", md: "none" } }}
+          sx={{ display: mobileDisplay }}
           aria-label="mailbox folders"
         >
           <Drawer
@@ -880,7 +886,7 @@ export function Layout() {
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              display: { xs: "block", md: "none" },
+              display: mobileDisplay,
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
@@ -902,6 +908,8 @@ export function Layout() {
           rightMenu={rightMenu}
           userMenu={userMenu}
           settingsOpenRef={settingsOpenRef}
+          hidden={desktopNavOverflows}
+          onOverflowChange={setDesktopNavOverflows}
         />
         <ProfileSettingsAlert />
         <Box
@@ -909,7 +917,7 @@ export function Layout() {
           sx={{
             mt: {
               xs: 8,
-              md: "65px",
+              md: desktopNavOverflows ? 8 : "65px",
             },
             mb: 3,
             flexGrow: 1,
@@ -1089,7 +1097,7 @@ function MobileMenuItem({ item, indent = 0, closeDrawer }) {
   );
 }
 
-function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
+function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, onOverflowChange }) {
   const { t } = useTranslation(undefined, { keyPrefix: "navigation" });
   const auth = useAuth();
   const navigate = useNavigate();
@@ -1144,6 +1152,26 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
   useKeyboardShortcut(hotkeys[6]);
   useKeyboardShortcut(hotkeys[7]);
 
+  //Detect when the nav contents don't fit anymore. The nav stays rendered (but invisible) while overflowing,
+  //so that it can keep measuring and switch back once there is enough space again.
+  const rowRef = useRef(null);
+  const leftRef = useRef(null);
+  const rightRef = useRef(null);
+  useLayoutEffect(() => {
+    const elements = [rowRef, leftRef, rightRef].map((ref) => ref.current);
+    if (elements.some((el) => el === null)) return;
+    const row = elements[0];
+    const check = () => {
+      //Nav is display: none on small screens, nothing to measure there
+      if (row.offsetParent === null) return;
+      onOverflowChange(row.scrollWidth > row.clientWidth);
+    };
+    const observer = new ResizeObserver(check);
+    elements.forEach((el) => observer.observe(el));
+    check();
+    return () => observer.disconnect();
+  }, [onOverflowChange]);
+
   return (
     <Box
       sx={{
@@ -1162,11 +1190,13 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
         zIndex: "1000", //Above everything but dropdown popups, which are 1300
         minHeight: "48px",
         height: "48px",
+        visibility: hidden ? "hidden" : "visible",
       }}
     >
-      <Grid container spacing={1} sx={{ mt: 0, height: "100%", alignItems: "center" }}>
-        <Grid item sm={5} sx={{ pt: "0 !important" }}>
-          <Stack direction="row" spacing={1} alignItems="center">
+      {/* Both sides share the space equally to keep the logo centered, but can grow past that if their content needs it */}
+      <Stack ref={rowRef} direction="row" gap={1} alignItems="center" sx={{ height: "100%", overflow: "hidden" }}>
+        <Box sx={{ flex: "1 1 0", minWidth: "max-content" }}>
+          <Stack ref={leftRef} direction="row" spacing={1} alignItems="center" sx={{ width: "max-content" }}>
             {leftMenu.map((entry, index) => {
               if (entry.items) {
                 return <DesktopSubMenu key={index} name={entry.name} icon={entry.icon} items={entry.items} />;
@@ -1175,8 +1205,8 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
               }
             })}
           </Stack>
-        </Grid>
-        <Grid item sm={2} sx={{ pt: "0 !important", minWidth: "180px" }}>
+        </Box>
+        <Box sx={{ flex: "0 0 auto", px: 2 }}>
           <Typography
             variant="h6"
             noWrap
@@ -1191,9 +1221,9 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
               </Stack>
             </Link>
           </Typography>
-        </Grid>
-        <Grid item sm={5} sx={{ pt: "0 !important" }}>
-          <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
+        </Box>
+        <Box sx={{ flex: "1 1 0", minWidth: "max-content", display: "flex", justifyContent: "flex-end" }}>
+          <Stack ref={rightRef} direction="row" spacing={1} alignItems="center" sx={{ width: "max-content" }}>
             <DevAccountOverrideIndicator />
             <GlobalNoticesIcon />
             {auth.hasHelperPriv && <VerifierStatsNavDesktop />}
@@ -1223,8 +1253,8 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef }) {
               </IconButton>
             </Tooltip>
           </Stack>
-        </Grid>
-      </Grid>
+        </Box>
+      </Stack>
     </Box>
   );
 }

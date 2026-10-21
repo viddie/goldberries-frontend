@@ -14,6 +14,7 @@ import {
   faFlag,
   faLink,
   faMapLocationDot,
+  faPowerOff,
   faReply,
   faRightFromBracket,
   faSkull,
@@ -92,12 +93,13 @@ const HISTORY_SIZE_LONG = 300;
 const HISTORY_TICK_COUNT = 4;
 const GOLDEN_GIF_SIZE = 20;
 // Events that end the current run. They are rendered as markers on the last point instead of creating a new point
-const RUN_ENDING_EVENTS = ["death", "reset", "exit"];
+const RUN_ENDING_EVENTS = ["death", "reset", "exit", "close"];
 const EVENT_MARKERS = {
   death: { icon: faSkull, color: DEATH_COLOR },
   reset: { icon: faReply, color: RESET_COLOR },
   win: { image: "/icons/goldenberry.gif", color: GOLDEN_COLOR },
   exit: { icon: faRightFromBracket, color: EXIT_COLOR },
+  close: { icon: faPowerOff, color: EXIT_COLOR },
 };
 
 export function PageOnline() {
@@ -836,7 +838,7 @@ function getCurrentChallengeStatuses(statuses) {
   return end === -1 ? rest : rest.slice(0, end);
 }
 
-// Builds the chart data oldest first. Run-ending events (death, reset, win, exit) don't create a new point, but are
+// Builds the chart data oldest first. Run-ending events (death, reset, win, exit, close) don't create a new point, but are
 // attached as markers to the previous point. The line is split after such a point by inserting a gap point.
 // Segments between two points that are both in a golden run are drawn golden (via goldenRoom).
 // The x position of a point is the number of its status update (oldest = 1)
@@ -891,14 +893,16 @@ function SessionHistoryGraph({ statuses, historySize }) {
 
   const challengeStatuses = getCurrentChallengeStatuses(statuses);
   const data = buildHistoryData(challengeStatuses);
-  const maxRoom = Math.max(...challengeStatuses.map((s) => s.max_room_number ?? s.room_number ?? 0), 1);
+  const maxRoom = Math.max(...challengeStatuses.map((s) => s.max_room_number ?? s.room_number ?? 1), 2);
   // Always reserve the space of a full history, so a handful of updates isn't stretched over the full width
   const maxIndex = Math.max(data.at(-1)?.index ?? 0, historySize);
   const tickStep = historySize / HISTORY_TICK_COUNT;
   const xTicks = [1];
   for (let tick = tickStep; tick <= maxIndex; tick += tickStep) xTicks.push(tick);
-  // Quarters of the max room, rounded to the nearest room
-  const yTicks = [...new Set([0, 0.25, 0.5, 0.75, 1].map((fraction) => Math.round(maxRoom * fraction)))];
+  // Quarters of the room range (the first room is 1), rounded to the nearest room
+  const yTicks = [
+    ...new Set([0, 0.25, 0.5, 0.75, 1].map((fraction) => 1 + Math.round((maxRoom - 1) * fraction))),
+  ];
   const sessionPb = latest.session_pb_room_number;
   const overallPb = latest.overall_pb_room_number;
 
@@ -937,7 +941,7 @@ function SessionHistoryGraph({ statuses, historySize }) {
             />
             <YAxis
               type="number"
-              domain={[0, maxRoom]}
+              domain={[1, maxRoom]}
               ticks={yTicks}
               tick={{ fill: theme.palette.text.secondary }}
               label={{
