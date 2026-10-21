@@ -859,7 +859,7 @@ function PlayerTimeline({ id }) {
   //Currently the groupedByYear array looks like: [{year: "2024", days: []}, {year: "2022", days: []}]
   //Insert all missing years between the first year (the very end of the array) and the current year (possibly present in the array, possibly absent)
   if (groupedByYear.length > 0) {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getUTCFullYear();
     const firstYear = parseInt(groupedByYear[groupedByYear.length - 1].year);
 
     for (let year = firstYear; year <= currentYear; year++) {
@@ -877,6 +877,9 @@ function PlayerTimeline({ id }) {
       <Grid container spacing={2}>
         <Grid item xs>
           <Typography variant="h5">{t("label")}</Typography>
+          <Typography variant="caption" color="text.secondary">
+            {t("utc_notice")}
+          </Typography>
         </Grid>
         <Grid item xs="auto">
           <SubmissionFilterUncontrolled
@@ -912,7 +915,7 @@ function PlayerTimeline({ id }) {
         }}
       >
         <BigTimelineLabel label={"Now"} isNow />
-        {groupedByYear.length === 0 && <BigTimelineLabel label={new Date().getFullYear()} isLast />}
+        {groupedByYear.length === 0 && <BigTimelineLabel label={new Date().getUTCFullYear()} isLast />}
         {groupedByYear.map((yearGroup, yearIndex) => (
           <>
             {yearGroup.days.map((dayGroup, dayIndex) => (
@@ -976,7 +979,11 @@ function BigTimelineLabel({ label, isLast = false, isNow = false }) {
 }
 
 function TimelineDay({ date, submissions, isLast, groupCampaigns, showDifficulty }) {
-  const dateStr = new Date(date).toLocaleDateString(getNavigatorLanguage(), { month: "short", day: "numeric" });
+  const dateStr = new Date(date).toLocaleDateString(getNavigatorLanguage(), {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 
   const groupedByCampaign = [];
   submissions.forEach((submission) => {
