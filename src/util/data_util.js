@@ -519,3 +519,13 @@ export function isSuggestionVoteLocked(suggestion, now = Date.now()) {
     now < jsonDateToJsDate(suggestion.date_verified).getTime() + SUGGESTION_VOTE_HIDE_HOURS * 60 * 60 * 1000
   );
 }
+
+// Vote counts are only hidden for open, verified suggestions within the first hours after verification.
+// Unverified and verification-rejected suggestions always show their votes.
+export function areSuggestionVotesHidden(suggestion, now = Date.now()) {
+  return (
+    suggestion.is_verified === true &&
+    suggestion.is_accepted === null &&
+    isSuggestionVoteLocked(suggestion, now)
+  );
+}

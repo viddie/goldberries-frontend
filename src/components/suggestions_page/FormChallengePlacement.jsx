@@ -15,7 +15,7 @@ import {
   CharsCountLabel,
   DifficultyMoveDisplay,
   isSuggestionExpired,
-  useSuggestionVoteLock,
+  useSuggestionVotesHidden,
 } from "../../pages/Suggestions";
 
 import { BackButton, ChallengeDetailsDisplay } from "./CreateSuggestionModal";
@@ -47,7 +47,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
   const fetchedChallenge = getQueryData(query);
   const lastPlacementSuggestionQuery = useGetLastPlacementSuggestion(selectedChallenge?.id);
   const lastPlacementSuggestion = getQueryData(lastPlacementSuggestionQuery);
-  const votesLocked = useSuggestionVoteLock(lastPlacementSuggestion);
+  const votesHidden = useSuggestionVotesHidden(lastPlacementSuggestion);
   const lastSuggestionStatus =
     lastPlacementSuggestion?.is_accepted === true
       ? "accepted"
@@ -61,7 +61,7 @@ export function ChallengePlacementSuggestionForm({ onSuccess, onBack }) {
   }[lastSuggestionStatus];
   const lastSuggestionVotes = lastPlacementSuggestion?.votes ?? [];
   const hideVoteCounts =
-    votesLocked &&
+    votesHidden &&
     !(auth.hasPlayerClaimed && lastSuggestionVotes.some((vote) => vote.player_id === auth.user.player_id));
   const lastSuggestionVoteCounts = {
     for: lastSuggestionVotes.filter((vote) => vote.vote === "+").length,

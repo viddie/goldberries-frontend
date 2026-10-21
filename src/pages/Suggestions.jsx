@@ -43,6 +43,7 @@ import {
   getMapNameClean,
   getNavigatorLanguage,
   isSuggestionVoteLocked,
+  areSuggestionVotesHidden,
 } from "../util/data_util";
 import { SUGGESTION_VOTE_HIDE_HOURS } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
@@ -336,6 +337,17 @@ export function isSuggestionExpired(suggestion) {
 }
 
 export function useSuggestionVoteLock(suggestion) {
+  const now = useSuggestionVoteLockTimer(suggestion);
+  return suggestion ? isSuggestionVoteLocked(suggestion, now) : false;
+}
+
+export function useSuggestionVotesHidden(suggestion) {
+  const now = useSuggestionVoteLockTimer(suggestion);
+  return suggestion ? areSuggestionVotesHidden(suggestion, now) : false;
+}
+
+// Re-renders once the vote lock of the suggestion runs out
+function useSuggestionVoteLockTimer(suggestion) {
   const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
@@ -350,7 +362,7 @@ export function useSuggestionVoteLock(suggestion) {
     return () => clearTimeout(timeout);
   }, [suggestion?.date_verified]);
 
-  return suggestion ? isSuggestionVoteLocked(suggestion, now) : false;
+  return now;
 }
 
 // Helper+ override to see vote counts on locked suggestions. Intentionally kept in memory only,

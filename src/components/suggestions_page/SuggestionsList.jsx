@@ -31,7 +31,7 @@ import {
   SuggestionCountdown,
   SuggestionName,
   useRevealVotes,
-  useSuggestionVoteLock,
+  useSuggestionVotesHidden,
 } from "../../pages/Suggestions";
 import { SUGGESTION_VOTE_HIDE_HOURS } from "../../util/constants";
 
@@ -136,7 +136,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const theme = useTheme();
   const auth = useAuth();
-  const votesLocked = useSuggestionVoteLock(suggestion);
+  const votesHidden = useSuggestionVotesHidden(suggestion);
   const votesRevealed = useRevealVotes();
   const hasVoted =
     auth.hasPlayerClaimed &&
@@ -310,7 +310,7 @@ function SuggestionDisplay({ suggestion, expired, modalRefs }) {
         </Grid>
       </Grid>
 
-      {votesLocked && !hasVoted && !votesRevealed ? (
+      {votesHidden && !hasVoted && !votesRevealed ? (
         <HiddenVoteBar />
       ) : suggestion.votes.length === 0 ? (
         <Typography variant="body2">{t("no_votes")}</Typography>
