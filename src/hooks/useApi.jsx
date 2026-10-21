@@ -60,6 +60,7 @@ import {
   postChallengeMerge,
   postChallengeSplit,
   postChallengeMarkPersonal,
+  postChallengesMassEdit,
   fetchCampaignViewPlayer,
   fetchAllObjectives,
   fetchObjectiveSubmissionCount,
@@ -925,6 +926,25 @@ export function useChallengeMarkPersonal(onSuccess) {
     onSuccess: (response, data) => {
       queryClient.invalidateQueries(["all_challenges"]);
       queryClient.invalidateQueries(["manage_challenges"]);
+      if (onSuccess) onSuccess(response.data);
+    },
+    onError: errorToast,
+  });
+}
+
+export function usePostChallengesMassEdit(onSuccess) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => postChallengesMassEdit(data),
+    onSuccess: (response, data) => {
+      queryClient.invalidateQueries(["challenge"]);
+      queryClient.invalidateQueries(["all_challenges"]);
+      queryClient.invalidateQueries(["all_challenges_campaign"]);
+      queryClient.invalidateQueries(["map"]);
+      queryClient.invalidateQueries(["campaign"]);
+      queryClient.invalidateQueries(["campaign_view"]);
+      queryClient.invalidateQueries(["top_golden_list"]);
+      invalidateJointQueries(queryClient);
       if (onSuccess) onSuccess(response.data);
     },
     onError: errorToast,

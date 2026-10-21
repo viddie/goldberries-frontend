@@ -66,6 +66,7 @@ import { FormCampaignMassAddMaps } from "../../components/forms/CampaignMassAddM
 import { FormCreateFullChallengeWrapper } from "../../components/forms/CreateFullChallenge";
 import { FormCreateCampaignFromGB } from "../../components/forms/CreateCampaignFromGB";
 import { FullChallengeSelect } from "../../components/goldberries";
+import { FormEditChallengesWrapper } from "../../components/forms/EditChallenges";
 
 export function PageManageChallenges() {
   const { t } = useTranslation(undefined, { keyPrefix: "manage.challenges" });
@@ -87,11 +88,14 @@ export function PageManageChallenges() {
 
       massAddMaps: useRef(),
       massEditMaps: useRef(),
+      massEditChallenges: useRef(),
     },
     map: {
       create: useRef(),
       edit: useRef(),
       delete: useRef(),
+
+      massEditChallenges: useRef(),
     },
     challenge: {
       create: useRef(),
@@ -276,6 +280,13 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                           <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faEdit} />
                           {t("buttons.campaign.edit_maps")}
                         </MenuItem>
+                        <MenuItem
+                          disableRipple
+                          onClick={() => openModal(modalRefs.campaign.massEditChallenges, campaign)}
+                        >
+                          <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faEdit} />
+                          {t("buttons.campaign.edit_challenges")}
+                        </MenuItem>
                         <Divider sx={{ my: 0.5 }} />
                         <MenuItem disableRipple disableGutters sx={{ py: 0 }}>
                           <Button
@@ -312,6 +323,13 @@ function ManageChallengesTable({ page, perPage, search, setPage, setPerPage, mod
                           <MenuItem disableRipple onClick={() => openModal(modalRefs.map.edit, map)}>
                             <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faEdit} />
                             {t("buttons.map.edit")}
+                          </MenuItem>
+                          <MenuItem
+                            disableRipple
+                            onClick={() => openModal(modalRefs.map.massEditChallenges, map)}
+                          >
+                            <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faEdit} />
+                            {t("buttons.map.edit_challenges")}
                           </MenuItem>
                           <Divider sx={{ my: 0.5 }} />
                           <MenuItem disableRipple disableGutters sx={{ py: 0 }}>
@@ -433,12 +451,14 @@ function ManageModalContainer({ modalRefs }) {
   });
 
   const campaignMassEditMapsModal = useModal();
+  const campaignMassEditChallengesModal = useModal();
 
   const editMapModal = useModal();
   const deleteMapModal = useModal(null, (cancelled, data) => {
     if (cancelled) return;
     deleteMap(data.id);
   });
+  const mapMassEditChallengesModal = useModal();
 
   const editChallengeModal = useModal();
   const deleteChallengeModal = useModal(null, (cancelled, data) => {
@@ -453,9 +473,12 @@ function ManageModalContainer({ modalRefs }) {
   modalRefs.campaign.delete.current = deleteCampaignModal;
 
   modalRefs.campaign.massEditMaps.current = campaignMassEditMapsModal;
+  modalRefs.campaign.massEditChallenges.current = campaignMassEditChallengesModal;
 
   modalRefs.map.edit.current = editMapModal;
   modalRefs.map.delete.current = deleteMapModal;
+
+  modalRefs.map.massEditChallenges.current = mapMassEditChallengesModal;
 
   modalRefs.challenge.edit.current = editChallengeModal;
   modalRefs.challenge.delete.current = deleteChallengeModal;
@@ -495,6 +518,16 @@ function ManageModalContainer({ modalRefs }) {
           />
         )}
       </CustomModal>
+      <CustomModal maxWidth="md" modalHook={campaignMassEditChallengesModal} options={{ hideFooter: true }}>
+        {campaignMassEditChallengesModal.data?.id == null ? (
+          <LoadingSpinner />
+        ) : (
+          <FormEditChallengesWrapper
+            campaignId={campaignMassEditChallengesModal.data.id}
+            onSave={campaignMassEditChallengesModal.close}
+          />
+        )}
+      </CustomModal>
 
       <CustomModal modalHook={editMapModal} options={{ hideFooter: true }}>
         {editMapModal.data?.id == null ? (
@@ -514,6 +547,16 @@ function ManageModalContainer({ modalRefs }) {
             values={{ name: deleteMapModal.data?.name ?? "" }}
           />
         </Typography>
+      </CustomModal>
+      <CustomModal maxWidth="md" modalHook={mapMassEditChallengesModal} options={{ hideFooter: true }}>
+        {mapMassEditChallengesModal.data?.id == null ? (
+          <LoadingSpinner />
+        ) : (
+          <FormEditChallengesWrapper
+            mapId={mapMassEditChallengesModal.data.id}
+            onSave={mapMassEditChallengesModal.close}
+          />
+        )}
       </CustomModal>
 
       <CustomModal modalHook={editChallengeModal} options={{ hideFooter: true }}>

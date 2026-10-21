@@ -540,6 +540,9 @@ export function postChallengeMarkPersonal(data) {
   data.mark_personal = true;
   return axios.post("/challenge", formatDataForApi(data));
 }
+export function postChallengesMassEdit(data) {
+  return axios.post("/challenge", formatDataForApi(data));
+}
 export function postVerificationNotice(data) {
   return axios.post("/verification-notice", formatDataForApi(data));
 }

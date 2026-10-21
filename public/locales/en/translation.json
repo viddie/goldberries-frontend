@@ -524,6 +524,15 @@
         "save_maps": "Save Maps"
       }
     },
+    "edit_challenges": {
+      "feedback": {
+        "updated": "Challenges updated"
+      },
+      "note": "Challenges are sorted by their sort order in ascending order. Challenges without a sort order are placed at the end. Leave the label empty to use the objective's default name.",
+      "no_challenges": "There are no challenges to edit.",
+      "sort_order": "Sort Order",
+      "save_challenges": "Save Challenges"
+    },
     "create_campaign_from_gb": {
       "title": "Create Campaign from GameBanana",
       "step": "Step {{current}} / {{total}}",
@@ -979,10 +988,12 @@
         "campaign": {
           "edit": "Edit",
           "edit_maps": "Edit Maps",
+          "edit_challenges": "Edit FGR Challenges",
           "delete": "Delete"
         },
         "map": {
           "edit": "Edit",
+          "edit_challenges": "Edit Challenges",
           "delete": "Delete"
         },
         "challenge": {
