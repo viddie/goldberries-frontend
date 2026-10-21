@@ -262,7 +262,6 @@
     "top_golden_list": {
       "use_suggested": "Use Difficulty Opinions for Ranking",
       "toggle_edit_mode": "Toggle Edit Submissions Mode",
-      "empty": "Looks pretty empty. Get some goldens from the Top Golden List to populate your own list!",
       "note_number_people": "This tier has {{challenges}} challenges with {{submissions}} submissions",
       "note_suggested_difficulties": "Difficulty opinions of this player",
       "suggestion_abbreviated": "Opn.",
@@ -2159,6 +2158,12 @@
       "notice_one": "{{count}} tier is hidden",
       "notice_other": "{{count}} tiers are hidden",
       "change_filter": "Change your filter settings to show them!",
+      "empty": {
+        "filtered": "No challenges match your current filter settings",
+        "overall": "There are no challenges on this list yet",
+        "campaign": "This campaign has no submissions yet",
+        "player": "This player has no submissions yet"
+      },
       "filter_settings": "Filter Settings",
       "filters": {
         "hidden_objectives_one": "{{count}} objective hidden",

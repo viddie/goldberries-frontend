@@ -261,7 +261,6 @@
     "top_golden_list": {
       "use_suggested": "使用此玩家的难度建议来排名",
       "toggle_edit_mode": "编辑模式",
-      "empty": "这里什么也没有，试着从排行榜上打点金来丰富你自己的列表吧！",
       "note_number_people": "此等级目前包含{{challenges}}个挑战项目和{{submissions}}个提交内容",
       "note_suggested_difficulties": "此玩家的难度排名建议",
       "suggestion_abbreviated": "Opn.",

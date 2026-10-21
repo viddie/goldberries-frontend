@@ -261,7 +261,6 @@
     "top_golden_list": {
       "use_suggested": "Utiliser les difficultés ressenties pour le classement",
       "toggle_edit_mode": "Activer le mode de modification des entrées",
-      "empty": "C’est un peu vide ici. Obtiens des goldens de la Top Golden List afin de peupler ta propre liste !",
       "note_number_people": "Ce tier contient {{challenges}} challenges pour {{submissions}} entrées",
       "note_suggested_difficulties": "Les difficultés ressenties de cette personne",
       "suggestion_abbreviated": "Perso.",

@@ -261,7 +261,6 @@
     "top_golden_list": {
       "use_suggested": "Verwende Schwierigkeitsempfehlungen für das Ranking",
       "toggle_edit_mode": "Submission Editiermodus Umschalten",
-      "empty": "Ziemlich leer hier. Mach ein paar Goldens von der Top Golden Liste, um deine eigene Liste zu füllen!",
       "note_number_people": "Diese Tier hat {{challenges}} Challenges mit {{submissions}} Submissions",
       "note_suggested_difficulties": "Schwierigkeitsempfehlungen dieses Spielers",
       "suggestion_abbreviated": "Empf.",

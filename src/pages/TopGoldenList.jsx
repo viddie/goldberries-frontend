@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
   faChartBar,
+  faCircleExclamation,
   faClipboard,
   faEyeSlash,
   faFileExport,
@@ -364,9 +365,12 @@ function TopGoldenList({ type, id, filter, options, showMap, editSubmission, ope
         />
       ))}
       <HiddenTiersNotice
+        type={type}
         filter={filter}
         compactMode={compactMode}
         isPlayer={isPlayer}
+        isEmpty={visibleChallenges.length === 0}
+        hidesObsolete={isPlayer && !showObsoleteSubmissions}
         onClick={openSubmissionFilter}
       />
     </Stack>
@@ -1037,7 +1041,7 @@ function DifficultyNumber({
   );
 }
 
-function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
+function HiddenTiersNotice({ type, filter, compactMode, isPlayer, isEmpty, hidesObsolete, onClick }) {
   const { t } = useTranslation(undefined, { keyPrefix: "top_golden_list" });
   const { t: t_sf } = useTranslation(undefined, { keyPrefix: "components.submission_filter" });
   const { t: t_im } = useTranslation(undefined, { keyPrefix: "components.input_methods" });
@@ -1120,10 +1124,18 @@ function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
   const hasActiveFilters = activeFilters.length > 0;
   const hasHiddenTiers = hiddenCount > 0;
 
+  // Filters that aren't listed in the notice, but can still cause the list to be empty
+  const hasUnlistedFilters =
+    filter.archived === false || filter.arbitrary === false || filter.undetermined === false || hidesObsolete;
+  const isFiltered = hasHiddenTiers || hasActiveFilters || hasUnlistedFilters;
+
   // Don't show the notice if there's nothing to show
-  if (!hasHiddenTiers && !hasActiveFilters) return null;
+  if (!hasHiddenTiers && !hasActiveFilters && !isEmpty) return null;
 
   const hiddenMessage = hasHiddenTiers ? t("hidden_tiers.notice", { count: hiddenCount }) : null;
+  const emptyMessage = isEmpty
+    ? t(isFiltered ? "hidden_tiers.empty.filtered" : "hidden_tiers.empty." + (type ?? "overall"))
+    : null;
 
   return (
     <Stack
@@ -1131,7 +1143,7 @@ function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
       alignItems="center"
       justifyContent="center"
       gap={1}
-      onClick={onClick}
+      onClick={isFiltered ? onClick : undefined}
       sx={{
         p: 2,
         minWidth: { xs: "auto", sm: "300px" },
@@ -1141,17 +1153,27 @@ function HiddenTiersNotice({ filter, compactMode, isPlayer, onClick }) {
         borderRadius: "8px",
         backgroundColor: "rgba(0,0,0,0.2)",
         textAlign: "center",
-        cursor: "pointer",
         transition: "background-color 0.2s, border-color 0.2s",
-        "&:hover": {
-          backgroundColor: "rgba(255,255,255,0.05)",
-          borderColor: theme.palette.text.primary,
-        },
-        "&:active": {
-          backgroundColor: "rgba(255,255,255,0.1)",
-        },
+        ...(isFiltered && {
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "rgba(255,255,255,0.05)",
+            borderColor: theme.palette.text.primary,
+          },
+          "&:active": {
+            backgroundColor: "rgba(255,255,255,0.1)",
+          },
+        }),
       }}
     >
+      {emptyMessage && (
+        <Stack direction="row" gap={1} alignItems="center">
+          <FontAwesomeIcon icon={faCircleExclamation} color={theme.palette.text.secondary} />
+          <Typography variant="body2" color="text.secondary" fontWeight="bold">
+            {emptyMessage}
+          </Typography>
+        </Stack>
+      )}
       {hasActiveFilters && (
         <Stack direction="column" gap={0.5} alignItems="center">
           <Stack direction="row" gap={1} alignItems="center">

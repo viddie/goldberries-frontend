@@ -261,7 +261,6 @@
     "top_golden_list": {
       "use_suggested": "난이도 의견을 순위에 반영",
       "toggle_edit_mode": "기록 수정 모드 전환",
-      "empty": "아직 목록이 비어 있습니다. 황금 딸기 챌린지에 도전해 나만의 목록을 채워 보세요!",
       "note_number_people": "챌린지 {{challenges}}개 · 기록 {{submissions}}개",
       "note_suggested_difficulties": "플레이어의 난이도 의견",
       "suggestion_abbreviated": "의견",

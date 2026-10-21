@@ -261,7 +261,6 @@
     "top_golden_list": {
       "use_suggested": "Использовать оценки сложностей для ранжирования",
       "toggle_edit_mode": "Переключить режим редактирования публикаций",
-      "empty": "Здесь довольно пусто. Получите несколько золотых клубник из Top Golden List чтобы пополнить ваш лист!",
       "note_number_people": "У этого тира {{challenges}} челленджей с {{submissions}} публикациями",
       "note_suggested_difficulties": "Мнения о сложности этого игрока",
       "suggestion_abbreviated": "Мн.",
