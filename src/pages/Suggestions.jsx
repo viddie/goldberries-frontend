@@ -106,11 +106,16 @@ export function PageSuggestions({}) {
   return (
     <BasicContainerBox modern maxWidth="md">
       <HeadTitle title={t("title")} />
-      <Grid container>
-        <Grid item xs>
+      <Grid container rowGap={1}>
+        <Grid item xs={12} sm>
           <Typography variant="h4">{t("header")}</Typography>
         </Grid>
-        <Grid item xs="auto" sx={{ display: "flex", gap: 1 }}>
+        <Grid
+          item
+          xs={12}
+          sm="auto"
+          sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}
+        >
           {auth.hasHelperPriv && <RevealVotesButton />}
           {auth.hasPlayerClaimed && (
             <Button
