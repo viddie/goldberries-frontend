@@ -27,14 +27,18 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip as ChartTooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-import { getQueryData, ONLINE_PLAYERS_REFRESH_SECONDS, useGetOnlinePlayers } from "../hooks/useApi";
+import {
+  getQueryData,
+  ONLINE_PLAYERS_REFRESH_SECONDS,
+  useGetOnlinePlayers,
+  useGetTwitchLiveStatus,
+} from "../hooks/useApi";
 import {
   BasicContainerBox,
   CustomIconButton,
@@ -94,6 +98,9 @@ const HISTORY_TICK_COUNT = 4;
 const GOLDEN_GIF_SIZE = 20;
 // Events that end the current run. They are rendered as markers on the last point instead of creating a new point
 const RUN_ENDING_EVENTS = ["death", "reset", "exit", "close"];
+const STREAM_LIVE_DOT_SIZE = 7;
+const STREAM_LIVE_COLORS = { live: "#4caf50", offline: "#e53935", unknown: "#9e9e9e" };
+const TWITCH_LOGIN_REGEX = /twitch\.tv\/([a-z0-9_]{1,25})\/?(?:[?#]|$)/i;
 const EVENT_MARKERS = {
   death: { icon: faSkull, color: DEATH_COLOR },
   reset: { icon: faReply, color: RESET_COLOR },
@@ -115,6 +122,7 @@ export function PageOnline() {
   const entries = sortEntries(
     (getQueryData(query) ?? []).map((entry) => ({ ...entry, view: getRowView(entry) })),
   );
+  const twitchQuery = useGetTwitchLiveStatus(getTwitchLogins(entries));
 
   return (
     <BasicContainerBox maxWidth="lg" modern>
@@ -183,6 +191,7 @@ export function PageOnline() {
               isMdUp={isMdUp}
               compact={compact}
               historySize={historySize}
+              streamLive={getStreamLive(entry.stream_url, twitchQuery.data)}
             />
           ))}
         </Stack>
@@ -285,7 +294,7 @@ function sortEntries(entries) {
   });
 }
 
-function OnlinePlayerRow({ entry, isMdUp, compact, historySize }) {
+function OnlinePlayerRow({ entry, isMdUp, compact, historySize, streamLive }) {
   const [expanded, setExpanded] = useState(false);
   const { status, mode } = entry.view;
   const isWin = mode === "win";
@@ -323,7 +332,7 @@ function OnlinePlayerRow({ entry, isMdUp, compact, historySize }) {
             "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
           }}
         >
-          <PlayerCell entry={entry} status={status} mode={mode} />
+          <PlayerCell entry={entry} status={status} mode={mode} streamLive={streamLive} />
           <MapCell status={status} mode={mode} />
           <ChallengeCell status={status} mode={mode} />
           <StatusCell status={status} mode={mode} compact={compact} />
@@ -381,7 +390,7 @@ function stopPropagation(e) {
   e.stopPropagation();
 }
 
-function PlayerCell({ entry, status, mode }) {
+function PlayerCell({ entry, status, mode, streamLive }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const containerRef = useRef(null);
   const chipRef = useRef(null);
@@ -433,7 +442,7 @@ function PlayerCell({ entry, status, mode }) {
             </Typography>
           )}
         </Stack>
-        {entry.stream_url && <StreamLink url={entry.stream_url} />}
+        {entry.stream_url && <StreamLink url={entry.stream_url} live={streamLive} />}
       </Stack>
     </Box>
   );
@@ -465,20 +474,43 @@ function useIsLabelStacked(containerRef, chipRef, nameRef, labelRef, deps) {
   return stacked;
 }
 
-function StreamLink({ url }) {
+function StreamLink({ url, live }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const theme = useTheme();
   const platform = getLinkPlatform(url);
   return (
-    <Typography variant="body2" onClick={stopPropagation}>
-      <StyledExternalLink href={url} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-        <FontAwesomeIcon
-          icon={platform?.icon ?? faLink}
-          color={platform?.color ?? theme.palette.links.main}
-        />
-        {platform?.name ?? t("stream")}
-      </StyledExternalLink>
-    </Typography>
+    <Stack direction="row" alignItems="center" gap={0.75} onClick={stopPropagation}>
+      <StreamLiveDot live={live} />
+      {/* Flex removes the baseline gap below the inline link, which would otherwise push the dot down */}
+      <Typography variant="body2" sx={{ display: "flex" }}>
+        <StyledExternalLink href={url} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <FontAwesomeIcon
+            icon={platform?.icon ?? faLink}
+            color={platform?.color ?? theme.palette.links.main}
+          />
+          {platform?.name ?? t("stream")}
+        </StyledExternalLink>
+      </Typography>
+    </Stack>
+  );
+}
+
+function StreamLiveDot({ live }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "online.stream_status" });
+  const state = live === true ? "live" : live === false ? "offline" : "unknown";
+  return (
+    <Tooltip title={t(state)} arrow placement="top">
+      <Box
+        sx={{
+          width: STREAM_LIVE_DOT_SIZE,
+          height: STREAM_LIVE_DOT_SIZE,
+          flexShrink: 0,
+          borderRadius: "50%",
+          backgroundColor: STREAM_LIVE_COLORS[state],
+          boxShadow: "0 0 6px " + STREAM_LIVE_COLORS[state] + "aa",
+        }}
+      />
+    </Tooltip>
   );
 }
 
@@ -842,7 +874,9 @@ function getCurrentChallengeStatuses(statuses) {
 // attached as markers to the previous point. The line is split after such a point by inserting a gap point.
 // Segments between two points that are both in a golden run are drawn golden (via goldenRoom).
 // The x position of a point is the number of its status update (oldest = 1)
-function buildHistoryData(statuses) {
+// Every point also carries the session/overall PB at that time, so the PB lines visibly get pushed up by a run.
+// The PB lines are continued through gap points and extended to maxIndex with a trailing point.
+function buildHistoryData(statuses, maxIndex) {
   const data = [];
   let previous = null;
   for (const [i, status] of [...statuses].reverse().entries()) {
@@ -865,6 +899,8 @@ function buildHistoryData(statuses) {
         room: null,
         status: null,
         events: [],
+        sessionPb: previous.sessionPb,
+        overallPb: previous.overallPb,
       });
     }
     const point = {
@@ -873,6 +909,8 @@ function buildHistoryData(statuses) {
       room: status.room_number,
       status,
       events: isMarkerEvent ? [status.event] : [],
+      sessionPb: status.session_pb_room_number,
+      overallPb: status.overall_pb_room_number,
     };
     data.push(point);
     previous = point;
@@ -883,6 +921,20 @@ function buildHistoryData(statuses) {
     const connected = isGolden(data[index - 1]) || isGolden(data[index + 1]);
     point.goldenRoom = isGolden(point) && connected ? point.room : null;
   });
+
+  const last = data.at(-1);
+  if (last !== undefined && last.index < maxIndex) {
+    data.push({
+      index: maxIndex,
+      time: last.time,
+      room: null,
+      goldenRoom: null,
+      status: null,
+      events: [],
+      sessionPb: last.sessionPb,
+      overallPb: last.overallPb,
+    });
+  }
   return data;
 }
 
@@ -892,10 +944,10 @@ function SessionHistoryGraph({ statuses, historySize }) {
   const latest = statuses[0];
 
   const challengeStatuses = getCurrentChallengeStatuses(statuses);
-  const data = buildHistoryData(challengeStatuses);
   const maxRoom = Math.max(...challengeStatuses.map((s) => s.max_room_number ?? s.room_number ?? 1), 2);
   // Always reserve the space of a full history, so a handful of updates isn't stretched over the full width
-  const maxIndex = Math.max(data.at(-1)?.index ?? 0, historySize);
+  const maxIndex = Math.max(challengeStatuses.length, historySize);
+  const data = buildHistoryData(challengeStatuses, maxIndex);
   const tickStep = historySize / HISTORY_TICK_COUNT;
   const xTicks = [1];
   for (let tick = tickStep; tick <= maxIndex; tick += tickStep) xTicks.push(tick);
@@ -954,31 +1006,33 @@ function SessionHistoryGraph({ statuses, historySize }) {
               }}
             />
             <ChartTooltip content={<HistoryTooltip formatTime={formatTime} />} />
-            {sessionPb !== null && sessionPb !== overallPb && (
-              <ReferenceLine
-                y={sessionPb}
-                stroke={PB_COLOR}
-                strokeOpacity={0.6}
-                label={{
-                  value: t("session_pb"),
-                  position: "right",
-                  fill: PB_COLOR,
-                  fontSize: 12,
-                }}
-              />
-            )}
-            {overallPb !== null && (
-              <ReferenceLine
-                y={overallPb}
-                stroke={PB_COLOR}
-                label={{
-                  value: t("pb"),
-                  position: "right",
-                  fill: PB_COLOR,
-                  fontSize: 12,
-                }}
-              />
-            )}
+            {/* The session PB line is drawn below the overall PB line, so it's hidden where both are equal */}
+            <Line
+              type="linear"
+              dataKey="sessionPb"
+              stroke={PB_COLOR}
+              strokeOpacity={0.6}
+              strokeWidth={1}
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+              label={
+                <PbLineLabel
+                  lastIndex={data.length - 1}
+                  text={sessionPb !== null && sessionPb !== overallPb ? t("session_pb") : null}
+                />
+              }
+            />
+            <Line
+              type="linear"
+              dataKey="overallPb"
+              stroke={PB_COLOR}
+              strokeWidth={1}
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+              label={<PbLineLabel lastIndex={data.length - 1} text={t("pb")} />}
+            />
             <Line
               type="linear"
               dataKey="room"
@@ -1010,6 +1064,16 @@ function SessionHistoryGraph({ statuses, historySize }) {
         </ResponsiveContainer>
       </Box>
     </Stack>
+  );
+}
+
+// Labels a PB line at its right end, in the chart's right margin
+function PbLineLabel({ x, y, index, value, lastIndex, text }) {
+  if (index !== lastIndex || text === null || value === null || value === undefined) return null;
+  return (
+    <text x={x + 6} y={y} dy={4} fill={PB_COLOR} fontSize={12}>
+      {text}
+    </text>
   );
 }
 
@@ -1149,3 +1213,20 @@ function getBannerSrc(challenge) {
   return getGamebananaEmbedUrl(getChallengeCampaign(challenge)?.url ?? null, "large");
 }
 //#endregion
+
+function getTwitchLogin(url) {
+  return url?.match(TWITCH_LOGIN_REGEX)?.[1].toLowerCase() ?? null;
+}
+
+// Sorted to keep the query key stable when the order of the entries changes
+function getTwitchLogins(entries) {
+  const logins = entries.map((entry) => getTwitchLogin(entry.stream_url)).filter((login) => login !== null);
+  return [...new Set(logins)].sort();
+}
+
+// true = live, false = offline, null = unknown (unsupported platform, unparseable URL or failed request)
+function getStreamLive(url, twitchLiveStatus) {
+  const login = getTwitchLogin(url);
+  if (login === null || !twitchLiveStatus) return null;
+  return twitchLiveStatus[login] ?? null;
+}

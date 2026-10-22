@@ -2,6 +2,11 @@ import axios from "axios";
 
 import { DIFF_CONSTS, difficultyIdToSort } from "./constants";
 
+const TWITCH_GQL_URL = "https://gql.twitch.tv/gql";
+// Public client ID of the twitch.tv website. The GQL API is unofficial, but it's the only way to get the live status
+// of a channel from the client, since the official Helix API requires an app access token
+const TWITCH_PUBLIC_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko";
+
 //#region == GET ==
 
 //type: "hard", "standard", "campaign", "map", "challenge", "player"
@@ -513,6 +518,27 @@ export function fetchOnlinePlayers(recency = null, count = null) {
   if (recency !== null) params.recency = recency;
   if (count !== null) params.count = count;
   return axios.get("/ingame-status/online", { params });
+}
+// Returns an object mapping each (lowercased) login to whether the channel is live. Unknown logins are left out.
+// Uses fetch instead of axios, since the global axios config sends credentials, which the GQL API doesn't allow
+export async function fetchTwitchLiveStatus(logins) {
+  const response = await fetch(TWITCH_GQL_URL, {
+    method: "POST",
+    headers: { "Client-Id": TWITCH_PUBLIC_CLIENT_ID, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: "query($logins: [String!]) { users(logins: $logins) { login stream { id } } }",
+      variables: { logins },
+    }),
+  });
+  if (!response.ok) throw new Error("Twitch GQL request failed with status " + response.status);
+  const json = await response.json();
+  const users = json.data?.users;
+  if (!Array.isArray(users)) throw new Error("Invalid Twitch GQL response");
+  const result = {};
+  for (const user of users) {
+    if (user) result[user.login.toLowerCase()] = user.stream !== null;
+  }
+  return result;
 }
 //#endregion
 

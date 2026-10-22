@@ -140,6 +140,7 @@ import {
   fetchDiscovery,
   fetchUntaggedChallengeIds,
   fetchOnlinePlayers,
+  fetchTwitchLiveStatus,
 } from "../util/api";
 import { errorToast } from "../util/util";
 
@@ -1716,5 +1717,17 @@ export function useGetOnlinePlayers(recency = null, count = null) {
     queryFn: () => fetchOnlinePlayers(recency, count),
     onError: errorToast,
     refetchInterval: ONLINE_PLAYERS_REFRESH_SECONDS * 1000,
+  });
+}
+export const TWITCH_LIVE_STATUS_REFRESH_SECONDS = 60;
+// Errors are not toasted, since the live status is optional. A failed request just shows the status as unknown
+export function useGetTwitchLiveStatus(logins) {
+  return useQuery({
+    queryKey: ["twitch_live_status", logins],
+    queryFn: () => fetchTwitchLiveStatus(logins),
+    enabled: logins.length > 0,
+    keepPreviousData: true,
+    retry: false,
+    refetchInterval: TWITCH_LIVE_STATUS_REFRESH_SECONDS * 1000,
   });
 }

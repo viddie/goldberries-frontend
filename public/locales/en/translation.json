@@ -2581,6 +2581,11 @@
     "in_overworld": "In overworld",
     "unknown_map": "Unknown map",
     "stream": "Stream",
+    "stream_status": {
+      "live": "Stream is live",
+      "offline": "Stream is offline",
+      "unknown": "Stream status unknown"
+    },
     "not_on_path": "<not on path>",
     "session_pb": "Session",
     "pb": "PB",
