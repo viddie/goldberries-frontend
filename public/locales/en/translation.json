@@ -2605,6 +2605,11 @@
     },
     "long_history": "Long session history (last {{count}} updates)",
     "debug_room_names": "Use debug room names",
+    "recent_winners": {
+      "tooltip": "Players that recently won",
+      "title": "Recent Winners",
+      "none": "There are no recent winners."
+    },
     "graph": {
       "x_axis": "Status Update #",
       "y_axis": "Room Number"

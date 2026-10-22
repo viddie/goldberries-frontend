@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { Box, ButtonGroup, Collapse, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useTheme } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,6 +39,7 @@ import {
   useGetOnlinePlayers,
   useGetTwitchLiveStatus,
 } from "../hooks/useApi";
+import { CustomModal, ModalButtons, useModal } from "../hooks/useModal";
 import {
   BasicContainerBox,
   CustomIconButton,
@@ -63,11 +64,17 @@ import {
 import { API_BASE_URL } from "../util/constants";
 import { jsonDateToJsDate } from "../util/util";
 
+import { DateRelativeTooltip } from "./Post";
+
 const CCT_URL = "https://gamebanana.com/mods/358978";
 const SETUP_STEP_COUNT = 5;
 const GRID_COLUMNS = "minmax(140px, 1.2fr) 2fr 2fr minmax(180px, 1.3fr)";
 // The status column is wider in the compact layout, since the progress bar and its labels are in a single line
 const GRID_COLUMNS_COMPACT = "minmax(140px, 1.2fr) 2fr 2fr minmax(260px, 1.8fr)";
+// The player rows without the status column. The challenge column only takes the space it needs and the player
+// column has a fixed width, so the map column still lines up across the cards
+const RECENT_WIN_GRID_COLUMNS = "180px 1fr auto";
+const RECENT_WINS_DIALOG_WIDTH = 760;
 const GOLDEN_COLOR = "#ffb300";
 const PROGRESS_COLOR = "#2f6fa7";
 const PB_COLOR = "#4caf50";
@@ -95,6 +102,8 @@ const EVENT_ICON_SIZE = 14;
 const HISTORY_SIZE = 100;
 const HISTORY_SIZE_LONG = 300;
 const HISTORY_TICK_COUNT = 4;
+// Players with a win event within this many of their latest status updates count as recent winners
+const RECENT_WINS_SIZE = 100;
 const GOLDEN_GIF_SIZE = 20;
 // Events that end the current run. They are rendered as markers on the last point instead of creating a new point
 const RUN_ENDING_EVENTS = ["death", "reset", "exit", "close"];
@@ -136,6 +145,7 @@ export function PageOnline() {
           </ModalLink>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1}>
+          <RecentWinnersButton entries={entries} />
           <ButtonGroup>
             <LayoutButton
               icon={faTableList}
@@ -276,6 +286,112 @@ function OnlineSummary({ count }) {
   );
 }
 
+// Amount of recent winners, golden if there are any. Opens a dialog listing the recent wins
+function RecentWinnersButton({ entries }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "online.recent_winners" });
+  const modal = useModal(null, undefined, { actions: [ModalButtons.close] });
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const wins = getRecentWins(entries);
+  const count = new Set(wins.map((win) => win.player.id)).size;
+
+  return (
+    <>
+      <Tooltip title={t("tooltip")} arrow>
+        <Button
+          variant={count > 0 ? "contained" : "outlined"}
+          color={count > 0 ? "warning" : "primary"}
+          onClick={() => modal.open()}
+          // Less padding on the right, since the berry images have some transparent space on their right side
+          sx={{ minWidth: "unset", gap: 0.75, lineHeight: 1, pl: 1.25, pr: "7px" }}
+        >
+          {count}
+          {/* The berry only spins when someone won. Negative margins keep it from making the button taller */}
+          <img
+            src={count > 0 ? EVENT_MARKERS.win.image : "/icons/goldenberry-8x.png"}
+            alt=""
+            style={{ height: "1.4em", margin: "-0.2em 0" }}
+          />
+        </Button>
+      </Tooltip>
+      <CustomModal
+        modalHook={modal}
+        maxWidth="md"
+        options={{ title: t("title") }}
+        PaperProps={{ sx: { maxWidth: RECENT_WINS_DIALOG_WIDTH } }}
+      >
+        {wins.length === 0 ? (
+          <Typography variant="body1" color="text.secondary">
+            {t("none")}
+          </Typography>
+        ) : (
+          <Stack direction="column" gap={1}>
+            {wins.map((win) => (
+              <RecentWinRow key={win.player.id + "-" + win.status.id} win={win} isMdUp={isMdUp} />
+            ))}
+          </Stack>
+        )}
+      </CustomModal>
+    </>
+  );
+}
+
+// Styled like a player row in the win state, but without the status column. The time of the win replaces the
+// "Winner!" label next to the player name
+function RecentWinRow({ win, isMdUp }) {
+  const { player, status } = win;
+
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        border: "1px solid " + GOLDEN_COLOR,
+        borderRadius: 2,
+        overflow: "hidden",
+        backgroundColor: WIN_BACKGROUND,
+        boxShadow: "0 0 10px " + GOLDEN_COLOR + "66",
+      }}
+    >
+      <RowBanner status={status} mode="win" isMdUp={isMdUp} />
+      <Box
+        sx={{
+          position: "relative",
+          display: "grid",
+          gridTemplateColumns: isMdUp ? RECENT_WIN_GRID_COLUMNS : "1fr",
+          gap: isMdUp ? 2 : 0.75,
+          alignItems: "center",
+          px: 2,
+          py: 1,
+          fontSize: ROW_FONT_SIZES.body1,
+          "& .MuiTypography-body1": { fontSize: ROW_FONT_SIZES.body1 },
+          "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
+        }}
+      >
+        <Box sx={{ minWidth: 0 }}>
+          <Stack direction="column" alignItems="flex-start" sx={getBannerChipSx(status, "win")}>
+            <PlayerLink player={player} />
+            <DateRelativeTooltip date={status.date} sx={{ color: GOLDEN_COLOR }} />
+          </Stack>
+        </Box>
+        <MapCell status={status} mode="win" />
+        <ChallengeCell status={status} mode="win" alignRight={isMdUp} />
+      </Box>
+    </Box>
+  );
+}
+
+// All win events within the latest RECENT_WINS_SIZE status updates of each player, newest first
+function getRecentWins(entries) {
+  const wins = entries.flatMap((entry) =>
+    entry.statuses
+      .slice(0, RECENT_WINS_SIZE)
+      .filter((status) => status.event === "win")
+      .map((status) => ({ player: entry.player, status })),
+  );
+  const getTime = (win) => jsonDateToJsDate(win.status.date).getTime();
+  return wins.sort((a, b) => getTime(b) - getTime(a));
+}
+
 // Icon-only toggle button. A regular Button (instead of an IconButton), so it can be used in a ButtonGroup
 function LayoutButton({ icon, label, active, onClick, ...props }) {
   return (
@@ -357,7 +473,11 @@ function OnlinePlayerRow({ entry, isMdUp, compact, historySize, debugRoomNames, 
         >
           <Stack direction="column" gap={2}>
             {mode !== "overworld" && <CurrentRunInfo statuses={entry.statuses} status={status} />}
-            <SessionHistoryGraph statuses={entry.statuses} historySize={historySize} />
+            <SessionHistoryGraph
+              statuses={entry.statuses}
+              historySize={historySize}
+              debugRoomNames={debugRoomNames}
+            />
           </Stack>
         </Box>
       </Collapse>
@@ -560,13 +680,23 @@ function MapCell({ status, mode }) {
   );
 }
 
-function ChallengeCell({ status, mode }) {
+function ChallengeCell({ status, mode, alignRight = false }) {
   const challenge = status.challenge;
   if (mode === "overworld" || challenge === null) {
-    return <Typography variant="body1">-</Typography>;
+    return (
+      <Typography variant="body1" textAlign={alignRight ? "right" : "left"}>
+        -
+      </Typography>
+    );
   }
   return (
-    <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent={alignRight ? "flex-end" : "flex-start"}
+      gap={1}
+      flexWrap="wrap"
+    >
       <StyledLink to={"/challenge/" + challenge.id} onClick={stopPropagation}>
         {getChallengeNameShort(challenge, true, false)}
       </StyledLink>
@@ -886,6 +1016,8 @@ function getCurrentChallengeStatuses(statuses) {
 // The x position of a point is the number of its status update (oldest = 1)
 // Every point also carries the session/overall PB at that time, so the PB lines visibly get pushed up by a run.
 // The PB lines are continued through gap points and extended to maxIndex with a trailing point.
+// Picking up the golden sends a status update in the same room, so the point right before it is dropped,
+// otherwise every run would start with a flat line segment.
 function buildHistoryData(statuses, maxIndex) {
   const data = [];
   let previous = null;
@@ -901,6 +1033,14 @@ function buildHistoryData(statuses, maxIndex) {
       }
       continue;
     }
+
+    const isRunStart =
+      previous !== null &&
+      previous.events.length === 0 &&
+      !previous.status.in_golden_run &&
+      status.in_golden_run &&
+      previous.room === status.room_number;
+    if (isRunStart) data.pop();
 
     if (previous !== null && previous.events.length > 0) {
       data.push({
@@ -948,7 +1088,7 @@ function buildHistoryData(statuses, maxIndex) {
   return data;
 }
 
-function SessionHistoryGraph({ statuses, historySize }) {
+function SessionHistoryGraph({ statuses, historySize, debugRoomNames }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const theme = useTheme();
   const latest = statuses[0];
@@ -1015,7 +1155,9 @@ function SessionHistoryGraph({ statuses, historySize }) {
                 fontSize: 12,
               }}
             />
-            <ChartTooltip content={<HistoryTooltip formatTime={formatTime} />} />
+            <ChartTooltip
+              content={<HistoryTooltip formatTime={formatTime} debugRoomNames={debugRoomNames} />}
+            />
             {/* The session PB line is drawn below the overall PB line, so it's hidden where both are equal */}
             <Line
               type="linear"
@@ -1087,7 +1229,7 @@ function PbLineLabel({ x, y, index, value, lastIndex, text }) {
   );
 }
 
-function HistoryTooltip({ active, payload, formatTime }) {
+function HistoryTooltip({ active, payload, formatTime, debugRoomNames }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   if (!active || !payload || payload.length === 0) return null;
   const { time, status, events } = payload[0].payload;
@@ -1110,8 +1252,14 @@ function HistoryTooltip({ active, payload, formatTime }) {
         {status.max_room_number !== null && " / " + status.max_room_number}
       </Typography>
       <Typography variant="body2">
-        <RoomLabel status={status} />
+        <RoomLabel status={status} debugRoomNames={debugRoomNames} />
       </Typography>
+      {status.in_golden_run && (
+        <Typography variant="body2" sx={{ color: GOLDEN_COLOR }}>
+          <FontAwesomeIcon icon={faCircle} fontSize="0.6em" style={{ verticalAlign: "middle" }} />{" "}
+          {t("in_golden_run")}
+        </Typography>
+      )}
       {events.map((event, index) => (
         <Typography key={index} variant="body2" sx={{ color: EVENT_MARKERS[event].color }}>
           <EventIcon event={event} /> {t("events." + event)}
