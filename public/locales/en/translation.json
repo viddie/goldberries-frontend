@@ -2604,6 +2604,7 @@
       "compact": "Compact layout"
     },
     "long_history": "Long session history (last {{count}} updates)",
+    "debug_room_names": "Use debug room names",
     "graph": {
       "x_axis": "Status Update #",
       "y_axis": "Room Number"

@@ -113,6 +113,7 @@ export function PageOnline() {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const [layout, setLayout] = useLocalStorage("online_layout", "normal");
   const [longHistory, setLongHistory] = useLocalStorage("online_long_history", false);
+  const [debugRoomNames, setDebugRoomNames] = useLocalStorage("online_debug_room_names", false);
   const historySize = longHistory ? HISTORY_SIZE_LONG : HISTORY_SIZE;
   const query = useGetOnlinePlayers(null, historySize);
   const theme = useTheme();
@@ -155,6 +156,12 @@ export function PageOnline() {
             active={longHistory}
             onClick={() => setLongHistory((prev) => !prev)}
           />
+          <LayoutButton
+            icon={faBug}
+            label={t("debug_room_names")}
+            active={debugRoomNames}
+            onClick={() => setDebugRoomNames((prev) => !prev)}
+          />
         </Stack>
       </Stack>
 
@@ -191,6 +198,7 @@ export function PageOnline() {
               isMdUp={isMdUp}
               compact={compact}
               historySize={historySize}
+              debugRoomNames={debugRoomNames}
               streamLive={getStreamLive(entry.stream_url, twitchQuery.data)}
             />
           ))}
@@ -294,7 +302,7 @@ function sortEntries(entries) {
   });
 }
 
-function OnlinePlayerRow({ entry, isMdUp, compact, historySize, streamLive }) {
+function OnlinePlayerRow({ entry, isMdUp, compact, historySize, debugRoomNames, streamLive }) {
   const [expanded, setExpanded] = useState(false);
   const { status, mode } = entry.view;
   const isWin = mode === "win";
@@ -335,7 +343,7 @@ function OnlinePlayerRow({ entry, isMdUp, compact, historySize, streamLive }) {
           <PlayerCell entry={entry} status={status} mode={mode} streamLive={streamLive} />
           <MapCell status={status} mode={mode} />
           <ChallengeCell status={status} mode={mode} />
-          <StatusCell status={status} mode={mode} compact={compact} />
+          <StatusCell status={status} mode={mode} compact={compact} debugRoomNames={debugRoomNames} />
         </Box>
       </Box>
       <Collapse in={expanded} unmountOnExit>
@@ -569,11 +577,13 @@ function ChallengeCell({ status, mode }) {
 }
 
 // Rooms are on the path if they have a room name. Rooms off the path show their debug name (if known).
-// The compact label omits the custom room name and only shows the muted debug name for rooms off the path
-function RoomLabel({ status, compact = false }) {
+// The compact label omits the custom room name and only shows the muted debug name for rooms off the path.
+// With debugRoomNames, rooms on the path show only their debug name (if known) instead of the custom/room name
+function RoomLabel({ status, compact = false, debugRoomNames = false }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const { custom_room_name: customName, room_name: roomName, debug_room_name: debugName } = status;
   if (roomName !== null) {
+    if (debugRoomNames && debugName !== null) return debugName;
     if (!compact && customName !== null && customName !== roomName) return customName + " (" + roomName + ")";
     return roomName;
   }
@@ -586,7 +596,7 @@ function RoomLabel({ status, compact = false }) {
   );
 }
 
-function StatusCell({ status, mode, compact }) {
+function StatusCell({ status, mode, compact, debugRoomNames }) {
   if (mode === "overworld") {
     return (
       <Typography variant="body1" textAlign="center">
@@ -627,7 +637,7 @@ function StatusCell({ status, mode, compact }) {
           <RoomProgressBar status={status} compact />
         </Box>
         <Typography variant="body2" noWrap sx={{ flex: "0 1 auto", minWidth: 0 }}>
-          <RoomLabel status={status} compact />
+          <RoomLabel status={status} compact debugRoomNames={debugRoomNames} />
         </Typography>
       </Stack>
     );
@@ -640,7 +650,7 @@ function StatusCell({ status, mode, compact }) {
       </Typography>
       <RoomProgressBar status={status} />
       <Typography variant="body2" textAlign="center">
-        <RoomLabel status={status} />
+        <RoomLabel status={status} debugRoomNames={debugRoomNames} />
       </Typography>
     </Stack>
   );
