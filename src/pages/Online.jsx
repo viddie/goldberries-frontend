@@ -74,7 +74,7 @@ const GRID_COLUMNS_COMPACT = "minmax(140px, 1.2fr) 2fr 2fr minmax(260px, 1.8fr)"
 // The player rows without the status column. The challenge column only takes the space it needs and the player
 // column has a fixed width, so the map column still lines up across the cards
 const RECENT_WIN_GRID_COLUMNS = "180px 1fr auto";
-const RECENT_WINS_DIALOG_WIDTH = 760;
+const RECENT_WINS_DIALOG_WIDTH = 900;
 const GOLDEN_COLOR = "#ffb300";
 const PROGRESS_COLOR = "#2f6fa7";
 const PB_COLOR = "#4caf50";
@@ -145,7 +145,7 @@ export function PageOnline() {
           </ModalLink>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1}>
-          <RecentWinnersButton entries={entries} />
+          <RecentWinnersButton entries={entries} historySize={historySize} debugRoomNames={debugRoomNames} />
           <ButtonGroup>
             <LayoutButton
               icon={faTableList}
@@ -287,7 +287,7 @@ function OnlineSummary({ count }) {
 }
 
 // Amount of recent winners, golden if there are any. Opens a dialog listing the recent wins
-function RecentWinnersButton({ entries }) {
+function RecentWinnersButton({ entries, historySize, debugRoomNames }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online.recent_winners" });
   const modal = useModal(null, undefined, { actions: [ModalButtons.close] });
   const theme = useTheme();
@@ -327,7 +327,13 @@ function RecentWinnersButton({ entries }) {
         ) : (
           <Stack direction="column" gap={1}>
             {wins.map((win) => (
-              <RecentWinRow key={win.player.id + "-" + win.status.id} win={win} isMdUp={isMdUp} />
+              <RecentWinRow
+                key={win.player.id + "-" + win.status.id}
+                win={win}
+                isMdUp={isMdUp}
+                historySize={historySize}
+                debugRoomNames={debugRoomNames}
+              />
             ))}
           </Stack>
         )}
@@ -337,14 +343,15 @@ function RecentWinnersButton({ entries }) {
 }
 
 // Styled like a player row in the win state, but without the status column. The time of the win replaces the
-// "Winner!" label next to the player name
-function RecentWinRow({ win, isMdUp }) {
-  const { player, status } = win;
+// "Winner!" label next to the player name. Expands to a snapshot of the winning run, i.e. the same info as an
+// expanded player row, but with the status updates ending at the win
+function RecentWinRow({ win, isMdUp, historySize, debugRoomNames }) {
+  const [expanded, setExpanded] = useState(false);
+  const { player, status, statuses } = win;
 
   return (
     <Box
       sx={{
-        position: "relative",
         border: "1px solid " + GOLDEN_COLOR,
         borderRadius: 2,
         overflow: "hidden",
@@ -352,41 +359,61 @@ function RecentWinRow({ win, isMdUp }) {
         boxShadow: "0 0 10px " + GOLDEN_COLOR + "66",
       }}
     >
-      <RowBanner status={status} mode="win" isMdUp={isMdUp} />
       <Box
+        onClick={() => setExpanded((prev) => !prev)}
         sx={{
           position: "relative",
-          display: "grid",
-          gridTemplateColumns: isMdUp ? RECENT_WIN_GRID_COLUMNS : "1fr",
-          gap: isMdUp ? 2 : 0.75,
-          alignItems: "center",
-          px: 2,
-          py: 1,
-          fontSize: ROW_FONT_SIZES.body1,
-          "& .MuiTypography-body1": { fontSize: ROW_FONT_SIZES.body1 },
-          "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
+          cursor: "pointer",
+          "&:hover": { background: WIN_HOVER_BACKGROUND },
         }}
       >
-        <Box sx={{ minWidth: 0 }}>
-          <Stack direction="column" alignItems="flex-start" sx={getBannerChipSx(status, "win")}>
-            <PlayerLink player={player} />
-            <DateRelativeTooltip date={status.date} sx={{ color: GOLDEN_COLOR }} />
+        <RowBanner status={status} mode="win" isMdUp={isMdUp} />
+        <Box
+          sx={{
+            position: "relative",
+            display: "grid",
+            gridTemplateColumns: isMdUp ? RECENT_WIN_GRID_COLUMNS : "1fr",
+            gap: isMdUp ? 2 : 0.75,
+            alignItems: "center",
+            px: 2,
+            py: 1,
+            fontSize: ROW_FONT_SIZES.body1,
+            "& .MuiTypography-body1": { fontSize: ROW_FONT_SIZES.body1 },
+            "& .MuiTypography-body2": { fontSize: ROW_FONT_SIZES.body2 },
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Stack direction="column" alignItems="flex-start" sx={getBannerChipSx(status, "win")}>
+              <span onClick={stopPropagation}>
+                <PlayerLink player={player} />
+              </span>
+              <DateRelativeTooltip date={status.date} sx={{ color: GOLDEN_COLOR }} />
+            </Stack>
+          </Box>
+          <MapCell status={status} mode="win" />
+          <ChallengeCell status={status} mode="win" alignRight={isMdUp} />
+        </Box>
+      </Box>
+      <Collapse in={expanded} unmountOnExit>
+        <Box sx={{ p: 2, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <Stack direction="column" gap={2}>
+            <CurrentRunInfo statuses={statuses} status={status} />
+            <SessionHistoryGraph statuses={statuses} historySize={historySize} debugRoomNames={debugRoomNames} />
           </Stack>
         </Box>
-        <MapCell status={status} mode="win" />
-        <ChallengeCell status={status} mode="win" alignRight={isMdUp} />
-      </Box>
+      </Collapse>
     </Box>
   );
 }
 
-// All win events within the latest RECENT_WINS_SIZE status updates of each player, newest first
+// All win events within the latest RECENT_WINS_SIZE status updates of each player, newest first. Each win also
+// carries the player's status updates trimmed to end with the win (newest first), as a snapshot of the winning run
 function getRecentWins(entries) {
   const wins = entries.flatMap((entry) =>
     entry.statuses
       .slice(0, RECENT_WINS_SIZE)
-      .filter((status) => status.event === "win")
-      .map((status) => ({ player: entry.player, status })),
+      .map((status, index) => ({ player: entry.player, status, statuses: entry.statuses.slice(index) }))
+      .filter((win) => win.status.event === "win"),
   );
   const getTime = (win) => jsonDateToJsDate(win.status.date).getTime();
   return wins.sort((a, b) => getTime(b) - getTime(a));
