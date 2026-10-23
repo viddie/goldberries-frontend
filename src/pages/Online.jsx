@@ -99,7 +99,7 @@ const EXIT_COLOR = "#bdbdbd";
 const NOT_ON_PATH_COLOR = "rgba(255,255,255,0.45)";
 const EVENT_ICON_SIZE = 14;
 // Amount of status updates fetched per player. The history graph always reserves space for this many updates
-const HISTORY_SIZE = 100;
+export const HISTORY_SIZE = 100;
 const HISTORY_SIZE_LONG = 300;
 const HISTORY_TICK_COUNT = 4;
 // Players with a win event within this many of their latest status updates count as recent winners
@@ -443,6 +443,25 @@ function sortEntries(entries) {
     if (goldenDiff !== 0) return goldenDiff;
     return tierSort(b) - tierSort(a);
   });
+}
+
+// A standalone row for a single entry of the online players endpoint, e.g. on the player page
+export function OnlinePlayerEntry({ entry }) {
+  const [debugRoomNames] = useLocalStorage("online_debug_room_names", false);
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const twitchQuery = useGetTwitchLiveStatus(getTwitchLogins([entry]));
+
+  return (
+    <OnlinePlayerRow
+      entry={{ ...entry, view: getRowView(entry) }}
+      isMdUp={isMdUp}
+      compact={false}
+      historySize={HISTORY_SIZE}
+      debugRoomNames={debugRoomNames}
+      streamLive={getStreamLive(entry.stream_url, twitchQuery.data)}
+    />
+  );
 }
 
 function OnlinePlayerRow({ entry, isMdUp, compact, historySize, debugRoomNames, streamLive }) {

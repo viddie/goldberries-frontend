@@ -63,6 +63,7 @@ import {
 import {
   getQueryData,
   useGetAllDifficulties,
+  useGetOnlinePlayer,
   useGetPlayer,
   useGetPlayerLikes,
   useGetPlayerStats,
@@ -92,6 +93,7 @@ import { PlayerStatsTabs } from "../components/player_stats";
 import { DetailsRow } from "./Challenge";
 import { PageTopGoldenList } from "./TopGoldenList";
 import { TimeDiffWithTooltip } from "./Submission";
+import { HISTORY_SIZE as ONLINE_PLAYER_HISTORY_SIZE, OnlinePlayerEntry } from "./Online";
 
 //#region PagePlayer
 export function PagePlayer() {
@@ -220,6 +222,9 @@ export function PlayerDisplay({ id, tab, setTab }) {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Currently playing section */}
+      <PlayerCurrentlyPlaying id={id} sx={contentPadding} />
 
       {/* Wishlist section */}
       <PlayerWishlist id={id} sx={contentPadding} />
@@ -456,6 +461,26 @@ function PlayerDetailsTable({ player, stats, isMdScreen }) {
       }}
     >
       {items}
+    </Box>
+  );
+}
+//#endregion
+
+//#region Currently Playing
+// Only shown if the player is currently online. Loading and errors are silently ignored
+function PlayerCurrentlyPlaying({ id, sx }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "player" });
+  const query = useGetOnlinePlayer(id, ONLINE_PLAYER_HISTORY_SIZE);
+  const entries = getQueryData(query) ?? [];
+
+  if (entries.length === 0) return null;
+
+  return (
+    <Box sx={{ ...sx, pb: 2, backgroundColor: "#333333" }}>
+      <Typography variant="h6" sx={{ mb: 1.5 }}>
+        {t("currently_playing")}
+      </Typography>
+      <OnlinePlayerEntry entry={entries[0]} />
     </Box>
   );
 }

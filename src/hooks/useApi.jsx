@@ -1719,6 +1719,14 @@ export function useGetOnlinePlayers(recency = null, count = null) {
     refetchInterval: ONLINE_PLAYERS_REFRESH_SECONDS * 1000,
   });
 }
+// Errors are not toasted, since the online status of a single player is only shown if available
+export function useGetOnlinePlayer(playerId, count = null) {
+  return useQuery({
+    queryKey: ["online_players", null, count, playerId],
+    queryFn: () => fetchOnlinePlayers(null, count, playerId),
+    refetchInterval: ONLINE_PLAYERS_REFRESH_SECONDS * 1000,
+  });
+}
 export const TWITCH_LIVE_STATUS_REFRESH_SECONDS = 60;
 // Errors are not toasted, since the live status is optional. A failed request just shows the status as unknown
 export function useGetTwitchLiveStatus(logins) {

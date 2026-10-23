@@ -1747,6 +1747,7 @@
   "player": {
     "title": "Profile",
     "personal_tgl": "Personal Top Golden List",
+    "currently_playing": "Currently Playing",
     "wishlist": "Wishlist",
     "buttons": {
       "more": "More",

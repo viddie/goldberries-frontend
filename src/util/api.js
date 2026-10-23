@@ -513,10 +513,11 @@ export function fetchStampSubmission(id) {
 export function fetchStampSubmissionsForPlayer(playerId) {
   return axios.get("/stamp/get-for-player", { params: { id: playerId } });
 }
-export function fetchOnlinePlayers(recency = null, count = null) {
+export function fetchOnlinePlayers(recency = null, count = null, playerId = null) {
   const params = {};
   if (recency !== null) params.recency = recency;
   if (count !== null) params.count = count;
+  if (playerId !== null) params.player_id = playerId;
   return axios.get("/ingame-status/online", { params });
 }
 // Returns an object mapping each (lowercased) login to whether the channel is live. Unknown logins are left out.
