@@ -12,6 +12,7 @@ import {
   faClockRotateLeft,
   faDoorOpen,
   faFlag,
+  faInfoCircle,
   faLink,
   faMapLocationDot,
   faPowerOff,
@@ -52,6 +53,7 @@ import {
   StyledLink,
 } from "../components/basic";
 import { ChallengeFcIcon, DifficultyChip, getLinkPlatform, PlayerLink } from "../components/goldberries";
+import { WishlistDetails } from "../components/likes";
 import {
   getCampaignName,
   getChallengeCampaign,
@@ -394,7 +396,7 @@ function RecentWinRow({ win, isMdUp, historySize, debugRoomNames }) {
             </Stack>
           </Box>
           <MapCell status={status} mode="win" />
-          <ChallengeCell status={status} mode="win" alignRight={isMdUp} />
+          <ChallengeCell status={status} mode="win" wishlist={win.wishlist} alignRight={isMdUp} />
         </Box>
       </Box>
       <Collapse in={expanded} unmountOnExit>
@@ -418,7 +420,12 @@ function getRecentWins(entries) {
   const wins = entries.flatMap((entry) =>
     entry.statuses
       .slice(0, RECENT_WINS_SIZE)
-      .map((status, index) => ({ player: entry.player, status, statuses: entry.statuses.slice(index) }))
+      .map((status, index) => ({
+        player: entry.player,
+        wishlist: entry.wishlist,
+        status,
+        statuses: entry.statuses.slice(index),
+      }))
       .filter((win) => win.status.event === "win" && getTime(win) >= minTime),
   );
   return wins.sort((a, b) => getTime(b) - getTime(a));
@@ -509,7 +516,7 @@ function OnlinePlayerRow({ entry, isMdUp, compact, historySize, debugRoomNames, 
         >
           <PlayerCell entry={entry} status={status} mode={mode} streamLive={streamLive} />
           <MapCell status={status} mode={mode} />
-          <ChallengeCell status={status} mode={mode} />
+          <ChallengeCell status={status} mode={mode} wishlist={entry.wishlist} />
           <StatusCell status={status} mode={mode} compact={compact} debugRoomNames={debugRoomNames} />
         </Box>
       </Box>
@@ -731,7 +738,8 @@ function MapCell({ status, mode }) {
   );
 }
 
-function ChallengeCell({ status, mode, alignRight = false }) {
+function ChallengeCell({ status, mode, wishlist = [], alignRight = false }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "online" });
   const challenge = status.challenge;
   if (mode === "overworld" || challenge === null) {
     return (
@@ -740,19 +748,49 @@ function ChallengeCell({ status, mode, alignRight = false }) {
       </Typography>
     );
   }
+  const wishlistEntry = wishlist.find((like) => like.challenge_id === challenge.id) ?? null;
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent={alignRight ? "flex-end" : "flex-start"}
-      gap={1}
-      flexWrap="wrap"
-    >
-      <StyledLink to={"/challenge/" + challenge.id} onClick={stopPropagation}>
-        {getChallengeNameShort(challenge, true, false)}
-      </StyledLink>
-      <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-      <DifficultyChip difficulty={challenge.difficulty} />
+    <Stack direction="column" alignItems={alignRight ? "flex-end" : "flex-start"} gap={0.25}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent={alignRight ? "flex-end" : "flex-start"}
+        gap={1}
+        flexWrap="wrap"
+      >
+        <StyledLink to={"/challenge/" + challenge.id} onClick={stopPropagation}>
+          {getChallengeNameShort(challenge, true, false)}
+        </StyledLink>
+        <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
+        <DifficultyChip difficulty={challenge.difficulty} />
+      </Stack>
+      {wishlistEntry !== null && (
+        <Tooltip
+          title={<WishlistDetails like={wishlistEntry} />}
+          placement="bottom"
+          arrow
+          slotProps={{
+            tooltip: {
+              sx: {
+                backgroundColor: "#2d2d2d",
+                border: "1px solid rgba(255,255,255,0.12)",
+                maxWidth: "360px",
+                "& .MuiTooltip-arrow": { color: "#2d2d2d" },
+              },
+            },
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            onClick={stopPropagation}
+            sx={{ display: "inline-flex", alignItems: "center", gap: 0.5, cursor: "default" }}
+          >
+            {t("wishlist")}
+            <FontAwesomeIcon icon={faInfoCircle} />
+          </Typography>
+        </Tooltip>
+      )}
     </Stack>
   );
 }

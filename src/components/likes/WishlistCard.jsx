@@ -86,6 +86,61 @@ export function WishlistCard({ like, onEdit }) {
 }
 //#endregion
 
+//#region WishlistDetails
+// Compact version of the card without the banner image and challenge, e.g. for tooltips
+export function WishlistDetails({ like }) {
+  const { t } = useTranslation(undefined, { keyPrefix: "likes" });
+  const stateColor = WISHLIST_STATE_COLORS[like.state] ?? "grey";
+  const showTimeTaken = like.time_taken !== null && like.time_taken !== undefined && like.time_taken > 0;
+
+  return (
+    <Stack direction="column" gap={1} sx={{ minWidth: "240px", py: 0.5 }}>
+      <Stack direction="row" gap={0.5} alignItems="center">
+        {like.state && (
+          <Chip
+            label={t("state." + like.state)}
+            size="small"
+            sx={{
+              backgroundColor: stateColor,
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "0.75rem",
+              textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+            }}
+          />
+        )}
+        {showTimeTaken && (
+          <Chip
+            icon={
+              <FontAwesomeIcon
+                icon={faClock}
+                style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.65rem" }}
+              />
+            }
+            label={secondsToDuration(like.time_taken)}
+            size="small"
+            sx={{
+              backgroundColor: "rgba(0,0,0,0.6)",
+              color: "rgba(255,255,255,0.85)",
+              fontSize: "0.7rem",
+              height: "20px",
+            }}
+          />
+        )}
+      </Stack>
+      {like.progress !== null && (
+        <WishlistProgressBar progress={like.progress} stateColor={stateColor} lowDeath={like.low_death} />
+      )}
+      {like.comment && (
+        <Typography variant="body2" sx={{ px: 0.5, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+          {like.comment}
+        </Typography>
+      )}
+    </Stack>
+  );
+}
+//#endregion
+
 //#region WishlistBanner
 function WishlistBanner({
   bannerSrc,

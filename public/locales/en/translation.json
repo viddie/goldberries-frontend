@@ -2592,14 +2592,15 @@
     "pb": "PB",
     "info": {
       "room": "Current Room",
-      "custom_room_name": "Custom Room Name",
-      "debug_room_name": "Debug Room Name",
+      "custom_room_name": "Custom Name",
+      "debug_room_name": "Debug Name",
       "open_map_viewer": "Open room in map viewer",
       "run_duration": "Current Run Duration",
       "session_pb": "Session PB",
       "overall_pb": "Overall PB"
     },
     "session_history": "Session History",
+    "wishlist": "Wishlist",
     "layout": {
       "normal": "Normal layout",
       "compact": "Compact layout"
