@@ -104,6 +104,8 @@ const HISTORY_SIZE_LONG = 300;
 const HISTORY_TICK_COUNT = 4;
 // Players with a win event within this many of their latest status updates count as recent winners
 const RECENT_WINS_SIZE = 100;
+// Only win events within this many minutes count as recent wins
+const RECENT_WINS_MINUTES = 60;
 const GOLDEN_GIF_SIZE = 20;
 // Events that end the current run. They are rendered as markers on the last point instead of creating a new point
 const RUN_ENDING_EVENTS = ["death", "reset", "exit", "close"];
@@ -286,14 +288,15 @@ function OnlineSummary({ count }) {
   );
 }
 
-// Amount of recent winners, golden if there are any. Opens a dialog listing the recent wins
+// Amount of recent wins, golden if there are any. Opens a dialog listing the recent wins
 function RecentWinnersButton({ entries, historySize, debugRoomNames }) {
   const { t } = useTranslation(undefined, { keyPrefix: "online.recent_winners" });
   const modal = useModal(null, undefined, { actions: [ModalButtons.close] });
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const wins = getRecentWins(entries);
-  const count = new Set(wins.map((win) => win.player.id)).size;
+  // Counts wins instead of players, so the number matches the rows in the dialog (a player can win multiple times)
+  const count = wins.length;
 
   return (
     <>
@@ -406,16 +409,18 @@ function RecentWinRow({ win, isMdUp, historySize, debugRoomNames }) {
   );
 }
 
-// All win events within the latest RECENT_WINS_SIZE status updates of each player, newest first. Each win also
-// carries the player's status updates trimmed to end with the win (newest first), as a snapshot of the winning run
+// All win events within the latest RECENT_WINS_SIZE status updates of each player and the last RECENT_WINS_MINUTES,
+// newest first. Each win also carries the player's status updates trimmed to end with the win (newest first), as a
+// snapshot of the winning run
 function getRecentWins(entries) {
+  const getTime = (win) => jsonDateToJsDate(win.status.date).getTime();
+  const minTime = Date.now() - RECENT_WINS_MINUTES * 60 * 1000;
   const wins = entries.flatMap((entry) =>
     entry.statuses
       .slice(0, RECENT_WINS_SIZE)
       .map((status, index) => ({ player: entry.player, status, statuses: entry.statuses.slice(index) }))
-      .filter((win) => win.status.event === "win"),
+      .filter((win) => win.status.event === "win" && getTime(win) >= minTime),
   );
-  const getTime = (win) => jsonDateToJsDate(win.status.date).getTime();
   return wins.sort((a, b) => getTime(b) - getTime(a));
 }
 

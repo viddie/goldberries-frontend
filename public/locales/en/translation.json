@@ -2607,7 +2607,7 @@
     "long_history": "Long session history (last {{count}} updates)",
     "debug_room_names": "Use debug room names",
     "recent_winners": {
-      "tooltip": "Players that recently won",
+      "tooltip": "Recent wins",
       "title": "Recent Winners",
       "none": "There are no recent winners."
     },
