@@ -307,6 +307,10 @@ function PlayerMoreMenu({ playerId }) {
           text: t("buttons.summer_stamp_rally"),
           href: `/event/summer-stamp-rally/${playerId}`,
         },
+        {
+          text: t("buttons.untagged_challenges"),
+          href: `/my-untagged-challenges?player_id=${playerId}`,
+        },
       ]}
     />
   );

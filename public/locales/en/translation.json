@@ -1751,7 +1751,8 @@
     "wishlist": "Wishlist",
     "buttons": {
       "more": "More",
-      "summer_stamp_rally": "Summer Stamp Rally 2026"
+      "summer_stamp_rally": "Summer Stamp Rally 2026",
+      "untagged_challenges": "Untagged Challenges"
     },
     "details": {
       "country": "Country",
@@ -1786,6 +1787,7 @@
           "coverage": "Based on {{tagged}} of {{total}} cleared challenges ({{percent}}) that have been tagged by the community.",
           "no_data": "None of this player's cleared challenges have been tagged yet.",
           "tag_your_clears": "Help out by tagging your clears!",
+          "tag_their_clears": "Help out by tagging their clears!",
           "legend_player": "This player",
           "legend_community": "Community average",
           "legend_community_tooltip": "How often a value appears across all verified clears of tagged challenges, so popular challenges count more.",

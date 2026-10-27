@@ -85,7 +85,7 @@ function PlayerTagStatsTab({ id, tab, lookup, categories }) {
 function TagStatsCoverage({ id, stats }) {
   const { t } = useTranslation(undefined, { keyPrefix: "player.tabs.info.tag_stats" });
   const auth = useAuth();
-  const canTagMore = auth.isPlayerWithId(id) && stats.tagged < stats.total;
+  const isOwnProfile = auth.isPlayerWithId(id);
   const text =
     stats.tagged === 0
       ? t("no_data")
@@ -97,7 +97,10 @@ function TagStatsCoverage({ id, stats }) {
 
   return (
     <Typography variant="body2" color="text.secondary">
-      {text} {canTagMore && <StyledLink to="/my-untagged-challenges">{t("tag_your_clears")}</StyledLink>}
+      {text}{" "}
+      <StyledLink to={"/my-untagged-challenges?player_id=" + id}>
+        {t(isOwnProfile ? "tag_your_clears" : "tag_their_clears")}
+      </StyledLink>
     </Typography>
   );
 }
