@@ -2253,6 +2253,9 @@
           },
           {
             "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink>会在检测到游戏突然卡顿时自动暂停，允许在提交的视频中使用。"
+          },
+          {
+            "text": "Extended Variants mod 中的 Corrected Mirror Mode 选项可以在挑战的整个过程中使用。该选项不能在挑战途中切换；如果在开始时启用，则必须在整个过程中保持启用。原版镜像模式（Mirror Mode）不被允许，因为同时按住相反方向时，游戏会错误地处理输入。"
           }
         ]
       }

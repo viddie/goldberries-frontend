@@ -2253,6 +2253,9 @@
           },
           {
             "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> pausiert das Spiel automatisch, wenn eine Verzögerung erkannt wird, und ist für Submissions erlaubt."
+          },
+          {
+            "text": "Die Option „Corrected Mirror Mode“ aus dem Extended Variants Mod darf für komplette Runs einer Challenge verwendet werden. Die Option darf nicht während eines Runs umgeschaltet werden; wenn sie zu Beginn des Runs aktiviert ist, muss sie für die gesamte Dauer dieses Runs aktiviert bleiben. Der Vanilla Mirror Mode ist nicht erlaubt, da das Spiel damit Eingaben falsch verarbeitet, wenn entgegengesetzte Richtungen gleichzeitig gehalten werden."
           }
         ]
       }

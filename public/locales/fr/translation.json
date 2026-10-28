@@ -2253,6 +2253,9 @@
           },
           {
             "text": "Le mod <CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> met automatiquement le jeu en pause si un pic de lag est détecté, et est autorisé."
+          },
+          {
+            "text": "L’option Corrected Mirror Mode du mod Extended Variants peut être utilisée pour des runs entières d’un challenge. L’option ne peut pas être activée ou désactivée en cours de run ; si elle est activée au début de la run, elle doit rester activée pendant toute la durée de cette run. Le Mirror Mode vanilla n’est pas autorisé, car il amène le jeu à mal gérer les inputs lorsque des directions opposées sont maintenues simultanément."
           }
         ]
       }

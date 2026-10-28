@@ -2409,6 +2409,9 @@
           },
           {
             "text": "<CustomExternalLink href=\"https://gamebanana.com/mods/591485\">Lag Pauser</CustomExternalLink> will automatically pause the game if a lag spike is detected, and is allowed for submissions."
+          },
+          {
+            "text": "The Corrected Mirror Mode option from the Extended Variants mod may be used for entire runs of a challenge. The option cannot be toggled mid-run; if enabled at the start of the run, it must remain enabled for the full duration of that run. Vanilla Mirror Mode is not allowed, as it causes the game to improperly handle inputs when opposing directions are held simultaneously."
           }
         ]
       }
