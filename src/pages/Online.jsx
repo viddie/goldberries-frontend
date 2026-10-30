@@ -1100,18 +1100,21 @@ function getCurrentChallengeStatuses(statuses) {
 }
 
 // Builds the chart data oldest first. Run-ending events (death, reset, win, exit, close) don't create a new point, but are
-// attached as markers to the previous point. The line is split after such a point by inserting a gap point.
-// Segments between two points that are both in a golden run are drawn golden (via goldenRoom).
-// The x position of a point is the number of its status update (oldest = 1)
+// attached as markers to the previous point, and the next point starts a new run.
+// The x position of a point is its number among all drawn points (oldest = 1), so skipped statuses don't leave gaps.
+// To still draw every run as its own line, runs alternate between two keys (roomA/roomB), with the other one being null.
+// Segments between two points of the same run that are both in a golden run are drawn golden (via goldenRoomA/B).
 // Every point also carries the session/overall PB at that time, so the PB lines visibly get pushed up by a run.
-// The PB lines are continued through gap points and extended to maxIndex with a trailing point.
+// Missing PBs are carried over from the previous point, so the PB lines never break.
+// The PB lines are extended to maxIndex with a trailing point, where maxIndex is at least historySize.
 // Picking up the golden sends a status update in the same room, so the point right before it is dropped,
 // otherwise every run would start with a flat line segment.
-function buildHistoryData(statuses, maxIndex) {
+// Statuses without a room number (rooms outside of the room list) can't be placed on the y axis and are skipped.
+function buildHistoryData(statuses, historySize) {
   const data = [];
   let previous = null;
-  for (const [i, status] of [...statuses].reverse().entries()) {
-    const index = i + 1;
+  let run = 0;
+  for (const status of [...statuses].reverse()) {
     const time = jsonDateToJsDate(status.date).getTime();
     const isMarkerEvent = EVENT_MARKERS[status.event] !== undefined;
 
@@ -1122,6 +1125,7 @@ function buildHistoryData(statuses, maxIndex) {
       }
       continue;
     }
+    if (status.room_number === null) continue;
 
     const isRunStart =
       previous !== null &&
@@ -1131,50 +1135,48 @@ function buildHistoryData(statuses, maxIndex) {
       previous.room === status.room_number;
     if (isRunStart) data.pop();
 
-    if (previous !== null && previous.events.length > 0) {
-      data.push({
-        index: (previous.index + index) / 2,
-        time: (previous.time + time) / 2,
-        room: null,
-        status: null,
-        events: [],
-        sessionPb: previous.sessionPb,
-        overallPb: previous.overallPb,
-      });
-    }
+    const lastPoint = data.at(-1);
+    if (previous !== null && previous.events.length > 0) run++;
     const point = {
-      index,
       time,
+      run,
       room: status.room_number,
       status,
       events: isMarkerEvent ? [status.event] : [],
-      sessionPb: status.session_pb_room_number,
-      overallPb: status.overall_pb_room_number,
+      sessionPb: status.session_pb_room_number ?? lastPoint?.sessionPb ?? null,
+      overallPb: status.overall_pb_room_number ?? lastPoint?.overallPb ?? null,
     };
     data.push(point);
     previous = point;
   }
 
-  const isGolden = (point) => point?.status?.in_golden_run === true && point.room !== null;
+  const isGolden = (point, run) => point?.run === run && point.status.in_golden_run === true;
   data.forEach((point, index) => {
-    const connected = isGolden(data[index - 1]) || isGolden(data[index + 1]);
-    point.goldenRoom = isGolden(point) && connected ? point.room : null;
+    point.index = index + 1;
+    const connected = isGolden(data[index - 1], point.run) || isGolden(data[index + 1], point.run);
+    const goldenRoom = isGolden(point, point.run) && connected ? point.room : null;
+    const isA = point.run % 2 === 0;
+    point.roomA = isA ? point.room : null;
+    point.roomB = isA ? null : point.room;
+    point.goldenRoomA = isA ? goldenRoom : null;
+    point.goldenRoomB = isA ? null : goldenRoom;
   });
+  const count = data.length;
 
+  const maxIndex = Math.max(count, historySize);
   const last = data.at(-1);
   if (last !== undefined && last.index < maxIndex) {
     data.push({
       index: maxIndex,
       time: last.time,
       room: null,
-      goldenRoom: null,
       status: null,
       events: [],
       sessionPb: last.sessionPb,
       overallPb: last.overallPb,
     });
   }
-  return data;
+  return { data, maxIndex };
 }
 
 function SessionHistoryGraph({ statuses, historySize, debugRoomNames }) {
@@ -1185,8 +1187,7 @@ function SessionHistoryGraph({ statuses, historySize, debugRoomNames }) {
   const challengeStatuses = getCurrentChallengeStatuses(statuses);
   const maxRoom = Math.max(...challengeStatuses.map((s) => s.max_room_number ?? s.room_number ?? 1), 2);
   // Always reserve the space of a full history, so a handful of updates isn't stretched over the full width
-  const maxIndex = Math.max(challengeStatuses.length, historySize);
-  const data = buildHistoryData(challengeStatuses, maxIndex);
+  const { data, maxIndex } = buildHistoryData(challengeStatuses, historySize);
   const tickStep = historySize / HISTORY_TICK_COUNT;
   const xTicks = [1];
   for (let tick = tickStep; tick <= maxIndex; tick += tickStep) xTicks.push(tick);
@@ -1274,25 +1275,25 @@ function SessionHistoryGraph({ statuses, historySize, debugRoomNames }) {
               isAnimationActive={false}
               label={<PbLineLabel lastIndex={data.length - 1} text={t("pb")} />}
             />
-            <Line
-              type="linear"
-              dataKey="room"
-              stroke={theme.palette.text.primary}
-              strokeWidth={2}
-              dot={false}
-              activeDot={false}
-              isAnimationActive={false}
-            />
-            <Line
-              type="linear"
-              dataKey="goldenRoom"
-              stroke={GOLDEN_COLOR}
-              strokeWidth={2}
-              dot={false}
-              activeDot={false}
-              isAnimationActive={false}
-            />
-            {/* Invisible line that renders the event markers on top of both lines */}
+            {/* Runs alternate between the A and B keys, so consecutive runs aren't connected */}
+            {[
+              ["roomA", theme.palette.text.primary],
+              ["roomB", theme.palette.text.primary],
+              ["goldenRoomA", GOLDEN_COLOR],
+              ["goldenRoomB", GOLDEN_COLOR],
+            ].map(([dataKey, color]) => (
+              <Line
+                key={dataKey}
+                type="linear"
+                dataKey={dataKey}
+                stroke={color}
+                strokeWidth={2}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+              />
+            ))}
+            {/* Invisible line that renders the event markers on top of all lines */}
             <Line
               type="linear"
               dataKey="room"
