@@ -141,14 +141,20 @@ export function PageOnline() {
   return (
     <BasicContainerBox maxWidth="lg" modern>
       <HeadTitle title={t("title")} />
-      <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} sx={{ mb: 1 }}>
+      <Stack
+        direction={isMdUp ? "row" : "column"}
+        alignItems={isMdUp ? "center" : "flex-start"}
+        justifyContent="space-between"
+        gap={1}
+        sx={{ mb: 1 }}
+      >
         <Stack direction="column" alignItems="flex-start">
-          <Typography variant="h4">{t("title")}</Typography>
+          <Typography variant="h4">{isMdUp ? t("title") : t("title_short")}</Typography>
           <ModalLink label={t("setup.link")} title={t("setup.title")}>
             <SetupInstructions />
           </ModalLink>
         </Stack>
-        <Stack direction="row" alignItems="center" gap={1}>
+        <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
           <RecentWinnersButton entries={entries} historySize={historySize} debugRoomNames={debugRoomNames} />
           <ButtonGroup>
             <LayoutButton

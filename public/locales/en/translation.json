@@ -2557,6 +2557,7 @@
   },
   "online": {
     "title": "Goldberries Sync - Online Players",
+    "title_short": "Online Players",
     "setup": {
       "link": "How to set this up",
       "title": "Setting up Goldberries Sync",
