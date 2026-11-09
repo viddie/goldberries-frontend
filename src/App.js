@@ -1351,6 +1351,7 @@ function DesktopSubMenu({ name, icon, compactIcon, items, nameStyle = {} }) {
             variant="text"
             color="inherit"
             {...bindHover(popupState)}
+            onClick={popupState.open}
             startIcon={icon ?? compactIcon}
             className={getNavEntryClassName(icon)}
             aria-label={name}
@@ -1370,7 +1371,13 @@ function DesktopSubMenu({ name, icon, compactIcon, items, nameStyle = {} }) {
               {name}
             </span>
           </Button>
-          <HoverMenu {...bindMenu(popupState)} disableScrollLock transitionDuration={0}>
+          <HoverMenu
+            {...bindMenu(popupState)}
+            disableScrollLock
+            transitionDuration={0}
+            //HoverMenu lets clicks pass through its backdrop. A menu opened by click has no hover to end, so it has to catch the click-away
+            style={popupState.isOpen && !popupState.hovered ? { pointerEvents: "auto" } : undefined}
+          >
             {items.map((item, index) => (
               <DesktopSubMenuItem key={index} item={item} closeMenu={popupState.close} />
             ))}
