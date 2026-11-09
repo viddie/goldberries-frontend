@@ -22,6 +22,7 @@ import {
   faBalanceScale,
   faBan,
   faBars,
+  faBook,
   faBug,
   faChartBar,
   faCheckToSlot,
@@ -32,6 +33,7 @@ import {
   faCogs,
   faDatabase,
   faEdit,
+  faEllipsis,
   faFileUpload,
   faHammer,
   faHome,
@@ -41,8 +43,10 @@ import {
   faNewspaper,
   faNoteSticky,
   faPlayCircle,
+  faPlus,
   faQuestion,
   faRibbon,
+  faScrewdriverWrench,
   faTags,
   faCompass,
   faWifi,
@@ -86,7 +90,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/en-gb";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import HoverMenu from "material-ui-popup-state/HoverMenu";
-import { createRef, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { API_URL, CURRENT_VERSION } from "./util/constants";
@@ -556,6 +560,7 @@ export function Layout() {
     },
     campaigns: {
       name: t("campaigns_menu.name"),
+      compactIcon: <FontAwesomeIcon icon={faBook} />,
       items: [
         {
           name: t("campaigns_menu.rejected_challenges"),
@@ -619,6 +624,7 @@ export function Layout() {
     submit: {
       name: t("submit"),
       path: "/submit",
+      compactIcon: <FontAwesomeIcon icon={faPlus} />,
     },
     notUser: {
       name: t("login"),
@@ -627,6 +633,7 @@ export function Layout() {
     },
     newsWriter: {
       name: t("internal_menu.name"),
+      compactIcon: <FontAwesomeIcon icon={faScrewdriverWrench} />,
       items: [
         {
           name: t("internal_menu.posts"),
@@ -712,6 +719,7 @@ export function Layout() {
     },
     other: {
       name: t("other_menu.name"),
+      compactIcon: <FontAwesomeIcon icon={faEllipsis} />,
       items: [
         {
           name: t("other_menu.rules"),
@@ -797,7 +805,7 @@ export function Layout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  //Set by DesktopNav when its contents don't fit on one line. In that case the mobile layout is used, even on md+ screens
+  //Set by DesktopNav when its contents don't fit on one line, even in the icon-only layout. In that case the mobile layout is used, even on md+ screens
   const [desktopNavOverflows, setDesktopNavOverflows] = useState(false);
   const mobileDisplay = { xs: "block", md: desktopNavOverflows ? "block" : "none" };
   const handleDrawerClose = () => {
@@ -1102,6 +1110,7 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, on
   const auth = useAuth();
   const navigate = useNavigate();
   const { settings } = useAppSettings();
+  const [compact, setCompact] = useState(false);
   const nameStyle = getPlayerNameColorStyle(auth.user?.player, settings);
 
   const shift = true;
@@ -1152,25 +1161,34 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, on
   useKeyboardShortcut(hotkeys[6]);
   useKeyboardShortcut(hotkeys[7]);
 
-  //Detect when the nav contents don't fit anymore. The nav stays rendered (but invisible) while overflowing,
-  //so that it can keep measuring and switch back once there is enough space again.
+  //Detect which layout the nav contents still fit into: full, icon-only (compact) or none at all. The nav stays rendered
+  //(but invisible) while overflowing, so that it can keep measuring and switch back once there is enough space again.
   const rowRef = useRef(null);
   const leftRef = useRef(null);
   const rightRef = useRef(null);
-  useLayoutEffect(() => {
-    const elements = [rowRef, leftRef, rightRef].map((ref) => ref.current);
-    if (elements.some((el) => el === null)) return;
-    const row = elements[0];
-    const check = () => {
-      //Nav is display: none on small screens, nothing to measure there
-      if (row.offsetParent === null) return;
-      onOverflowChange(row.scrollWidth > row.clientWidth);
+  const checkFit = useCallback(() => {
+    const row = rowRef.current;
+    //Nav is display: none on small screens, nothing to measure there
+    if (row === null || row.offsetParent === null) return;
+    //The layouts differ only in CSS tied to this attribute, so both can be measured here without a re-render or any
+    //visible flicker. Only this function writes the attribute, so that React can't undo it.
+    const fits = (isCompact) => {
+      row.toggleAttribute("data-compact", isCompact);
+      return row.scrollWidth <= row.clientWidth;
     };
-    const observer = new ResizeObserver(check);
-    elements.forEach((el) => observer.observe(el));
-    check();
-    return () => observer.disconnect();
+    const fullFits = fits(false);
+    const compactFits = fullFits || fits(true);
+    setCompact(!fullFits);
+    onOverflowChange(!compactFits);
   }, [onOverflowChange]);
+
+  useLayoutEffect(() => {
+    const observer = new ResizeObserver(checkFit);
+    [rowRef, leftRef, rightRef].forEach((ref) => observer.observe(ref.current));
+    return () => observer.disconnect();
+  }, [checkFit]);
+  //Hidden labels don't affect the observed sizes, so changes to them (e.g. a different language) are caught here instead
+  useLayoutEffect(checkFit);
 
   return (
     <Box
@@ -1194,14 +1212,35 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, on
       }}
     >
       {/* Both sides share the space equally to keep the logo centered, but can grow past that if their content needs it */}
-      <Stack ref={rowRef} direction="row" gap={1} alignItems="center" sx={{ height: "100%", overflow: "hidden" }}>
+      <Stack
+        ref={rowRef}
+        direction="row"
+        gap={1}
+        alignItems="center"
+        sx={{
+          height: "100%",
+          overflow: "hidden",
+          "&:not([data-compact]) .nav-entry-compact-icon .MuiButton-startIcon": { display: "none" },
+          "&[data-compact] .nav-entry": { minWidth: 0, px: 1 },
+          "&[data-compact] .nav-entry .MuiButton-startIcon": { mx: 0 },
+          "&[data-compact] .nav-entry-label": { display: "none" },
+        }}
+      >
         <Box sx={{ flex: "1 1 0", minWidth: "max-content" }}>
           <Stack ref={leftRef} direction="row" spacing={1} alignItems="center" sx={{ width: "max-content" }}>
             {leftMenu.map((entry, index) => {
               if (entry.items) {
-                return <DesktopSubMenu key={index} name={entry.name} icon={entry.icon} items={entry.items} />;
+                return (
+                  <DesktopSubMenu
+                    key={index}
+                    name={entry.name}
+                    icon={entry.icon}
+                    compactIcon={entry.compactIcon}
+                    items={entry.items}
+                  />
+                );
               } else {
-                return <DesktopItem key={index} item={entry} />;
+                return <DesktopItem key={index} item={entry} compact={compact} />;
               }
             })}
           </Stack>
@@ -1229,13 +1268,21 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, on
             {auth.hasHelperPriv && <VerifierStatsNavDesktop />}
             {rightMenu.map((entry, index) => {
               if (entry.items) {
-                return <DesktopSubMenu key={index} name={entry.name} icon={entry.icon} items={entry.items} />;
+                return (
+                  <DesktopSubMenu
+                    key={index}
+                    name={entry.name}
+                    icon={entry.icon}
+                    compactIcon={entry.compactIcon}
+                    items={entry.items}
+                  />
+                );
               } else {
-                return <DesktopItem key={index} item={entry} />;
+                return <DesktopItem key={index} item={entry} compact={compact} />;
               }
             })}
             {userMenu.items === undefined ? (
-              <DesktopItem item={userMenu} />
+              <DesktopItem item={userMenu} compact={compact} />
             ) : (
               <DesktopSubMenu
                 name={userMenu.name}
@@ -1259,7 +1306,7 @@ function DesktopNav({ leftMenu, rightMenu, userMenu, settingsOpenRef, hidden, on
   );
 }
 
-function DesktopItem({ item }) {
+function DesktopItem({ item, compact }) {
   const navigate = useNavigate();
   const handleShortcut = () => {
     if (item.key === undefined || item.key === null) return;
@@ -1271,12 +1318,15 @@ function DesktopItem({ item }) {
   };
   useKeyboardShortcut({ key: item.key || "Enter", shift: true, onKey: handleShortcut });
 
-  if (item.action !== undefined) {
-    return (
+  const targetProps = item.action !== undefined ? { onClick: item.action } : { component: Link, to: item.path };
+  return (
+    <Tooltip title={compact ? item.name : ""}>
       <Button
         variant="text"
         color="inherit"
-        startIcon={item.icon}
+        startIcon={item.icon ?? item.compactIcon}
+        className={getNavEntryClassName(item.icon)}
+        aria-label={item.name}
         sx={{
           textTransform: "none",
           px: 1,
@@ -1284,33 +1334,15 @@ function DesktopItem({ item }) {
             backgroundColor: "#555",
           },
         }}
-        onClick={item.action}
+        {...targetProps}
       >
-        {item.name}
+        <span className="nav-entry-label">{item.name}</span>
       </Button>
-    );
-  }
-  return (
-    <Button
-      component={Link}
-      to={item.path}
-      startIcon={item.icon}
-      variant="text"
-      color="inherit"
-      sx={{
-        textTransform: "none",
-        px: 1,
-        "&:hover": {
-          backgroundColor: "#555",
-        },
-      }}
-    >
-      {item.name}
-    </Button>
+    </Tooltip>
   );
 }
 
-function DesktopSubMenu({ name, icon, items, nameStyle = {} }) {
+function DesktopSubMenu({ name, icon, compactIcon, items, nameStyle = {} }) {
   return (
     <PopupState variant="popover" popupId="demoMenu">
       {(popupState) => (
@@ -1319,7 +1351,9 @@ function DesktopSubMenu({ name, icon, items, nameStyle = {} }) {
             variant="text"
             color="inherit"
             {...bindHover(popupState)}
-            startIcon={icon}
+            startIcon={icon ?? compactIcon}
+            className={getNavEntryClassName(icon)}
+            aria-label={name}
             // endIcon={<FontAwesomeIcon size="2xs" icon={faChevronDown} />}
             sx={{
               textTransform: "none",
@@ -1332,7 +1366,9 @@ function DesktopSubMenu({ name, icon, items, nameStyle = {} }) {
               },
             }}
           >
-            <span style={nameStyle}>{name}</span>
+            <span className="nav-entry-label" style={nameStyle}>
+              {name}
+            </span>
           </Button>
           <HoverMenu {...bindMenu(popupState)} disableScrollLock transitionDuration={0}>
             {items.map((item, index) => (
@@ -1424,6 +1460,11 @@ function VerifierStatsNavDesktop() {
 
 function pathMatchesItem(pathname, itemPath) {
   return (itemPath === "/" && pathname === "/") || (itemPath !== "/" && pathname.startsWith(itemPath));
+}
+
+//Entries without a regular icon get their compactIcon instead, which DesktopNav hides outside of the icon-only layout
+function getNavEntryClassName(icon) {
+  return icon ? "nav-entry" : "nav-entry nav-entry-compact-icon";
 }
 
 function SearchModal({ open, onClose }) {
