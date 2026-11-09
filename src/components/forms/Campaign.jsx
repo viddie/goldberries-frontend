@@ -221,6 +221,7 @@ export function FormCampaign({ campaign, onSave, ...props }) {
           </Tooltip>
         </Grid>
       </Grid>
+      {/* Both are null on campaigns without author info. A TextField mounted with null never moves its label for values set by the auto-fetch */}
       <Controller
         control={form.control}
         name="author_gb_id"
@@ -229,7 +230,7 @@ export function FormCampaign({ campaign, onSave, ...props }) {
           <TextField
             label={t("author_gb_id")}
             fullWidth
-            value={field.value}
+            value={field.value ?? ""}
             onChange={field.onChange}
             sx={{ mt: 2 }}
           />
@@ -244,7 +245,7 @@ export function FormCampaign({ campaign, onSave, ...props }) {
             sx={{ mt: 2 }}
             label={t("author_gb_name")}
             fullWidth
-            value={field.value}
+            value={field.value ?? ""}
             onChange={field.onChange}
           />
         )}
