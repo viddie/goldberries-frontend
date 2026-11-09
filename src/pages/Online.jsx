@@ -128,13 +128,15 @@ export function PageOnline() {
   const [longHistory, setLongHistory] = useLocalStorage("online_long_history", false);
   const [debugRoomNames, setDebugRoomNames] = useLocalStorage("online_debug_room_names", false);
   const historySize = longHistory ? HISTORY_SIZE_LONG : HISTORY_SIZE;
-  const query = useGetOnlinePlayers(null, historySize);
+  const query = useGetOnlinePlayers(null, historySize, RECENT_WINS_MINUTES);
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const compact = layout === "compact";
 
+  // Also contains recent winners that aren't online anymore, which are only shown in the recent winners dialog
+  const allEntries = getQueryData(query) ?? [];
   const entries = sortEntries(
-    (getQueryData(query) ?? []).map((entry) => ({ ...entry, view: getRowView(entry) })),
+    allEntries.filter((entry) => entry.is_online).map((entry) => ({ ...entry, view: getRowView(entry) })),
   );
   const twitchQuery = useGetTwitchLiveStatus(getTwitchLogins(entries));
 
@@ -155,7 +157,7 @@ export function PageOnline() {
           </ModalLink>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
-          <RecentWinnersButton entries={entries} historySize={historySize} debugRoomNames={debugRoomNames} />
+          <RecentWinnersButton entries={allEntries} historySize={historySize} debugRoomNames={debugRoomNames} />
           <ButtonGroup>
             <LayoutButton
               icon={faTableList}

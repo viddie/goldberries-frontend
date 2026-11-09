@@ -1711,10 +1711,10 @@ export function useGetChallengesForTagging(challengeIds) {
 //#endregion
 
 export const ONLINE_PLAYERS_REFRESH_SECONDS = 10;
-export function useGetOnlinePlayers(recency = null, count = null) {
+export function useGetOnlinePlayers(recency = null, count = null, recentWins = null) {
   return useQuery({
-    queryKey: ["online_players", recency, count],
-    queryFn: () => fetchOnlinePlayers(recency, count),
+    queryKey: ["online_players", recency, count, recentWins],
+    queryFn: () => fetchOnlinePlayers(recency, count, null, recentWins),
     onError: errorToast,
     refetchInterval: ONLINE_PLAYERS_REFRESH_SECONDS * 1000,
   });
