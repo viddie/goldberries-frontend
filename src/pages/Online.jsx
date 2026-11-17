@@ -52,7 +52,13 @@ import {
   StyledExternalLink,
   StyledLink,
 } from "../components/basic";
-import { ChallengeFcIcon, DifficultyChip, getLinkPlatform, PlayerLink } from "../components/goldberries";
+import {
+  ChallengeFcIcon,
+  DifficultyChip,
+  getLinkPlatform,
+  ObjectiveIcon,
+  PlayerLink,
+} from "../components/goldberries";
 import { WishlistDetails } from "../components/likes";
 import {
   getCampaignName,
@@ -157,7 +163,11 @@ export function PageOnline() {
           </ModalLink>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
-          <RecentWinnersButton entries={allEntries} historySize={historySize} debugRoomNames={debugRoomNames} />
+          <RecentWinnersButton
+            entries={allEntries}
+            historySize={historySize}
+            debugRoomNames={debugRoomNames}
+          />
           <ButtonGroup>
             <LayoutButton
               icon={faTableList}
@@ -411,7 +421,11 @@ function RecentWinRow({ win, isMdUp, historySize, debugRoomNames }) {
         <Box sx={{ p: 2, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <Stack direction="column" gap={2}>
             <CurrentRunInfo statuses={statuses} status={status} />
-            <SessionHistoryGraph statuses={statuses} historySize={historySize} debugRoomNames={debugRoomNames} />
+            <SessionHistoryGraph
+              statuses={statuses}
+              historySize={historySize}
+              debugRoomNames={debugRoomNames}
+            />
           </Stack>
         </Box>
       </Collapse>
@@ -759,19 +773,25 @@ function ChallengeCell({ status, mode, wishlist = [], alignRight = false }) {
   const wishlistEntry = wishlist.find((like) => like.challenge_id === challenge.id) ?? null;
   return (
     <Stack direction="column" alignItems={alignRight ? "flex-end" : "flex-start"} gap={0.25}>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent={alignRight ? "flex-end" : "flex-start"}
-        gap={1}
-        flexWrap="wrap"
-      >
+      {/* Laid out as inline text, so a long challenge name wraps like a sentence with the icons flowing after it */}
+      <Typography component="div" variant="body1" textAlign={alignRight ? "right" : "left"}>
+        <ObjectiveIcon
+          objective={challenge.objective}
+          challenge={challenge}
+          height="1.1em"
+          style={{ verticalAlign: "middle", marginRight: "6px" }}
+        />
         <StyledLink to={"/challenge/" + challenge.id} onClick={stopPropagation}>
           {getChallengeNameShort(challenge, true, false)}
-        </StyledLink>
-        <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-        <DifficultyChip difficulty={challenge.difficulty} />
-      </Stack>
+        </StyledLink>{" "}
+        <Box
+          component="span"
+          sx={{ display: "inline-flex", alignItems: "center", gap: 1, verticalAlign: "middle" }}
+        >
+          <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
+          <DifficultyChip difficulty={challenge.difficulty} />
+        </Box>
+      </Typography>
       {wishlistEntry !== null && (
         <Tooltip
           title={<WishlistDetails like={wishlistEntry} />}
