@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "@uidotdev/usehooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +25,7 @@ import { FormOptions } from "../../util/constants";
 import { CampaignSelect, MapSelect, OtherIcon } from "../goldberries";
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { fetchMap } from "../../util/api";
+import { isCtrlClick } from "../../util/util";
 
 export function FormMapWrapper({
   id,
@@ -99,9 +100,15 @@ export function FormMap({ map, onSave, ...props }) {
   const theme = useTheme();
 
   const newMap = map.id === null;
+  const keepOpenRef = useRef(false);
+  const [createdMaps, setCreatedMaps] = useState([]);
 
   const { mutate: saveMap } = usePostMap((data) => {
     toast.success(t(newMap ? "feedback.created" : "feedback.updated"));
+    if (keepOpenRef.current) {
+      setCreatedMaps((prev) => [...prev, data]);
+      return;
+    }
     if (onSave) onSave(data);
   });
 
@@ -109,7 +116,8 @@ export function FormMap({ map, onSave, ...props }) {
     defaultValues: map,
   });
   const errors = form.formState.errors;
-  const onUpdateSubmit = form.handleSubmit((data) => {
+  const onUpdateSubmit = form.handleSubmit((data, event) => {
+    keepOpenRef.current = newMap && isCtrlClick(event);
     // Filter out collectibles without a selected collectible ID
     const filteredCollectibles = data.collectibles?.filter((item) => item[0] && item[0] !== "") ?? null;
     const toSubmit = {
@@ -132,7 +140,9 @@ export function FormMap({ map, onSave, ...props }) {
   const nameDebounced = useDebounce(name, 200);
   let sameNameExists = false;
   if (newMap && nameDebounced.length > 0 && campaign !== null && campaign.maps !== null) {
-    sameNameExists = campaign.maps.some((m) => m.name === nameDebounced);
+    // The campaign's map list doesn't contain the maps that were created while keeping the form open
+    const createdInCampaign = createdMaps.filter((m) => m.campaign_id === campaign.id);
+    sameNameExists = [...campaign.maps, ...createdInCampaign].some((m) => m.name === nameDebounced);
   }
 
   return (

@@ -666,6 +666,7 @@ export function usePostCampaign(onSuccess) {
       queryClient.invalidateQueries(["campaign", response.data.id]);
       queryClient.invalidateQueries(["campaign_view", response.data.id]);
       queryClient.invalidateQueries(["all_campaigns"]);
+      queryClient.invalidateQueries(["search"]);
       invalidateJointQueries(queryClient);
       if (onSuccess) onSuccess(response.data);
     },

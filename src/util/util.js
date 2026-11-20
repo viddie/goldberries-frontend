@@ -60,3 +60,8 @@ export function isValidHttpUrl(string) {
   }
   return url.protocol === "http:" || url.protocol === "https:";
 }
+
+// Whether ctrl (cmd on Mac) was held down during the event, e.g. a click
+export function isCtrlClick(event) {
+  return !!(event?.ctrlKey || event?.metaKey);
+}

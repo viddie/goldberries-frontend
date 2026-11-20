@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "@emotion/react";
@@ -14,6 +14,7 @@ import { DifficultySelectControlled, ObjectiveSelect, CampaignSelect, MapSelect 
 import { ErrorDisplay, LoadingSpinner, StyledLink } from "../basic";
 import { fetchChallenge } from "../../util/api";
 import { DIFF_CONSTS } from "../../util/constants";
+import { isCtrlClick } from "../../util/util";
 
 export function FormChallengeWrapper({ id, onSave, defaultDifficultyId, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
@@ -75,9 +76,15 @@ export function FormChallenge({ challenge, onSave, ...props }) {
   const theme = useTheme();
 
   const newChallenge = challenge.id === null;
+  const keepOpenRef = useRef(false);
+  const [createdChallenges, setCreatedChallenges] = useState([]);
 
   const { mutate: saveChallenge } = usePostChallenge((data) => {
     toast.success(t(newChallenge ? "feedback.created" : "feedback.updated"));
+    if (keepOpenRef.current) {
+      setCreatedChallenges((prev) => [...prev, data]);
+      return;
+    }
     if (onSave) onSave(data);
   });
 
@@ -87,7 +94,8 @@ export function FormChallenge({ challenge, onSave, ...props }) {
       skip_webhook: false,
     },
   });
-  const onUpdateSubmit = form.handleSubmit((data) => {
+  const onUpdateSubmit = form.handleSubmit((data, event) => {
+    keepOpenRef.current = newChallenge && isCtrlClick(event);
     const toSubmit = {
       ...data,
       map_id: map?.id,
@@ -110,9 +118,11 @@ export function FormChallenge({ challenge, onSave, ...props }) {
   const labelDebounced = useDebounce(label, 200);
   let sameChallengeExists = false;
   if (newChallenge && map !== null && map.challenges !== null) {
-    sameChallengeExists = map.challenges.some(
+    // The map's challenge list doesn't contain the challenges that were created while keeping the form open
+    const createdOnMap = createdChallenges.filter((c) => c.map_id === map.id);
+    sameChallengeExists = [...map.challenges, ...createdOnMap].some(
       (c) =>
-        c.label === (labelDebounced === "" ? null : labelDebounced) &&
+        (c.label ?? "") === (labelDebounced ?? "") &&
         c.objective_id === objective_id &&
         c.requires_fc === requires_fc &&
         c.has_fc === has_fc,

@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MuiColorInput } from "mui-color-input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -35,6 +35,7 @@ import { useTheme } from "@emotion/react";
 
 import { getCampaignName } from "../../util/data_util";
 import { fetchCampaign } from "../../util/api";
+import { isCtrlClick } from "../../util/util";
 import {
   getQueryData,
   useDeleteMap,
@@ -117,10 +118,12 @@ export function FormCampaign({ campaign, onSave, ...props }) {
   const { t: t_g } = useTranslation(undefined, { keyPrefix: "general" });
   const [modFetchState, setModFetchState] = useState(0); //0 = not fetched, 1 = fetching, 2 = success, 3 = error
   const newCampaign = campaign.id === null;
+  const keepOpenRef = useRef(false);
 
   const { mutate: postCampaign } = usePostCampaign((newCampaign) => {
     const isNew = campaign.id === null;
     toast.success(t(isNew ? "feedback.created" : "feedback.updated"));
+    if (keepOpenRef.current) return;
     if (onSave) onSave(newCampaign);
   });
 
@@ -128,7 +131,8 @@ export function FormCampaign({ campaign, onSave, ...props }) {
     defaultValues: campaign,
   });
   const errors = form.formState.errors;
-  const onUpdateSubmit = form.handleSubmit((data) => {
+  const onUpdateSubmit = form.handleSubmit((data, event) => {
+    keepOpenRef.current = newCampaign && isCtrlClick(event);
     //Unset maps field to save data
     data.maps = undefined;
     postCampaign(data);
