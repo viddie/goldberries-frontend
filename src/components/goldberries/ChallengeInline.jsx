@@ -54,7 +54,13 @@ export function ChallengeInline({
       {showSeparator ? <InlineSeparator /> : hasPrefix && " "}
       <Box
         component="span"
-        sx={{ display: "inline-flex", alignItems: "center", columnGap: 0.5, whiteSpace: "nowrap" }}
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          columnGap: 0.5,
+          whiteSpace: "nowrap",
+          "&::before": { content: '"\\200B"', mr: -0.5 },
+        }}
       >
         {showChallenge && (
           <StyledLink to={"/challenge/" + challenge.id}>
@@ -74,15 +80,12 @@ export function ChallengeInline({
             style={{ marginBottom: "-2px" }}
           />
         )}
-        {submission ? (
-          <StyledLink to={"/submission/" + submission.id} style={{ lineHeight: "1" }}>
-            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-          </StyledLink>
-        ) : (
-          <StyledLink to={"/challenge/" + challenge.id} style={{ lineHeight: "0" }}>
-            <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
-          </StyledLink>
-        )}
+        <StyledLink
+          to={submission ? "/submission/" + submission.id : "/challenge/" + challenge.id}
+          style={{ lineHeight: "0" }}
+        >
+          <ChallengeFcIcon showClear allowTextIcons challenge={challenge} height="1.1em" />
+        </StyledLink>
       </Box>
     </Box>
   );
